@@ -514,8 +514,8 @@ public class MainActivity extends Activity {
 		if (posType == POS_TYPE.AUDIO) {
 			pos.closeAudio();
 		} else if (posType == POS_TYPE.BLUETOOTH) {
-			pos.disconnectBT();
-//			pos.disConnectBtPos();
+//			pos.disconnectBT();
+			pos.disConnectBtPos();
 		}else if(posType == POS_TYPE.BLUETOOTH_BLE){
 			pos.disconnectBLE();
 		} else if (posType == POS_TYPE.UART) {
