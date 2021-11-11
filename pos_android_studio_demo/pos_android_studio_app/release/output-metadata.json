@@ -11,8 +11,8 @@
       "type": "SINGLE",
       "filters": [],
       "properties": [],
-      "versionCode": 4,
-      "versionName": "3.0.3",
+      "versionCode": 5,
+      "versionName": "3.0.4",
       "enabled": true,
       "outputFile": "pos_android_studio_app-release.apk"
     }

@@ -2573,6 +2573,7 @@ public class MainActivity extends BaseActivity implements ShowGuideView.onGuideV
                     pos.setFormatId("0039");
                     pos.setPosDisplayAmountFlag(false);
                     pos.doTrade(20);
+//                    pos.doCheckCard();
 //                    int keyIdex = getKeyIndex();
 //                    pos.doTrade(keyIdex,30);//start do trade
                 }
