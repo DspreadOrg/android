@@ -2570,8 +2570,9 @@ public class MainActivity extends BaseActivity implements ShowGuideView.onGuideV
                 if (posType == POS_TYPE.UART) {
                     pos.doTrade(terminalTime, 0, 30);
                 } else {
-                    pos.setFormatId("0039");
-                    pos.setPosDisplayAmountFlag(false);
+                    pos.setFormatId("0027");
+                    pos.setCardTradeMode(QPOSService.CardTradeMode.SWIPE_TAP_INSERT_CARD_NOTUP);
+                    pos.setAppSelectOption(true);
                     pos.doTrade(20);
 //                    pos.doCheckCard();
 //                    int keyIdex = getKeyIndex();
