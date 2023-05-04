@@ -16,6 +16,7 @@ before_script:
 #   - .gradle/
 
 stages:
+- lint
 - build
 - test
 - release
@@ -88,6 +89,25 @@ assembleRelease:
     #- pos_android_studio_demo/pos_android_studio_app/build/outputs/apk/release/commit.txt 
     #pos_android_studio_app-release.apk
     
+
+release_semantic::
+  stage: release
+  image: node:lts
+  script:
+    - npm run publishs
+    - export GITLAB_URL=${CI_PROJECT_URL%/$CI_PROJECT_PATH}
+    - export GITLAB_PREFIX=${CI_API_V4_URL#$GITLAB_URL}
+    - export GITLAB_TOKEN=${GITLAB_TOKEN}
+    - export GL_TOKEN=${GL_TOKEN}
+    - sudo GL_TOKEN=${GL_TOKEN} CI_API_V4_URL=${CI_API_V4_URL} GITLAB_URL=${GITLAB_URL} CI_PROJECT_PATH=${GITLAB_URL} npx semantic-release --no-ci --debug
+  dependencies: []
+  # 仅在中央仓库的分支发生提交时才触发 release 流程
+  only:
+    - develop_new_demo
+  # 指定注册的runner名称
+  tags:
+    - docker
+
 
     
 sast:
