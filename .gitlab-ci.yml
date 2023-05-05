@@ -88,8 +88,7 @@ assembleRelease:
     #- pos_android_studio_demo/pos_android_studio_app/build/outputs/apk/release/commit.txt 
     #pos_android_studio_app-release.apk
       
-    
- release_semantic:
+release_semantic:
   image: node:10-buster-slim
   stage: release
   before_script:
