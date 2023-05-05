@@ -1,0 +1,34 @@
+{
+  "name": "@anyesu/semantic-release-test",
+  "version": "0.0.0-development",
+  "description": "semantic-release-test",
+  "main": "src/index.js",
+  "scripts": {
+    "build": "echo build success.",
+    "semantic-release": "dotenv -c -- semantic-release",
+    "semantic-release:local": "dotenv -c -- semantic-release --no-ci"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/iewgggg/semantic-release-test.git"
+  },
+  "author": "anyesu",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/iewgggg/semantic-release-test/issues"
+  },
+  "homepage": "https://github.com/iewgggg/semantic-release-test#readme",
+  "files": [
+    "src"
+  ],
+  "devDependencies": {
+    "@semantic-release/git": "^9.0.0",
+    "conventional-changelog-cmyr-config": "^1.2.3",
+    "dotenv-cli": "^4.0.0",
+    "semantic-release": "^17.2.1"
+  }
+}
