@@ -87,30 +87,19 @@ assembleRelease:
     - pos_android_studio_demo/pos_android_studio_app/build/outputs/apk/release/*
     #- pos_android_studio_demo/pos_android_studio_app/build/outputs/apk/release/commit.txt 
     #pos_android_studio_app-release.apk
-      
-release_semantic:
-  image: node:10-buster-slim
-  stage: release
-  before_script:
-    - apt-get update && apt-get install -y --no-install-recommends git-core ca-certificates
-    - npm install -g semantic-release @semantic-release/gitlab
-  script:
-    - semantic-release
-  rules:
-    - if: $CI_COMMIT_BRANCH == "develop_new_demo"
-    
- commitlint:
-  stage: lint
-  image: node:lts
-  script: 
-    - npm install -g @commitlint/cli @commitlint/config-conventional
-    if [ "${CI_COMMIT_BEFORE_SHA}" = "0000000000000000000000000000000000000000" ]; then
-    - echo "commitlint from HEAD^"
-    - npx commitlint -x @commitlint/config-conventional -f HEAD^
-    else
-    - echo "commitlint from ${CI_COMMIT_BEFORE_SHA}"
-    - npx commitlint -x @commitlint/config-conventional -f "${CI_COMMIT_BEFORE_SHA}"
-    fi    
+     
+  commitlint:
+    stage: lint
+    image: node:lts
+    script: 
+     npm install -g @commitlint/cli @commitlint/config-conventional
+     if [ "${CI_COMMIT_BEFORE_SHA}" = "0000000000000000000000000000000000000000" ]; then
+      echo "commitlint from HEAD^"
+      npx commitlint -x @commitlint/config-conventional -f HEAD^
+     else
+      echo "commitlint from ${CI_COMMIT_BEFORE_SHA}"
+      npx commitlint -x @commitlint/config-conventional -f "${CI_COMMIT_BEFORE_SHA}"
+     fi    
   dependencies: []
   tags:
     - docker  
