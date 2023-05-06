@@ -88,10 +88,10 @@ assembleRelease:
     #- pos_android_studio_demo/pos_android_studio_app/build/outputs/apk/release/commit.txt 
     #pos_android_studio_app-release.apk
      
-  commitlint:
-    stage: lint
-    image: node:lts
-    script: 
+commitlint:
+  stage: lint
+  image: node:lts
+  script: 
      npm install -g @commitlint/cli @commitlint/config-conventional
      if [ "${CI_COMMIT_BEFORE_SHA}" = "0000000000000000000000000000000000000000" ]; then
       echo "commitlint from HEAD^"
