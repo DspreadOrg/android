@@ -1,19 +1,19 @@
 module.exports = {
-  plugins: [
-    "@semantic-release/commit-analyzer",
-    [
-      "@semantic-release/release-notes-generator",
-      {
-        config: "conventional-changelog-cmyr-config",
-      },
-    ],
-    "@semantic-release/npm",
-    [
-      "@semantic-release/git",
-      {
-        assets: ["package.json"],
-      },
-    ],
-    "@semantic-release/github",
-  ],
+  "plugins": [
+      [
+        "@semantic-release/commit-analyzer",
+        {
+          "preset": "conventionalcommits"
+        }
+      ],
+      [
+        "@semantic-release/release-notes-generator",
+        {
+          "preset": "conventionalcommits"
+        }
+      ],
+      "@semantic-release/changelog",
+      "@semantic-release/gitlab",
+      "@semantic-release/git"
+    ]
 };
