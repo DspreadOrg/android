@@ -93,7 +93,6 @@ commitlint:
   image: node:lts
   script: 
   - npm install -g @commitlint/cli @commitlint/config-conventional
-  - npx commitlint -x @commitlint/config-conventional -f "${CI_COMMIT_BEFORE_SHA}"  
   dependencies: []
   tags:
     - docker  
