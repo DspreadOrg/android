@@ -93,7 +93,7 @@ commitlint:
   image: node:lts
   script: 
    npm install -g @commitlint/cli @commitlint/config-conventional
-    if [ "${CI_COMMIT_BEFORE_SHA}" = "0000000000000000000000000000000000000000" ]; then
+    if ["${CI_COMMIT_BEFORE_SHA}" = "0000000000000000000000000000000000000000"]; then
       echo "commitlint from HEAD^"
       npx commitlint -x @commitlint/config-conventional -f HEAD^
     else
