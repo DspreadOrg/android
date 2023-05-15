@@ -104,15 +104,13 @@ sast:
      CI_DEBUG_TRACE: "true"
 
 release:
+  image: node:12-buster-slim
   stage: release
-  image: node:lts
+  before_script:
+    - apt-get update && apt-get install -y --no-install-recommends git-core ca-certificates
+    - npm install -g semantic-release @semantic-release/gitlab
   script:
-    - npm install -g semantic-release @semantic-release/gitlab @semantic-release/changelog conventional-changelog-conventionalcommits @semantic-release/git
-    - npx semantic-release
-  dependencies: []
-  # 仅在中央仓库的分支发生提交时才触发 release 流程
-  only:
-    - develop_new_demo
-  tags:
-    - docker
+    - semantic-release
+  rules:
+    - if: $CI_COMMIT_BRANCH == "develop_new_demo"
 
