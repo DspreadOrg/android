@@ -9,6 +9,7 @@ before_script:
 - cd pos_android_studio_demo/
 - export GRADLE_USER_HOME=$(pwd)/.gradle
 - chmod +x ./gradlew
+- npx semantic-release
 
 # cache:
 #   key: ${CI_PROJECT_ID}
@@ -112,7 +113,17 @@ sast:
   
   only:
     - develop  
-    
+   
+release:
+  image: node:10-buster-slim
+  stage: release
+  before_script:
+    - apt-get update && apt-get install -y --no-install-recommends git-core ca-certificates
+    - npm install -g semantic-release @semantic-release/gitlab
+  script:
+    - semantic-release
+  rules:
+    - if: $CI_COMMIT_BRANCH == "develop_new_demo"   
 
 release:
   image: node:12-buster-slim
