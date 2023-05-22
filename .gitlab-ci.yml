@@ -87,7 +87,10 @@ assembleRelease:
     - pos_android_studio_demo/pos_android_studio_app/build/outputs/apk/release/*
     #- pos_android_studio_demo/pos_android_studio_app/build/outputs/apk/release/commit.txt 
     #pos_android_studio_app-release.apk
-     
+
+  only:
+    - develop  
+
 commitlint:
   stage: lint
   image: node:lts
@@ -95,24 +98,28 @@ commitlint:
   - npm install -g @commitlint/cli @commitlint/config-conventional
   dependencies: []
   tags:
-    - docker  
+    - docker 
+  
+  only:
+    - develop  
+     
 sast:
   stage: test
   script: 
     - echo "Running tests..."
   variables:
      CI_DEBUG_TRACE: "true"
+  
+  only:
+    - develop  
+    
 
 release:
   stage: release
   image: node:lts
   script:
-    - npm run publishs
-    - export GITLAB_URL=${CI_PROJECT_URL%/$CI_PROJECT_PATH}
-    - export GITLAB_PREFIX=${CI_API_V4_URL#$GITLAB_URL}
-    - export GITLAB_TOKEN=${GITLAB_TOKEN}
-    - export GL_TOKEN=${GL_TOKEN}
-    - sudo GL_TOKEN=${GL_TOKEN} CI_API_V4_URL=${CI_API_V4_URL} GITLAB_URL=${GITLAB_URL} CI_PROJECT_PATH=${GITLAB_URL} npx semantic-release --no-ci --debug
+     - npm install -g semantic-release @semantic-release/gitlab @semantic-release/changelog conventional-changelog-conventionalcommits @semantic-release/git
+     - npx semantic-release
   dependencies: []
   # 仅在中央仓库的分支发生提交时才触发 release 流程
   only:
