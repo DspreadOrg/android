@@ -118,8 +118,7 @@ release:
   stage: release
   image: node:lts
   script:
-     - npm install -g semantic-release @semantic-release/gitlab @semantic-release/changelog conventional-changelog-conventionalcommits
-     - npx semantic-release
+   - npx semantic-release --no-ci --debug
   dependencies: []
   # 仅在中央仓库的分支发生提交时才触发 release 流程
   only:
