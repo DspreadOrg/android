@@ -123,6 +123,6 @@ release_job:
     #- export curr_date=$(date "+%Y%m%d%H%M%S")
     - echo $curr_date  
   release:
-    name: "Release ${curr_date}"
-    tag_name: "${curr_date}"
+    name: 'Release ${curr_date}'
+    tag_name: ${curr_date}
     description: 'Release created using the release-cli.'
