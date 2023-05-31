@@ -9,6 +9,8 @@ before_script:
 - cd pos_android_studio_demo/
 - export GRADLE_USER_HOME=$(pwd)/.gradle
 - chmod +x ./gradlew
+- export curr_date=$(date "+%Y%m%d%H%M%S")
+- echo $curr_date  
 
 # cache:
 #   key: ${CI_PROJECT_ID}
@@ -118,7 +120,7 @@ release_job:
   image: registry.gitlab.com/gitlab-org/release-cli:latest
   script:
     - echo "Running the release job."
-    - export curr_date=$(date "+%Y%m%d%H%M%S")
+    #- export curr_date=$(date "+%Y%m%d%H%M%S")
     - echo $curr_date  
   release:
     name: "Release ${curr_date}"
