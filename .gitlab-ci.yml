@@ -119,13 +119,16 @@ variables:
 release_job:
   stage: release
   image: registry.gitlab.com/gitlab-org/release-cli:latest
+  rules:
+    - if: $COMMIT_TIME && $CI_COMMIT_BRANCH == "develop_new_demo"
+
   script:
     - echo "Running the release job."
     - export curr_date=$(date "+%Y%m%d%H%M%S")
     - echo $curr_date
-    - echo $CI_COMMIT_TIMESTAMP
+    #- echo $CI_COMMIT_TIMESTAMP
   
   release:
     name: 'Release ${COMMIT_TIME}'
-    tag_name: '$COMMIT_TIME'
+    tag_name: 'V4.3_$COMMIT_TIME'
     description: 'Release created using the release-cli.'
