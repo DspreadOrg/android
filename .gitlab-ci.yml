@@ -114,25 +114,15 @@ sast:
   only:
     - develop  
    
-release:
-  image: node:10-buster-slim
+release_job:
   stage: release
-  before_script:
-    - apt-get update && apt-get install -y --no-install-recommends git-core ca-certificates
-    - npm install -g semantic-release @semantic-release/gitlab
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
   script:
-    - semantic-release
-  rules:
-    - if: $CI_COMMIT_BRANCH == "develop_new_demo"   
-
-release:
-  image: node:12-buster-slim
-  stage: release
-  before_script:
-    - apt-get update && apt-get install -y --no-install-recommends git-core ca-certificates
-    - npm install -g semantic-release @semantic-release/gitlab
-  script:
-    - semantic-release
-  rules:
-    - if: $CI_COMMIT_BRANCH == "develop_new_demo"
-
+    - echo "Running the release job."
+    - export curr_date=$(date "+%Y%m%d%H%M%S")
+    - echo $curr_date
+    
+  release:
+    name: 'Release $curr_date'
+    tag_name: '$curr_date'
+    description: 'Release created using the release-cli.'
