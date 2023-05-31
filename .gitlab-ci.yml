@@ -11,6 +11,8 @@ before_script:
 - chmod +x ./gradlew
 - export curr_date=$(date "+%Y%m%d%H%M%S")
 - echo $curr_date  
+- export COMMIT_TIME=$(git show -s --format=%ct $CI_COMMIT_SHA) 
+- echo $COMMIT_TIME
 
 # cache:
 #   key: ${CI_PROJECT_ID}
@@ -121,8 +123,9 @@ release_job:
   script:
     - echo "Running the release job."
     #- export curr_date=$(date "+%Y%m%d%H%M%S")
-    - echo $curr_date  
+    - echo $curr_date 
+    - echo $COMMIT_TIME 
   release:
-    name: 'Release ${curr_date}'
-    tag_name: ${curr_date}
+    name: 'Release ${COMMIT_TIME}'
+    tag_name: '$COMMIT_TIME'
     description: 'Release created using the release-cli.'
