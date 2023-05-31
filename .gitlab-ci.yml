@@ -122,9 +122,10 @@ release_job:
     - echo "Running the release job."
     - export curr_date=$(date "+%Y%m%d%H%M%S")
     - echo $curr_date
+    - echo $CI_COMMIT_TIMESTAMP
   variables:
      COMMIT_TIME: '$curr_date'
   release:
-    name: 'Release ${COMMIT_TIME}'
-    tag_name: '$COMMIT_TIME'
+    name: 'Release ${CI_COMMIT_TIMESTAMP}'
+    tag_name: '$CI_COMMIT_TIMESTAMP'
     description: 'Release created using the release-cli.'
