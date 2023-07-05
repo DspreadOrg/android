@@ -132,3 +132,15 @@ release_job:
     name: 'Release ${COMMIT_TIME}'
     tag_name: 'V4.3_$COMMIT_TIME'
     description: 'Release created using the release-cli.'
+
+release_job:
+  stage:release
+  image:node:lts
+  script:
+    - npm install -g semantic-release @semantic-release/gitlab @semantic-release/changelog conventional-changelog-conventionalcommits @semantic-release/git
+    - npx semantic-release@18
+  rules:
+    - if:
+  tags:
+    - docker CI_COMMIT_BRANCH == "develop_new_demo"
+
