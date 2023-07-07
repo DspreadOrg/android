@@ -140,6 +140,4 @@ release_log:
   script:
     - npm install -p semantic-release -p @semantic-release/git @semantic-release/gitlab -p @semantic-release/changelog conventional-changelog-conventionalcommits --force
     - npx semantic-release@20
-  rules:
-    - if: CI_COMMIT_BRANCH == "develop_new_demo"
 
