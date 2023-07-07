@@ -103,7 +103,7 @@ commitlint:
     - docker 
   
   only:
-    - develop  
+    - develop_new_demo  
      
 sast:
   stage: test
@@ -126,6 +126,7 @@ release_job:
     - echo "Running the release job."
     - export curr_date=$(date "+%Y%m%d%H%M%S")
     - echo $curr_date
+    - echo $COMMIT_TIME
     #- echo $CI_COMMIT_TIMESTAMP
   
   release:
@@ -133,14 +134,12 @@ release_job:
     tag_name: 'V4.3_$COMMIT_TIME'
     description: 'Release created using the release-cli.'
 
-release_job:
-  stage:release
-  image:node:lts
+release_log:
+  stage: release
+  image: node:lts
   script:
-    - npm install -g semantic-release @semantic-release/gitlab @semantic-release/changelog conventional-changelog-conventionalcommits @semantic-release/git
-    - npx semantic-release@18
+    - npm install -p semantic-release -p @semantic-release/git @semantic-release/gitlab -p @semantic-release/changelog conventional-changelog-conventionalcommits --force
+    - npx semantic-release@20
   rules:
-    - if:
-  tags:
-    - docker CI_COMMIT_BRANCH == "develop_new_demo"
+    - if: CI_COMMIT_BRANCH == "develop_new_demo"
 
