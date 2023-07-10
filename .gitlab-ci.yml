@@ -124,11 +124,11 @@ variables:
   COMMIT_TIME: '$(date "+%Y%m%d%H%M%S")' 
 
 release_log:
-stage: release
-image: node:lts
-script:
-  - npm install -p semantic-release -p @semantic-release/git @semantic-release/gitlab -p @semantic-release/changelog conventional-changelog-conventionalcommits --force
-  - npx semantic-release@20
+  stage: release
+  image: node:lts
+  script:
+    - npm install -p semantic-release -p @semantic-release/git @semantic-release/gitlab -p @semantic-release/changelog conventional-changelog-conventionalcommits --force
+    - npx semantic-release@20
 
 deploy:
   stage: release
