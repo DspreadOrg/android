@@ -96,11 +96,17 @@ assembleRelease:
 commitlint:
   stage: lint
   image: node:lts
-  script: 
-  - npm install -g @commitlint/cli @commitlint/config-conventional
+  script:  |
+    npm install -g @commitlint/cli @commitlint/config-conventional
+    if [ "${CI_COMMIT_BEFORE_SHA}" = "0000000000000000000000000000000000000000" ]; then
+      echo "commitlint from HEAD^"
+      npx commitlint -x @commitlint/config-conventional -f HEAD^
+    else
+      echo "commitlint from ${CI_COMMIT_BEFORE_SHA}"
+      npx commitlint -x @commitlint/config-conventional -f "${CI_COMMIT_BEFORE_SHA}"
+    fi
+
   dependencies: []
-  tags:
-    - docker 
   
   only:
     - develop_new_demo  
@@ -116,7 +122,15 @@ sast:
     - develop  
 variables:
   COMMIT_TIME: '$(date "+%Y%m%d%H%M%S")' 
-release_job:
+
+release_log:
+stage: release
+image: node:lts
+script:
+  - npm install -p semantic-release -p @semantic-release/git @semantic-release/gitlab -p @semantic-release/changelog conventional-changelog-conventionalcommits --force
+  - npx semantic-release@20
+
+deploy:
   stage: release
   image: registry.gitlab.com/gitlab-org/release-cli:latest
   rules:
@@ -126,7 +140,8 @@ release_job:
     - echo "Running the release job."
     - export curr_date=$(date "+%Y%m%d%H%M%S")
     - echo $curr_date
-    - echo $COMMIT_TIME
+    - echo $CI_COMMIT_TAG
+    - echo $CI_COMMIT_TAG_MESSAGE
     #- echo $CI_COMMIT_TIMESTAMP
   
   release:
@@ -134,10 +149,4 @@ release_job:
     tag_name: 'V4.3_$COMMIT_TIME'
     description: 'Release created using the release-cli.'
 
-release_log:
-  stage: release
-  image: node:lts
-  script:
-    - npm install -p semantic-release -p @semantic-release/git @semantic-release/gitlab -p @semantic-release/changelog conventional-changelog-conventionalcommits --force
-    - npx semantic-release@20
 
