@@ -32,6 +32,9 @@ import io.reactivex.disposables.Disposable;
 
 /**
  * XHttp2实现的请求更新
+ *
+ * @author xuexiang
+ * @since 2018/8/12 上午11:46
  */
 public class XHttpUpdateHttpService implements IUpdateHttpService {
 
@@ -62,7 +65,7 @@ public class XHttpUpdateHttpService implements IUpdateHttpService {
 
     @Override
     public void asyncPost(@NonNull String url, @NonNull Map<String, Object> params, @NonNull final Callback callBack) {
-        //The default post here is the Form format, and if you use the json format, please modify it to params -> upJson
+        //这里默认post的是Form格式，使用json格式的请修改为 params -> upJson
         XHttp.post(url)
                 .baseUrl(mBaseUrl)
                 .params(params)

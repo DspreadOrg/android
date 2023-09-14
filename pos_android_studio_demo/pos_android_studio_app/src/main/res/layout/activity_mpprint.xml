@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:divider="@drawable/divider"
+    android:orientation="vertical"
+    android:showDividers="middle"
+    tools:context=".activities.printer.MPPrintActivity">
+
+    <include layout="@layout/toolbar_layout" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+
+        <TextView
+            android:id="@+id/tv_version"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/print_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/text_print" />
+
+        <Button
+            android:id="@+id/print_barcode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/barcode_print" />
+
+        <Button
+            android:id="@+id/print_qrcode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/qrcode_print" />
+
+        <Button
+            android:id="@+id/print_bitmap"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/bitmap_print" />
+
+        <Button
+            android:id="@+id/print_receipt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/receipt_print" />
+
+        <Button
+            android:id="@+id/standard_test"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/standard_test" />
+
+        <Button
+            android:id="@+id/battery_test"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/battery_test" />
+
+        <Button
+            android:id="@+id/font_test"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/font_test" />
+    </LinearLayout>
+</LinearLayout>

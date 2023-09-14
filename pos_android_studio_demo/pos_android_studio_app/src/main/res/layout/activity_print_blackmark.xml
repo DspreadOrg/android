@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout 
+        android:layout_height="80dp"
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:gravity="center"
+        >
+    <Button
+        android:id="@+id/bm_open"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/black_mark_open" 
+        android:layout_weight="1"
+        android:textSize="21sp"
+        />
+
+    <Button
+        android:id="@+id/bm_close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/black_mark_close" 
+         android:layout_weight="1"
+         android:textSize="21sp"
+        />
+    
+    </LinearLayout>
+
+    <LinearLayout 
+        android:layout_height="50dp"
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        >
+
+        <TextView
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:text="@string/black_mark_height"
+            android:textSize="18sp"
+            android:gravity="center"
+            />
+
+        <EditText
+            android:id="@+id/et_heigt"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:ems="10" 
+            android:inputType="number"
+            android:layout_marginLeft="30dp"
+            >
+
+            <requestFocus />
+        </EditText>
+
+        <TextView
+            
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="mm"
+            android:layout_marginLeft="10dp"
+            android:textSize="18sp"
+             />
+
+        </LinearLayout>
+        <LinearLayout 
+        android:layout_height="50dp"
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        >
+
+        <TextView
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:text="@string/black_mark_width"
+            android:textSize="18sp"
+            android:gravity="center"
+            />
+
+        <EditText
+            android:id="@+id/et_wight"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:ems="10" 
+            android:inputType="number"
+            android:layout_marginLeft="30dp"
+            >
+
+            <requestFocus />
+        </EditText>
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="mm"
+            android:layout_marginLeft="10dp"
+            android:textSize="18sp"
+             />
+
+        </LinearLayout>
+        <LinearLayout 
+        android:layout_height="50dp"
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        >
+
+        <TextView
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:text="@string/black_mark_start_bit"
+            android:textSize="18sp"
+            android:gravity="center"
+            />
+
+        <EditText
+             android:id="@+id/et_position"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:ems="10" 
+            android:inputType="number"
+            android:layout_marginLeft="30dp"
+            >
+
+            <requestFocus />
+        </EditText>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="mm"
+            android:layout_marginLeft="10dp"
+            android:textSize="18sp"
+             />
+ </LinearLayout>
+  <LinearLayout 
+        android:layout_height="50dp"
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        >
+
+        <TextView
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:text="@string/black_mark_voltage"
+            android:textSize="18sp"
+            android:gravity="center"
+            />
+
+        <EditText
+             android:id="@+id/et_voltage"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:ems="10" 
+            android:text="1800"
+            android:inputType="number"
+            android:layout_marginLeft="30dp"
+            >
+
+            <requestFocus />
+        </EditText>
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="mv"
+            android:layout_marginLeft="10dp"
+            android:textSize="18sp"
+             />
+ </LinearLayout>
+        <LinearLayout 
+        android:layout_height="60dp"
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:layout_marginTop="20dp"
+        android:gravity="center_vertical"
+        >
+        <Button
+            android:id="@+id/btn_to_bmark"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/black_mark_to_test"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/btn_update"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/black_mark_to_update" 
+            android:textSize="18sp"
+            />
+         </LinearLayout>
+
+        <RadioGroup 
+            android:id="@+id/my_RadioGroup"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp"
+            >
+            <RadioButton 
+                android:id="@+id/bm_text"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                android:checked="true"
+                android:text="@string/black_mark_to_text"
+                />
+             <RadioButton 
+                 android:id="@+id/bm_qr"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/black_mark_to_qr"
+                />
+              <RadioButton 
+                  android:id="@+id/bm_bar"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/black_mark_to_bar"
+                />
+            
+        </RadioGroup>
+    
+</LinearLayout>

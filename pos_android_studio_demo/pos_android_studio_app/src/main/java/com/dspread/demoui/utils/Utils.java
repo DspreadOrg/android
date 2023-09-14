@@ -1,7 +1,5 @@
 package com.dspread.demoui.utils;
 
-import android.util.Log;
-
 public class Utils {
 	
 	public static String bytes2Hex(byte[] data){
@@ -11,23 +9,12 @@ public class Utils {
 			if ((i & 0x0f) == 0) {
 				sb.append("\n");
 			}
-			sb.append(String.format("%02X", data[i]));
+			sb.append(String.format("%02X ", data[i]));
 		}
 		
 		return sb.toString();
 	}
-	public static byte[] hexStringToByteArray(String s) {
-		int len = s.length();
-
-		byte[] data = new byte[len / 2];
-		for (int i = 0; i < len; i += 2) {
-			data[i / 2] = (byte)
-					((Character.digit(s.charAt(i), 16) << 4) + Character.digit(s.charAt(i+1), 16));
-
-
-		}
-		return data;
-	}
+	
 	/*
 	 * v must be less than 100 and great than -1
 	**/
@@ -328,56 +315,6 @@ public class Utils {
 		r[1] = b[2];
 		r[0] = b[3];
 		return r;
-	}
-	//将hex值转为ascii码
-	public static  String convertHexToString(String hex){
-
-		StringBuilder sb = new StringBuilder();
-		StringBuilder temp = new StringBuilder();
-
-		//49204c6f7665204a617661 split into two characters 49, 20, 4c...
-		for( int i=0; i<hex.length()-1; i+=2 ){
-			//grab the hex in pairs
-			String output = hex.substring(i, (i + 2));
-			//convert hex to decimal
-			int decimal = Integer.parseInt(output, 16);
-			//convert the decimal to character
-			sb.append((char)decimal);
-
-			temp.append(decimal);
-		}
-		return sb.toString();
-	}
-	public static String getStr(String string){
-
-		 if(string.endsWith("f")||string.endsWith("F")){
-			 string= string.substring(0,string.length()-1);
-		 }
-           return string;
-			}
-
-//	private static final int MIN_CLICK_DELAY_TIME = 2000;
-	private static long lastClickTime;
-//
-//	public static boolean isFastClick() {
-//		boolean flag = false;
-//		long curClickTime = System.currentTimeMillis();
-//		if ((curClickTime - lastClickTime) >= MIN_CLICK_DELAY_TIME) {
-//			flag = true;
-//		}
-//		lastClickTime = curClickTime;
-//		return flag;
-//	}
-	private static final int MIN_CLICK_DELAY_TIME2 = 3000;
-	public static boolean islistFastClick() {
-		Log.w("islistFastClick","islistFastClick");
-		boolean flag = false;
-		long curClickTime = System.currentTimeMillis();
-		if ((curClickTime - lastClickTime) >= MIN_CLICK_DELAY_TIME2) {
-			flag = true;
-		}
-		lastClickTime = curClickTime;
-		return flag;
 	}
 }
 

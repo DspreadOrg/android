@@ -16,6 +16,8 @@
 
 package com.dspread.demoui.http;
 
+import androidx.annotation.NonNull;
+
 import com.xuexiang.xupdate.proxy.IUpdateHttpService;
 import com.xuexiang.xutil.net.JsonUtil;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -27,7 +29,6 @@ import java.io.File;
 import java.util.Map;
 import java.util.TreeMap;
 
-import androidx.annotation.NonNull;
 import okhttp3.Call;
 import okhttp3.MediaType;
 import okhttp3.Request;
@@ -35,6 +36,8 @@ import okhttp3.Request;
 /**
  * 使用okhttp
  *
+ * @author xuexiang
+ * @since 2018/7/10 下午4:04
  */
 public class OKHttpUpdateHttpService implements IUpdateHttpService {
 
@@ -70,7 +73,7 @@ public class OKHttpUpdateHttpService implements IUpdateHttpService {
 
     @Override
     public void asyncPost(@NonNull String url, @NonNull Map<String, Object> params, final @NonNull Callback callBack) {
-        //The default post here is the Form format, please modify post -> postString for json format
+        //这里默认post的是Form格式，使用json格式的请修改 post -> postString
         RequestCall requestCall;
         if (mIsPostJson) {
             requestCall = OkHttpUtils.postString()

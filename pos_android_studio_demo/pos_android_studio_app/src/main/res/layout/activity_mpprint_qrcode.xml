@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include layout="@layout/toolbar_layout" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:hint="@string/hint_qrcode_content">
+
+            <EditText
+                android:id="@+id/et_qrcode_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="1234567890" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:hint="@string/hint_qrcode_size">
+
+            <EditText
+                android:id="@+id/et_qrcode_size"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="true"
+                android:text="300" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="容错等级"
+            android:visibility="gone" />
+
+        <Spinner
+            android:id="@+id/et_error_level"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:entries="@array/err_level_array"
+            android:visibility="gone" />
+
+        <Spinner
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:entries="@array/alignment_array"
+            android:visibility="gone" />
+
+
+        <include layout="@layout/footer" />
+    </LinearLayout>
+</LinearLayout>

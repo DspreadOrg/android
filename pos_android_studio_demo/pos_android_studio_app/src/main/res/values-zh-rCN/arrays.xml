@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <string-array name="cmd" tools:ignore="ExtraTranslation">
+<resources>
+    <string-array name="cmd">
         <item>检测型号,1B 2B</item>
         <item>水平制表,09</item>
         <item>换行,0A</item>
@@ -26,9 +26,4 @@
         <item>泰文,1B 23 23 53 4C 41 4E 20,CP874</item>
         <item>中欧,1B 23 23 53 4C 41 4E 21,CP1250</item>
     </string-array>
-    <string-array name="cmd_bm" tools:ignore="ExtraTranslation">
-        <item>开启黑标检测功能,1f 1b 1f 80 04 05 06 44</item>
-        <item>关闭黑标检测功能, 1f 1b 1f 80 04 05 06 66</item>
-        <item>走纸到黑标,1d 0c</item>
-    </string-array>
-</resources>    
+</resources>

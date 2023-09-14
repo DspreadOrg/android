@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:fadingEdge="none"
+    android:orientation="vertical">
+
+    <include layout="@layout/toolbar_layout" />
+
+    <ScrollView
+        android:id="@+id/parentScrollview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/lin"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical">
+
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/audioButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/open_audio"
+                    android:visibility="gone" />
+
+                <Button
+                    android:id="@+id/serialPort"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/open_serial_port"
+                    android:visibility="gone" />
+
+                <Button
+                    android:id="@+id/doTradeButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:enabled="false"
+                    android:text="@string/check_card" />
+
+                <Button
+                    android:id="@+id/disconnect"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:enabled="false"
+                    android:text="@string/disconnect" />
+
+                <Button
+                    android:id="@+id/btnUSB"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/scan_usb_device" />
+            </LinearLayout>
+
+
+            <LinearLayout
+
+
+                android:id="@+id/ll"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:orientation="vertical">
+
+
+                <Button
+                    android:id="@+id/btn_mifare"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Mifare Card">
+
+                </Button>
+
+
+                <EditText
+                    android:id="@+id/keyindex"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dip"
+                    android:layout_marginRight="5dip"
+                    android:gravity="center"
+                    android:hint="key index" />
+
+
+                <EditText
+                    android:id="@+id/statusEditText"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_marginLeft="5dip"
+                    android:layout_marginRight="5dip"
+                    android:editable="false" />
+
+                <EditText
+                    android:id="@+id/chipStatus"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dip"
+                    android:layout_marginRight="5dip"
+                    android:hint="chip data" />
+
+            </LinearLayout>
+
+            <include
+                layout="@layout/view_mifare"
+                android:visibility="visible" />
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

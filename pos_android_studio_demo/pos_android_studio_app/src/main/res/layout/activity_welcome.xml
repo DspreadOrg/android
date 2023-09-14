@@ -1,0 +1,70 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include layout="@layout/toolbar_layout" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/audio"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:text="@string/title_audio" />
+
+            <Button
+                android:id="@+id/serial_port"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:text="@string/serial_port" />
+
+            <Button
+                android:id="@+id/normal_bluetooth"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:text="@string/normal_bluetooth" />
+
+            <Button
+                android:id="@+id/other_bluetooth"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:enabled="true"
+                android:text="@string/other_blu" />
+
+            <Button
+                android:id="@+id/print"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:enabled="true"
+                android:text="@string/print" />
+
+            <Button
+                android:id="@+id/mp600_print"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:enabled="true"
+                android:text="@string/mp600_print"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <ProgressBar
+            android:id="@+id/pb_loading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:indeterminateDrawable="@drawable/rotate_progress"
+            android:visibility="invisible" />
+    </RelativeLayout>
+
+
+</LinearLayout>

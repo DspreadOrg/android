@@ -1,10 +1,5 @@
 package com.dspread.demoui.utils;
 
-import android.content.Context;
-import android.media.AudioManager;
-
-import com.dspread.demoui.R;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,6 +9,16 @@ import java.math.BigInteger;
 import java.security.KeyFactory;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.RSAPublicKeySpec;
+import java.util.Hashtable;
+
+import com.dspread.demoui.R;
+
+import android.content.Context;
+import android.media.AudioManager;
+import android.os.Build;
+
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
 
 
 public class QPOSUtil {
@@ -354,6 +359,32 @@ public class QPOSUtil {
         return results;
     }
 
+    public static String readRSAStream(InputStream in) throws Exception {
+        try {
+            BufferedReader br = new BufferedReader(new InputStreamReader(in));
+            String line = null;
+            StringBuilder sb = new StringBuilder();
+
+            while ((line = br.readLine()) != null) {
+                if (line.contains("BEGIN")) {
+                    sb.delete(0, sb.length());
+                } else {
+                    if (line.contains("END")) {
+                        break;
+                    }
+
+                    sb.append(line);
+                    sb.append('\r');
+                }
+            }
+
+            return sb.toString();
+        } catch (IOException var5) {
+            throw new Exception("鍏\ue104挜鏁版嵁娴佽\ue1f0鍙栭敊锟�?");
+        } catch (NullPointerException var6) {
+            throw new Exception("鍏\ue104挜杈撳叆娴佷负锟�?");
+        }
+    }
 
     public static boolean checkStringAllZero(String str) {
         if (str.startsWith("0"))

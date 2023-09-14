@@ -15,7 +15,6 @@ import android.widget.TextView;
 
 import com.dspread.demoui.R;
 
-
 /**
  * @author : ouyang
  * @date : 2020/11/26 19:57

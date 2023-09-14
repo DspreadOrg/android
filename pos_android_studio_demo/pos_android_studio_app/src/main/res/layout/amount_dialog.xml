@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+    
+    <EditText
+        android:id="@+id/amountEditText"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/amount" />
+    
+    <EditText
+        android:id="@+id/cashbackAmountEditText"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/amountEditText"
+        android:hint="@string/cashback_amount" />
+		
+    <Spinner
+        android:id="@+id/transactionTypeSpinner"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/cashbackAmountEditText" />
+        
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/transactionTypeSpinner"
+        android:orientation="horizontal" >
+        
+	    <Button
+	        android:id="@+id/setButton"
+	        android:layout_weight=".5"
+	        android:layout_width="0dip"
+	        android:layout_height="wrap_content"
+	        android:hint="@string/confirm" />
+	    
+	    <Button
+	        android:id="@+id/cancelButton"
+	        android:layout_weight=".5"
+	        android:layout_width="0dip"
+	        android:layout_height="wrap_content"
+	        android:hint="@string/cancel" />
+	    
+    </LinearLayout>
+
+</RelativeLayout>

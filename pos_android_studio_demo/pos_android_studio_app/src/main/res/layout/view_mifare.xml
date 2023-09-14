@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    <LinearLayout
+        android:id="@+id/mifareid"
+        android:visibility="gone"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" android:padding="8dp"
+        android:orientation="vertical">
+        <Button
+            android:id="@+id/search_card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/poll_card" />
+        <LinearLayout
+            android:id="@+id/li"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <Button
+                android:id="@+id/verify_card"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:text="@string/verify_card" />
+
+            <Spinner android:gravity="center"
+                android:id="@+id/verift_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/li3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/li"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/operate_card"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:text="@string/operate_card" />
+
+            <Spinner
+                android:id="@+id/cmd_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/li2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/li3"
+            android:orientation="horizontal">
+            <Button
+                android:id="@+id/write_card"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="@string/write_card" />
+            <Button
+                android:id="@+id/read_card"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/read_card" />
+        </LinearLayout>
+        <Button android:visibility="gone"
+            android:id="@+id/transfer_card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/transfer_card" />
+
+        <Button
+            android:id="@+id/finish_card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/finish_card" />
+        <TextView android:textSize="15sp"
+            android:id="@+id/tv"
+            android:textStyle="bold"
+            android:layout_marginTop="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="key value or cardData:" />
+        <EditText
+            android:id="@+id/status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="please input key value or cardData"
+            android:text="ffffffffffff"
+            android:padding="5dp"
+            android:background="@drawable/edit_background"
+            />
+        <TextView android:textSize="15sp"
+            android:textStyle="bold"
+            android:layout_marginTop="10dp"
+            android:id="@+id/tv2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="block addr:" />
+
+        <EditText
+            android:id="@+id/block_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/tv2"
+            android:hint="please input block addr"
+            android:text="0A"
+            android:padding="5dp"
+            android:background="@drawable/edit_background"/>
+    </LinearLayout>
+
+    <LinearLayout android:visibility="gone"
+        android:id="@+id/ul_ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="8dp"
+        >
+        <Button
+            android:id="@+id/poll_ulcard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/poll_card" />
+        <Button
+            android:id="@+id/verify_ulcard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/verify_card" />
+
+        <LinearLayout
+            android:id="@+id/li5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <Button
+                android:id="@+id/write_ul"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="write UL" />
+
+            <Button
+                android:id="@+id/read_ulcard"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="read UL" />
+        </LinearLayout>
+        <Button
+            android:id="@+id/get_ul"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="get UL Info" />
+        <Button
+            android:id="@+id/fast_read_ul"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="fast read UL" />
+
+        <Button
+            android:id="@+id/finish_ulcard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/finish_card" />
+        <TextView android:textSize="15sp"
+            android:textStyle="bold"
+            android:id="@+id/tv11"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="key value or cardData:" />
+
+        <EditText
+            android:id="@+id/status11"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/tv11"
+            android:hint="please input key value or cardData"
+            android:text="ffffffff"
+            android:background="@drawable/edit_background"/>
+        <TextView android:textStyle="bold"
+            android:textSize="15sp"
+            android:layout_marginTop="10dp"
+            android:id="@+id/tv12"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="block addr:" />
+
+        <EditText
+            android:id="@+id/block_address11"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/tv12"
+            android:hint="please input block addr"
+            android:text="0A"
+            android:background="@drawable/edit_background"/>
+
+    </LinearLayout>
+    </LinearLayout>
+</ScrollView>

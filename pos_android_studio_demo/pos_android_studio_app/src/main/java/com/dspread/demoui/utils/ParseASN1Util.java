@@ -1,6 +1,5 @@
 package com.dspread.demoui.utils;
 
-
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
@@ -23,6 +22,9 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Arrays;
+
+import static com.dspread.demoui.utils.QPOSUtil.HexStringToByteArray;
+import static com.dspread.demoui.utils.QPOSUtil.byteArray2Hex;
 
 public class ParseASN1Util {
     private static String encryptData;
@@ -72,7 +74,7 @@ public class ParseASN1Util {
     }
 
     public static void parseASN1(String s){
-        byte[] data = QPOSUtil.HexStringToByteArray(s);
+        byte[] data = HexStringToByteArray(s);
         ASN1InputStream ais = new ASN1InputStream(data);
         ASN1Primitive primitive = null;
         try {
@@ -103,7 +105,7 @@ public class ParseASN1Util {
     }
 
     public static void parseASN1new(String s){
-        byte[] data = QPOSUtil.HexStringToByteArray(s);
+        byte[] data = HexStringToByteArray(s);
         ASN1InputStream ais = new ASN1InputStream(data);
         ASN1Primitive primitive = null;
         try {
@@ -218,7 +220,7 @@ public class ParseASN1Util {
 //                        System.out.println("prop33->"+re2);
 
                     }
-                }else if(primitive instanceof DLSet){//Derive the data encrypted by the public key
+                }else if(primitive instanceof DLSet){//得出公钥加密的数据
                     DLSet dlSet = (DLSet) primitive;
                     System.out.println("DLSet:"+dlSet.toString());
                     int size = dlSet.size();
@@ -250,7 +252,7 @@ public class ParseASN1Util {
     }
 
     public static void getServerPubkey(String s){
-        byte[] data = QPOSUtil.HexStringToByteArray(s);
+        byte[] data = HexStringToByteArray(s);
         ASN1InputStream ais = new ASN1InputStream(data);
         ASN1Primitive primitive = null;
         try {
@@ -318,7 +320,7 @@ public class ParseASN1Util {
         try {
             messageDigest = MessageDigest.getInstance("SHA-256");
             messageDigest.update(str.getBytes("UTF-8"));
-            encodestr = QPOSUtil.byteArray2Hex(messageDigest.digest());
+            encodestr = byteArray2Hex(messageDigest.digest());
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         } catch (UnsupportedEncodingException e) {

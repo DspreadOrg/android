@@ -7,20 +7,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.dspread.demoui.R;
+import com.dspread.demoui.utils.TRACE;
+
+import java.util.ArrayList;
+import java.util.Map;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-
-import com.dspread.demoui.R;
-
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 public class BluetoothAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final Context mContext;
-    private ArrayList<Map<String, ?>> datas  = new ArrayList<>();
+    private ArrayList<Map<String, ?>> datas;
 
     private OnBluetoothItemClickListener mEvent;
 
@@ -30,22 +30,7 @@ public class BluetoothAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     }
 
     public void setData(Map<String, ?> map) {
-        if (datas!=null){
-//            List list= map.values().stream().distinct().collect(Collectors.toList());
-//            for (int i)
-//                Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey, (key1, key2) -> key1);
-            Map<String,?> resultMap = map.entrySet().stream().collect(
-
-                    Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey, (key1, key2) -> key1)
-
-            ).entrySet().stream().collect(
-
-                    Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey, (key1, key2) -> key1)
-
-            );
-        this.datas.add(resultMap);
-
-        }
+        this.datas.add(map);
         notifyDataSetChanged();
     }
 
@@ -72,20 +57,18 @@ public class BluetoothAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, @SuppressLint("RecyclerView") int position) {
-//        TRACE.d("bluetooth size" + datas.size());
+        TRACE.d("bluetooth size" + datas.size());
         if (datas != null && datas.size() > 0) {
             if (holder instanceof MyViewHolder) {
                 Map<String, ?> itemdata = (Map<String, ?>) datas.get(position);
                 int idIcon = (Integer) itemdata.get("ICON");
                 String sTitleName = (String) itemdata.get("TITLE");
                 ((MyViewHolder) holder).iconImage.setBackgroundResource(idIcon);
-
                 ((MyViewHolder) holder).txt.setText(sTitleName);
                 ((MyViewHolder) holder).itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         //Toast.makeText(mContext, "item click:" + position, Toast.LENGTH_SHORT).show();
-                        Log.w("adapter","item click:" + position);
                         mEvent.onItemClick(position, itemdata);
                     }
                 });

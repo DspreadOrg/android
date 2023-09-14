@@ -4,12 +4,20 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.res.AssetManager;
 import android.os.Environment;
+import android.text.TextUtils;
 
+//import com.dspread.xpos.Tip;
+
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 
 /**
@@ -59,7 +67,7 @@ public class FileUtils {
 
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
         try {
-            ContextWrapper contextWrapper = new ContextWrapper(context);
+            android.content.ContextWrapper contextWrapper = new ContextWrapper(context);
             AssetManager assetManager = contextWrapper.getAssets();
             InputStream inputStream = assetManager.open(fileName);
             byte[] data = new byte[512];
@@ -80,7 +88,7 @@ public class FileUtils {
 
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
         try {
-            ContextWrapper contextWrapper = new ContextWrapper(context);
+            android.content.ContextWrapper contextWrapper = new ContextWrapper(context);
             AssetManager assetManager = contextWrapper.getAssets();
             InputStream inputStream = assetManager.open(fileName);
             byte[] data = new byte[512];

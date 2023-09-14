@@ -1,40 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">pos-android-demo</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_desc">Navigation header</string>
-    <string name="action_settings">Settings</string>
-    <string name="menu_payment">Payment</string>
-    <string name="menu_setting">Setting</string>
+
+
+    <string name="hint_text_content">Text Content</string>
+    <string name="hint_barcode_height">Barcode Height</string>
+    <string name="hint_barcode_width">Barcode Width</string>
+    <string name="hint_qrcode_content">QRCode Content</string>
+    <string name="hint_qrcode_size">QRCode Size</string>
+
+
+    <!-- <string name="app_name">打印机测试</string>-->
+    <string name="hint_font_size">Font Size</string>
+    <string name="start_print">Start Print</string>
+    <string name="standard_test">Standard Test</string>
+    <string name="text_print">Print Text</string>
+    <string name="qrcode_print">Print QR code</string>
+    <string name="bitmap_print">Print Pictures</string>
+    <string name="barcode_print">Print Barcode</string>
+    <string name="receipt_print">Print Tickets</string>
+    <string name="battery_test">Battery Jump Test</string>
+    <string name="font_test">Font Effect</string>
+
+    <string name="content_density">印字率</string>
+    <string name="height_factor">高度( x 48mm)</string>
+
+    <string name="batt_level_skip_error">"Wrong! Power jump, current power%d%%，Last power%d%%"</string>
+    <string name="batt_level_test_sleep">"Do not print the next time in %d minutes"</string>
+
     <string name="device_not_connect">device not connect</string>
     <string name="end_transaction">ICC transaction end</string>
     <string name="select_app_start">please select app</string>
     <string name="select_app_end">select app end, position = </string>
     <string name="emv_configured">emv is configured</string>
     <string name="emv_not_configured">emv is not configured</string>
-    <string name="communicate_test">Communication Command Test</string>
-    <string name="result">Result is :</string>
-    <string name="test_led_start">LED Test Start</string>
-    <string name="test_led_end">LED Test End</string>
-    <string name="test_led_red">Red LED Test</string>
-    <string name="test_led_yel">Yellow LED Test</string>
-    <string name="test_led_blu">Blue LED Test</string>
-    <string name="test_led_green">Green LED Test</string>
 
-    <string name="test_buzzer_start">Buzzer Test Start</string>
-    <string name="test_buzzer_end">Buzzer Test End</string>
-    <string name="icc_test">ICC Test</string>
-    <string name="mcr_test">MCR Test</string>
-    <string name="nfc_test">NFC Test</string>
-    <string name="psam_test">PSAM Test</string>
-    <string name="hardware_check">POS Self Test</string>
-    <string name="get_version">Get Version</string>
-
-    <string name="msg_pls_insert_card">Please insert card</string>
-    <string name="msg_pls_swipe_card">Please swipe card</string>
-    <string name="msg_pls_tap_card">Please tap card</string>
-
-    <string name="test_command">Communication Test Command</string>
     <string name="msg_select_device">Click here to scan and connect device</string>
     <string name="msg_do_trade">Click here to start do trade after finish connected</string>
     <string name="msg_disconnect">Click here to disConnected device</string>
@@ -44,56 +43,50 @@
     <string name="device_operate">Device Operate</string>
     <string name="device_other">Other</string>
     <string name="title_audio">Audio</string>
-    <string name="title_uart">Uart</string>
+    <string name="title_print">Print</string>
+    <string name="mp_text_print">Print Text</string>
+    <string name="mp_barcode_print">Print BarCode</string>
+    <string name="mp_qrcode_print">Print QRCode</string>
+    <string name="mp_tickets_print">Print Tickets</string>
+    <string name="mp_standard_print">Standard Print Test</string>
+    <string name="mp_battery_test">Battery  Test</string>
+    <string name="mp_font_test">Font  Test</string>
     <string name="title_blu">Bluetooth</string>
     <string name="title_ble">Ble Bluetooth</string>
     <string name="title_welcome">Dspread Pos</string>
     <string name="msg_allowed_location_permission">Location permission is on</string>
     <string name="msg_not_allowed_loaction_permission">Location permission is forbidden, related map functions are not available</string>
-    <string name="refreshing">Refreshing</string>
     <string name="audio_open">audio control:open</string>
     <string name="audio_close">audio control:close</string>
     <string name="audio_unknow">audio control:unknown</string>
     <string name="get_pin">Get Pin</string>
-    <string name="update">update</string>
     <string name="do_tradelog_operation">TradeLog Operation</string>
-    <string name="get_update_key">get UpdateKey</string>
+    <string name="get_update_key">get_update_key</string>
     <string name="reset_qpos">qpos reset</string>
-    <string name="menu_update">qpos update</string>
     <string name="set_sleepMode_time">set sleep mode time</string>
-    <string name="input_pin">Please input pin now</string>
-    <string name="swipe_card">Please swipe card now.</string>
+    <string name="input_pin">Please input pin now.</string>
     <string name="setBuzzer">setBuzzer</string>
-    <string name="bluetooth">Bluetooth</string>
     <string name="getQuickEmvStatus">get Quick Emv Status</string>
     <string name="setQuickEmvStatus">set Quick Emv Status</string>
-    <string name="updateEMVByXml">update EMVByXml</string>
+    <string name="updateEMVByXml">update EMV By Xml</string>
     <string name="serial_port">Serial port</string>
     <string name="normal_bluetooth">Normal Blutooth</string>
     <string name="other_blu">BLE Blutooth</string>
-    <string name="updateEMV">update EMV</string>
     <string name="updateEMVRID">update EMV RID</string>
     <string name="updateIPEK">update IPEK</string>
-    <string name="set_Masterkey">set Masterkey</string>
-    <string name="update_WorkKey">update WorkKey</string>
-
-    <string name="serialport">Serial Port</string>
     <string name="mac_error">MAC ERROR</string>
     <string name="cmd_timeout">CMD TIMEOUT</string>
     <string name="pinKsn">pinKsn:</string>
     <string name="trackksn">trackksn:</string>
     <string name="pinBlock">pinBlock:</string>
     <string name="posId">posId:</string>
-    <string name="get_pos_id">get PosID</string>
+    <string name="get_pos_id">Get PosID</string>
     <string name="operate_mafire">Operate Mafire Cards</string>
     <string name="inject_key_remote">Remote key Loading API</string>
     <string name="getting_pos_id">Getting POS ID…</string>
     <string name="isCardExist">check card in slot</string>
-    <string name="card_is_exist">card is exist</string>
-    <string name="card_is_not_exist">card is not exist</string>
-    <string name="scan_bt_device">scan device</string>
     <string name="scan_usb_device">usb device</string>
-    <string name="getId">getPosId</string>
+    <string name="text_quick_emv">update quick emv config</string>
     <string name="poll_card">poll card</string>
     <string name="verify_card">verify card</string>
     <string name="read_card">read card</string>
@@ -107,25 +100,18 @@
     <string name="open_audio">open audio</string>
     <string name="scan_bt_pos_error">no paired bluetooth device\nplease pair bluetooth device first</string>
     <string name="connecting_bt_pos">connecting\nPlease wait…</string>
+    <string name="app_name">pos-android-demo</string>
     <string name="waiting_for_card">Please insert/swipe/tap card now.</string>
     <string name="no_card_detected">No card detected. Please insert or swipe card again and press check card.</string>
     <string name="icc_card_inserted">ICC Card Inserted</string>
     <string name="card_inserted">Card Inserted (Not ICC)</string>
     <string name="bad_swipe">Bad Swipe. Please swipe again and press check card.</string>
     <string name="card_swiped">Card Swiped: </string>
-    <string name="mag_head_fail">Magnetic head fail</string>
     <string name="card_no_response">Check card no response</string>
-    <string name="card_swiped_track2_only">Card Swiped (Track 2 only):\n</string>
-    <string name="nfc_track2">Card Tapped (Track 2 Emulation):\n</string>
     <string name="format_id">Format ID: </string>
     <string name="masked_pan">Masked PAN: </string>
     <string name="expiry_date">Expiry Date: </string>
     <string name="cardholder_name">Cardholder Name: </string>
-    <string name="ksn">KSN: </string>
-    <string name="pin_ksn">PIN KSN:</string>
-    <string name="track_ksn">Track KSN:</string>
-    <string name="emv_ksn">EMV KSN:</string>
-    <string name="uid">UID:</string>
     <string name="service_code">Service Code: </string>
     <string name="track_1_length">Track 1 Length: </string>
     <string name="track_2_length">Track 2 Length: </string>
@@ -135,27 +121,18 @@
     <string name="encrypted_track_2">Encrypted Track 2: </string>
     <string name="encrypted_track_3">Encrypted Track 3: </string>
     <string name="partial_track">Partial Track: </string>
-    <string name="card_data">Card Data: </string>
-    <string name="do_emv_trade_fail">Start EMV failed</string>
-    <string name="do_emv_trade_success">Start EMV success</string>
-    <string name="app_version">App Version：</string>
     <string name="bootloader_version">Bootloader Version: </string>
     <string name="firmware_version">Firmware Version: </string>
     <string name="usb">USB: </string>
     <string name="charge">Charge: </string>
     <string name="battery_level">Battery ADC: </string>
     <string name="hardware_version">Hardware Version: </string>
-    <string name="supported_track">Supported Track: </string>
     <string name="track_1_supported">Track 1 Supported: </string>
     <string name="track_2_supported">Track 2 Supported: </string>
     <string name="track_3_supported">Track 3 Supported: </string>
-    <string name="unknown">Unknown</string>
     <string name="set_amount">Set Amount</string>
     <string name="enter_pin">Please enter PIN</string>
-    <string name="enter_pin_try">Please enter PIN (Last %s try)</string>
-    <string name="online_process_requested">Online process requested</string>
     <string name="request_data_to_server">Request data to server.</string>
-    <string name="replied_connected">Replied connected.</string>
     <string name="replied_success">Replied success.</string>
     <string name="replied_failed">Replied failed.</string>
     <string name="batch_data">Batch Data:\n</string>
@@ -171,37 +148,13 @@
     <string name="transaction_not_icc">Fail (Not ICC card)</string>
     <string name="transaction_app_fail">Fail (App fail)</string>
     <string name="transaction_device_error">Pos Error</string>
-    <string name="tlv_list">TLV List:\n</string>
-    <string name="advice_process">Advice Process.</string>
-    <string name="call_your_bank">Please call your bank</string>
     <string name="request_terminal_time">Request Terminal Time. Replied </string>
     <string name="confirm_amount">Confirm amount</string>
     <string name="amount">Amount</string>
-    <string name="amount_ok">Amount OK?</string>
-    <string name="approved">Approved</string>
-    <string name="cancel_or_enter">Cancel or Enter</string>
-    <string name="card_error">Card error</string>
-    <string name="declined">Declined</string>
-    <string name="enter_amount">Please enter amount</string>
-    <string name="incorrect_pin">Incorrect PIN</string>
-    <string name="insert_card">Please insert card</string>
-    <string name="not_accepted">Not accepted</string>
-    <string name="pin_ok">PIN OK</string>
     <string name="wait">Please wait…</string>
-    <string name="processing_error">Processing error</string>
     <string name="remove_card">Please remove card</string>
-    <string name="use_chip_reader">Please use chip reader</string>
-    <string name="use_mag_stripe">Please use mag stripe</string>
-    <string name="try_again">Please try again</string>
-    <string name="refer_payment_device">Please refer to your payment pos</string>
     <string name="try_another_interface">Please try another interface</string>
     <string name="processing">Processing…</string>
-    <string name="welcome">Welcome</string>
-    <string name="present_one_card">Please present only one card</string>
-    <string name="capk_failed">CAPK loading failed</string>
-    <string name="last_pin_try">Last PIN try</string>
-    <string name="battery_low">Pos battery low, please charge</string>
-    <string name="battery_critically_low">pos battery critically low and powered off</string>
     <string name="no_device_detected">No pos detected.</string>
     <string name="device_plugged">Pos connected.</string>
     <string name="device_unplugged">Pos disconnected.</string>
@@ -217,89 +170,53 @@
     <string name="cashback_not_supported">Cashback not supported.</string>
     <string name="crc_error">CRC Error.</string>
     <string name="comm_error">Communication Error.</string>
-    <string name="device_off">Pos powered off.</string>
-    <string name="get_info">get PosInfo</string>
-    <string name="get_key_checkvalue">get PosKeyCheckValue</string>
-    <string name="clear_log">Clear Log</string>
+    <string name="get_info">getPosInfo</string>
+    <string name="get_key_checkvalue">getPosKeyCheckValue</string>
     <string name="check_card">Start Trade</string>
-    <string name="disconnect">Disconnect</string>
-    <string name="start_emv">Start EMV</string>
+    <string name="disconnect">disconnect</string>
     <string name="cancel">Cancel</string>
     <string name="pin">PIN</string>
     <string name="cashback_amount">Cashback</string>
     <string name="confirm">Confirm</string>
     <string name="bypass">Bypass</string>
-    <string name="decline">Decline</string>
     <string name="getting_info">Getting Pos info…</string>
     <string name="starting">Starting…</string>
-    <string name="power_on_icc">Power on ICC</string>
-    <string name="power_off_icc">Power off ICC</string>
-    <string name="send_apdu">Send APDU</string>
-    <string name="power_on_icc_success">Power on ICC Success</string>
-    <string name="power_on_icc_failed">Power on ICC Failed</string>
-    <string name="power_off_icc_success">Power off ICC Success</string>
-    <string name="power_off_icc_failed">Power off ICC Failed</string>
-    <string name="apdu_result">APDU Result:</string>
-    <string name="atr">ATR:</string>
-    <string name="apdu_failed">APDU Failed</string>
-    <string name="sending">Sending:</string>
-    <string name="atr_length">ATR Length:</string>
     <string name="get_ksn">Get KSN</string>
     <string name="add_ksn">Add KSN</string>
     <string name="get_encrypt_data">get_encrypt_data</string>
-    <string name="getting_ksn">Getting KSN…</string>
-    <string name="powering_on_icc">Powering on ICC…</string>
-    <string name="powering_off_icc">Powering off ICC…</string>
     <string name="card_not_supported">Card not support</string>
     <string name="missing_mandatory_data">Missing mandatory data</string>
     <string name="card_blocked_or_no_evm_apps">Card blocked or no EMV apps</string>
     <string name="invalid_icc_data">Invalid ICC data</string>
-    <string name="power_on_nfc">Power on NFC</string>
-    <string name="power_off_nfc">Power off NFC</string>
-    <string name="data_exchange">Data exchange</string>
-    <string name="power_on_nfc_success">Power on NFC Success</string>
-    <string name="power_on_nfc_failed">Power on NFC Failed</string>
-    <string name="power_off_nfc_success">Power off NFC Success</string>
-    <string name="power_off_nfc_failed">Power off NFC Failed</string>
-    <string name="data_received">Data received:</string>
-    <string name="data_length">Data length:</string>
-    <string name="data_exchange_failed">Data exchange failed</string>
-    <string name="response">Response:</string>
-    <string name="title_paired_devices">Paired Devices</string>
-    <string name="title_other_devices">Other Available Devices</string>
-    <string name="select_device">select a device to connect</string>
-    <string name="none_paired">No devices have been paired</string>
-    <string name="none_found">No devices found</string>
-    <string name="scanning">scanning for devices...</string>
-    <string name="title_connected_devices">Connected Devices</string>
-    <string name="not_connected">You are not connected to a device</string>
-    <string name="select_disconnect_device">select a device to disconnect</string>
     <string name="used">used:</string>
     <string name="hours">hours</string>
     <string name="minute">minutes</string>
     <string name="seconds">seconds</string>
-    <string name="about">About</string>
+    <string name="about">about</string>
     <string name="init_keys">Exchange Certificates</string>
     <string name="verify_keys">Initial Key Loading</string>
     <string name="key_loading">Confirm Key Type</string>
-    <string name="other">others</string>
-    <string name="list">list</string>
-    <string name="mcr_single_mac">magnetic stripe card calculate mac single</string>
-    <string name="mcr_double_mac">magnetic stripe card calculate mac double</string>
-    <string name="ic_single_mac">chip card calculate mac single</string>
-    <string name="ic_double_mac">chip card calculate mac double</string>
     <string name="tap_card">Tap Card: </string>
     <string name="battery_percentage">battery percentage: </string>
-    <string name="updateInjectKeys">update Keys:</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="pedi_command">&#091;AOPEDI&#059;VS2&#059;RF0&#059;TD1&#059;CC%s&#059;RG%s&#059;CE%s&#059;&#093;</string>
+    <string name="pedk_command">&#091;AOPEDK&#059;KN&#059;RD&#059;CE%s&#059;&#093;</string>
+    <string name="pedv_command">&#091;AOPEDV&#059;KV&#059;RD&#059;CE%s&#059;&#093;</string>
+
+
+    <string name="scan_over">end the scan</string>
 
     <string name="app_select_timeout_error">APP select time out</string>
     <string name="operate_update">operation update</string>
+    <string name="get_device_public_key">getDevicePublicKey</string>
     <string name="updateFirmware">update Firmware</string>
+    <string name="mp600_print">D30Print</string>
     <string name="print">Print</string>
-    <string name="please_connect_printer_first">Please Connect Printer First.</string>
     <string name="str_printtext">str_printtext</string>
     <string name="str_printimg">print pictures</string>
     <string name="str_printbarcode">BARcode printing </string>
+    <string name="str_printqrcode">QRcode printing </string>
+    <string name="print_setting">Printer Setting</string>
     <string name="code_transformation">Black Mark</string>
     <string name="str_scan">scanning equipment</string>
     <string name="str_device">device</string>
@@ -315,7 +232,6 @@
     <string name="str_printer_nopaper">No paper</string>
     <string name="str_printer_hightemperature">High temperature</string>
     <string name="str_printer_lowpower">Low power</string>
-    <string name="mode_bt">BT Printer</string>
     <string name="str_exit">Sure exit and close the equipment?</string>
     <string name="black_mark_open">Open</string>
     <string name="black_mark_close">Close</string>
@@ -323,11 +239,9 @@
     <string name="black_mark_width">Width</string>
     <string name="black_mark_start_bit">Position</string>
     <string name="black_mark_voltage">Voltage</string>
-    <string name="black_mark_to_bmark">Go to the black mark</string>
     <string name="black_mark_to_update">Update</string>
     <string name="black_mark_to_plz_open">Must Open The BlackMark!</string>
     <string name="black_mark_to_test">Test Print</string>
-    <string name="black_mark_to_startbit">Test Print</string>
     <string name="black_mark_to_text">Text</string>
     <string name="black_mark_to_bar">Bar</string>
     <string name="black_mark_to_qr">QR</string>
@@ -340,75 +254,88 @@
     <string name="str_connect">connect</string>
     <string name="str_disconnect">disconnect</string>
 
-    <string name="text_alignment">text alignment</string>
-    <string name="bold_text">bold text</string>
-    <string name="text_underline">text underline</string>
-    <string name="Line_spacing">Line spacing</string>
-    <string name="text_spacing">text spacing</string>
-    <string name="font_size">font size</string>
-    <string name="grayscale_values">grayscale values</string>
-    <string name="Pictures_and_black_marks_Grayscale_values">Pictures and black marks Grayscale values</string>
-    <string name="Barcode_Type">Barcode Type</string>
-    <string name="bottom_spacing">Bottom spacing</string>
-    <string name="Barcode_width">Barcode width</string>
-    <string name="Barcode_height">Barcode height</string>
-    <string name="QR_code_error_correction_level">QR code error correction level</string>
-    <string name="QR_code_type">QR code type</string>
-    <string name="QR_code_size">QR code size</string>
-    <string name="print_Test">Print Test</string>
-    <string name="select_dialog_normal">normal</string>
-    <string name="select_dialog_center">center</string>
-    <string name="select_dialog_align_opposite">align opposite</string>
-    <string name="str_initialization">stop</string>
 
-    <string name="select_dialog_text_underline">Add text underline?</string>
-    <string name="select_dialog_bold">Add text bold?</string>
-    <string name="select_dialog_yes">Yes</string>
-    <string name="select_dialog_no">No</string>
-    <string name="select_dialog_confirm">confirm</string>
-    <string name="select_dialog_cancel">cancel</string>
-    <string name="device_connect">device connect</string>
-    <string name="continue_trading">continue trading</string>
-    <string name="prompt_message">message prompt:</string>
-    <string name="delete">delete</string>
-    <string name="blue_disconect">Bluetooth disconnected</string>
-
-    <string name="select_dialog_true">open</string>
-    <string name="select_dialog_false">power off</string>
-
-    <string name="setting_uart">SerialPort Connect</string>
-    <string name="setting_blu">Bluetooth Connect</string>
-    <string name="setting_usb">USB Connect</string>
-    <string name="version_update">Check Version Update</string>
-    <string name="blue_disconnect">Blue Disconnect</string>
-    <string name="setting_connectiontype">Connection Type</string>
-
-    <string name="transaction_type">transaction type</string>
-    <string name="about_app">about App</string>
-    <string name="version">version: </string>
-    <string name="setting_disusb">USB Not Connected</string>
-    <string name="setting_exit">Exit</string>
-    <string name="msg_exit">Are you sure to exit the application?</string>
-    <string name="msg_continue_connect">Do you want to continue with the previous connection?</string>
-    <string name="input_cashback">InputCashBack</string>
-    <string name="charging_warning">Please keep the device charging</string>
-    <string name="does_the_file_exist">Please add firmware version file</string>
-    <string name="get_shutdown_time_fail">get the shut down time is fail!</string>
-    <string name="update_finished">Update Finished 100%</string>
+    <string name="sample_text">abcdefghijklmnopqrstuvwxyz\nABCDEFGHIJKLMNOPQRSTUVWXYZ\n12345678901234567890\n打印效果测试打印效果测试\n打印效果测试打印效果测试\n</string>
 
 
-    <string name="updateworkkey_success">update work key success</string>
-    <string name="updateworkkey_fail">update work key fail</string>
-    <string name="workkey_vefiry_error">update work key packet vefiry error</string>
-    <string name="workkey_packet_Len_error">update work key packet len error</string>
-    <string name="communicationMode_unknow">CommunicationMode unknow</string>
-    <string name="updateIPEK_success">update IPEK success</string>
-    <string name="updateIPEK_fail">update IPEK fail</string>
+    <string name="get_print_density">get printer density</string>
+
+    <string name="get_print_speed">get printer speed</string>
+
+    <string name="get_print_temperature">get printer temperature</string>
+
+    <string name="get_print_voltage">get printer voltage</string>
+
+    <string name="get_print_status">get printer status</string>
+    <string-array name="font_style_array">
+        <item>NORMAL</item>
+        <item>BOLD</item>
+        <item>ITALIC</item>
+        <item>BOLD_ITALIC</item>
+    </string-array>
 
 
+    <string-array name="font_array">
+        <item>系统默认</item>
+        <item>arial</item>
+        <item>微软雅黑</item>
+        <item>宋体</item>
+    </string-array>
 
 
+    <string-array name="alignment_array">
+        <item>Left</item>
+        <item>Center</item>
+        <item>Right</item>
+    </string-array>
+    <string-array name="grey_level_array">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+    </string-array>
 
 
+    <string-array name="speed_level_array">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+    </string-array>
+
+
+    <string-array name="err_level_array">
+        <item>L</item>
+        <item>M</item>
+        <item>Q</item>
+        <item>H</item>
+    </string-array>
+
+    <string-array name="height_factor_array">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+    </string-array>
+
+    <string-array name="content_density_array">
+        <item>0/8</item>
+        <item>1/8</item>
+        <item>2/8</item>
+        <item>3/8</item>
+        <item>4/8</item>
+        <item>5/8</item>
+        <item>6/8</item>
+        <item>7/8</item>
+        <item>8/8</item>
+    </string-array>
 
 </resources>

@@ -1,15 +1,25 @@
 package com.dspread.demoui.utils;
-
-import java.math.BigInteger;
+import java.lang.reflect.Array;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.TypeVariable;
 import java.security.Key;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+
 
 import javax.crypto.Cipher;
+
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
+
 import javax.crypto.spec.DESedeKeySpec;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-
 public class DUKPK2009_CBC {
 
     public enum Enum_key {
@@ -484,36 +494,7 @@ public class DUKPK2009_CBC {
         result = parseByte2HexStr(arr3);
         return result;
     }
-    public static String decodeTrack1(String compressedTrack1) {
-        String resultTrack1 = "" ;
 
-        for(int i = 0; i<compressedTrack1.length()/6; i++) {
-            //1. convert every 6chars(3bytes) to binary string
-            String sub = compressedTrack1.substring(i * 6, (i + 1) * 6);
-            int threeByteInt = Integer.parseInt(sub, 16);
-
-            BigInteger bigInter = BigInteger.valueOf(threeByteInt);
-            String strBinary = bigInter.toString(2);
-
-            //BigInteger.toString(radix) will miss leading 0s, so need padding 0 at the begging with length of 3byte(24 bits)
-            String withLeadingZeros = String.format("%24s", strBinary).replace(' ', '0');
-
-            //2. group binary result on every 6 binary chars into 4 groups (bytes)
-            byte[] fourBytes = new byte[]{0x00, 0x00, 0x00, 0x00};
-            for (int j = 0; j < withLeadingZeros.length() / 6; j++) {
-                String byteStr = withLeadingZeros.substring(j * 6, (j + 1) * 6);
-                fourBytes[j] = Byte.parseByte(byteStr, 2);
-                fourBytes[j] += 0x20;
-
-//                System.out.println(byteStr + "->" + fourBytes[j]);
-            }
-
-            //3. append each 4bytes array to result string
-            resultTrack1 += new String(fourBytes);
-        }
-
-        return resultTrack1;
-    }
     public static void main(String[] args)  {
 //        07-08 17:50:27.306 12376-12376/com.dspread.demoui D/POS_SDK: onRequestOnlineProcess5F201A20202020202020202020202020202020202020202020202020204F08A0000003330101015F24032612319F160F4243544553542031323334353637389F21031750229A031907089F02060000000001119F03060000000000009F34030203009F120A50424F432044454249549F0607A00000033301015F300202209F4E0F616263640000000000000000000000C408622622FFFFFF3603C10A09118012400705E00002C708DBD7F58811779698C00A09118012400705E00001C28201880C54D377643A72400707E993BDEB6AFD891CFD5EC8CA03A251DF9301E70F76999ADABCECF859C26B9320724644D15B53BDE669414C7C8336EFDC0892A6F883DB5163D0613557949D66349BB6CB6BBCD8877017D3FEF5404C4446F2F2244CB62C62CAAE6EB86F99C9F31E69DB32BBDA2390A73EA907E4D8BDEED105E876319F4D17A5DE1788B0DA32730E4102F42A7232BE4D9D5E7BF46E7313C0F190E4F7A7D320D29DD3765E06DB5FE847C8B2B5ABBBAC0B22E5C9722303EF6E1C050C33B4F88D1BE8E79A8FBACA1086E466CB79A54A528DF53D98DA85E79EACAC4F464B0BC2941A540E1E6DFA47D4D369F50BEECFDC37AED04F63500BED4D4DB524E69345F6FE94A1CB2353D39959953393ADDD7930A43E2FCC3AE8AB348B0A8025C63C8650AF6F7C2F613EEF31549B6E073898D256815A851B5C39341B609BB3DB9974985550F096DEA5440B429BB0346D93FC25A17441F27F219A4004EE2A244014434E5D17B9F645CACB534E0CF7D3D555EE861780CF33A674D0A9A04C523C85D3F8062CE34309514A32F2AA
 

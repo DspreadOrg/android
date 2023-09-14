@@ -15,9 +15,9 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:text="SECURE PIN PAD"
+            android:textStyle="bold"
             android:textColor="#666666"
-            android:textSize="18dp"
-            android:textStyle="bold" />
+            android:textSize="18dp" />
 
 <!--        <TextView-->
 <!--            android:layout_width="wrap_content"-->
@@ -32,7 +32,7 @@
 <!--            android:textColor="#0080f3"/>-->
     </RelativeLayout>
 
-    <com.dspread.demoui.widget.pinpad.keyboard.MyKeyboardView
+    <com.dspread.demoui.keyboard.MyKeyboardView
         android:id="@+id/keyboard_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

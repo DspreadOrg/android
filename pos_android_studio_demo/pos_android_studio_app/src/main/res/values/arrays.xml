@@ -1,0 +1,32 @@
+<?xml version = "1.0" encoding = "utf-8"?>
+<resources>
+    <string-array name="cmd">
+        <item> detection model,1B 2B</item>
+        <item>horizontal tab,09</item>
+         <item>UTF-8 to Codepage,1B 23 23 43 44 54 59 03</item>
+        <item>Codepage to UTF-8,1B 23 23 43 44 54 59 02</item>
+        <item>newline,0A</item>
+        <item>Print this store content,0D</item>
+        <item>initialize the printer,1B 40</item>
+        <item>Allow underline print,1C 2D 01</item>
+        <item>ban underline print,1C 2D 00</item>
+        <item>Allow bold print,1B 45 01</item>
+        <item>ban bold print,1B 45 00</item>
+        <item>Select the font: ASCII (12 * 24) characters (24 * 24),1B 4D 00</item>
+        <item>Select the font: ASCII (8 * 16) characters (16 * 16),1B 4D 01</item>
+        <item>characters correctly: no amplification,1D 21 00</item>
+        <item>2-fold character: Portrait zoom,1D 21 01</item>
+        <item>2 times the width of the character: horizontal zoom,1D 21 10</item>
+        <item>2 times the overall character amplification,1D 21 11</item>
+        <item>Left,1B 61 00</item>
+        <item>Align,1B 61 01</item>
+        <item>ranks right alignment,1B 61 02</item>
+        <item>page feed,0C</item>
+        <item>Traditional Chinese,1B 23 23 53 4C 41 4E 0E,CP950</item>
+        <item>Simplified Chinese,1B 23 23 53 4C 41 4E 0F,CP936</item>
+        <item>Japanese,1B 23 23 53 4C 41 4E 0C,CP932</item>
+        <item>Korean,1B 23 23 53 4C 41 4E 0D,CP949</item>
+        <item>Thai,1B 23 23 53 4C 41 4E 20,CP874</item>
+        <item>Central Europe,1B 23 23 53 4C 41 4E 21,CP1250</item>
+    </string-array>
+</resources>

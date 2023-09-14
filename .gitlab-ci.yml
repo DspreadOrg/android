@@ -16,7 +16,6 @@ before_script:
 #   - .gradle/
 
 stages:
-- lint
 - build
 - test
 - release
@@ -92,22 +91,6 @@ assembleRelease:
     - pos_android_studio_demo/pos_android_studio_app/build/outputs/apk/release/*
     #- pos_android_studio_demo/pos_android_studio_app/build/outputs/apk/release/commit.txt 
     #pos_android_studio_app-release.apk
-
-commitlint:
-  stage: lint
-  image: node:lts
-  script:  |
-    npm install -g @commitlint/cli @commitlint/config-conventional
-    if [ "${CI_COMMIT_BEFORE_SHA}" = "0000000000000000000000000000000000000000" ]; then
-      echo "commitlint from HEAD^"
-      npx commitlint -x @commitlint/config-conventional -f HEAD^
-    else
-      echo "commitlint from ${CI_COMMIT_BEFORE_SHA}"
-      npx commitlint -x @commitlint/config-conventional -f "${CI_COMMIT_BEFORE_SHA}"
-    fi
-
-  dependencies: []
-
         
 sast:
   stage: test
@@ -116,28 +99,19 @@ sast:
   variables:
      CI_DEBUG_TRACE: "true"
 
-release:
-  stage: release
-  image: node:lts
-  script:
-    - cd ..
-    - npm install -p semantic-release -p @semantic-release/git @semantic-release/gitlab @semantic-release/exec -p @semantic-release/changelog conventional-changelog-conventionalcommits --force
-    - npx semantic-release@20
-  only:
-    - master
 
-# deploy:
-#   stage: release
-#   image: registry.gitlab.com/gitlab-org/release-cli:latest
-#   rules:
-#     - if: $COMMIT_TIME && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-#   script:
-#     - echo "Running the release job."
-#     #- export curr_date=$(date "+%Y%m%d%H%M%S")
-#     #- echo $curr_date
-#     #- echo $CI_COMMIT_TIMESTAMP
-#   release:
-#     name: 'Release ${CI_COMMIT_TAG}'
-#     tag_name: $CI_COMMIT_TAG
-#     description: $CI_COMMIT_TAG_MESSAGE
+release_job:
+  stage: release
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  rules:
+    - if: $COMMIT_TIME && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  script:
+    - echo "Running the release job."
+    #- export curr_date=$(date "+%Y%m%d%H%M%S")
+    #- echo $curr_date
+    #- echo $CI_COMMIT_TIMESTAMP
+  release:
+    name: 'Release ${COMMIT_TIME}'
+    tag_name: '${VERSIONAME}_${COMMIT_TIME}'
+    description: 'Release created using the release-cli.'
 

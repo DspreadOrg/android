@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <app>
+        <_9F06>00000000000000000000000000000000</_9F06> <!--Application Identifier(AID)–terminal-->
+        <_5F2A>0156</_5F2A> <!--Transaction Currency Code  交易货币代码-->
+        <_5F36>00</_5F36> <!--Transaction Currency Exponent 交易货币指数-->
+        <_9F01>000000000000</_9F01> <!--Acquirer Identifier 收单人标识符-->
+        <_9F09>0096</_9F09> <!--Application Version Number 应用版本-->
+        <_9F15>0000</_9F15> <!--Merchant Category Code  商家类别代码-->
+        <_9F16>000000000000000000000000000000</_9F16> <!--Merchant Identifier，add 0x00 if the digits is not enough-->
+        <_9F1A>0156</_9F1A> <!--Terminal Country Code-->
+        <_9F1B>00000000</_9F1B> <!--Terminal Floor Limit-->
+        <_9F1C>0000000000000000</_9F1C> <!--Terminal Identification-->
+        <_9F1E>0000000000000000</_9F1E> <!--Interface Device (IFD) Serial Number-->
+        <_9F33>2009C8</_9F33> <!--Terminal Capabilities-->   //
+        <_9F35>22</_9F35> <!--Terminal Type-->
+        <_9F39>00</_9F39> <!--Point-of-Service (POS) Entry Mode-->
+        <_9F3C>0156</_9F3C> <!--Transaction Reference Currency Code-->
+        <_9F3D>00</_9F3D> <!--Application Reference Currency-->//
+        <_9F40>F000F0A001</_9F40> <!--Additional Terminal Capabilities-->
+        <_9F4E></_9F4E> <!--Merchant Name and Location，add 0x00 if the digits is not enough-->
+        <_9F66>30004080</_9F66> <!--Terminal Default Transaction Qualifiers-->
+        <_9F73>000000</_9F73> <!--Currency Conversion Factor-->
+        <_9F7B>000000001388</_9F7B> <!--Electronic Cash Terminal Transaction Limit-->
+        <_DF01>01</_DF01> <!--Application Selection Indicator-->
+        <_DF11>0000000000</_DF11> <!--TAC Default-->
+        <_DF12>0000000000</_DF12> <!--TAC Online-->
+        <_DF13>0000000000</_DF13> <!--TAC Denial-->
+        <_DF14></_DF14> <!--Default DDOL-->
+        <_DF15>00000000</_DF15> <!--Threshold Value BiasedRandom Selection-->
+        <_DF16>00</_DF16> <!--Maximum Target Percenae to be used for Biased Random Selection-->
+        <_DF17>00</_DF17> <!--Target Percenae to be Used for Random Selection-->
+        <_DF19>000000001388</_DF19> <!--Terminal Contactless Offline Floor Limit-->
+        <_DF20>999999999999</_DF20> <!--Terminal Contactless Transaction Limit-->
+        <_DF21>000000020000</_DF21> <!--Terminal Execute Cvm Limit-->
+        <_DF72>F4F0F0FAAFFE8000</_DF72> <!--ICS-->
+        <_DF73>01</_DF73> <!--Status-->
+        <_DF74>0F</_DF74> <!--Identity Of Each Limit Exist-->
+        <_DF75>01</_DF75> <!--Terminal Status Check，Default value = 0-->
+        <_DF76></_DF76> <!--Default Tdol-->
+        <_DF78>000000020000</_DF78> <!--Contactless CVM Required limit-->
+        <_DF79>E0F8C8</_DF79> <!--Contactless Terminal Capabilities-->
+        <_DF7A>F000F0A001</_DF7A> <!--Contactless Additional Terminal Capabilities-->
+        <_DF7B>0000000000</_DF7B> <!--Contactless Additional Terminal Capabilities-->
+        <_DF7C>0000000000</_DF7C> <!--Contactless Additional Terminal Capabilities-->
+        <_DF7D>0000000000</_DF7D> <!--Contactless Additional Terminal Capabilities-->
+        <_DF60>01</_DF60> <!--Contactless Additional Terminal Capabilities-->
+    </app>
+
+    <capk>
+        <_9F06>A000000333</_9F06> <!--RID-->
+        <_9F22>0B</_9F22> <!--Public Key Index-->
+        <_DF02>CF9FDF46B356378E9AF311B0F981B21A1F22F250FB11F55C958709E3C7241918293483289EAE688A094C02C344E2999F315A72841F489E24B1BA0056CFAB3B479D0E826452375DCDBB67E97EC2AA66F4601D774FEAEF775ACCC621BFEB65FB0053FC5F392AA5E1D4C41A4DE9FFDFDF1327C4BB874F1F63A599EE3902FE95E729FD78D4234DC7E6CF1ABABAA3F6DB29B7F05D1D901D2E76A606A8CBFFFFECBD918FA2D278BDB43B0434F5D45134BE1C2781D157D501FF43E5F1C470967CD57CE53B64D82974C8275937C5D8502A1252A8A5D6088A259B694F98648D9AF2CB0EFD9D943C69F896D49FA39702162ACB5AF29B90BADE005BC157</_DF02> <!--Public Key Moudle-->
+        <_DF03>BD331F9996A490B33C13441066A09AD3FEB5F66C</_DF03> <!--Public Key Check Value-->
+        <_DF04>000003</_DF04> <!--Public Key Exponent-->
+        <_DF05>20311222</_DF05> <!--Public Key Expired Date-->
+        <_DF06>01</_DF06> <!--Public Key Hash Algorithm-->
+        <_DF07>01</_DF07> <!--Public Key Algorithm-->
+    </capk>
+</root>
