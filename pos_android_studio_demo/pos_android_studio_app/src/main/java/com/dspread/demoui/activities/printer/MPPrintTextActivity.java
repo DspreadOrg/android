@@ -7,6 +7,9 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import com.action.printerservice.PrintStyle;
+import com.action.printerservice.barcode.Barcode1D;
+import com.action.printerservice.barcode.Barcode2D;
 import com.dspread.demoui.R;
 import com.dspread.demoui.utils.TRACE;
 import com.dspread.demoui.view.PrintLine;
@@ -58,7 +61,7 @@ public class MPPrintTextActivity extends CommonActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String item = (String) parent.getAdapter().getItem(position);
                 try {
-                    mPrinter.setPrintDensity(Integer.parseInt(item));
+                    mPrinter.setPrinterDensity(Integer.parseInt(item));
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
@@ -83,11 +86,14 @@ public class MPPrintTextActivity extends CommonActivity {
 
     @Override
     int printTest() throws RemoteException {
-        printLineStyle.setFontSize(getFontSize());
+        /*printLineStyle.setFontSize(getFontSize());
         mPrinter.setPrintStyle(printLineStyle);
+
         mPrinter.printText(getText());
-       /* PrintLineStyle bean = new PrintLineStyle();
-        bean.setFontStyle(PrintStyle.FontStyle.BOLD_ITALIC);
+*/
+
+        PrintLineStyle bean = new PrintLineStyle();
+        bean.setFontStyle(PrintStyle.FontStyle.NORMAL);
         bean.setFontSize(18);
         bean.setAlign(PrintLine.CENTER);
         mPrinter.addPrintLintStyle(bean);
@@ -104,13 +110,22 @@ public class MPPrintTextActivity extends CommonActivity {
         mPrinter.addText("TYPE of transaction(TXN TYPE)");
         mPrinter.addText("SALE");
         mPrinter.addText("- - - - - - - - - - - - - -");
-        mPrinter.addTexts(new String[]{"BATCH NO", "000043"}, new int[]{5, 5}, new int[]{PrintStyle.Alignment.LEFT, PrintStyle.Alignment.RIGHT});
-        mPrinter.addTexts(new String[]{"VOUCHER NO", "000509"}, new int[]{5, 5}, new int[]{PrintStyle.Alignment.LEFT, PrintStyle.Alignment.RIGHT});
-        mPrinter.addTexts(new String[]{"AUTH NO", "000786"}, new int[]{5, 5}, new int[]{PrintStyle.Alignment.LEFT, PrintStyle.Alignment.RIGHT});
-        mPrinter.addTexts(new String[]{"DATE/TIME", "2010/12/07 16:15:17"}, new int[]{5, 5}, new int[]{PrintStyle.Alignment.LEFT, PrintStyle.Alignment.RIGHT});
-        mPrinter.addTexts(new String[]{"REF NO", "000001595276"}, new int[]{5, 5}, new int[]{PrintStyle.Alignment.LEFT, PrintStyle.Alignment.RIGHT});
-        mPrinter.addTexts(new String[]{"2014/12/07 16:12:17", ""}, new int[]{5, 5}, new int[]{PrintStyle.Alignment.LEFT, PrintStyle.Alignment.RIGHT});
-        mPrinter.addTexts(new String[]{"AMOUNT:", ""}, new int[]{5, 5}, new int[]{PrintStyle.Alignment.LEFT, PrintStyle.Alignment.RIGHT});
+
+        mPrinter.addTexts(new String[]{"BATCH NO","000043"},new int[]{5,5},
+                new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.ALIGN_OPPOSITE});
+
+        mPrinter.addTexts(new String[]{"VOUCHER NO", "000509"}, new int[]{5, 5},
+                new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.ALIGN_OPPOSITE});
+        mPrinter.addTexts(new String[]{"AUTH NO", "000786"}, new int[]{5, 5},
+                new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.ALIGN_OPPOSITE});
+        mPrinter.addTexts(new String[]{"DATE/TIME", "2010/12/07 16:15:17"},
+                new int[]{5, 5}, new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.ALIGN_OPPOSITE});
+        mPrinter.addTexts(new String[]{"REF NO", "000001595276"},
+                new int[]{5, 5}, new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.ALIGN_OPPOSITE});
+        mPrinter.addTexts(new String[]{"2014/12/07 16:12:17", ""},
+                new int[]{5, 5}, new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.ALIGN_OPPOSITE});
+        mPrinter.addTexts(new String[]{"AMOUNT:", ""}, new int[]{5, 5},
+                new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.ALIGN_OPPOSITE});
         mPrinter.addText("RMB:249.00");
         mPrinter.addText("- - - - - - - - - - - - - -");
         mPrinter.addText("Please scan the QRCode for getting more information: ");
@@ -119,7 +134,6 @@ public class MPPrintTextActivity extends CommonActivity {
         mPrinter.addQRCode(300, Barcode2D.QR_CODE.name(), "123456", PrintLine.CENTER);
         mPrinter.setFooter(3);
         mPrinter.print(this);
-*/
         return 0;
     }
 

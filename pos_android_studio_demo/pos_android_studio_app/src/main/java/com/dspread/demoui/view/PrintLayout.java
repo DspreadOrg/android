@@ -19,22 +19,22 @@ import android.widget.TextView;
 import java.util.Iterator;
 import java.util.List;
 
-public class PrinterLayout extends LinearLayout {
+public class PrintLayout extends LinearLayout {
     private int bottomSpace;
     private int lineSpace;
     private Context context;
     private LayoutParams layoutParams;
     private Typeface font;
 
-    public PrinterLayout(Context context) {
+    public PrintLayout(Context context) {
         this(context, (AttributeSet) null);
     }
 
-    public PrinterLayout(Context context, AttributeSet attrs) {
+    public PrintLayout(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public PrinterLayout(Context context, AttributeSet attrs, int defStyleAttr) {
+    public PrintLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         this.bottomSpace = 0;
         this.lineSpace = 0;

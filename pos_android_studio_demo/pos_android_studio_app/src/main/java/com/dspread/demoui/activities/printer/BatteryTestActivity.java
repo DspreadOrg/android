@@ -16,11 +16,10 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 
-import com.action.printerservice.PrintStyle;
 import com.dspread.demoui.R;
 import com.dspread.demoui.utils.TRACE;
 import com.dspread.demoui.view.PrintLine;
-import com.dspread.demoui.view.PrinterLayout;
+import com.dspread.demoui.view.PrintLayout;
 import com.dspread.demoui.view.TextPrintLine;
 import com.dspread.print.device.bean.PrintLineStyle;
 
@@ -249,7 +248,7 @@ public class BatteryTestActivity extends CommonActivity {
     }
 
     private void printMeituanTicket() throws RemoteException {
-        PrinterLayout printerLayout = new PrinterLayout(this);
+        PrintLayout printLayout = new PrintLayout(this);
        /* TextPrintLine headTPL = new TextPrintLine();
         headTPL.setBold(true);
         headTPL.setPosition(PrintLine.CENTER);
@@ -401,8 +400,8 @@ public class BatteryTestActivity extends CommonActivity {
         textPrintLine.setSize(10);
         textPrintLine.setBold(true);
         textPrintLine.setPosition(PrintLine.CENTER);
-        printerLayout.addText(textPrintLine);
-        Bitmap bitmap = printerLayout.viewToBitmap();
+        printLayout.addText(textPrintLine);
+        Bitmap bitmap = printLayout.viewToBitmap();
         mPrinter.printBitmap(this,bitmap);
 
 

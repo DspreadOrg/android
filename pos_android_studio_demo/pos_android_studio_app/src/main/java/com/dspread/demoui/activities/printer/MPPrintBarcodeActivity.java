@@ -1,7 +1,6 @@
 package com.dspread.demoui.activities.printer;
 
 import android.graphics.Bitmap;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.view.View;
@@ -15,10 +14,8 @@ import com.dspread.demoui.utils.QRCodeUtil;
 import com.dspread.demoui.utils.TRACE;
 import com.dspread.demoui.view.BitmapPrintLine;
 import com.dspread.demoui.view.PrintLine;
-import com.dspread.demoui.view.PrinterLayout;
+import com.dspread.demoui.view.PrintLayout;
 import com.dspread.demoui.view.TextPrintLine;
-import com.dspread.print.QPOSPrintService;
-import com.dspread.print.device.bean.PrintLineStyle;
 
 public class MPPrintBarcodeActivity extends CommonActivity {
     private EditText etBarcode, etHeiht, etWidth;
@@ -74,7 +71,7 @@ public class MPPrintBarcodeActivity extends CommonActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String item = (String) parent.getAdapter().getItem(position);
                 try {
-                    mPrinter.setPrintDensity(Integer.parseInt(item));
+                    mPrinter.setPrinterDensity(Integer.parseInt(item));
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
@@ -105,7 +102,7 @@ public class MPPrintBarcodeActivity extends CommonActivity {
         int height = Integer.parseInt(getText(etHeiht));
         int width = Integer.parseInt(getText(etWidth));
         //pos.printBarCode(width, height, data);
-        PrinterLayout printerLayout = new PrinterLayout(MPPrintBarcodeActivity.this);
+        PrintLayout printLayout = new PrintLayout(MPPrintBarcodeActivity.this);
         Bitmap barcodeBM = QRCodeUtil.getBarCodeBM(data, width, height);
         switch (getPosition()) {
             case 0:
@@ -119,12 +116,12 @@ public class MPPrintBarcodeActivity extends CommonActivity {
                 break;
         }
         BitmapPrintLine bitmapPrintLine2 = new BitmapPrintLine(barcodeBM, bitMapPosition);
-        printerLayout.addBitmap(bitmapPrintLine2);
+        printLayout.addBitmap(bitmapPrintLine2);
         TextPrintLine textPrintLine = new TextPrintLine();
         textPrintLine.setContent("\n");
         textPrintLine.setPosition(PrintLine.CENTER);
-        printerLayout.addText(textPrintLine);
-        Bitmap bitmap = printerLayout.viewToBitmap();
+        printLayout.addText(textPrintLine);
+        Bitmap bitmap = printLayout.viewToBitmap();
         //mPrinter.printBitmap(this, bitmap);//
         mPrinter.printBarCode(this, Barcode1D.CODE_128.name(), width, height, data, bitMapPosition);
         return 0;

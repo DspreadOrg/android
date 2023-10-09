@@ -1,7 +1,6 @@
 package com.dspread.demoui.activities.printer;
 
 import android.graphics.Bitmap;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.view.View;
@@ -9,16 +8,14 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.Spinner;
 
-import com.action.printerservice.barcode.Barcode1D;
 import com.action.printerservice.barcode.Barcode2D;
 import com.dspread.demoui.R;
 import com.dspread.demoui.utils.QRCodeUtil;
 import com.dspread.demoui.utils.TRACE;
 import com.dspread.demoui.view.BitmapPrintLine;
 import com.dspread.demoui.view.PrintLine;
-import com.dspread.demoui.view.PrinterLayout;
+import com.dspread.demoui.view.PrintLayout;
 import com.dspread.demoui.view.TextPrintLine;
-import com.dspread.print.QPOSPrintService;
 
 public class MPPrintQRCodeActivity extends CommonActivity {
     private EditText etQRCode, etSize;
@@ -73,7 +70,7 @@ public class MPPrintQRCodeActivity extends CommonActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String item = (String) parent.getAdapter().getItem(position);
                 try {
-                    mPrinter.setPrintDensity(Integer.parseInt(item));
+                    mPrinter.setPrinterDensity(Integer.parseInt(item));
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
@@ -99,7 +96,7 @@ public class MPPrintQRCodeActivity extends CommonActivity {
 
     @Override
     int printTest() throws RemoteException {
-        PrinterLayout printerLayout = new PrinterLayout(MPPrintQRCodeActivity.this);
+        PrintLayout printLayout = new PrintLayout(MPPrintQRCodeActivity.this);
         int size = Integer.parseInt(getText(etSize));
         Bitmap qrcodeBM = QRCodeUtil.getQrcodeBM(getText(etQRCode), size);
         switch (getPosition()) {
@@ -114,12 +111,12 @@ public class MPPrintQRCodeActivity extends CommonActivity {
                 break;
         }
         BitmapPrintLine bitmapPrintLine2 = new BitmapPrintLine(qrcodeBM, bitMapPosition);
-        printerLayout.addBitmap(bitmapPrintLine2);
+        printLayout.addBitmap(bitmapPrintLine2);
         TextPrintLine textPrintLine = new TextPrintLine();
         textPrintLine.setContent("\n");
         textPrintLine.setPosition(PrintLine.CENTER);
-        printerLayout.addText(textPrintLine);
-        Bitmap bitmap = printerLayout.viewToBitmap();
+        printLayout.addText(textPrintLine);
+        Bitmap bitmap = printLayout.viewToBitmap();
         // mPrinter.printBitmap(this, bitmap);
         mPrinter.printQRCode(this, Barcode2D.ErrorLevel.L.name(), size, getText(etQRCode), bitMapPosition);
         return 0;

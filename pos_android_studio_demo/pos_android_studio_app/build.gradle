@@ -89,9 +89,13 @@ dependencies {
     implementation 'com.lzy.net:okgo:3.0.4'
     implementation 'com.google.zxing:core:3.3.3'
     //dspread sdk
-    implementation 'com.dspread.print:dspread_print_sdk:1.2.0'
-    implementation 'com.dspread.library:dspread_pos_sdk:4.3.8'
-    //implementation(name:'dspread_print_sdk1.2.0-debug', ext:'aar')
+    //implementation(name:'dspread_print_sdk1.2.2-release', ext:'aar')
+    //implementation files('libs\\dspread_pos_sdk_debug_4.4.6.jar')
+    //implementation files('libs\\dspread_print_sdk1.2.2.jar')
+    //implementation files('libs\\dspread_print_sdk1.2.0.jar')
+    implementation 'com.dspread.print:dspread_print_sdk:1.2.3'
+    implementation 'com.dspread.library:dspread_pos_sdk:4.4.8'
+
 }
 
 

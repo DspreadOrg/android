@@ -139,7 +139,7 @@ public class StandardPrintActivity extends CommonActivity {
                 message.setText("");
                 String item = (String) parent.getAdapter().getItem(position);
                 try {
-                    mPrinter.setPrintDensity(Integer.parseInt(item));
+                    mPrinter.setPrinterDensity(Integer.parseInt(item));
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
@@ -159,7 +159,7 @@ public class StandardPrintActivity extends CommonActivity {
                 message.setText("");
                 String item = (String) parent.getAdapter().getItem(position);
                 try {
-                    mPrinter.setPrintSpeed(Integer.parseInt(item));
+                    mPrinter.setPrinterSpeed(Integer.parseInt(item));
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
@@ -278,25 +278,25 @@ public class StandardPrintActivity extends CommonActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.get_print_density) {
             try {
-                mPrinter.getPrintDensity();
+                mPrinter.getPrinterDensity();
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
         } else if (item.getItemId() == R.id.get_print_speed) {
             try {
-                mPrinter.getPrintSpeed();
+                mPrinter.getPrinterSpeed();
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
         } else if (item.getItemId() == R.id.get_print_temperature) {
             try {
-                mPrinter.getPrintTemperature();
+                mPrinter.getPrinterTemperature();
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
         } else if (item.getItemId() == R.id.get_print_voltage) {
             try {
-                mPrinter.getPrintVoltage();
+                mPrinter.getPrinterVoltage();
             } catch (RemoteException e) {
                 e.printStackTrace();
             }

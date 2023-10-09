@@ -9,11 +9,12 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+
+import com.action.printerservice.PrintStyle;
 import com.dspread.demoui.R;
 import com.dspread.demoui.utils.TRACE;
 import com.dspread.demoui.view.PrintLine;
 import com.dspread.print.device.bean.PrintLineStyle;
-import com.dspread.print.mp600.PrintStyle;
 
 public class TestFontActivity extends CommonActivity {
 

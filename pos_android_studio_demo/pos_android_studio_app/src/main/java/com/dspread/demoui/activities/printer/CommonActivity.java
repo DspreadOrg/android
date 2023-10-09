@@ -21,11 +21,11 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.action.printerservice.ActionPrinter;
 import com.dspread.demoui.R;
 import com.dspread.demoui.utils.TRACE;
 import com.dspread.print.device.PrintListener;
 import com.dspread.print.device.PrinterDevice;
+import com.dspread.print.device.PrinterInitListener;
 import com.dspread.print.device.PrinterManager;
 
 import java.text.SimpleDateFormat;
@@ -46,7 +46,6 @@ public abstract class CommonActivity extends AppCompatActivity {
     private EditText etLoadThreadCount;
     private long printStartAt = 0;
     Spinner spAlignment, spGrayLevel, mSpSpeedLevel;
-    protected ActionPrinter printer;
     private long totalPrintTime;
     private long totalPrintDistance;
     private BatteryManager mBatteryManager;
@@ -134,19 +133,18 @@ public abstract class CommonActivity extends AppCompatActivity {
             findViewById(R.id.gray_level_area).setVisibility(View.GONE);
             findViewById(R.id.speed_level_area).setVisibility(View.GONE);
         }
-
         PrinterManager instance = PrinterManager.getInstance();
-        mPrinter = instance.getPrinter();
-        mPrinter.initPrinter(this);
-      /*  mPrinter.initPrinter(this, new PrinterInitListener() {
+         mPrinter = instance.getPrinter();
+         mPrinter.initPrinter(this);
+
+/*       mPrinter.initPrinter(this, new PrinterInitListener() {
             @Override
             public void connected() {
                 mPrinter.setPrinterTerminatedState(PrinterDevice.PrintTerminationState.PRINT_STOP);
+                mPrinter.setPrinterTerminatedState(PrinterDevice.PrintTerminationState.PRINT_NORMAL);
             }
-
             @Override
             public void disconnected() {
-
             }
         });*/
         MyPrinterListener myPrinterListener = new MyPrinterListener();
@@ -154,11 +152,9 @@ public abstract class CommonActivity extends AppCompatActivity {
     }
 
     public abstract void onToolbarLinstener();
-
     int getLayoutId() {
         return R.layout.activity_print_common;
     }
-
     private void print() throws RemoteException {
         tvMessage.setText("");
         int re = printTest();

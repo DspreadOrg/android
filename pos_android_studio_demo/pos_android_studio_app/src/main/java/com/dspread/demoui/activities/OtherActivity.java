@@ -226,8 +226,6 @@ public class OtherActivity extends BaseActivity {
         btnMifare = findViewById(R.id.btn_mifare);
 
 
-
-
     }
 
     private void initListener() {
@@ -2279,10 +2277,7 @@ public class OtherActivity extends BaseActivity {
             // TODO Auto-generated method stub
             TRACE.d("onRequestNoQposDetectedUnbond()");
 
-
         }
-
-
     }
 
     private void sendMsgDelay(int what) {

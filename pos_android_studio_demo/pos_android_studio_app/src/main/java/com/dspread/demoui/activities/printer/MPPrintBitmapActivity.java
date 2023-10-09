@@ -37,7 +37,7 @@ public class MPPrintBitmapActivity extends CommonActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String item = (String) parent.getAdapter().getItem(position);
                 try {
-                    mPrinter.setPrintDensity(Integer.parseInt(item));
+                    mPrinter.setPrinterDensity(Integer.parseInt(item));
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }

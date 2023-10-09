@@ -31,7 +31,7 @@ public class MPPrintActivity extends BaseActivity implements View.OnClickListene
         if (android.os.Build.MODEL.equalsIgnoreCase("D30")) {
             findViewById(R.id.standard_test).setVisibility(View.GONE);
             findViewById(R.id.battery_test).setVisibility(View.GONE);
-            findViewById(R.id.font_test).setVisibility(View.GONE);
+            findViewById(R.id.font_test).setVisibility(View.VISIBLE);
         }
     }
 
