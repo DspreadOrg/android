@@ -12,12 +12,6 @@
             android:title="@string/menu_payment"
             />
         <item
-            android:id="@+id/nav_autotrade"
-            android:icon="@drawable/payment_icon"
-            android:title="@string/auto_trade"
-            />
-
-        <item
             android:id="@+id/nav_scan"
             android:icon="@drawable/scan"
             android:title="@string/scan"
