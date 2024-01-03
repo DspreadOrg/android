@@ -36,7 +36,6 @@ import androidx.fragment.app.FragmentTransaction;
 import com.dspread.demoui.R;
 import com.dspread.demoui.ui.dialog.Mydialog;
 import com.dspread.demoui.ui.fragment.AboutFragment;
-import com.dspread.demoui.ui.fragment.AutoFragment;
 import com.dspread.demoui.ui.fragment.DeviceInfoFragment;
 import com.dspread.demoui.ui.fragment.DeviceUpdataFragment;
 import com.dspread.demoui.ui.fragment.HomeFragment;
@@ -69,7 +68,6 @@ public class MainActivity extends AppCompatActivity implements TitleUpdateListen
     private TextView tvAppVersion;
     ExtendedFloatingActionButton floatingActionButton;
     private MenuItem menuItem;
-    private AutoFragment autoFragment;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,7 +98,7 @@ public class MainActivity extends AppCompatActivity implements TitleUpdateListen
         }
         if ("D20".equals(deviceModel)||"D30".equals(deviceModel)||"D60".equals(deviceModel)){
             open(QPOSService.CommunicationMode.UART_SERVICE, this);
-        }else{
+        }else {
             bluetoothRelaPer();
         }
     }
@@ -224,11 +222,7 @@ public class MainActivity extends AppCompatActivity implements TitleUpdateListen
                     }
                 });
                 break;
-            case R.id.nav_autotrade:
-                toolbar.setTitle(getString(R.string.auto_trade));
-                switchFragment(8);
-                drawerLayout.close();
-                break;
+
 
             default:
                 break;
@@ -299,13 +293,6 @@ public class MainActivity extends AppCompatActivity implements TitleUpdateListen
                 }
                 transaction.show(scanFragment);
                 break;
-            case 8:
-                if (autoFragment == null) {
-                    autoFragment = new AutoFragment();
-                    transaction.add(R.id.nav_host_fragment_content_main, autoFragment);
-                }
-                transaction.show(autoFragment);
-                break;
             default:
                 break;
         }
@@ -337,9 +324,6 @@ public class MainActivity extends AppCompatActivity implements TitleUpdateListen
         }
         if (scanFragment != null) {
             transaction.hide(scanFragment);
-        }
-        if (autoFragment != null) {
-            transaction.hide(autoFragment);
         }
 
     }
@@ -413,7 +397,7 @@ public class MainActivity extends AppCompatActivity implements TitleUpdateListen
             toolbar.setTitle(getString(R.string.menu_payment));
             switchFragment(0);
             drawerLayout.close();
-//            exit();
+            exit();
             return true;
         }
         return super.onKeyDown(keyCode, event);

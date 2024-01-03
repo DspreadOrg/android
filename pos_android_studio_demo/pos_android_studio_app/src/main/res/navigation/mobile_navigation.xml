@@ -10,12 +10,6 @@
         android:name="com.dspread.demoui.ui.fragment.HomeFragment"
         tools:layout="@layout/fragment_input_money" />
     <fragment
-        android:id="@+id/nav_autotrade"
-        android:name="com.dspread.demoui.ui.fragment.AutoFragment"
-        tools:layout="@layout/fragment_auto" />
-
-
-    <fragment
         android:id="@+id/nav_scan"
         android:name="com.dspread.demoui.ui.fragment.ScanFragment"
         tools:layout="@layout/fragment_scan" />

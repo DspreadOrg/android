@@ -91,8 +91,8 @@ dependencies {
 //    implementation 'com.dspread.library:dspread_pos_sdk:4.5.3'
     implementation 'cn.hutool:hutool-all:5.1.0'
     implementation 'com.alibaba:fastjson:1.2.83'
-    implementation files('libs\\dspread_production_pos_sdk_beta_4.5.8.jar')
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
+}
