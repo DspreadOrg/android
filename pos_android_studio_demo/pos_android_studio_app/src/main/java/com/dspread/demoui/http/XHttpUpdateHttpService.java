@@ -12,7 +12,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *//*
+
 
 package com.dspread.demoui.http;
 
@@ -30,12 +31,14 @@ import java.util.Map;
 import androidx.annotation.NonNull;
 import io.reactivex.disposables.Disposable;
 
+*/
 /**
  * XHttp2实现的请求更新
  *
  * @author xuexiang
  * @since 2018/8/12 上午11:46
- */
+ *//*
+
 public class XHttpUpdateHttpService implements IUpdateHttpService {
 
     private String mBaseUrl;
@@ -121,3 +124,4 @@ public class XHttpUpdateHttpService implements IUpdateHttpService {
         XHttpSDK.cancelRequest(url);
     }
 }
+*/

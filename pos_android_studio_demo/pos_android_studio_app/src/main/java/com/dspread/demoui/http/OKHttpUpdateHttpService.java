@@ -12,18 +12,21 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *//*
+
 
 package com.dspread.demoui.http;
 
 import androidx.annotation.NonNull;
 
-import com.xuexiang.xupdate.proxy.IUpdateHttpService;
+*/
+/*import com.xuexiang.xupdate.proxy.IUpdateHttpService;
 import com.xuexiang.xutil.net.JsonUtil;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.FileCallBack;
 import com.zhy.http.okhttp.callback.StringCallback;
-import com.zhy.http.okhttp.request.RequestCall;
+import com.zhy.http.okhttp.request.RequestCall;*//*
+
 
 import java.io.File;
 import java.util.Map;
@@ -33,12 +36,14 @@ import okhttp3.Call;
 import okhttp3.MediaType;
 import okhttp3.Request;
 
+*/
 /**
  * 使用okhttp
  *
  * @author xuexiang
  * @since 2018/7/10 下午4:04
- */
+ *//*
+
 public class OKHttpUpdateHttpService implements IUpdateHttpService {
 
     private boolean mIsPostJson;
@@ -145,4 +150,4 @@ public class OKHttpUpdateHttpService implements IUpdateHttpService {
     }
 
 
-}
+}*/

@@ -2,7 +2,6 @@ package com.dspread.demoui.activities;
 
 import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -17,20 +16,9 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.dspread.demoui.BaseApplication;
 import com.dspread.demoui.R;
 import com.dspread.demoui.activities.printer.PrintSettingActivity;
-import com.dspread.demoui.beans.VersionEnty;
-import com.dspread.demoui.utils.NetCheckHelper;
-import com.dspread.demoui.utils.TRACE;
-import com.dspread.demoui.utils.UpdateAppHelper;
 import com.dspread.demoui.widget.CustomDialog;
-import com.google.gson.Gson;
-import com.lzy.okgo.OkGo;
-import com.lzy.okgo.callback.FileCallback;
-import com.lzy.okgo.model.Progress;
-import com.lzy.okgo.request.base.Request;
-import com.xuexiang.xutil.app.PathUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -38,13 +26,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.util.Arrays;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import io.sentry.Sentry;
-import io.sentry.android.core.SentryAndroid;
 
 public class WelcomeActivity extends BaseActivity implements OnClickListener {
     private Button audio, serial_port, normal_blu, other_blu, print;
@@ -68,9 +53,9 @@ public class WelcomeActivity extends BaseActivity implements OnClickListener {
         mProgressBar = findViewById(R.id.pb_loading);
         print = (Button) findViewById(R.id.print);
         mp600Print = findViewById(R.id.mp600_print);
-        if (Build.MODEL.equals("D20")) {
+       /* if (Build.MODEL.equals("D20")) {
             print.setVisibility(View.GONE);
-        }
+        }*/
         audio.setOnClickListener(this);
         serial_port.setOnClickListener(this);
         normal_blu.setOnClickListener(this);
@@ -78,7 +63,7 @@ public class WelcomeActivity extends BaseActivity implements OnClickListener {
         print.setOnClickListener(this);
         mp600Print.setOnClickListener(this);
         bluetoothRelaPer();
-        try {
+       /* try {
             boolean b = NetCheckHelper.checkNetworkAvailable(WelcomeActivity.this);
             if (b) {
                 checkNewVersion();
@@ -90,12 +75,12 @@ public class WelcomeActivity extends BaseActivity implements OnClickListener {
 
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     private void checkNewVersion() throws IOException {
         String commitUrl = "https://gitlab.com/api/v4/projects/4128550/jobs/artifacts/master/raw/pos_android_studio_demo/pos_android_studio_app/build/outputs/apk/release/commit.json?job=assembleRelease";
-        downloadFileCourse(WelcomeActivity.this, commitUrl, PathUtils.getAppExtCachePath(), "commit.json");
+        //downloadFileCourse(WelcomeActivity.this, commitUrl, PathUtils.getAppExtCachePath(), "commit.json");
     }
 
     @Override
@@ -228,7 +213,7 @@ public class WelcomeActivity extends BaseActivity implements OnClickListener {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                         // String downloadUrl = "https://gitlab.com/api/v4/projects/4128550/jobs/artifacts/develop_new_demo/raw/pos_android_studio_demo/pos_android_studio_app/build/outputs/apk/release/pos_android_studio_app-release.apk?job=assembleRelease";
-                        UpdateAppHelper.useApkDownLoadFunction(WelcomeActivity.this, downUrl);
+                        //UpdateAppHelper.useApkDownLoadFunction(WelcomeActivity.this, downUrl);
                     }
                 });
         builder.setCloseButton(new CustomDialog.OnCloseClickListener() {
@@ -278,7 +263,7 @@ public class WelcomeActivity extends BaseActivity implements OnClickListener {
         return sb.toString();
     }
 
-
+/*
     public void downloadFileCourse(final Context context, String fileUrl, String destFileDir, String destFileName) {
         try {
             //String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ2YWxpZHRpbWUiOjAsInVzZXJpZCI6IjJlNmI0YTdmYzQ5NTRmMzNiZjI2ZjhmMjViNGFmNjIwIiwiZGV2aWNlaW5mbyI6ImVjZjA2OTcyMTgxODZhODIifQ.XJsDI1lzKd2_I7aABf-90mXiWgRU5mzDq3pThn2rKj8";
@@ -348,6 +333,6 @@ public class WelcomeActivity extends BaseActivity implements OnClickListener {
         } catch (Exception e) {
             Log.e("downLoad fail;", e.toString() + "");
         }
-    }
+    }*/
 
 }

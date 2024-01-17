@@ -96,23 +96,15 @@ public class PrintTextActivity extends Activity {
 //				PrintSettingActivity.pl.printText(message);
                 PrintSettingActivity.pl.printText(ConstantUtil.TO_PRINT_CONTENT);
                 PrintSettingActivity.pl.printText(message);
-//				byte[] send = null;
-//				try {
-//					send = message.getBytes("UTF-8");
-//					send = message.getBytes("GBK");
-//				send = message.getBytes();
-//				} catch (UnsupportedEncodingException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-//				MainActivity.pl.write(send);
-                PrintSettingActivity.pl.printText("\n");
+
+                PrintSettingActivity.pl.printText("\n\n\n");
+               // PrintSettingActivity.pl.printText("\n");
                 Log.e("tag", "" + et_input.getText().toString().trim());
                 //0x1d, 0x0c 表示切换到下一黑标处（无黑标时切换一行）
-//				MainActivity.pl.write(new byte[] { 0x1d, 0x0c });
+				//PrintSettingActivity.pl.write(new byte[] { 0x1d, 0x0c });
 
                 //0x1d, 0x0c 表示切换到下一黑标处（无黑标时切换一行）
-                PrintSettingActivity.pl.moveNextBlackLocation();
+               // PrintSettingActivity.pl.moveNextBlackLocation();
 
             }
         });

@@ -117,7 +117,8 @@ public class PrintQrCodeActivity extends Activity {
 
 				image_qr.setImageBitmap(createQRImage(str, 300, 300));
 
-				PrintSettingActivity.pl.moveNextBlackLocation();
+				PrintSettingActivity.pl.printText("\n\n\n");
+				//PrintSettingActivity.pl.moveNextBlackLocation();
 
 			}
 		});

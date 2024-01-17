@@ -135,15 +135,18 @@ public class BlackMarkActivity extends Activity implements OnClickListener {
 				switch (choose) {
 				case 1:
 					PrintSettingActivity.pl.printText("TesCode:123456789");
-					PrintSettingActivity.pl.moveNextBlackLocation();
+					//PrintSettingActivity.pl.moveNextBlackLocation();
+					PrintSettingActivity.pl.printText("\n\n\n");
 					break;
 				case 2:
 					printQRCode();
-					PrintSettingActivity.pl.moveNextBlackLocation();
+					//PrintSettingActivity.pl.moveNextBlackLocation();
+					PrintSettingActivity.pl.printText("\n\n\n");
 					break;
                 case 3:
                 	printBarCode();
-					PrintSettingActivity.pl.moveNextBlackLocation();
+					//PrintSettingActivity.pl.moveNextBlackLocation();
+					PrintSettingActivity.pl.printText("\n\n\n");
 					break;
 				default:
 					break;

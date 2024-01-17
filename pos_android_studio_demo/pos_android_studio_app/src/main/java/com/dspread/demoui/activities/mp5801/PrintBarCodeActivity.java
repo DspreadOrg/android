@@ -94,7 +94,8 @@ public class PrintBarCodeActivity extends Activity {
 					//居中指令
 					PrintSettingActivity.pl.setAlignment(PrinterClass.Alignment.ALIGN_MIDDLE);
 					PrintSettingActivity.pl.write(barCodeData);
-					PrintSettingActivity.pl.moveNextBlackLocation();
+					PrintSettingActivity.pl.printText("\n\n\n");
+					//PrintSettingActivity.pl.moveNextBlackLocation();
 					//居左指令
 					PrintSettingActivity.pl.setAlignment(PrinterClass.Alignment.ALIGN_LEFT);
 //					PrintService.pl.printText("\r\n");

@@ -1,3 +1,4 @@
+/*
 package com.dspread.demoui.utils;
 
 import android.content.Context;
@@ -76,11 +77,12 @@ public class UpdateAppHelper {
     }
 //VersionCode和VersionName的获取：
 
-    /**
+*
      * 获取版本号
      *
      * @return 当前应用的版本号
-     */
+
+
     public static String getPackageVersionName(Context context, String pkgName) {
         try {
             PackageManager manager = context.getPackageManager();
@@ -104,3 +106,4 @@ public class UpdateAppHelper {
         }
     }
 }
+*/

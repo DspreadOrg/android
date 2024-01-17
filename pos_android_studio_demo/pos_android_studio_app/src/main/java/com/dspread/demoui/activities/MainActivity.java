@@ -50,7 +50,6 @@ import com.dspread.demoui.utils.ParseASN1Util;
 import com.dspread.demoui.utils.QPOSUtil;
 import com.dspread.demoui.utils.ShowGuideView;
 import com.dspread.demoui.utils.TRACE;
-import com.dspread.demoui.utils.UpdateAppHelper;
 import com.dspread.demoui.widget.BluetoothAdapter;
 import com.dspread.xpos.CQPOSService;
 import com.dspread.xpos.QPOSService;
