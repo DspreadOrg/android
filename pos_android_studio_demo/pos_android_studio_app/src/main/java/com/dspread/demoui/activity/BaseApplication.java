@@ -8,6 +8,8 @@ import android.util.Log;
 
 import com.dspread.demoui.http.OKHttpUpdateHttpService;
 import com.dspread.demoui.utils.TRACE;
+import com.dspread.print.device.PrinterDevice;
+import com.dspread.print.device.PrinterManager;
 import com.dspread.xpos.QPOSService;
 import com.lzy.okgo.OkGo;
 import com.xuexiang.xhttp2.XHttp;
@@ -32,6 +34,8 @@ public class BaseApplication extends Application {
     public static Context getApplicationInstance;
     public static QPOSService pos;
     public static Handler handler;
+    public static PrinterDevice mPrinter;
+
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
@@ -43,17 +47,13 @@ public class BaseApplication extends Application {
         //  Default init
         OkGo.getInstance().init(this);
         initXHttp();
-
         initOKHttpUtils();
         initAppUpDate();
+        initPrintService();
     }
 
-
     private void initOKHttpUtils() {
-        OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                .connectTimeout(20000L, TimeUnit.MILLISECONDS)
-                .readTimeout(20000L, TimeUnit.MILLISECONDS)
-                .build();
+        OkHttpClient okHttpClient = new OkHttpClient.Builder().connectTimeout(20000L, TimeUnit.MILLISECONDS).readTimeout(20000L, TimeUnit.MILLISECONDS).build();
         OkHttpUtils.initClient(okHttpClient);
     }
 
@@ -65,9 +65,7 @@ public class BaseApplication extends Application {
 
     private void initAppUpDate() {
 
-        XUpdate.get()
-                .debug(true)
-                .isWifiOnly(true)
+        XUpdate.get().debug(true).isWifiOnly(true)
                 // By default, only version updates are checked under WiFi
                 .isGet(true)
                 // The default setting uses Get request to check versions
@@ -75,8 +73,7 @@ public class BaseApplication extends Application {
                 // The default setting is non automatic mode
                 .param("versionCode", UpdateUtils.getVersionCode(this))
                 // Set default public request parameters
-                .param("appKey", getPackageName())
-                .setOnUpdateFailureListener(new OnUpdateFailureListener() {
+                .param("appKey", getPackageName()).setOnUpdateFailureListener(new OnUpdateFailureListener() {
                     // Set listening for version update errors
                     @Override
                     public void onFailure(UpdateError error) {
@@ -85,8 +82,7 @@ public class BaseApplication extends Application {
                             ToastUtils.toast(error.toString());
                         }
                     }
-                })
-                .supportSilentInstall(true)
+                }).supportSilentInstall(true)
                 // Set whether silent installation is supported. The default is true
                 .setIUpdateHttpService(new OKHttpUpdateHttpService())
                 // This must be set! Realize the network request function.
@@ -98,10 +94,12 @@ public class BaseApplication extends Application {
     public void onCreate() {
         super.onCreate();
         getApplicationInstance = this;
+
     }
-    public void open(QPOSService.CommunicationMode mode,Context context) {
+
+    public void open(QPOSService.CommunicationMode mode, Context context) {
         TRACE.d("open");
-       MyQposClass listener = new MyQposClass();
+        MyQposClass listener = new MyQposClass();
         pos = QPOSService.getInstance(context, mode);
         if (pos == null) {
             return;
@@ -117,5 +115,14 @@ public class BaseApplication extends Application {
         pos.initListener(handler, listener);
 
 
+    }
+
+
+    public void initPrintService() {
+        PrinterManager instance = PrinterManager.getInstance();
+        mPrinter = instance.getPrinter();
+        mPrinter.initPrinter(getApplicationContext());
+        PrinterListenerClass printerListenerClass = new PrinterListenerClass();
+        mPrinter.setPrintListener(printerListenerClass);
     }
 }

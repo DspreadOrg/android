@@ -197,6 +197,7 @@
     <string name="refer_payment_device">Please refer to your payment pos</string>
     <string name="try_another_interface">Please try another interface</string>
     <string name="processing">Processing…</string>
+    <string name="networking">Networking…</string>
     <string name="welcome">Welcome</string>
     <string name="present_one_card">Please present only one card</string>
     <string name="capk_failed">CAPK loading failed</string>

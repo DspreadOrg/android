@@ -22,6 +22,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.dspread.demoui.R;
+import com.dspread.demoui.utils.ActivityCollector;
 import com.dspread.demoui.utils.SystemKeyListener;
 import com.dspread.demoui.beans.Constants;
 import com.dspread.demoui.widget.pinpad.keyboard.KeyBoardNumInterface;
@@ -38,7 +39,6 @@ public class PaymentUartActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
@@ -48,6 +48,7 @@ public class PaymentUartActivity extends AppCompatActivity {
         systemKeyStart();
         systemKeyListener.startSystemKeyListener();
         flag = false;
+        ActivityCollector.addActivity(this);
     }
 
     private void initView() {
@@ -60,12 +61,8 @@ public class PaymentUartActivity extends AppCompatActivity {
         }
         BaseApplication.getApplicationInstance = this;
         pos.setCardTradeMode(QPOSService.CardTradeMode.SWIPE_TAP_INSERT_CARD_NOTUP);
-//        pos.doCheckCard();
-
-//        pos.clearD20Device();
         pos.setFormatId(QPOSService.FORMATID.DUKPT);
         pos.doTrade(20);
-
         ivBackTitle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -111,7 +108,6 @@ public class PaymentUartActivity extends AppCompatActivity {
         }
         if (Constants.transData.getUpdateCheckValue() != null && !"".equals(Constants.transData.getUpdateCheckValue())) {
             Constants.transData.setUpdateCheckValue("");
-
         }
         if (Constants.transData.getKeyCheckValue() != null && !"".equals(Constants.transData.getKeyCheckValue())) {
             Constants.transData.setKeyCheckValue("");
@@ -122,7 +118,6 @@ public class PaymentUartActivity extends AppCompatActivity {
         if (Constants.transData.getPayType() != null && !"".equals(Constants.transData.getPayType())) {
             Constants.transData.setPayType("");
         }
-
     }
 
     @Override
@@ -139,7 +134,6 @@ public class PaymentUartActivity extends AppCompatActivity {
         }
         return super.onKeyDown(keyCode, event);
     }
-
     private void systemKeyStart() {
         systemKeyListener.setOnSystemKeyListener(new SystemKeyListener.OnSystemKeyListener() {
             @Override
@@ -151,7 +145,6 @@ public class PaymentUartActivity extends AppCompatActivity {
                 getApplicationInstance = null;
                 finish();
             }
-
             @Override
             public void onMenuPressed() {
                 if ("autoTrade".equals(Constants.transData.getAutoTrade())) {
@@ -161,7 +154,6 @@ public class PaymentUartActivity extends AppCompatActivity {
                 getApplicationInstance = null;
                 finish();
             }
-
             @Override
             public void onScreenOff() {
 //                flag = true;

@@ -66,6 +66,46 @@
         android:text="0" />
     </LinearLayout>
 
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:padding="5dp"
+            android:text="startTradeTime:" />
+        <TextView
+            android:id="@+id/tvStartTradeTime"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:padding="5dp"
+            android:text="" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:padding="5dp"
+
+            android:text="endTradeTime:" />
+        <TextView
+            android:id="@+id/tvEndTradeTime"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:padding="5dp"
+            android:text="" />
+
+
+
+    </LinearLayout>
+
     <EditText
         android:id="@+id/et_sub"
         android:layout_width="match_parent"
@@ -84,5 +124,13 @@
         android:text="@string/auto_trade"
         ></Button>
 
+
+    <Button
+        android:id="@+id/btn_clearData"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:text="clear data"
+        ></Button>
 
 </LinearLayout>

@@ -233,7 +233,6 @@ public class MainActivity extends AppCompatActivity implements TitleUpdateListen
                     public void onCancel() {
                         Mydialog.manualExitDialog.dismiss();
                     }
-
                     @Override
                     public void onConfirm() {
                         finish();
@@ -241,11 +240,11 @@ public class MainActivity extends AppCompatActivity implements TitleUpdateListen
                     }
                 });
                 break;
-//            case R.id.nav_autotrade:
-//                toolbar.setTitle(getString(R.string.auto_trade));
-//                switchFragment(8);
-//                drawerLayout.close();
-//                break;
+            case R.id.nav_autotrade:
+                toolbar.setTitle(getString(R.string.auto_trade));
+               switchFragment(8);
+                drawerLayout.close();
+                break;
 
             default:
                 break;
@@ -316,13 +315,13 @@ public class MainActivity extends AppCompatActivity implements TitleUpdateListen
                 }
                 transaction.show(scanFragment);
                 break;
-//            case 8:
-//                if (autoFragment == null) {
-//                    autoFragment = new AutoFragment();
-//                    transaction.add(R.id.nav_host_fragment_content_main, autoFragment);
-//                }
-//                transaction.show(autoFragment);
-//                break;
+           case 8:
+               if (autoFragment == null) {
+                    autoFragment = new AutoFragment();
+                    transaction.add(R.id.nav_host_fragment_content_main, autoFragment);
+                }
+                transaction.show(autoFragment);
+                break;
             default:
                 break;
         }
@@ -355,9 +354,9 @@ public class MainActivity extends AppCompatActivity implements TitleUpdateListen
         if (scanFragment != null) {
             transaction.hide(scanFragment);
         }
-//        if (autoFragment != null) {
-//            transaction.hide(autoFragment);
-//        }
+        if (autoFragment != null) {
+            transaction.hide(autoFragment);
+        }
 
     }
 

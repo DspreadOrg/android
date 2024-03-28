@@ -1,24 +1,26 @@
 package com.dspread.demoui.activity;
 
-import static com.dspread.demoui.activity.BaseApplication.handler;
-import static com.dspread.demoui.activity.BaseApplication.pos;
-
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.util.Log;
+import android.os.RemoteException;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.dspread.demoui.R;
 import com.dspread.demoui.beans.Constants;
+import com.dspread.demoui.utils.ActivityCollector;
+import com.dspread.demoui.utils.ConstantUtil;
+import com.dspread.demoui.utils.SpUtils;
+import com.dspread.demoui.utils.TRACE;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import static com.dspread.demoui.activity.BaseApplication.getApplicationInstance;
+import static com.dspread.demoui.activity.BaseApplication.mPrinter;
 
 
 public class SuccessActivity extends AppCompatActivity {
@@ -34,6 +36,10 @@ public class SuccessActivity extends AppCompatActivity {
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         setContentView(R.layout.activity_success);
         initView();
+        TRACE.d("successActivity");
+        if ("autoTrade".equals(Constants.transData.getAutoTrade())) {
+            ActivityCollector.addActivity(this);
+        }
     }
 
     private void initView() {
@@ -48,15 +54,23 @@ public class SuccessActivity extends AppCompatActivity {
             tvTitle.setText(getString(R.string.transaction_approved));
             tvInfo.setText(tradeResut);
             if ("autoTrade".equals(Constants.transData.getAutoTrade())) {
-                Constants.transData.setSuccessSub(Constants.transData.getSuccessSub() + 1);
-                Constants.transData.setSub(Constants.transData.getSub() + 1);
-                new Handler(Looper.myLooper(), new Handler.Callback() {
-                    @Override
-                    public boolean handleMessage(Message msg) {
-                        finish();
-                        return false;
-                    }
-                }).sendEmptyMessageDelayed(0x123, 1000);
+                int successKey = SpUtils.getInt(getApplicationInstance, ConstantUtil.SuccessKey, 0);
+                SpUtils.putInt(getApplicationInstance, ConstantUtil.SuccessKey,successKey + 1);
+                Constants.transData.setSuccessSub(successKey);
+
+
+
+                int subKey = SpUtils.getInt(getApplicationInstance, ConstantUtil.SubKey, 0);
+                SpUtils.putInt(getApplicationInstance,ConstantUtil.SubKey,subKey + 1);
+                Constants.transData.setSub(subKey);
+
+                // Constants.transData.setSuccessSub(Constants.transData.getSuccessSub() + 1);
+                // Constants.transData.setSub(Constants.transData.getSub() + 1);*/
+                try {
+                    mPrinter.printText(tradeResut);
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
         if ("posid".equals(posinfo)) {
@@ -79,6 +93,7 @@ public class SuccessActivity extends AppCompatActivity {
         ivBackTitle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                TRACE.d("按返回键退出了....");
                 finish();
                 initInfo();
             }

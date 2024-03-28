@@ -31,9 +31,11 @@ import com.dspread.demoui.ui.dialog.Mydialog;
 import com.dspread.demoui.ui.fragment.DeviceInfoFragment;
 import com.dspread.demoui.ui.fragment.DeviceUpdataFragment;
 import com.dspread.demoui.ui.fragment.SettingFragment;
+import com.dspread.demoui.utils.ConstantUtil;
 import com.dspread.demoui.utils.DUKPK2009_CBC;
 import com.dspread.demoui.utils.ParseASN1Util;
 import com.dspread.demoui.utils.QPOSUtil;
+import com.dspread.demoui.utils.SpUtils;
 import com.dspread.demoui.utils.TRACE;
 import com.dspread.demoui.widget.pinpad.keyboard.KeyBoardNumInterface;
 import com.dspread.demoui.widget.pinpad.keyboard.KeyboardUtil;
@@ -388,7 +390,6 @@ public class MyQposClass extends CQPOSService {
         } else if (transactionResult == QPOSService.TransactionResult.APP_BLOCKED) {
             msg = "APP BLOCKED";
         }
-
         initInfo();
         if (!"".equals(msg)) {
             if ("autoTrade".equals(Constants.transData.getAutoTrade())) {
@@ -635,7 +636,7 @@ public class MyQposClass extends CQPOSService {
                     public void onStart(Request<String, ? extends Request> request) {
                         super.onStart(request);
                         TRACE.i("onStart==");
-                        Mydialog.loading((Activity) getApplicationInstance, getString(R.string.processing));
+                        Mydialog.loading((Activity) getApplicationInstance, getString(R.string.networking));
                     }
 
 
@@ -1091,7 +1092,7 @@ public class MyQposClass extends CQPOSService {
                     public void onStart(Request<String, ? extends Request> request) {
                         super.onStart(request);
                         TRACE.i("onStart==");
-                        Mydialog.loading((Activity) getApplicationInstance, getString(R.string.processing));
+                        Mydialog.loading((Activity) getApplicationInstance, getString(R.string.networking));
                     }
 
                     @Override
@@ -1184,8 +1185,18 @@ public class MyQposClass extends CQPOSService {
             Toast.makeText(getApplicationInstance, msg, Toast.LENGTH_SHORT).show();
         }
         if ("autoTrade".equals(Constants.transData.getAutoTrade())) {
-            Constants.transData.setFialSub(Constants.transData.getFialSub() + 1);
-            Constants.transData.setSub(Constants.transData.getSub() + 1);
+            int failKey = SpUtils.getInt(getApplicationInstance, ConstantUtil.FailKey, 0);
+            SpUtils.putInt(getApplicationInstance, ConstantUtil.FailKey,failKey + 1);
+            Constants.transData.setFialSub(failKey);
+           // Constants.transData.setFialSub(Constants.transData.getFialSub() + 1);
+
+
+            int subKey = SpUtils.getInt(getApplicationInstance, ConstantUtil.SubKey, 0);
+            SpUtils.putInt(getApplicationInstance,ConstantUtil.SubKey,subKey + 1);
+            Constants.transData.setSub(subKey);
+
+
+            //Constants.transData.setSub(Constants.transData.getSub() + 1);
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {

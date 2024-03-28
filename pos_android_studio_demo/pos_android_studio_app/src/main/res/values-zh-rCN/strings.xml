@@ -187,6 +187,7 @@
     <string name="refer_payment_device">请参阅您的付款读卡器</string>
     <string name="try_another_interface">请尝试另一个接口</string>
     <string name="processing">处理中…</string>
+    <string name="networking">联网中…</string>
     <string name="welcome">欢迎</string>
     <string name="present_one_card">请只出示一张卡</string>
     <string name="capk_failed">CAPK加载失败</string>

@@ -8,7 +8,7 @@
 	<9F1A>0484</9F1A><!--Terminal Country Code-->
 	<9F1C>0000000000000000</9F1C><!--Terminal Identification-->
 	<9F1E>0000000000000000</9F1E><!--Interface Device (IFD) Serial Number-->
-	<9F33>E028C8</9F33><!--Terminal Capabilities-->
+	<9F33>E0F8C8</9F33><!--Terminal Capabilities-->
 	<9F35>22</9F35><!--Terminal Type-->
 	<9F39>00</9F39><!--Point-of-Service (POS) Entry Mode-->
 	<9F40>F000F0A001</9F40><!--Additional Terminal Capabilities-->
