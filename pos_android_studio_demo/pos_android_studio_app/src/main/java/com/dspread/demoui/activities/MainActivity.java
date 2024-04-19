@@ -1442,11 +1442,13 @@ public class MainActivity extends BaseActivity implements ShowGuideView.onGuideV
             statusEditText.setText(content);
         }
 
+
+
         @Override
-        public void onReturnupdateKeyByTR_31Result(boolean result, String keyType) {
-            super.onReturnupdateKeyByTR_31Result(result, keyType);
+        public void onReturnUpdateKeyByTR_31Result(boolean result) {
+            super.onReturnUpdateKeyByTR_31Result(result);
             if (result) {
-                statusEditText.setText("send TR31 key success! The keyType is " + keyType);
+                statusEditText.setText("send TR31 key success! The keyType is " );
             } else {
                 statusEditText.setText("send TR31 key fail");
             }
@@ -1559,7 +1561,7 @@ public class MainActivity extends BaseActivity implements ShowGuideView.onGuideV
 //                        } else {
 //                            pos.sendPin(pin);
 //                        }
-                        pos.sendPin(pin);
+                        pos.sendPin(pin.getBytes());
                         dismissDialog();
                     } else {
                         Toast.makeText(MainActivity.this, "The length just can input 4 - 12 digits", Toast.LENGTH_LONG).show();
@@ -1571,7 +1573,7 @@ public class MainActivity extends BaseActivity implements ShowGuideView.onGuideV
                 @Override
                 public void onClick(View v) {
 //					pos.bypassPin();
-                    pos.sendPin("");
+                    pos.sendPin("".getBytes());
 
                     dismissDialog();
                 }
@@ -2001,16 +2003,11 @@ public class MainActivity extends BaseActivity implements ShowGuideView.onGuideV
         }
 
         @Override
-        public void onGetKeyCheckValue(List<String> checkValue) {
-            if (checkValue != null) {
-                StringBuffer buffer = new StringBuffer();
-                buffer.append("{");
-                for (int i = 0; i < checkValue.size(); i++) {
-                    buffer.append(checkValue.get(i)).append(",");
-                }
-                buffer.append("}");
-                statusEditText.setText(buffer.toString());
-            }
+        public void onGetKeyCheckValue(Hashtable<String, String> checkValue) {
+            super.onGetKeyCheckValue(checkValue);
+
+            statusEditText.setText(checkValue.toString());
+
         }
 
         @Override
@@ -2327,7 +2324,7 @@ public class MainActivity extends BaseActivity implements ShowGuideView.onGuideV
                     ParseASN1Util.parseASN1new(KB);
                     String data = ParseASN1Util.getTr31Data();
                     //the api callback is onReturnupdateKeyByTR_31Result
-                    pos.updateKeyByTR_31(data, 30);
+                    pos.updateKeyByTR_31(1, data);
                 }
             } else {
                 statusEditText.setText("signature verification failed.");

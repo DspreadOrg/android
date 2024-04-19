@@ -1498,7 +1498,7 @@ public class OtherActivity extends BaseActivity {
                             pos.sendEncryptPin("5516422217375116");
 
                         } else {
-                            pos.sendPin(pin);
+                            pos.sendPin(pin.getBytes());
                         }
                         dismissDialog();
                     }
@@ -1510,7 +1510,7 @@ public class OtherActivity extends BaseActivity {
                 @Override
                 public void onClick(View v) {
 //					pos.bypassPin();
-                    pos.sendPin("");
+                    pos.sendPin("".getBytes());
 
                     dismissDialog();
                 }
@@ -1983,19 +1983,9 @@ public class OtherActivity extends BaseActivity {
         }
 
         @Override
-        public void onGetKeyCheckValue(List<String> checkValue) {
-            if (checkValue != null) {
-                StringBuffer buffer = new StringBuffer();
-                buffer.append("{");
-                for (int i = 0; i < checkValue.size(); i++) {
-                    buffer.append(checkValue.get(i)).append(",");
-                }
-                buffer.append("}");
-
-                statusEditText.setText(buffer.toString());
-            }
-
-
+        public void onGetKeyCheckValue(Hashtable<String, String> checkValue) {
+            super.onGetKeyCheckValue(checkValue);
+            statusEditText.setText(checkValue.toString());
         }
 
         @Override
