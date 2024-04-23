@@ -1021,18 +1021,51 @@ public class MyQposClass extends CQPOSService {
     }
 
     @Override
-    public void onGetKeyCheckValue(List<String> checkValue) {
-        if (checkValue != null) {
-            StringBuffer buffer = new StringBuffer();
-            buffer.append("{");
-            for (int i = 0; i < checkValue.size(); i++) {
-                buffer.append(checkValue.get(i)).append(",");
-            }
-            buffer.append("}");
-            Constants.transData.setKeyCheckValue(buffer.toString());
-            getposInfo("keycheckvalue");
-        }
+    public void onGetKeyCheckValue(Hashtable<String, String> checkValue) {
+        super.onGetKeyCheckValue(checkValue);
+        dismissDialog();
+
+        String MKSK_TMK_KCV = "MKSK_TMK_KCV : " + checkValue.get("MKSK_TMK_KCV");
+        String DUKPT_PIN_IPEK_KCV = "DUKPT_PIN_IPEK_KCV : " + checkValue.get("DUKPT_PIN_IPEK_KCV");
+        String DUKPT_PIN_KSN = "DUKPT_PIN_KSN : " + checkValue.get("DUKPT_PIN_KSN");
+        String DUKPT_EMV_IPEK_KCV = "DUKPT_EMV_IPEK_KCV : " + checkValue.get("DUKPT_EMV_IPEK_KCV");
+        String DUKPT_EMV_KSN = "DUKPT_EMV_KSN : " + checkValue.get("DUKPT_EMV_KSN");
+        String DUKPT_TRK_IPEK_KCV = "DUKPT_TRK_IPEK_KCV : " + checkValue.get("DUKPT_TRK_IPEK_KCV");
+        String DUKPT_TRK_KSN = "DUKPT_TRK_KSN : " + checkValue.get("DUKPT_TRK_KSN");
+        String MKSK_PIK_KCV = "MKSK_PIK_KCV : " + checkValue.get("MKSK_PIK_KCV");
+        String MKSK_TDK_KCV = "MKSK_TDK_KCV : " + checkValue.get("MKSK_TDK_KCV");
+        String MKSK_MCK_KCV = "MKSK_MCK_KCV : " + checkValue.get("MKSK_MCK_KCV");
+        String TCK_KCV = "TCK_KCV : " + checkValue.get("TCK_KCV");
+        String MAGK_KCV = "MAGK_KCV : " + checkValue.get("MAGK_KCV");
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append(MKSK_TMK_KCV);
+        stringBuffer.append("\n");
+        stringBuffer.append(DUKPT_PIN_IPEK_KCV);
+        stringBuffer.append("\n");
+        stringBuffer.append(DUKPT_PIN_KSN);
+        stringBuffer.append("\n");
+        stringBuffer.append(DUKPT_EMV_IPEK_KCV);
+        stringBuffer.append("\n");
+        stringBuffer.append(DUKPT_EMV_KSN);
+        stringBuffer.append("\n");
+        stringBuffer.append(DUKPT_TRK_IPEK_KCV);
+        stringBuffer.append("\n");
+        stringBuffer.append(DUKPT_TRK_KSN);
+        stringBuffer.append("\n");
+        stringBuffer.append(MKSK_PIK_KCV);
+        stringBuffer.append("\n");
+        stringBuffer.append(MKSK_TDK_KCV);
+        stringBuffer.append("\n");
+        stringBuffer.append(MKSK_MCK_KCV);
+        stringBuffer.append("\n");
+        stringBuffer.append(TCK_KCV);
+        stringBuffer.append("\n");
+        stringBuffer.append(MAGK_KCV);
+
+        Constants.transData.setKeyCheckValue(stringBuffer.toString());
+        getposInfo("keycheckvalue");
     }
+
 
 
     @Override

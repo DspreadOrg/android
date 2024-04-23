@@ -100,7 +100,7 @@
     <string name="navigation_drawer_close">关闭导航栏</string>
     <string name="app_select_timeout_error">应用选择超时</string>
     <string name="waiting_for_card">请拍卡或刷卡或插入ICC卡</string>
-    <string name="no_card_detected">刷卡或插卡已超时\n请按开始再试一次</string>
+    <string name="no_card_detected">刷卡失败\n请按开始再试一次</string>
     <string name="icc_card_inserted">ICC卡已插入</string>
     <string name="card_inserted">不是正确的ICC卡\n请按开始再试一次</string>
     <string name="bad_swipe">刷卡不良好\n请再试刷卡</string>

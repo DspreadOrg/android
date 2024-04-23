@@ -109,7 +109,7 @@
     <string name="scan_bt_pos_error">no paired bluetooth device\nplease pair bluetooth device first</string>
     <string name="connecting_bt_pos">connecting\nPlease wait…</string>
     <string name="waiting_for_card">Please insert/swipe/tap card now.</string>
-    <string name="no_card_detected">No card detected. Please insert or swipe card again and press check card.</string>
+    <string name="no_card_detected">Swipe card failed. Please press start to try again.</string>
     <string name="icc_card_inserted">ICC Card Inserted</string>
     <string name="card_inserted">Card Inserted (Not ICC)</string>
     <string name="bad_swipe">Bad Swipe. Please swipe again and press check card.</string>
