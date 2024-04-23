@@ -1712,15 +1712,17 @@ public class PaymentActivity extends AppCompatActivity implements View.OnClickLi
             statusEditText.setText(content);
         }
 
-        @Override
-        public void onReturnupdateKeyByTR_31Result(boolean result, String keyType) {
-            super.onReturnupdateKeyByTR_31Result(result, keyType);
-            if (result) {
-                statusEditText.setText("send TR31 key success! The keyType is " + keyType);
-            } else {
-                statusEditText.setText("send TR31 key fail");
-            }
-        }
+         @Override
+         public void onReturnUpdateKeyByTR_31Result(boolean result) {
+             super.onReturnUpdateKeyByTR_31Result(result);
+             if (result) {
+                 statusEditText.setText("send TR31 key success!");
+             } else {
+                 statusEditText.setText("send TR31 key fail");
+             }
+         }
+
+
 
         @Override
         public void onReturnServerCertResult(String serverSignCert, String serverEncryptCert) {
@@ -2708,7 +2710,7 @@ public class PaymentActivity extends AppCompatActivity implements View.OnClickLi
                     ParseASN1Util.parseASN1new(KB);
                     String data = ParseASN1Util.getTr31Data();
                     //the api callback is onReturnupdateKeyByTR_31Result
-                    pos.updateKeyByTR_31(data, 30);
+                    pos.updateKeyByTR_31(30, data);
                 }
             } else {
                 statusEditText.setText("signature verification failed.");
