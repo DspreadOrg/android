@@ -58,15 +58,14 @@ public class BarCodeActivity extends AppCompatActivity implements View.OnClickLi
     private String brWidth = "";
     private String brGraylevel = "";
     private String brSpeedlevel = "";
-    private String brDensitylevel="";
-    private String brSymbology="";
+    private String brDensitylevel = "";
+    private String brSymbology = "";
     private int printLineAlign;
     private int height;
     private int width;
     private int grayLevel;
     private int speedLevel;
     private int densityLevel;
-
 
 
     @Override
@@ -91,12 +90,13 @@ public class BarCodeActivity extends AppCompatActivity implements View.OnClickLi
                 will continue to restart printing.*/
 //              PrinterDevice.PrintTerminationState. PRINT_NORMAL
                 }
+
                 @Override
                 public void disconnected() {
                 }
             });
 
-        }else{
+        } else {
             mPrinter.initPrinter(this);
         }
         MyPrinterListener myPrinterListener = new MyPrinterListener();
@@ -176,20 +176,20 @@ public class BarCodeActivity extends AppCompatActivity implements View.OnClickLi
 //                        EAN_13,
 //                        UPC_A,
 //                        UPC_E;
-                final String[] symbology = {Barcode1D.CODE_128.name(),Barcode1D.CODABAR.name(),Barcode1D.CODE_39.name(),Barcode1D.EAN_8.name(),
-                Barcode1D.EAN_13.name(),Barcode1D.UPC_A.name(),Barcode1D.UPC_E.name()};
-                 PrintDialog.setDialog(BarCodeActivity.this, getString(R.string.symbology_barcode), symbology, new PrintDialog.PrintClickListener() {
-                     @Override
-                     public void onCancel() {
+                final String[] symbology = {Barcode1D.CODE_128.name(), Barcode1D.CODABAR.name(), Barcode1D.CODE_39.name(), Barcode1D.EAN_8.name(),
+                        Barcode1D.EAN_13.name(), Barcode1D.UPC_A.name(), Barcode1D.UPC_E.name()};
+                PrintDialog.setDialog(BarCodeActivity.this, getString(R.string.symbology_barcode), symbology, new PrintDialog.PrintClickListener() {
+                    @Override
+                    public void onCancel() {
 
-                     }
+                    }
 
-                     @Override
-                     public void onConfirm(String str) {
-                      brcodeTextSymbology.setText(str);
-                      brSymbology = str;
-                     }
-                 });
+                    @Override
+                    public void onConfirm(String str) {
+                        brcodeTextSymbology.setText(str);
+                        brSymbology = str;
+                    }
+                });
 
                 break;
             case R.id.brcode_height:
@@ -343,17 +343,17 @@ public class BarCodeActivity extends AppCompatActivity implements View.OnClickLi
                     }
 //                    mPrinter.setPrinterGrey(grayLevel);
                     mPrinter.setPrintStyle(printLineStyle);
-                    if("".equals(brSymbology)){
-                        brSymbology=brcodeTextSymbology.getText().toString();
+                    if ("".equals(brSymbology)) {
+                        brSymbology = brcodeTextSymbology.getText().toString();
                     }
-                    Log.w("brSymbology","brSymbology=="+brSymbology);
-                    mPrinter.printBarCode(this,brSymbology, width, height, brContent, printLineAlign);
+                    Log.w("brSymbology", "brSymbology==" + brSymbology);
+                    mPrinter.printBarCode(this, brSymbology, width, height, brContent, printLineAlign);
 
                 } catch (Exception e) {
-                    Log.e("Exception","e="+e);
-                  Toast toast=  Toast.makeText(BarCodeActivity.this,"Error: "+e,Toast.LENGTH_SHORT);
-                  toast.setGravity(Gravity.CENTER,0,0);
-                  toast.show();
+                    Log.e("Exception", "e=" + e);
+                    Toast toast = Toast.makeText(BarCodeActivity.this, "Error: " + e, Toast.LENGTH_SHORT);
+                    toast.setGravity(Gravity.CENTER, 0, 0);
+                    toast.show();
                 }
                 break;
             default:
