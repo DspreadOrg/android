@@ -40,6 +40,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.dspread.demoui.R;
+import com.dspread.demoui.beans.Constants;
 import com.dspread.demoui.ui.dialog.Mydialog;
 import com.dspread.demoui.ui.fragment.AboutFragment;
 import com.dspread.demoui.ui.fragment.AutoFragment;
@@ -233,6 +234,7 @@ public class MainActivity extends AppCompatActivity implements TitleUpdateListen
                     public void onCancel() {
                         Mydialog.manualExitDialog.dismiss();
                     }
+
                     @Override
                     public void onConfirm() {
                         finish();
@@ -242,7 +244,7 @@ public class MainActivity extends AppCompatActivity implements TitleUpdateListen
                 break;
             case R.id.nav_autotrade:
                 toolbar.setTitle(getString(R.string.auto_trade));
-               switchFragment(8);
+                switchFragment(8);
                 drawerLayout.close();
                 break;
 
@@ -263,6 +265,7 @@ public class MainActivity extends AppCompatActivity implements TitleUpdateListen
                     homeFragment = new HomeFragment();
                     transaction.add(R.id.nav_host_fragment_content_main, homeFragment);
                 }
+                Constants.transData.setAutoTrade("");
                 transaction.show(homeFragment);
                 break;
             case 1:
@@ -315,11 +318,12 @@ public class MainActivity extends AppCompatActivity implements TitleUpdateListen
                 }
                 transaction.show(scanFragment);
                 break;
-           case 8:
-               if (autoFragment == null) {
+            case 8:
+                if (autoFragment == null) {
                     autoFragment = new AutoFragment();
                     transaction.add(R.id.nav_host_fragment_content_main, autoFragment);
                 }
+                Constants.transData.setAutoTrade("autoTrade");
                 transaction.show(autoFragment);
                 break;
             default:
