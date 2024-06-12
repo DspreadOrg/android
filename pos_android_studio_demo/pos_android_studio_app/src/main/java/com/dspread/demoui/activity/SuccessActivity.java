@@ -1,5 +1,6 @@
 package com.dspread.demoui.activity;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -14,6 +15,7 @@ import com.dspread.demoui.R;
 import com.dspread.demoui.beans.Constants;
 import com.dspread.demoui.utils.ActivityCollector;
 import com.dspread.demoui.utils.ConstantUtil;
+import com.dspread.demoui.utils.SingletonHandler;
 import com.dspread.demoui.utils.SpUtils;
 import com.dspread.demoui.utils.TRACE;
 
@@ -35,11 +37,11 @@ public class SuccessActivity extends AppCompatActivity {
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         setContentView(R.layout.activity_success);
-        initView();
-        TRACE.d("successActivity");
         if ("autoTrade".equals(Constants.transData.getAutoTrade())) {
-            ActivityCollector.addActivity(this);
+            ActivityCollector.addActivity(SuccessActivity.this);
         }
+        initView();
+
     }
 
     private void initView() {
@@ -57,20 +59,29 @@ public class SuccessActivity extends AppCompatActivity {
                 int successKey = SpUtils.getInt(getApplicationInstance, ConstantUtil.SuccessKey, 0);
                 SpUtils.putInt(getApplicationInstance, ConstantUtil.SuccessKey,successKey + 1);
                 Constants.transData.setSuccessSub(successKey);
-
-
-
                 int subKey = SpUtils.getInt(getApplicationInstance, ConstantUtil.SubKey, 0);
                 SpUtils.putInt(getApplicationInstance,ConstantUtil.SubKey,subKey + 1);
                 Constants.transData.setSub(subKey);
 
+                if(Build.MODEL.equalsIgnoreCase("D30") || Build.MODEL.equalsIgnoreCase("D60")){
+                    try {
+                        mPrinter.printText(tradeResut);
+                    } catch (RemoteException e) {
+                        throw new RuntimeException(e);
+                    }
+                }else {
+                    SingletonHandler.getInstance().getHandler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (ActivityCollector.activities != null && ActivityCollector.activities.size() > 0) {
+                                ActivityCollector.finishOneActivity(SuccessActivity.class.getName());
+                            }
+                        }
+                    },1000);
+                }
+
                 // Constants.transData.setSuccessSub(Constants.transData.getSuccessSub() + 1);
                 // Constants.transData.setSub(Constants.transData.getSub() + 1);*/
-                try {
-                    mPrinter.printText(tradeResut);
-                } catch (RemoteException e) {
-                    throw new RuntimeException(e);
-                }
             }
         }
         if ("posid".equals(posinfo)) {
@@ -93,7 +104,6 @@ public class SuccessActivity extends AppCompatActivity {
         ivBackTitle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TRACE.d("按返回键退出了....");
                 finish();
                 initInfo();
             }
@@ -103,8 +113,8 @@ public class SuccessActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-//        initInfo();;
         finish();
+
     }
 
     public void initInfo() {
