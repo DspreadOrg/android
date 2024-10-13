@@ -37,7 +37,7 @@ public class PrintTextActivity extends AppCompatActivity implements View.OnClick
     private TextView textTextSize;
     private LinearLayout layoutTextSize,layoutMaxHeight;
     private LinearLayout textSet;
-    private EditText editText;
+    private TextView editText;
     private Button btnPrint;
     private LinearLayout textAll;
     private PrinterDevice mPrinter;
@@ -204,16 +204,17 @@ public class PrintTextActivity extends AppCompatActivity implements View.OnClick
                         textSize = Integer.parseInt(textSizeStr);
 
                     }
-                    if("".equals(textMaxHeightStr)){
-                        textMaxHeightStr = textContentMaxHeight.getText().toString();
-                        mPrinter.setMaxHeight(Integer.parseInt(textMaxHeightStr));
-                    }else{
-                        mPrinter.setMaxHeight(Integer.parseInt(textMaxHeightStr));
-                    }
+//                    if("".equals(textMaxHeightStr)){
+//                        textMaxHeightStr = textContentMaxHeight.getText().toString();
+//                        mPrinter.setMaxHeight(Integer.parseInt(textMaxHeightStr));
+//                    }else{
+//                        mPrinter.setMaxHeight(Integer.parseInt(textMaxHeightStr));
+//                    }
 
                     printLineStyle.setFontSize(textSize);
                     mPrinter.setPrintStyle(printLineStyle);
                     mPrinter.printText(getString(R.string.text_print));
+                    btnPrint.setEnabled(false);
                 } catch (RemoteException e) {
                     throw new RuntimeException(e);
 
@@ -262,20 +263,12 @@ public class PrintTextActivity extends AppCompatActivity implements View.OnClick
 
 
     class MyPrinterListener implements PrintListener {
-
-//        @Override
-//        public void printResult(boolean b, String s, int i) {
-//            Log.w("printResult", "boolean b==" + b);
-//            Log.w("printResult", "String s==" + s);
-//            Log.w("printResult", "int i==" + i);
-//
-//        }
         @Override
         public void printResult(boolean b, String s, PrinterDevice.ResultType resultType) {
+            btnPrint.setEnabled(true);
             Log.w("printResult", "boolean b==" + b);
             Log.w("printResult", "String s==" + s);
             Log.w("printResult", "resultType==" + resultType.toString());
-
         }
     }
 

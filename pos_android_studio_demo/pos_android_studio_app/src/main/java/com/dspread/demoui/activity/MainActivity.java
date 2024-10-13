@@ -1,9 +1,5 @@
 package com.dspread.demoui.activity;
 
-import static com.dspread.demoui.activity.BaseApplication.getApplicationInstance;
-import static com.dspread.demoui.activity.BaseApplication.pos;
-import static com.dspread.demoui.utils.Utils.open;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -13,17 +9,34 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.os.PowerManager;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.KeyEvent;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowInsetsController;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.dspread.demoui.R;
+import com.dspread.demoui.beans.Constants;
+import com.dspread.demoui.ui.dialog.Mydialog;
+import com.dspread.demoui.ui.fragment.AboutFragment;
+import com.dspread.demoui.ui.fragment.AutoFragment;
+import com.dspread.demoui.ui.fragment.DeviceInfoFragment;
+import com.dspread.demoui.ui.fragment.DeviceUpdataFragment;
+import com.dspread.demoui.ui.fragment.HomeFragment;
+import com.dspread.demoui.ui.fragment.LogsFragment;
+import com.dspread.demoui.ui.fragment.MifareCardsFragment;
+import com.dspread.demoui.ui.fragment.PrinterHelperFragment;
+import com.dspread.demoui.ui.fragment.ScanFragment;
+import com.dspread.demoui.ui.fragment.SettingFragment;
+import com.dspread.demoui.utils.SharedPreferencesUtil;
+import com.dspread.demoui.utils.TRACE;
+import com.dspread.demoui.utils.TitleUpdateListener;
+import com.dspread.demoui.utils.UpdateAppHelper;
+import com.dspread.xpos.QPOSService;
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
+import com.google.android.material.navigation.NavigationView;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -39,25 +52,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.dspread.demoui.R;
-import com.dspread.demoui.beans.Constants;
-import com.dspread.demoui.ui.dialog.Mydialog;
-import com.dspread.demoui.ui.fragment.AboutFragment;
-import com.dspread.demoui.ui.fragment.AutoFragment;
-import com.dspread.demoui.ui.fragment.DeviceInfoFragment;
-import com.dspread.demoui.ui.fragment.DeviceUpdataFragment;
-import com.dspread.demoui.ui.fragment.HomeFragment;
-import com.dspread.demoui.ui.fragment.LogsFragment;
-import com.dspread.demoui.ui.fragment.PrinterHelperFragment;
-import com.dspread.demoui.ui.fragment.ScanFragment;
-import com.dspread.demoui.ui.fragment.SettingFragment;
-import com.dspread.demoui.utils.SharedPreferencesUtil;
-import com.dspread.demoui.utils.TRACE;
-import com.dspread.demoui.utils.TitleUpdateListener;
-import com.dspread.demoui.utils.UpdateAppHelper;
-import com.dspread.xpos.QPOSService;
-import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
-import com.google.android.material.navigation.NavigationView;
+import static com.dspread.demoui.utils.Utils.open;
 
 public class MainActivity extends AppCompatActivity implements TitleUpdateListener, NavigationView.OnNavigationItemSelectedListener {
     DrawerLayout drawerLayout;
@@ -77,7 +72,11 @@ public class MainActivity extends AppCompatActivity implements TitleUpdateListen
     ExtendedFloatingActionButton floatingActionButton;
     private MenuItem menuItem;
     private AutoFragment autoFragment;
+
+    private MifareCardsFragment mifareCardsFragment;
     SharedPreferencesUtil connectType;
+    ActionBarDrawerToggle toggle;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +93,15 @@ public class MainActivity extends AppCompatActivity implements TitleUpdateListen
         menuItem = navigationView.getMenu().findItem(R.id.nav_printer);
 
         drawerStateChanged();
+        setSupportActionBar(toolbar);
+        navigationView.bringToFront();
+
+        toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+        navigationView.setNavigationItemSelectedListener(this);
+
+
         floatingActionButton.setOnClickListener(view -> {
             toolbar.setTitle(getString(R.string.show_log));
             switchFragment(5);
@@ -228,6 +236,11 @@ public class MainActivity extends AppCompatActivity implements TitleUpdateListen
                 switchFragment(7);
                 drawerLayout.close();
                 break;
+            case R.id.nav_mifareCards:
+                toolbar.setTitle(getString(R.string.menu_mifareCards));
+                switchFragment(9);
+                drawerLayout.close();
+                break;
             case R.id.nav_exit:
                 Mydialog.manualExitDialog(MainActivity.this, getString(R.string.msg_exit), new Mydialog.OnMyClickListener() {
                     @Override
@@ -326,6 +339,13 @@ public class MainActivity extends AppCompatActivity implements TitleUpdateListen
                 Constants.transData.setAutoTrade("autoTrade");
                 transaction.show(autoFragment);
                 break;
+            case 9:
+                if (mifareCardsFragment == null) {
+                    mifareCardsFragment = new MifareCardsFragment();
+                    transaction.add(R.id.nav_host_fragment_content_main, mifareCardsFragment);
+                }
+                transaction.show(mifareCardsFragment);
+                break;
             default:
                 break;
         }
@@ -361,7 +381,9 @@ public class MainActivity extends AppCompatActivity implements TitleUpdateListen
         if (autoFragment != null) {
             transaction.hide(autoFragment);
         }
-
+        if (mifareCardsFragment != null) {
+            transaction.hide(mifareCardsFragment);
+        }
     }
 
     private static final int BLUETOOTH_CODE = 100;
@@ -391,19 +413,30 @@ public class MainActivity extends AppCompatActivity implements TitleUpdateListen
                 }
 //                        Toast.makeText(getActivity(), "Permission Denied", Toast.LENGTH_SHORT).show();
             } else {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, android.Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, android.Manifest.permission.BLUETOOTH_ADVERTISE) != PackageManager.PERMISSION_GRANTED) {
+                        String[] list = new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.BLUETOOTH_SCAN, android.Manifest.permission.BLUETOOTH_CONNECT, android.Manifest.permission.BLUETOOTH_ADVERTISE};
+                        ActivityCompat.requestPermissions(this, list, BLUETOOTH_CODE);
+
+                    }
+                }
 //                Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show();
             }
-        } else {
+        }
+        else {
             Toast.makeText(this, "System detects that the GPS location service is not turned on", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent();
             intent.setAction(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-            ActivityResultLauncher<Intent> launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                }
-            });
-            launcher.launch(intent);
-
+            try {
+                ActivityResultLauncher<Intent> launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                    }
+                });
+                launcher.launch(intent);
+            }catch (Exception e){
+                Toast.makeText(this, "Pls open the LOCATION in your device settings!", Toast.LENGTH_SHORT).show();
+            }
 
         }
     }

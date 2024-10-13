@@ -4,15 +4,15 @@
     "type": "APK",
     "kind": "Directory"
   },
-  "applicationId": "com.example.despreaddemo",
+  "applicationId": "com.dspread.demoui",
   "variantName": "release",
   "elements": [
     {
       "type": "SINGLE",
       "filters": [],
       "attributes": [],
-      "versionCode": 1,
-      "versionName": "1.0",
+      "versionCode": 22,
+      "versionName": "4.4.2",
       "outputFile": "pos_android_studio_app-release.apk"
     }
   ],

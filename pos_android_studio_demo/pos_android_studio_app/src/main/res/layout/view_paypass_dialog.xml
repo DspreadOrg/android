@@ -6,7 +6,7 @@
     android:orientation="vertical">
 
 
-    <com.dspread.demoui.widget.pinpad.PayPassView
+    <com.dspread.demoui.widget.pinpad.PinPadView
         android:id="@+id/pay_View"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

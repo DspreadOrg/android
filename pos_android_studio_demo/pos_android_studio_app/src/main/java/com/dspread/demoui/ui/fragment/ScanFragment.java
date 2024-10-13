@@ -77,6 +77,10 @@ public class ScanFragment extends Fragment {
         Log.w("scan", "strcode==" + str);
     });
 
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+//        super.onSaveInstanceState(outState);
+    }
 
     private boolean canshow = true;
     private CountDownTimer showTimer = new CountDownTimer(800, 500) {

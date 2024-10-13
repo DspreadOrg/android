@@ -1,5 +1,7 @@
 package com.dspread.demoui.activity.printer;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.RemoteException;
@@ -10,8 +12,11 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.action.printerservice.PrintStyle;
 import com.action.printerservice.barcode.Barcode1D;
+import com.action.printerservice.barcode.Barcode2D;
 import com.dspread.demoui.R;
 import com.dspread.print.device.PrintListener;
 import com.dspread.print.device.PrinterDevice;
@@ -19,8 +24,6 @@ import com.dspread.print.device.PrinterInitListener;
 import com.dspread.print.device.PrinterManager;
 import com.dspread.print.device.bean.PrintLineStyle;
 import com.dspread.print.widget.PrintLine;
-
-import androidx.appcompat.app.AppCompatActivity;
 
 public class PrintTicketActivity extends AppCompatActivity implements View.OnClickListener {
     private PrinterDevice mPrinter;
@@ -78,7 +81,7 @@ public class PrintTicketActivity extends AppCompatActivity implements View.OnCli
         btnStopPrint = findViewById(R.id.btn_stopprint);
         String deviceModel = Build.MODEL;
         btnPrint = findViewById(R.id.btn_Print);
-        if ("mp600".equalsIgnoreCase(deviceModel)) {
+        if ("mp600".equals(deviceModel)) {
             btnStopPrint.setVisibility(View.VISIBLE);
         } else {
             btnStopPrint.setVisibility(View.GONE);
@@ -121,99 +124,10 @@ public class PrintTicketActivity extends AppCompatActivity implements View.OnCli
             mPrinter.addText("- - - - - - - - - - - - - -");
             mPrinter.addText("Please scan the QRCode for getting more information: ");
             mPrinter.addBarCode(this, Barcode1D.CODE_128.name(), 400, 100, "123456", PrintLine.CENTER);
-//            mPrinter.addText("Please scan the QRCode for getting more information:");
-//            mPrinter.addQRCode(300, Barcode2D.QR_CODE.name(), "123456", PrintLine.CENTER);
-//            Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.test);
-//            mPrinter.addBitmap(bitmap);
-            mPrinter.setPrintStyle(printLineStyle);
-            mPrinter.setFooter(100);
-            mPrinter.print(this);
-        } catch (RemoteException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-
-    private void printTicket() {
-        printLineStyle.setFontStyle(PrintStyle.FontStyle.BOLD);
-        printLineStyle.setFontSize(16);
-        printLineStyle.setAlign(PrintLine.CENTER);
-        mPrinter.addPrintLintStyle(printLineStyle);
-
-        try {
-            mPrinter.addText("银联签购单");
-            mPrinter.addPrintLintStyle(new PrintLineStyle(PrintStyle.FontStyle.BOLD, PrintLine.CENTER, 12));
-            mPrinter.addTexts(new String[]{"商户存根", "MERCHANT COPY"}, new int[]{4, 6}, new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.ALIGN_OPPOSITE});
-            mPrinter.addText("- - - - - - - - - - - - - - - - - - - - - ");
-            mPrinter.addPrintLintStyle(new PrintLineStyle(PrintStyle.FontStyle.BOLD, PrintLine.CENTER, 12));
-            mPrinter.addTexts(new String[]{"商户名称(MERCHANT NAME):", "测试商户"}, new int[]{7, 3}, new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.ALIGN_OPPOSITE});
-            mPrinter.addTexts(new String[]{"商户号(MERCHANT NO.):", "111111111111111"}, new int[]{7, 3}, new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.ALIGN_OPPOSITE});
-
-            mPrinter.addTexts(new String[]{"终端号(TERMINAL ID.):", "22222222"}, new int[]{7, 3}, new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.ALIGN_OPPOSITE});
-
-            mPrinter.addTexts(new String[]{"操作员号(OPERATOR NO.):", "01"}, new int[]{8, 2}, new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.ALIGN_OPPOSITE});
-
-            mPrinter.addText("- - - - - - - - - - - - - - - - - - - - - ");
-
-            mPrinter.addTexts(new String[]{"收单行(ACQUIRER):", "xxxx银行"}, new int[]{7, 3}, new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.ALIGN_OPPOSITE});
-
-
-            mPrinter.addTexts(new String[]{"卡号(CARD NO.):", ""}, new int[]{5, 5}, new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.ALIGN_OPPOSITE});
-
-            mPrinter.addTexts(new String[]{"", "621485******2878"}, new int[]{5, 5}, new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.ALIGN_OPPOSITE});
-
-
-
-            mPrinter.addTexts(new String[]{"有效期(EXP.DATE):", "2030/01"}, new int[]{7, 3}, new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.ALIGN_OPPOSITE});
-
-            mPrinter.addTexts(new String[]{"卡顺序号(CARD SN):", "0000"}, new int[]{7, 3}, new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.ALIGN_OPPOSITE});
-
-            mPrinter.addPrintLintStyle(new PrintLineStyle(PrintStyle.FontStyle.BOLD, PrintLine.CENTER, 12));
-            mPrinter.addText("- - - - - - - - - - - - - - - - - - - - - ");
-
-            mPrinter.addTexts(new String[]{"交易类型(TRANS TYPE):", ""}, new int[]{9, 1}, new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.ALIGN_OPPOSITE});
-
-            mPrinter.addPrintLintStyle(new PrintLineStyle(PrintStyle.FontStyle.BOLD, PrintLine.RIGHT, 14));
-
-            mPrinter.addText("消费");
-
-            mPrinter.addTexts(new String[]{"批次号(BATCH NO.):", "000326"}, new int[]{7, 3}, new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.ALIGN_OPPOSITE});
-
-            mPrinter.addTexts(new String[]{"流水号(TRACE NO.):", "000320"}, new int[]{7, 3}, new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.ALIGN_OPPOSITE});
-
-            mPrinter.addTexts(new String[]{"参考号(REF，NO.):", "622228356483"}, new int[]{7, 3}, new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.ALIGN_OPPOSITE});
-
-            mPrinter.addTexts(new String[]{"日期/时间(DATE/TIME):", "2024-04-13 08:49:58"}, new int[]{7, 3}, new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.ALIGN_OPPOSITE});
-
-            mPrinter.addTexts(new String[]{"金额(AMOUNT):", ""}, new int[]{7, 3}, new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.ALIGN_OPPOSITE});
-            mPrinter.addPrintLintStyle(new PrintLineStyle(PrintStyle.FontStyle.BOLD, PrintLine.RIGHT, 14));
-            mPrinter.addText("RMB 0.59");
-            mPrinter.addPrintLintStyle(new PrintLineStyle(PrintStyle.FontStyle.NORMAL, PrintLine.LEFT, 12));
-            mPrinter.addText("持卡人签名CARDHOLDER SIGNATURE:");
-            mPrinter.addText("");
-            mPrinter.addText("");
-            mPrinter.addText("");
-            mPrinter.addPrintLintStyle(new PrintLineStyle(PrintStyle.FontStyle.NORMAL, PrintLine.LEFT, 12));
-            mPrinter.addText("本人确认以上交易,同意将其记入本卡账户");
-            mPrinter.addPrintLintStyle(new PrintLineStyle(PrintStyle.FontStyle.NORMAL, PrintLine.LEFT, 12));
-            mPrinter.addText("I ACKNOWLEDGE SATISFACTORY RECEIPT OFRELATIVE GOODS/SERVICES");
-            mPrinter.addPrintLintStyle(new PrintLineStyle(PrintStyle.FontStyle.BOLD, PrintLine.CENTER, 14));
-            mPrinter.addText("- - - - - - - - - - - - - - - - - - - - - ");
-            mPrinter.addPrintLintStyle(new PrintLineStyle(PrintStyle.FontStyle.BOLD, PrintLine.LEFT, 12));
-            mPrinter.addText("备注(REFERENCE):");
-            mPrinter.addTexts(new String[]{"AROC:", "98E9FB585E304BFD"}, new int[]{3, 7}, new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.ALIGN_OPPOSITE});
-            mPrinter.addTexts(new String[]{"ID:", "A0000333010101"}, new int[]{3, 7}, new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.ALIGN_OPPOSITE});
-            mPrinter.addTexts(new String[]{"APPLAB:", "PBOC DEBIT"}, new int[]{5, 5}, new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.ALIGN_OPPOSITE});
-            mPrinter.addTexts(new String[]{"ATC:", "0966"}, new int[]{5, 5}, new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.ALIGN_OPPOSITE});
-            mPrinter.addTexts(new String[]{"TVR:", "00000000000"}, new int[]{3, 7}, new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.ALIGN_OPPOSITE});
-            mPrinter.addTexts(new String[]{"TSI:", "000"}, new int[]{5, 5}, new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.ALIGN_OPPOSITE});
-            mPrinter.addPrintLintStyle(new PrintLineStyle(PrintStyle.FontStyle.NORMAL, PrintLine.LEFT, 12));
-
-            mPrinter.addText("DSPREAD D6001610020202304040033");
-            mPrinter.addPrintLintStyle(new PrintLineStyle(PrintStyle.FontStyle.NORMAL, PrintLine.CENTER, 12));
-            mPrinter.addText("****重打印(REPRINT)****");
-            mPrinter.addPrintLintStyle(new PrintLineStyle(PrintStyle.FontStyle.BOLD, PrintLine.CENTER, 12));
-            mPrinter.addText("- - - - - - - - - - - - - - - - - - - - - ");
+            mPrinter.addText("Please scan the QRCode for getting more information:");
+            mPrinter.addQRCode(300, Barcode2D.QR_CODE.name(), "123456", PrintLine.CENTER);
+            /*Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.test);
+            mPrinter.addBitmap(bitmap);*/
             mPrinter.setPrintStyle(printLineStyle);
             mPrinter.setFooter(100);
             mPrinter.print(this);
@@ -233,8 +147,8 @@ public class PrintTicketActivity extends AppCompatActivity implements View.OnCli
                 printtext();
                 break;
             case R.id.btn_Print:
-               // printtext();
-                printTicket();
+                printtext();
+                btnPrint.setEnabled(false);
                 break;
             case R.id.btn_multi:
                 try {
@@ -262,16 +176,9 @@ public class PrintTicketActivity extends AppCompatActivity implements View.OnCli
     }
 
     class MyPrinterListener implements PrintListener {
-
-        //        @Override
-//        public void printResult(boolean b, String s, int i) {
-//            Log.w("printResult", "boolean b==" + b);
-//            Log.w("printResult", "String s==" + s);
-//            Log.w("printResult", "int i==" + i);
-//
-//        }
         @Override
         public void printResult(boolean b, String s, PrinterDevice.ResultType resultType) {
+            btnPrint.setEnabled(true);
             Log.w("printResult", "boolean b==" + b);
             Log.w("printResult", "String s==" + s);
             Log.w("printResult", "resultType==" + resultType.toString());

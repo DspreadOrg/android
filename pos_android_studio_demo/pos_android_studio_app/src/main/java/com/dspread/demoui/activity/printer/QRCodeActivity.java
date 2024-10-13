@@ -11,8 +11,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.action.printerservice.barcode.Barcode2D;
 import com.dspread.demoui.R;
 import com.dspread.demoui.ui.dialog.PrintDialog;
@@ -23,6 +21,8 @@ import com.dspread.print.device.PrinterInitListener;
 import com.dspread.print.device.PrinterManager;
 import com.dspread.print.device.bean.PrintLineStyle;
 import com.dspread.print.widget.PrintLine;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class QRCodeActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -307,12 +307,12 @@ public class QRCodeActivity extends AppCompatActivity implements View.OnClickLis
                     }
 //                    mPrinter.setPrinterGrey(grayLevel);
                     mPrinter.setPrintStyle(printLineStyle);
-                    Log.w("qrErrorLevel","qrErrorLevel=="+qrErrorLevel);
-                    if ("".equals(qrErrorLevel)){
+                    Log.w("qrErrorLevel", "qrErrorLevel==" + qrErrorLevel);
+                    if ("".equals(qrErrorLevel)) {
                         qrErrorLevel = qrcodeTextErrorLevel.getText().toString();
                     }
-                    mPrinter.printQRCode(this,qrErrorLevel, qrSize, qrContent, printLineAlign);
-
+                    mPrinter.printQRCode(this, qrErrorLevel, qrSize, qrContent, printLineAlign);
+                    btnQrcodePrint.setEnabled(false);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
 
@@ -324,16 +324,9 @@ public class QRCodeActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     class MyPrinterListener implements PrintListener {
-
-//        @Override
-//        public void printResult(boolean b, String s, int i) {
-//            Log.w("printResult", "boolean b==" + b);
-//            Log.w("printResult", "String s==" + s);
-//            Log.w("printResult", "int i==" + i);
-//
-//        }
         @Override
         public void printResult(boolean b, String s, PrinterDevice.ResultType resultType) {
+            btnQrcodePrint.setEnabled(true);
             Log.w("printResult", "boolean b==" + b);
             Log.w("printResult", "String s==" + s);
             Log.w("printResult", "resultType==" + resultType.toString());

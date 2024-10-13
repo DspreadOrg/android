@@ -28,7 +28,7 @@
 	<DF01>00</DF01> <!--Application Selection Indicator-->
 	<9F09>0096</9F09> <!--Terminal Application Version Number-->
 	<9F1B>00000000</9F1B> <!--Terminal Floor Limit-->
-	<9F66>32C04000</9F66> <!--Contactless Terminal Transaction Qualifiers-->
+	<9F66>36E04000</9F66> <!--Contactless Terminal Transaction Qualifiers-->
 	<9F8125>9F3704</9F8125> <!--Contact Default Dynamic Data Authentication Data Object List (DDOL)-->
 	<9F8127>00</9F8127> <!--Contact Maximum Target Percentage to be Used for Biased Random Selection-->
 	<9F8128>00</9F8128> <!--Contact Target Percentage to Be Used for Random Selection-->
@@ -49,7 +49,7 @@
 	<DF01>00</DF01> <!--Application Selection Indicator-->
 	<9F09>0096</9F09> <!--Terminal Application Version Number-->
 	<9F1B>00000000</9F1B> <!--Terminal Floor Limit-->
-    <9F66>32C04000</9F66> < <!--Contactless Terminal Transaction Qualifiers-->
+	<9F66>36E04000</9F66> <!--Contactless Terminal Transaction Qualifiers-->
 	<9F8125>9F3704</9F8125> <!--Contact Default Dynamic Data Authentication Data Object List (DDOL)-->
 	<9F8127>00</9F8127> <!--Contact Maximum Target Percentage to be Used for Biased Random Selection-->
 	<9F8128>00</9F8128> <!--Contact Target Percentage to Be Used for Random Selection-->
@@ -70,7 +70,7 @@
 	<DF01>00</DF01> <!--Application Selection Indicator-->
 	<9F09>0096</9F09> <!--Terminal Application Version Number-->
 	<9F1B>00000000</9F1B> <!--Terminal Floor Limit-->
-    <9F66>32C04000</9F66> <!--Contactless Terminal Transaction Qualifiers-->
+	<9F66>36E04000</9F66> <!--Contactless Terminal Transaction Qualifiers-->
 	<9F8125>9F3704</9F8125> <!--Contact Default Dynamic Data Authentication Data Object List (DDOL)-->
 	<9F8127>00</9F8127> <!--Contact Maximum Target Percentage to be Used for Biased Random Selection-->
 	<9F8128>00</9F8128> <!--Contact Target Percentage to Be Used for Random Selection-->
@@ -111,7 +111,7 @@
 	<DF810C>02</DF810C> <!--Contactless Kernel ID-->
 	<DF810D>02</DF810D> <!--Contactless DSVN Term-->
 	<DF8117>20</DF8117> <!--Contactless Card Data Input Capability-->
-	<DF8118>20</DF8118> <!--Contactless CVM Capability – CVM Required-->
+	<DF8118>60</DF8118> <!--Contactless CVM Capability – CVM Required-->
 	<DF8119>08</DF8119> <!--Contactless CVM Capability – No CVM Required-->
 	<DF811A>9F6A04</DF811A> <!--Contactless Default UDOL-->
 	<DF811B>B0</DF811B> <!--Contactless Kernel Configuration-->
@@ -172,7 +172,7 @@
 	<DF01>00</DF01> <!--Application Selection Indicator-->
 	<9F09>0096</9F09> <!--Terminal Application Version Number-->
 	<9F1B>00000000</9F1B> <!--Terminal Floor Limit-->
-	<9F66>32C04000</9F66> <!--Contactless Terminal Transaction Qualifiers-->
+	<9F66>36E04000</9F66> <!--Contactless Terminal Transaction Qualifiers-->
 	<9F8125>9F3704</9F8125> <!--Contact Default Dynamic Data Authentication Data Object List (DDOL)-->
 	<9F8127>00</9F8127> <!--Contact Maximum Target Percentage to be Used for Biased Random Selection-->
 	<9F8128>00</9F8128> <!--Contact Target Percentage to Be Used for Random Selection-->

@@ -3,9 +3,7 @@ package com.dspread.demoui.activity.printer;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.RemoteException;
 import android.util.Log;
-import android.view.Display;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -14,8 +12,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.action.printerservice.barcode.Barcode1D;
 import com.dspread.demoui.R;
@@ -27,6 +23,8 @@ import com.dspread.print.device.PrinterInitListener;
 import com.dspread.print.device.PrinterManager;
 import com.dspread.print.device.bean.PrintLineStyle;
 import com.dspread.print.widget.PrintLine;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class BarCodeActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -66,7 +64,6 @@ public class BarCodeActivity extends AppCompatActivity implements View.OnClickLi
     private int grayLevel;
     private int speedLevel;
     private int densityLevel;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -348,7 +345,7 @@ public class BarCodeActivity extends AppCompatActivity implements View.OnClickLi
                     }
                     Log.w("brSymbology", "brSymbology==" + brSymbology);
                     mPrinter.printBarCode(this, brSymbology, width, height, brContent, printLineAlign);
-
+                    btnBrcodePrint.setEnabled(false);
                 } catch (Exception e) {
                     Log.e("Exception", "e=" + e);
                     Toast toast = Toast.makeText(BarCodeActivity.this, "Error: " + e, Toast.LENGTH_SHORT);
@@ -364,20 +361,11 @@ public class BarCodeActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     class MyPrinterListener implements PrintListener {
-
-//        @Override
-//        public void printResult(boolean b, String s, int i) {
-//            Log.w("printResult", "boolean b==" + b);
-//            Log.w("printResult", "String s==" + s);
-//            Log.w("printResult", "int i==" + i);
-//
-//        }
-
         @Override
         public void printResult(boolean b, String s, PrinterDevice.ResultType resultType) {
+            btnBrcodePrint.setEnabled(true);
             Log.w("printResult", "boolean b==" + b);
             Log.w("printResult", "String s==" + s);
-            Log.w("printResult", "resultType==" + resultType.toString());
         }
     }
 

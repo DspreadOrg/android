@@ -1,25 +1,13 @@
 package com.dspread.demoui.activity;
 
-import static com.dspread.demoui.activity.BaseApplication.getApplicationInstance;
-import static com.dspread.demoui.activity.BaseApplication.handler;
-import static com.dspread.demoui.activity.BaseApplication.pos;
-import static com.dspread.demoui.utils.QPOSUtil.HexStringToByteArray;
-import static com.xuexiang.xutil.resource.ResUtils.getString;
-
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
-import android.bluetooth.BluetoothDevice;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.res.Resources;
 import android.os.BatteryManager;
-import android.os.PowerManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -28,13 +16,11 @@ import android.widget.Toast;
 import com.dspread.demoui.R;
 import com.dspread.demoui.beans.Constants;
 import com.dspread.demoui.ui.dialog.Mydialog;
-import com.dspread.demoui.ui.fragment.DeviceInfoFragment;
 import com.dspread.demoui.ui.fragment.DeviceUpdataFragment;
 import com.dspread.demoui.ui.fragment.SettingFragment;
 import com.dspread.demoui.utils.ConstantUtil;
 import com.dspread.demoui.utils.DUKPK2009_CBC;
 import com.dspread.demoui.utils.ParseASN1Util;
-import com.dspread.demoui.utils.QPOSUtil;
 import com.dspread.demoui.utils.SpUtils;
 import com.dspread.demoui.utils.TRACE;
 import com.dspread.demoui.widget.pinpad.keyboard.KeyBoardNumInterface;
@@ -42,8 +28,7 @@ import com.dspread.demoui.widget.pinpad.keyboard.KeyboardUtil;
 import com.dspread.demoui.widget.pinpad.keyboard.MyKeyboardView;
 import com.dspread.xpos.CQPOSService;
 import com.dspread.xpos.QPOSService;
-import com.dspread.xpos.Util;
-import com.dspread.xpos.utils.AESUtil;
+import com.dspread.xpos.utils.BASE64Decoder;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.callback.AbsCallback;
 import com.lzy.okgo.model.Response;
@@ -57,8 +42,9 @@ import java.util.Hashtable;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import Decoder.BASE64Decoder;
-import Decoder.BASE64Encoder;
+import static com.dspread.demoui.activity.BaseApplication.getApplicationInstance;
+import static com.dspread.demoui.activity.BaseApplication.pos;
+import static com.xuexiang.xutil.resource.ResUtils.getString;
 
 public class MyQposClass extends CQPOSService {
     public  static KeyboardUtil keyboardUtil;

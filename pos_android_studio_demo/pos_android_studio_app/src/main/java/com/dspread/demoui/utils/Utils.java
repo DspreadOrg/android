@@ -1,14 +1,15 @@
 package com.dspread.demoui.utils;
 
-import static com.dspread.demoui.activity.BaseApplication.handler;
-import static com.dspread.demoui.activity.BaseApplication.pos;
-
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
+
 import com.dspread.demoui.activity.MyQposClass;
 import com.dspread.xpos.QPOSService;
+
+import static com.dspread.demoui.activity.BaseApplication.handler;
+import static com.dspread.demoui.activity.BaseApplication.pos;
 
 public class Utils {
 	

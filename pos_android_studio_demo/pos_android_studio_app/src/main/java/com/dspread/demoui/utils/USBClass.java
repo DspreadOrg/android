@@ -11,6 +11,7 @@ import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbDeviceConnection;
 import android.hardware.usb.UsbManager;
 import android.os.Build;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,11 +45,12 @@ public class USBClass {
                             // call method to set up device communication
                             TRACE.i("usb" + "permission granted for device "
                                     + device);
-
+                            Toast.makeText(context.getApplicationContext(), "Usb permission granted for device", Toast.LENGTH_SHORT).show();
                         }
                     } else {
 //						mMyClickListener.onCencel();
                         TRACE.i("usb" + "permission denied for device " + device);
+                        Toast.makeText(context.getApplicationContext(), "Usb permission denied", Toast.LENGTH_SHORT).show();
                     }
                 }
             }

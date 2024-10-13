@@ -76,6 +76,7 @@ public class PrintFunctionMultiActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 printFunctionMulti();
+                btnPrint.setEnabled(false);
             }
         });
     }
@@ -93,25 +94,15 @@ public class PrintFunctionMultiActivity extends AppCompatActivity {
             throw new RuntimeException(e);
         }
     }
-
-
     class MyPrinterListener implements PrintListener {
-
-//        @Override
-//        public void printResult(boolean b, String s, int i) {
-//            Log.w("printResult", "boolean b==" + b);
-//            Log.w("printResult", "String s==" + s);
-//            Log.w("printResult", "int i==" + i);
-//
-//        }
-@Override
-public void printResult(boolean b, String s, PrinterDevice.ResultType resultType) {
-    Log.w("printResult", "boolean b==" + b);
-    Log.w("printResult", "String s==" + s);
-    Log.w("printResult", "resultType==" + resultType.toString());
-}
+        @Override
+        public void printResult(boolean b, String s, PrinterDevice.ResultType resultType) {
+            btnPrint.setEnabled(true);
+            Log.w("printResult", "boolean b==" + b);
+            Log.w("printResult", "String s==" + s);
+            Log.w("printResult", "resultType==" + resultType.toString());
+        }
     }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();

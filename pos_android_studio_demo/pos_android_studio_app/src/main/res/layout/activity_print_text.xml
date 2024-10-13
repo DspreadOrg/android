@@ -138,11 +138,12 @@
             android:background="@color/white"
             android:padding="20dp">
 
-            <EditText
+            <TextView
                 android:id="@+id/edit_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/text_print"
+                android:textSize="@dimen/dp_19"
                 android:importantForAutofill="no"
                 tools:ignore="LabelFor,TextFields,VisualLintTextFieldSize" />
         </ScrollView>

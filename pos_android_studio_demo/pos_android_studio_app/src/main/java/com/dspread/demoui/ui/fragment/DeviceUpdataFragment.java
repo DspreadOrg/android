@@ -1,15 +1,6 @@
 package com.dspread.demoui.ui.fragment;
 
-import static com.dspread.demoui.activity.BaseApplication.pos;
-import static com.dspread.demoui.ui.dialog.Mydialog.BLUETOOTH;
-import static com.dspread.demoui.ui.dialog.Mydialog.UART;
-import static com.dspread.demoui.ui.dialog.Mydialog.USB_OTG_CDC_ACM;
-import static com.dspread.demoui.utils.Utils.getKeyIndex;
-import static com.dspread.demoui.utils.Utils.open;
-
 import android.Manifest;
-import android.app.Activity;
-import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -26,23 +17,24 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
-
 import com.dspread.demoui.R;
 import com.dspread.demoui.activity.BaseApplication;
 import com.dspread.demoui.activity.PaymentActivity;
 import com.dspread.demoui.beans.Constants;
 import com.dspread.demoui.ui.dialog.Mydialog;
 import com.dspread.demoui.utils.FileUtils;
-import com.dspread.demoui.utils.TRACE;
-import com.dspread.demoui.utils.TitleUpdateListener;
 import com.dspread.demoui.utils.SharedPreferencesUtil;
-import com.dspread.xpos.QPOSService;
+import com.dspread.demoui.utils.TitleUpdateListener;
 
-import java.util.Hashtable;
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
+
+import static com.dspread.demoui.activity.BaseApplication.pos;
+import static com.dspread.demoui.ui.dialog.Mydialog.BLUETOOTH;
+import static com.dspread.demoui.ui.dialog.Mydialog.UART;
+import static com.dspread.demoui.ui.dialog.Mydialog.USB_OTG_CDC_ACM;
+import static com.dspread.demoui.utils.Utils.getKeyIndex;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -134,7 +126,7 @@ public class DeviceUpdataFragment extends Fragment implements View.OnClickListen
             case R.id.update_firmware:
                 if (conType != null && "uart".equals(conType)) {
 //                    Mydialog.loading(getActivity(),getString(R.string.updateFirmware));
-                    DeviceUpdataFragment.UpdateThread.concelFlag = false;
+                    UpdateThread.concelFlag = false;
                   updateFirmware();
                 } else {
                     updateDevice("updateFirmware");

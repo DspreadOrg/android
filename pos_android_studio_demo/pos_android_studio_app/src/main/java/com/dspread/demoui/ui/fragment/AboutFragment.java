@@ -21,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dspread.demoui.R;
+import com.dspread.demoui.utils.JsonHandler;
 import com.dspread.demoui.utils.TitleUpdateListener;
 import com.dspread.demoui.utils.NetCheckHelper;
 import com.dspread.demoui.utils.TRACE;
@@ -28,11 +29,14 @@ import com.dspread.demoui.utils.UpdateAppHelper;
 import com.dspread.demoui.widget.CustomDialog;
 import com.dspread.demoui.beans.VersionEnty;
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.callback.FileCallback;
 import com.lzy.okgo.model.Progress;
 import com.lzy.okgo.request.base.Request;
 import com.xuexiang.xutil.app.PathUtils;
+
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -147,6 +151,7 @@ public class AboutFragment extends Fragment implements View.OnClickListener {
                             try {
                                 String s = readerMethod(new File(absolutePath));
                                 Gson gson = new Gson();
+                                s= JsonHandler.parseJsonWithQuotes(s);
                                 Log.e("download_Success-JSON;", s);
                                 VersionEnty versionEnty = gson.fromJson(s, VersionEnty.class);
                                 String versionCode = (String) versionEnty.getVersionCode();
@@ -173,10 +178,11 @@ public class AboutFragment extends Fragment implements View.OnClickListener {
                                 } else {
                                     ivRedDot.setVisibility(View.GONE);
                                 }
-                            } catch (IOException e) {
+                            } catch (Exception e) {
                                 e.printStackTrace();
                             }
                         }
+
 
                         @Override
                         public void onStart(Request<File, ? extends Request> request) {
@@ -209,6 +215,10 @@ public class AboutFragment extends Fragment implements View.OnClickListener {
         } catch (Exception e) {
             Log.e("downLoad fail;", e.toString() + "");
         }
+    }
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+//        super.onSaveInstanceState(outState);
     }
 
     private static String readerMethod(File file) throws IOException {
@@ -294,4 +304,6 @@ public class AboutFragment extends Fragment implements View.OnClickListener {
         return versionName;
 
     }
+
+
 }

@@ -12,14 +12,14 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.dspread.demoui.R;
 import com.dspread.print.device.PrintListener;
 import com.dspread.print.device.PrinterDevice;
 import com.dspread.print.device.PrinterInitListener;
 import com.dspread.print.device.PrinterManager;
 import com.dspread.print.device.bean.PrintLineStyle;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class BitmapActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -38,7 +38,7 @@ public class BitmapActivity extends AppCompatActivity implements View.OnClickLis
         initView();
         PrinterManager instance = PrinterManager.getInstance();
         mPrinter = instance.getPrinter();
-        if ("D30".equals(Build.MODEL)) {
+        if ("D30".equalsIgnoreCase(Build.MODEL)) {
             mPrinter.initPrinter(BitmapActivity.this, new PrinterInitListener() {
                 @Override
                 public void connected() {
@@ -87,6 +87,7 @@ public class BitmapActivity extends AppCompatActivity implements View.OnClickLis
                     Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.test);
                     mPrinter.setFooter(100);
                     mPrinter.printBitmap(this,bitmap);
+                    btnBitmapPrint.setEnabled(true);
 
                 } catch (RemoteException e) {
                     throw new RuntimeException(e);
@@ -98,16 +99,9 @@ public class BitmapActivity extends AppCompatActivity implements View.OnClickLis
     }
     class MyPrinterListener implements PrintListener {
 
-//        @Override
-//        public void printResult(boolean b, String s, int i) {
-//            Log.w("printResult", "boolean b==" + b);
-//            Log.w("printResult", "String s==" + s);
-//            Log.w("printResult", "int i==" + i);
-//
-//        }
-
         @Override
         public void printResult(boolean b, String s, PrinterDevice.ResultType resultType) {
+            btnBitmapPrint.setEnabled(true);
             Log.w("printResult", "boolean b==" + b);
             Log.w("printResult", "String s==" + s);
             Log.w("printResult", "resultType==" + resultType.toString());

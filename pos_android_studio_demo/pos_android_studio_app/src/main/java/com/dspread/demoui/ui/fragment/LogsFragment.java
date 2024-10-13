@@ -26,6 +26,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.dspread.demoui.R;
+import com.dspread.demoui.beans.Constants;
 import com.dspread.demoui.ui.dialog.Mydialog;
 import com.dspread.demoui.utils.DingTalkTest;
 import com.dspread.demoui.utils.LogFileConfig;
@@ -82,6 +83,10 @@ public class LogsFragment extends Fragment {
             tv_log.setText("Empty logs");
         }
 
+    }
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+//        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -150,7 +155,6 @@ public class LogsFragment extends Fragment {
     private String log;
     Runnable runnable = () -> {
         try {
-            String dingUrl = "https://oapi.dingtalk.com/robot/send?access_token=83e8afc691a1199c70bb471ec46d50099e6dd078ce10223bbcc56c0485cb5cc3";
             boolean isAtAll = false;
 
 //            List mobileList = Lists.newArrayList();
@@ -158,7 +162,7 @@ public class LogsFragment extends Fragment {
 
             String reqStr = DingTalkTest.buildReqStr(content, isAtAll);
 
-            String result =DingTalkTest.postJson(dingUrl, reqStr);
+            String result =DingTalkTest.postJson(Constants.dingdingUrl, reqStr);
 
             System.out.println("result == " + result);
             if (result==null){

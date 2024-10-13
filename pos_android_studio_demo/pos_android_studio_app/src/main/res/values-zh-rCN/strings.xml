@@ -48,10 +48,12 @@
     <string name="scan_usb_device">扫描USB设备</string>
     <string name="audio_open">音效控制:开</string>
     <string name="audio_close">音效控制:关</string>
-    <string name="poll_card">寻mifare卡</string>
+    <string name="poll_card">寻卡</string>
     <string name="verify_card">验证卡片</string>
+    <string name="verify_card1">验证卡片1</string>
+    <string name="the_result">这是结果</string>
     <string name="read_card">读卡</string>
-    <string name="operate_card">操作卡片（增值/减值/存储）</string>
+    <string name="operate_card">操作卡片</string>
     <string name="write_card">写卡</string>
     <string name="finish_card">完成卡通讯</string>
     <string name="audio_unknow">音效控制:未知</string>
@@ -60,6 +62,9 @@
     <string name="getId">获取PosId</string>
     <string name="update">升级</string>
     <string name="input_pin">请输入密码</string>
+    <string name="input_onlinePin">请输入联机密码</string>
+    <string name="input_offlinePin">请输入脱机密码</string>
+    <string name="input_offlinePin_last">请输入最后一次脱机密码</string>
     <string name="setBuzzer">设置蜂鸣器</string>
     <string name="updateIPEK">更新IPEK</string>
     <string name="set_Masterkey">设置主密钥</string>
@@ -84,7 +89,7 @@
     <string name="card_is_exist">有卡</string>
     <string name="card_is_not_exist">无卡</string>
     <string name="get_pos_id">获取PosID</string>
-    <string name="operate_mafire">操作mafire卡</string>
+    <string name="operate_mifare">操作mifare卡</string>
     <string name="inject_key_remote">远程灌密钥</string>
     <string name="getting_pos_id">获取POS ID…</string>
     <string name="scan_bt_device">扫描设备</string>
@@ -119,9 +124,9 @@
     <string name="emv_ksn">EMV KSN:</string>
     <string name="uid">UID：</string>
     <string name="service_code">服务代码: </string>
-    <string name="track_1_length">磁轨1長度 ：</string>
-    <string name="track_2_length">磁轨2長度 ：</string>
-    <string name="track_3_length">磁轨3長度 ：</string>
+    <string name="track_1_length">磁轨1长度 ：</string>
+    <string name="track_2_length">磁轨2长度 ：</string>
+    <string name="track_3_length">磁轨3长度 ：</string>
     <string name="encrypted_tracks">加密磁轨：</string>
     <string name="encrypted_track_1">加密磁轨1：</string>
     <string name="encrypted_track_2">加密磁轨2：</string>
@@ -234,7 +239,25 @@
     <string name="starting">开始中…</string>
     <string name="power_on_icc">ICC上电</string>
     <string name="power_off_icc">关闭ICC</string>
-    <string name="send_apdu">传送APDU</string>
+    <string name="send_apdu">发送APDU</string>
+    <string name="send_apdu_data">apdu数据: </string>
+    <string name="block_addr">块地址 : </string>
+    <string name="key_value">key  值 : </string>
+    <string name="card_datas">卡数据 : </string>
+    <string name="write_cards">写 卡 : </string>
+    <string name="operate_add">加</string>
+    <string name="operate_reduce">减</string>
+    <string name="operate_restore">存储</string>
+    <string name="poll_card_failed">上电失败</string>
+    <string name="finish_success">结束成功</string>
+    <string name="finish_fail">结束失败</string>
+    <string name="Verify_success">验证成功</string>
+    <string name="Verify_fail">验证失败</string>
+    <string name="read_fail">读卡失败</string>
+    <string name="write_fail">写卡失败</string>
+    <string name="write_success">写卡成功</string>
+    <string name="operate_failed">操作失败</string>
+
     <string name="power_on_icc_success">ICC上电成功</string>
     <string name="power_on_icc_failed">ICC上电失败</string>
     <string name="power_off_icc_success">ICC关闭成功</string>
@@ -252,7 +275,7 @@
     <string name="card_blocked_or_no_evm_apps">卡已被锁或无EMV应用程序</string>
     <string name="invalid_icc_data">无效的ICC数据</string>
     <string name="power_on_nfc">NFC上电</string>
-    <string name="power_off_nfc">关闭NFC</string>
+    <string name="power_off_nfc">NFC下电</string>
     <string name="data_exchange">数据互换</string>
     <string name="power_on_nfc_success">NFC上电成功</string>
     <string name="power_on_nfc_failed">NFC上电失败</string>
@@ -374,6 +397,7 @@
     <string name="transaction_type">交易类型</string>
     <string name="device_connect">设备连接</string>
     <string name="menu_setting">设置</string>
+    <string name="menu_mifareCards">Mifare 卡</string>
     <string name="continue_trading">继续交易</string>
     <string name="prompt_message">信息提示:</string>
     <string name="delete">清除</string>
@@ -385,6 +409,8 @@
     <string name="setting_blu">POS蓝牙连接</string>
     <string name="setting_usb">POSUSB连接</string>
     <string name="version_update">检测版本更新</string>
+    <string name="operate_mifareCards">Mifare Classic</string>
+    <string name="operate_mifarDesfire">Mifare Desfire</string>
     <string name="blue_disconnect">蓝牙断开连接</string>
     <string name="setting_connectiontype">连接方式</string>
     <string name="about_app">关于应用</string>
@@ -418,6 +444,7 @@
     <string name="set_font_size">设置字体大小</string>
     <string name="print_text">打印文字</string>
     <string name="function_multi">打印多行多列</string>
+    <string name="please_send_apdu_data">发送APDU数据不能为空！</string>
     <string name="content_maxHeight">内容最大高度</string>
     <!--print content-->
     <string name="text_print">欢迎光临(简体中文)\n歡迎光臨(繁体中文)\nWelcome(英文)\n어서 오세요.(韩文)\nいらっしゃいませ(日文)\nWillkommen in der(德文)\nSouhaits de bienvenue(法文)\nยินดีต้อนรับสู่(泰文)\nДобро пожаловать(俄文)\nBenvenuti a(意大利语)\nvítejte v(捷克文)\nBEM - vindo Ao(葡萄牙文)\nمرحبا بكم في(阿拉伯语)\n</string>

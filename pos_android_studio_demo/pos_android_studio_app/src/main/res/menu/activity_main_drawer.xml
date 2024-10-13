@@ -33,6 +33,10 @@
             android:title="@string/device_update"
             />
         <item
+            android:id="@+id/nav_mifareCards"
+            android:icon="@drawable/mifare"
+            android:title="@string/menu_mifareCards" />
+        <item
             android:id="@+id/nav_setting"
             android:icon="@drawable/setting_icon"
             android:title="@string/menu_setting" />

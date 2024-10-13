@@ -1,9 +1,5 @@
 package com.dspread.demoui.ui.fragment;
 
-import static com.dspread.demoui.activity.BaseApplication.getApplicationInstance;
-import static com.dspread.demoui.activity.BaseApplication.pos;
-import static com.dspread.demoui.utils.Utils.open;
-
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -21,15 +17,14 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.dspread.demoui.R;
 import com.dspread.demoui.activity.BaseApplication;
-import com.dspread.demoui.activity.PaymentUartActivity;
 import com.dspread.demoui.ui.dialog.Mydialog;
 import com.dspread.demoui.utils.MoneyUtil;
 import com.dspread.demoui.utils.SharedPreferencesUtil;
 import com.dspread.demoui.utils.TitleUpdateListener;
-import com.dspread.xpos.QPOSService;
 
 
 public class HomeFragment extends Fragment implements View.OnClickListener {
@@ -44,34 +39,15 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     View view;
     TitleUpdateListener myListener;
 
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-//         myListener = (MyListener) getActivity();
-//        myListener.sendValue(getString(R.string.menu_payment));
 
-    }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_input_money, null);
-        myListener = (TitleUpdateListener) getActivity();
         getActivity().setTitle(getString(R.string.menu_payment));
         initView(view);
-        initData();
-
         return view;
     }
-
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.main, menu);
-        menu.add(0, 1, 0, "posinfo");
-        menu.add(0, 2, 0, "posid");
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-
     protected void initView(View view) {
         inputMoneyYuanText = view.findViewById(R.id.inputMoneyYuanText);
         inputMoneyFenText = view.findViewById(R.id.inputMoneyFenText);
@@ -106,15 +82,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         connectType = SharedPreferencesUtil.getmInstance(getActivity());
         conType = (String) connectType.get("conType", "");
     }
-
-    protected void initData() {
-        bundle = getActivity().getIntent().getExtras();
-        if (bundle == null) {
-            bundle = new Bundle();
-        }
-    }
-
-
 
     @Override
     public void onClick(View v) {
@@ -162,8 +129,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                     }
                     canshow = false;
                     showTimer.start();
-                    PaymentUartActivity.flag=false;
                     Mydialog.payTypeDialog(getActivity(), amount, inputMoney, data);
+
                 } else {
                     Toast.makeText(getActivity(), getString(R.string.set_amount), Toast.LENGTH_SHORT).show();
                 }
@@ -189,15 +156,12 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         inputMoney = 0;
         inputMoneySetText();
     }
-
-
     @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+//        super.onSaveInstanceState(outState);
     }
 
-
-    private String[] data = {"GOODS", "SERVICES", "CASH", "CASHBACK", "INQUIRY",
+    private String[] data = {"GOODS", "SERVICES", "CASH", "CASHBACK","PURCHASE_REFUND","INQUIRY",
             "TRANSFER", "ADMIN", "CASHDEPOSIT",
             "PAYMENT", "PBOCLOG||ECQ_INQUIRE_LOG", "SALE",
             "PREAUTH", "ECQ_DESIGNATED_LOAD", "ECQ_UNDESIGNATED_LOAD",
@@ -217,5 +181,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
     };
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        getActivity().finish();
+    }
 }
 
