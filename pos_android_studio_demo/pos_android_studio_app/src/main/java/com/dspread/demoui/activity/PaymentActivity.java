@@ -285,73 +285,6 @@ public class PaymentActivity extends AppCompatActivity implements View.OnClickLi
 
     }
 
-    public boolean flag = false;
-    public AlertDialog alert;
-
-    @Override
-    public void onResume() {
-        super.onResume();
-//        if (type == USB_OTG_CDC_ACM) {
-//            mrllayout.setVisibility(View.GONE);
-//            tvTitle.setText(getString(R.string.device_connect));
-////            open(QPOSService.CommunicationMode.USB_OTG_CDC_ACM);
-//            if (!flag) {
-//                USBClass usb = new USBClass();
-//                try {
-//                    Thread.sleep(50);
-//                } catch (InterruptedException e) {
-//                    throw new RuntimeException(e);
-//                }
-//                ArrayList<String> deviceList = usb.GetUSBDevices(getBaseContext());
-//
-//                if (deviceList == null) {
-////                    Toast.makeText(PaymentActivity.this, "No Permission", Toast.LENGTH_SHORT).show();
-//                    return;
-//                }
-//                final CharSequence[] items = deviceList.toArray(new CharSequence[deviceList.size()]);
-//
-//                if (items.length == 1) {
-//                    String selectedDevice = (String) items[0];
-//                    flag = true;
-//                    usbDevice = USBClass.getMdevices().get(selectedDevice);
-////                    open(QPOSService.CommunicationMode.USB_OTG_CDC_ACM);
-////                    pos.openUsb(usbDevice);
-//                } else {
-//                    AlertDialog.Builder builder = new AlertDialog.Builder(PaymentActivity.this);
-//                    builder.setTitle("Select a Reader");
-//                    if (items.length == 0) {
-//                        builder.setMessage(getString(R.string.setting_disusb));
-//                        builder.setPositiveButton(getString(R.string.confirm), new DialogInterface.OnClickListener() {
-//                            @Override
-//                            public void onClick(DialogInterface dialog, int which) {
-//                                dialog.dismiss();
-//                                finish();
-//                            }
-//                        });
-//                    }
-//                    builder.setSingleChoiceItems(items, -1, new DialogInterface.OnClickListener() {
-//                        public void onClick(DialogInterface dialog, int item) {
-//                            if (items.length > item) {
-//                                String selectedDevice = items[item].toString();
-//                                dialog.dismiss();
-//                                flag = true;
-//                                usbDevice = USBClass.getMdevices().get(selectedDevice);
-////                                open(QPOSService.CommunicationMode.USB_OTG_CDC_ACM);
-////                                pos.openUsb(usbDevice);
-//                            }
-//                        }
-//                    });
-//                    alert = builder.create();
-//                    alert.setCanceledOnTouchOutside(false);
-//                    alert.setCancelable(false);
-//                    if (!this.isFinishing()) {
-//                        alert.show();
-//                    }
-//                }
-//            }
-//        }
-    }
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -468,7 +401,6 @@ public class PaymentActivity extends AppCompatActivity implements View.OnClickLi
                         content = statusEditText.getText().toString() + "\nNFCbatchData: " + nfcLog;
                     }
                     sendRequestToBackend(nfcData+content);
-
                     break;
                 default:
                     break;

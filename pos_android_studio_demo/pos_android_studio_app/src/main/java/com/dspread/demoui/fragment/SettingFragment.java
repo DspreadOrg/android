@@ -3,9 +3,12 @@ package com.dspread.demoui.fragment;
 import static android.content.Context.LOCATION_SERVICE;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.hardware.usb.UsbDevice;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,7 +22,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,11 +43,13 @@ import com.dspread.demoui.utils.SharedPreferencesUtil;
 import com.dspread.demoui.utils.TRACE;
 import com.dspread.demoui.utils.TitleUpdateListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.dspread.demoui.BaseApplication;
 import com.dspread.demoui.R;
 import com.dspread.demoui.enums.POS_TYPE;
+import com.dspread.demoui.utils.USBClass;
 import com.dspread.xpos.QPOSService;
 
 
@@ -67,6 +71,8 @@ public class SettingFragment extends Fragment {
     private ActivityResultLauncher<Intent> activityResultLauncher;
     private SharedPreferencesUtil preferencesUtil;
     private String connType;
+    private UsbDevice usbDevice;
+    public AlertDialog alertDialog;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -161,6 +167,7 @@ public class SettingFragment extends Fragment {
                     }
                     close();
                     posType = POS_TYPE.USB;
+                    openUSBDevice();
                     tvConnectType.setText(getString(R.string.setting_usb));
                     break;
                 default:
@@ -211,6 +218,52 @@ public class SettingFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         clearConnectStatus();
+    }
+
+    private void openUSBDevice(){
+        USBClass usb = new USBClass();
+        ArrayList<String> deviceList = usb.GetUSBDevices(getContext());
+
+        if (deviceList == null) {
+            Toast.makeText(getContext(), "No Permission", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        final CharSequence[] items = deviceList.toArray(new CharSequence[deviceList.size()]);
+        if (items.length == 1) {
+            String selectedDevice = (String) items[0];
+            usbDevice = USBClass.getMdevices().get(selectedDevice);
+            application.open(QPOSService.CommunicationMode.USB_OTG_CDC_ACM,getContext());
+            pos = application.getQposService();
+            pos.openUsb(usbDevice);
+        } else {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setTitle("Select a Reader");
+            if (items.length == 0) {
+                builder.setMessage(getString(R.string.setting_disusb));
+                builder.setPositiveButton(getString(R.string.confirm), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+            }
+            builder.setSingleChoiceItems(items, -1, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int item) {
+                    if (items.length > item) {
+                        String selectedDevice = items[item].toString();
+                        dialog.dismiss();
+                        usbDevice = USBClass.getMdevices().get(selectedDevice);
+                        application.open(QPOSService.CommunicationMode.USB_OTG_CDC_ACM,getContext());
+                        pos = application.getQposService();
+                        pos.openUsb(usbDevice);
+                    }
+                }
+            });
+            alertDialog = builder.create();
+            alertDialog.setCanceledOnTouchOutside(false);
+            alertDialog.setCancelable(false);
+            alertDialog.show();
+        }
     }
 
     private void clearConnectStatus(){
