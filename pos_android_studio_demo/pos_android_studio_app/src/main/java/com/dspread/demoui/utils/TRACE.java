@@ -1,7 +1,6 @@
 package com.dspread.demoui.utils;
 
 import android.content.Context;
-import android.media.tv.TvView;
 import android.util.Log;
 
 //import com.dspread.demoui.BaseApplication;
@@ -21,7 +20,7 @@ public class TRACE {
     public static void setContext(Context context){
         mContext = context;
         logFileConfig = LogFileConfig.getInstance(context);
-        sharedPreferencesUtil = SharedPreferencesUtil.getmInstance(mContext);
+        sharedPreferencesUtil = SharedPreferencesUtil.getInstance(mContext);
     }
 
     public static void i(String string) {

@@ -394,7 +394,7 @@
     <string name="select_dialog_false">关闭</string>
     <string name="menu_payment">支付</string>
     <string name="transaction_type">交易类型</string>
-    <string name="device_connect">设备连接</string>
+    <string name="device_connect">设备已连接</string>
     <string name="menu_setting">设置</string>
     <string name="menu_mifareCards">Mifare 卡</string>
     <string name="continue_trading">继续交易</string>

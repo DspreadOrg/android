@@ -38,82 +38,19 @@
         android:textSize="20sp"
         android:visibility="gone" />
 
-    <RelativeLayout
-        android:id="@+id/rl_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <LinearLayout
-            android:id="@+id/ll_gif"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <pl.droidsonroids.gif.GifImageView
-                android:id="@+id/giv_gif"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bluetooth_connecting" />
-        </LinearLayout>
-
-        <ImageView
-            android:id="@+id/img_anim_scanbt"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:visibility="gone" />
-
-        <View
-            android:id="@+id/line1"
-            android:layout_width="match_parent"
-            android:layout_height="10dp"
-            android:layout_below="@+id/ll_gif"
-            android:background="@color/gainsboro"
-            android:visibility="gone" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/lv_indicator_BTPOS"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/line1"
-            android:cacheColorHint="@android:color/transparent"
-            android:divider="#FFA0A0A0"
-            android:listSelector="#00FFFFFF"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp" />
-
-    </RelativeLayout>
-
     <LinearLayout
         android:id="@+id/ll_chrccard"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
         android:orientation="vertical"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <pl.droidsonroids.gif.GifImageView
             android:id="@+id/giv_checkcard"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/checkcard" />
-
-
-        <!--        <TextView-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:gravity="center"-->
-        <!--            android:text="@string/waiting_for_card"-->
-        <!--            android:textColor="@color/colorAccent"-->
-        <!--            android:textSize="20dp"></TextView>-->
-
-        <!--        <ImageView-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="match_parent"-->
-        <!--            android:layout_marginTop="10dp"-->
-        <!--            android:background="@mipmap/checkcard"></ImageView>-->
 
 
     </LinearLayout>

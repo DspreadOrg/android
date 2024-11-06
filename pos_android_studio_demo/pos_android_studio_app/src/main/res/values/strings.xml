@@ -397,7 +397,7 @@
     <string name="select_dialog_no">No</string>
     <string name="select_dialog_confirm">confirm</string>
     <string name="select_dialog_cancel">cancel</string>
-    <string name="device_connect">device connect</string>
+    <string name="device_connect">device connected</string>
     <string name="continue_trading">continue trading</string>
     <string name="prompt_message">message prompt:</string>
     <string name="delete">delete</string>

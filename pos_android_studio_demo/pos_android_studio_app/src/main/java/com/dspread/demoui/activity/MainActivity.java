@@ -1,34 +1,40 @@
 package com.dspread.demoui.activity;
 
+import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
+
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.provider.Settings;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
+import com.dspread.demoui.BaseApplication;
 import com.dspread.demoui.R;
 import com.dspread.demoui.ui.dialog.Mydialog;
-import com.dspread.demoui.ui.fragment.AboutFragment;
-import com.dspread.demoui.ui.fragment.DeviceInfoFragment;
-import com.dspread.demoui.ui.fragment.DeviceUpdataFragment;
-import com.dspread.demoui.ui.fragment.HomeFragment;
-import com.dspread.demoui.ui.fragment.LogsFragment;
-import com.dspread.demoui.ui.fragment.MifareCardsFragment;
-import com.dspread.demoui.ui.fragment.PrinterHelperFragment;
-import com.dspread.demoui.ui.fragment.ScanFragment;
-import com.dspread.demoui.ui.fragment.SettingFragment;
+import com.dspread.demoui.fragment.AboutFragment;
+import com.dspread.demoui.fragment.DeviceInfoFragment;
+import com.dspread.demoui.fragment.DeviceUpdataFragment;
+import com.dspread.demoui.fragment.HomeFragment;
+import com.dspread.demoui.fragment.LogsFragment;
+import com.dspread.demoui.fragment.MifareCardsFragment;
+import com.dspread.demoui.fragment.PrinterHelperFragment;
+import com.dspread.demoui.fragment.ScanFragment;
+import com.dspread.demoui.fragment.SettingFragment;
 import com.dspread.demoui.utils.SharedPreferencesUtil;
 import com.dspread.demoui.utils.TRACE;
 import com.dspread.demoui.utils.TitleUpdateListener;
@@ -36,19 +42,7 @@ import com.dspread.demoui.utils.UpdateAppHelper;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
+import org.bouncycastle.jcajce.provider.symmetric.ARC4;
 
 public class MainActivity extends AppCompatActivity implements TitleUpdateListener, NavigationView.OnNavigationItemSelectedListener {
     DrawerLayout drawerLayout;
@@ -86,7 +80,6 @@ public class MainActivity extends AppCompatActivity implements TitleUpdateListen
         deviceConnectType = headerView.findViewById(R.id.device_connect_type);
         tvAppVersion = headerView.findViewById(R.id.tv_appversion);
         menuItem = navigationView.getMenu().findItem(R.id.nav_printer);
-
         drawerStateChanged();
         setSupportActionBar(toolbar);
         navigationView.bringToFront();
@@ -102,17 +95,27 @@ public class MainActivity extends AppCompatActivity implements TitleUpdateListen
             switchFragment(5);
             drawerLayout.close();
         });
-        BaseApplication baseApplication = new BaseApplication();
-        baseApplication.onCreate();
-        baseApplication.attachBaseContext(this);
-        BaseApplication.getApplicationInstance = this;
+
+//        BaseApplication baseApplication = new BaseApplication();
+//        baseApplication.onCreate();
+//        baseApplication.attachBaseContext(this);
+//        BaseApplication.getApplicationInstance = this;
+
+        if (getIntent().getBooleanExtra("showSettingFragment", false)) {
+            // 加载 mainFragment
+            switchFragment(1);
+            drawerLayout.close();
+        }
+
         if (!"D20".equals(deviceModel)) {
             menuItem.setVisible(true);
 
         } else {
             menuItem.setVisible(false);
         }
-
+//        if ("D20".equals(deviceModel)||"D30".equals(deviceModel)||"D60".equals(deviceModel)){
+//            open(QPOSService.CommunicationMode.UART_SERVICE, this);
+//        }
         toolbar.setTitle(getString(R.string.menu_payment));
 //        switchFragment(0);
         drawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
@@ -138,11 +141,12 @@ public class MainActivity extends AppCompatActivity implements TitleUpdateListen
         });
     }
 
+
     String deviceModel = Build.MODEL;
     String deviceManufacturer = Build.MANUFACTURER;
 
     public void drawerStateChanged() {
-        SharedPreferencesUtil connectType = SharedPreferencesUtil.getmInstance(this);
+        SharedPreferencesUtil connectType = SharedPreferencesUtil.getInstance(this);
         String conType = (String) connectType.get("conType", "");
         if ("blue".equals(conType)) {
             deviceConnectType.setText(getString(R.string.setting_blu));
@@ -162,8 +166,8 @@ public class MainActivity extends AppCompatActivity implements TitleUpdateListen
     }
 
     @Override
-    public void sendValue(String value) {
-        setTitle(value);
+    public void setTitle(String value) {
+        new Activity().setTitle(value);
     }
 
     @Override
@@ -236,8 +240,7 @@ public class MainActivity extends AppCompatActivity implements TitleUpdateListen
     }
 
 
-    private void switchFragment(int i) {
-
+    public void switchFragment(int i) {
         FragmentManager fragmentManager = this.getSupportFragmentManager();
         transaction = fragmentManager.beginTransaction();
         hideFragemts();
@@ -347,61 +350,10 @@ public class MainActivity extends AppCompatActivity implements TitleUpdateListen
     private static final int LOCATION_CODE = 101;
     LocationManager lm;//【Location management】
 
-    public void bluetoothRelaPer() {
-        android.bluetooth.BluetoothAdapter adapter = android.bluetooth.BluetoothAdapter.getDefaultAdapter();
-        if (adapter != null && !adapter.isEnabled()) {//if bluetooth is disabled, add one fix
-            Intent enabler = new Intent(android.bluetooth.BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivity(enabler);
-        }
-        lm = (LocationManager) this.getSystemService(LOCATION_SERVICE);
-        boolean ok = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        if (ok) {//Location service is on
-            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                // Permission denied
-                // Request authorization
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                    if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, android.Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, android.Manifest.permission.BLUETOOTH_ADVERTISE) != PackageManager.PERMISSION_GRANTED) {
-                        String[] list = new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.BLUETOOTH_SCAN, android.Manifest.permission.BLUETOOTH_CONNECT, android.Manifest.permission.BLUETOOTH_ADVERTISE};
-                        ActivityCompat.requestPermissions(this, list, BLUETOOTH_CODE);
-
-                    }
-                } else {
-                    ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_CODE);
-                }
-//                        Toast.makeText(getActivity(), "Permission Denied", Toast.LENGTH_SHORT).show();
-            } else {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                    if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, android.Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, android.Manifest.permission.BLUETOOTH_ADVERTISE) != PackageManager.PERMISSION_GRANTED) {
-                        String[] list = new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.BLUETOOTH_SCAN, android.Manifest.permission.BLUETOOTH_CONNECT, android.Manifest.permission.BLUETOOTH_ADVERTISE};
-                        ActivityCompat.requestPermissions(this, list, BLUETOOTH_CODE);
-
-                    }
-                }
-//                Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show();
-            }
-        }
-        else {
-            Toast.makeText(this, "System detects that the GPS location service is not turned on", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent();
-            intent.setAction(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-            try {
-                ActivityResultLauncher<Intent> launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
-                    @Override
-                    public void onActivityResult(ActivityResult result) {
-                    }
-                });
-                launcher.launch(intent);
-            }catch (Exception e){
-                Toast.makeText(this, "Pls open the LOCATION in your device settings!", Toast.LENGTH_SHORT).show();
-            }
-
-        }
-    }
-
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        ((BaseApplication)getApplication()).setQposService(null);
         System.exit(0);
 //        finish();
     }

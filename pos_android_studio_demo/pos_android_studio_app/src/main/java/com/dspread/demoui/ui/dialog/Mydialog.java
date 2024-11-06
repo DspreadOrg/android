@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.View;
@@ -16,7 +15,6 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,7 +23,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.dspread.demoui.R;
+import com.dspread.demoui.activity.MainActivity;
 import com.dspread.demoui.activity.PaymentActivity;
+import com.dspread.demoui.beans.Constants;
 import com.dspread.demoui.utils.MoneyUtil;
 import com.dspread.demoui.utils.SharedPreferencesUtil;
 import com.dspread.demoui.utils.Utils;
@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Mydialog {
+    private static SharedPreferencesUtil preferencesUtil;
     public interface OnMyClickListener {
         void onCancel();
 
@@ -77,16 +78,13 @@ public class Mydialog {
         mtvInfo.setText(msg);
         Button mbtnCancel = view.findViewById(R.id.btnCancel);
         mbtnCancel.setVisibility(View.GONE);
-        mbtnConfirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (listener != null) {
-                    listener.onConfirm();
-                } else {
-                    ErrorDialog.dismiss();
-                    if (!msg.equals(mContext.getString(R.string.bad_swipe))) {
-                        mContext.finish();
-                    }
+        mbtnConfirm.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onConfirm();
+            } else {
+                ErrorDialog.dismiss();
+                if (!msg.equals(mContext.getString(R.string.bad_swipe))) {
+                    mContext.finish();
                 }
             }
         });
@@ -189,51 +187,29 @@ public class Mydialog {
         rvlist.setLayoutManager(new LinearLayoutManager(mContext.getApplicationContext()));
         myAdapter = new MyAdapter(getArrayList(data));
         rvlist.setAdapter(myAdapter);
-        myAdapter.setOnItemClickListener(new MyAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position, String content) {
-                if (Utils.islistFastClick()) {
-                    SharedPreferencesUtil connectType = SharedPreferencesUtil.getmInstance(mContext);
-                    String conType = (String) connectType.get( "conType", "");
-                    if ("CASHBACK".equals(content)) {
+        myAdapter.setOnItemClickListener((view1, position, content) -> {
+            if (Utils.islistFastClick()) {
+                preferencesUtil = SharedPreferencesUtil.getInstance(mContext);
+                String conType = (String) preferencesUtil.get(Constants.connType, "");
+                if ("CASHBACK".equals(content)) {
+                    String inputMoneyString = String.valueOf(inputMoney);
+                    cashBackPaymentDialog(mContext,inputMoneyString);
+                } else {
+                    if (!"".equals(conType)) {
+                        transactionTypeString = content;
+                        Intent intent = new Intent(mContext, PaymentActivity.class);
                         String inputMoneyString = String.valueOf(inputMoney);
-                        cashBackPaymentDialog(mContext,inputMoneyString);
-                    } else {
-                        if (!"".equals(conType) && "uart".equals(conType)) {
-                            transactionTypeString = content;
-                            Intent intent = new Intent(mContext, PaymentActivity.class);
-                            String inputMoneyString = String.valueOf(inputMoney);
-                            intent.putExtra("inputMoney", inputMoneyString);
-                            intent.putExtra("paytype", transactionTypeString);
-                            intent.putExtra("connect_type", UART);
-                            mContext.startActivity(intent);
-
-                        } else if (!"".equals(conType) && "usb".equals(conType)) {
-                            transactionTypeString = content;
-                            Intent intent = new Intent(mContext, PaymentActivity.class);
-                            intent.putExtra("amount", amount);
-                            String inputMoneyString = String.valueOf(inputMoney);
-                            intent.putExtra("inputMoney", inputMoneyString);
-                            intent.putExtra("paytype", transactionTypeString);
-                            intent.putExtra("conType", conType);
-                            intent.putExtra("connect_type", USB_OTG_CDC_ACM);
-                            mContext.startActivity(intent);
-                        } else if (!"".equals(conType) && "blue".equals(conType)) {//blue
-                            transactionTypeString = content;
-                            Intent intent = new Intent(mContext, PaymentActivity.class);
-                            intent.putExtra("amount", amount);
-                            String inputMoneyString = String.valueOf(inputMoney);
-                            intent.putExtra("inputMoney", inputMoneyString);
-                            intent.putExtra("paytype", transactionTypeString);
-                            intent.putExtra("connect_type", BLUETOOTH);
-                            mContext.startActivity(intent);
-                        }
+                        intent.putExtra("inputMoney", inputMoneyString);
+                        intent.putExtra("paytype", transactionTypeString);
+                        mContext.startActivity(intent);
+                    }else {
+                        ((MainActivity)mContext).switchFragment(1);
                     }
-                    payTypeDialog.dismiss();
-                    payTypeDialog = null;
-                    myAdapter = null;
-
                 }
+                payTypeDialog.dismiss();
+                payTypeDialog = null;
+                myAdapter = null;
+
             }
         });
         window.setContentView(view);
@@ -251,57 +227,6 @@ public class Mydialog {
 
     //Transaction confirmation information
     public static AlertDialog onlingDialog;
-
-    public static void onlingDialog(Activity mContext, boolean isPinCanceled, OnMyClickListener listener) {
-        View view = View.inflate(mContext, R.layout.processing_dialog, null);
-        TextView textView = view.findViewById(R.id.messageTextView);
-        LinearLayout btnlayout = view.findViewById(R.id.btn_layout);
-        btnlayout.setVisibility(View.VISIBLE);
-        textView.setTextSize(20);
-        if (isPinCanceled) {
-            textView.setText(R.string.replied_failed);
-        } else {
-            textView.setText(R.string.replied_success);
-        }
-
-        Button cancelButton = view.findViewById(R.id.cancelButton);
-        view.findViewById(R.id.confirmButton).setOnClickListener(
-                new View.OnClickListener() {
-
-                    @Override
-                    public void onClick(View v) {
-                        listener.onConfirm();
-                    }
-                });
-
-        cancelButton.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        listener.onCancel();
-
-                    }
-                });
-        onlingDialog = new AlertDialog.Builder(mContext).create();
-        onlingDialog.setCanceledOnTouchOutside(false);
-        onlingDialog.setCancelable(false);
-        if (!mContext.isFinishing()) {
-            onlingDialog.show();
-        }
-        Window window = onlingDialog.getWindow();
-        window.setWindowAnimations(R.style.popupAnimation);
-        window.setBackgroundDrawable(null);
-        window.setGravity(Gravity.BOTTOM);
-        WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
-        Display d = wm.getDefaultDisplay();
-        WindowManager.LayoutParams p = onlingDialog.getWindow().getAttributes();
-//        p.height = (int) (d.getHeight() * 0.3);
-        p.width = (int) (d.getWidth() * 1);
-
-        onlingDialog.getWindow().setAttributes(p);
-        window.setContentView(view);
-    }
-
 
     public static Dialog cashBackPaymentDialog;
 
@@ -343,55 +268,30 @@ public class Mydialog {
         });
 
         view.findViewById(R.id.confirmButton).setOnClickListener(
-                new View.OnClickListener() {
+                v -> {
+                    String cashbackAmounts = etInputMoney.getText().toString().trim();
+                    if (!"".equals(cashbackAmounts) && !"0".equals(cashbackAmounts)) {
+                        Double inputCashbackAmount = Double.valueOf(cashbackAmounts);
+                        Long inputCashbackAmounts=MoneyUtil.yuan2fen(inputCashbackAmount);
+                        String inputcashbackMoney = String.valueOf(inputCashbackAmounts);
+                        preferencesUtil = SharedPreferencesUtil.getInstance(mContext);
+                        String conType = (String) preferencesUtil.get( "conType", "");
 
-                    @Override
-                    public void onClick(View v) {
-                        String cashbackAmounts = etInputMoney.getText().toString().trim();
-                        if (!"".equals(cashbackAmounts) && !"0".equals(cashbackAmounts)) {
-                            Double inputCashbackAmount = Double.valueOf(cashbackAmounts);
-                            Long inputCashbackAmounts=MoneyUtil.yuan2fen(inputCashbackAmount);
-                            String inputcashbackMoney = String.valueOf(inputCashbackAmounts);
-                            SharedPreferencesUtil connectType = SharedPreferencesUtil.getmInstance(mContext);
-                            String conType = (String) connectType.get( "conType", "");
-
-                            if (conType != null && "uart".equals(conType)) {
-                                Intent intent = new Intent(mContext, PaymentActivity.class);
-                                String inputMoneyString = String.valueOf(inputMoney);
-                                intent.putExtra("inputMoney", inputMoneyString);
-                                intent.putExtra("paytype", "CASHBACK");
-                                intent.putExtra("cashbackAmounts", inputcashbackMoney);
-                                intent.putExtra("connect_type", 2);
-                                mContext.startActivity(intent);
-                                cashBackPaymentDialog.dismiss();
-                            } else if (conType != null && "usb".equals(conType)) {
-                                Intent intent = new Intent(mContext, PaymentActivity.class);
-                                String inputMoneyString = String.valueOf(inputMoney);
-                                intent.putExtra("inputMoney", inputMoneyString);
-                                intent.putExtra("paytype", "CASHBACK");
-                                intent.putExtra("cashbackAmounts", inputcashbackMoney);
-                                intent.putExtra("conType", conType);
-                                intent.putExtra("connect_type", 3);
-                                mContext.startActivity(intent);
-                                cashBackPaymentDialog.dismiss();
-                            } else if (conType != null && "blue".equals(conType)) {//blue
-                                Intent intent = new Intent(mContext, PaymentActivity.class);
-                                String inputMoneyString = String.valueOf(inputMoney);
-                                intent.putExtra("inputMoney", inputMoneyString);
-                                intent.putExtra("paytype", "CASHBACK");
-                                intent.putExtra("cashbackAmounts", inputcashbackMoney);
-                                intent.putExtra("connect_type", 1);
-                                mContext.startActivity(intent);
-                                cashBackPaymentDialog.dismiss();
-                            }
-
-
-                        } else {
-                            Toast.makeText(mContext, mContext.getString(R.string.set_amount), Toast.LENGTH_SHORT).show();
+                        if (conType != null) {
+                            Intent intent = new Intent(mContext, PaymentActivity.class);
+                            String inputMoneyString = String.valueOf(inputMoney);
+                            intent.putExtra("inputMoney", inputMoneyString);
+                            intent.putExtra("paytype", "CASHBACK");
+                            intent.putExtra("cashbackAmounts", inputcashbackMoney);
+                            intent.putExtra("connect_type", 2);
+                            mContext.startActivity(intent);
+                            cashBackPaymentDialog.dismiss();
                         }
-
-
+                    } else {
+                        Toast.makeText(mContext, mContext.getString(R.string.set_amount), Toast.LENGTH_SHORT).show();
                     }
+
+
                 });
 
 
@@ -405,12 +305,9 @@ public class Mydialog {
         etInputMoney.setFocusable(true);
         etInputMoney.setFocusableInTouchMode(true);
         etInputMoney.requestFocus();
-        etInputMoney.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                InputMethodManager imm = (InputMethodManager)mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.showSoftInput(etInputMoney, 0);
-            }
+        etInputMoney.postDelayed(() -> {
+            InputMethodManager imm = (InputMethodManager)mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(etInputMoney, 0);
         }, 100);
 
         Window window = cashBackPaymentDialog.getWindow();

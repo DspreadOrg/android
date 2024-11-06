@@ -17,7 +17,7 @@ public class SharedPreferencesUtil {
 
     }
 
-    public static SharedPreferencesUtil getmInstance(Context context){
+    public static SharedPreferencesUtil getInstance(Context context){
         if (mInstance == null){
             synchronized (SharedPreferencesUtil.class){
                 if (mInstance == null){
