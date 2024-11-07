@@ -16,6 +16,7 @@ import com.dspread.demoui.R;
 import com.dspread.demoui.beans.Constants;
 import com.dspread.demoui.interfaces.BluetoothConnectCallback;
 import com.dspread.demoui.interfaces.ConnectStateCallback;
+import com.dspread.demoui.interfaces.MifareCardOperationCallback;
 import com.dspread.demoui.interfaces.PosInfoCallback;
 import com.dspread.demoui.interfaces.PosUpdateCallback;
 import com.dspread.demoui.interfaces.TransactionCallback;
@@ -48,6 +49,7 @@ public class MyQposClass extends CQPOSService {
     private static BluetoothConnectCallback bluetoothConnectCallback;
 
     private static PosUpdateCallback posUpdateCallback;
+    private static MifareCardOperationCallback mifareCardOperationCallback;
 
 //    public MyQposClass(ConnectStateCallback stateCallback, BluetoothConnectCallback bluetoothConnectCallback,PosInfoCallback posInfoCallback, TransactionCallback transactionCallback){
 //        this.stateCallback = stateCallback;
@@ -56,6 +58,10 @@ public class MyQposClass extends CQPOSService {
 //        this.transactionCallback = transactionCallback;
 //    }
 
+
+    public static void setMifareCardOperationCallback(MifareCardOperationCallback mifareCardOperationCallback) {
+        MyQposClass.mifareCardOperationCallback = mifareCardOperationCallback;
+    }
 
     public static void setPosUpdateCallback(PosUpdateCallback posUpdateCallback) {
         MyQposClass.posUpdateCallback = posUpdateCallback;
@@ -292,6 +298,7 @@ public class MyQposClass extends CQPOSService {
 //            if (updateThread != null) {
 //                updateThread.concelSelf();
 //            }
+        TRACE.i("onerror "+errorState);
         if(transactionCallback != null){
             transactionCallback.onError(errorState);
         }
@@ -392,7 +399,9 @@ public class MyQposClass extends CQPOSService {
     @Override
     public void onReturnCustomConfigResult(boolean isSuccess, String result) {
         TRACE.d("onReturnCustomConfigResult(boolean isSuccess, String result):" + isSuccess + "--result--" + result);
-
+        if(posUpdateCallback != null){
+            posUpdateCallback.onReturnCustomConfigResult(isSuccess, result);
+        }
     }
 
     @Override
@@ -571,20 +580,24 @@ public class MyQposClass extends CQPOSService {
 
     @Override
     public void onReturnNFCApduResult(boolean arg0, String arg1, int arg2) {
-        TRACE.d("onReturnNFCApduResult(boolean arg0, String arg1, int arg2):" + arg0 + TRACE.NEW_LINE + arg1 + TRACE.NEW_LINE + arg2);
-//            statusEditText.setText("onReturnNFCApduResult(boolean arg0, String arg1, int arg2):" + arg0 + TRACE.NEW_LINE + arg1 + TRACE.NEW_LINE + arg2);
+        if(mifareCardOperationCallback != null){
+            mifareCardOperationCallback.onReturnNFCApduResult(arg0,arg1,arg2);
+        }
     }
 
     @Override
     public void onReturnPowerOffNFCResult(boolean arg0) {
         TRACE.d(" onReturnPowerOffNFCResult(boolean arg0) :" + arg0);
-//            statusEditText.setText(" onReturnPowerOffNFCResult(boolean arg0) :" + arg0);
+        if(mifareCardOperationCallback != null){
+            mifareCardOperationCallback.onReturnPowerOffNFCResult(arg0);
+        }
     }
 
     @Override
     public void onReturnPowerOnNFCResult(boolean arg0, String arg1, String arg2, int arg3) {
-        TRACE.d("onReturnPowerOnNFCResult(boolean arg0, String arg1, String arg2, int arg3):" + arg0 + TRACE.NEW_LINE + arg1 + TRACE.NEW_LINE + arg2 + TRACE.NEW_LINE + arg3);
-//            statusEditText.setText("onReturnPowerOnNFCResult(boolean arg0, String arg1, String arg2, int arg3):" + arg0 + TRACE.NEW_LINE + arg1 + TRACE.NEW_LINE + arg2 + TRACE.NEW_LINE + arg3);
+        if(mifareCardOperationCallback != null){
+            mifareCardOperationCallback.onReturnPowerOnNFCResult(arg0, arg1, arg2, arg3);
+        }
     }
 
     @Override
@@ -627,19 +640,8 @@ public class MyQposClass extends CQPOSService {
 
     @Override
     public void onSearchMifareCardResult(Hashtable<String, String> arg0) {
-        if (arg0 != null) {
-            TRACE.d("onSearchMifareCardResult(Hashtable<String, String> arg0):" + arg0.toString());
-            String statuString = arg0.get("status");
-            String cardTypeString = arg0.get("cardType");
-            String cardUidLen = arg0.get("cardUidLen");
-            String cardUid = arg0.get("cardUid");
-            String cardAtsLen = arg0.get("cardAtsLen");
-            String cardAts = arg0.get("cardAts");
-            String ATQA = arg0.get("ATQA");
-            String SAK = arg0.get("SAK");
-//                statusEditText.setText("statuString:" + statuString + "\n" + "cardTypeString:" + cardTypeString + "\ncardUidLen:" + cardUidLen + "\ncardUid:" + cardUid + "\ncardAtsLen:" + cardAtsLen + "\ncardAts:" + cardAts + "\nATQA:" + ATQA + "\nSAK:" + SAK);
-        } else {
-//                statusEditText.setText("poll card failed");
+        if (mifareCardOperationCallback != null) {
+            mifareCardOperationCallback.onSearchMifareCardResult(arg0);
         }
     }
 
@@ -844,27 +846,8 @@ public class MyQposClass extends CQPOSService {
     }
 
     @Override
-    public void onQposDoGetTradeLog(String arg0, String arg1) {
-        TRACE.d("onQposDoGetTradeLog(String arg0, String arg1):" + arg0 + TRACE.NEW_LINE + arg1);
-        arg1 = QPOSUtil.convertHexToString(arg1);
-    }
-
-    @Override
     public void onRequestDevice() {
         Log.w("onRequestDevice", "onRequestDevice");
-//            List<UsbDevice> deviceList = getPermissionDeviceList();
-//            UsbManager mManager = (UsbManager) getSystemService(Context.USB_SERVICE);
-//            for (int i = 0; i < deviceList.size(); i++) {
-//                UsbDevice usbDevice = deviceList.get(i);
-//                if (usbDevice.getVendorId() == 2965 || usbDevice.getVendorId() == 0x03EB) {
-//
-//                    if (mManager.hasPermission(usbDevice)) {
-//                        pos.setPermissionDevice(usbDevice);
-//                    } else {
-//                        devicePermissionRequest(mManager, usbDevice);
-//                    }
-//                }
-//            }
     }
 
     @Override
@@ -878,29 +861,39 @@ public class MyQposClass extends CQPOSService {
     @Override
     public void onFinishMifareCardResult(boolean arg0) {
         TRACE.d("onFinishMifareCardResult(boolean arg0):" + arg0);
-
+        if (mifareCardOperationCallback != null) {
+            mifareCardOperationCallback.onFinishMifareCardResult(arg0);
+        }
     }
 
     @Override
     public void onVerifyMifareCardResult(boolean arg0) {
         TRACE.d("onVerifyMifareCardResult(boolean arg0):" + arg0);
-
+        if (mifareCardOperationCallback != null) {
+            mifareCardOperationCallback.onVerifyMifareCardResult(arg0);
+        }
     }
 
     @Override
     public void onReadMifareCardResult(Hashtable<String, String> arg0) {
-
+        if (mifareCardOperationCallback != null) {
+            mifareCardOperationCallback.onReadMifareCardResult(arg0);
+        }
     }
 
     @Override
     public void onWriteMifareCardResult(boolean arg0) {
         TRACE.d("onWriteMifareCardResult(boolean arg0):" + arg0);
-
+        if (mifareCardOperationCallback != null) {
+            mifareCardOperationCallback.onWriteMifareCardResult(arg0);
+        }
     }
 
     @Override
     public void onOperateMifareCardResult(Hashtable<String, String> arg0) {
-
+        if (mifareCardOperationCallback != null) {
+            mifareCardOperationCallback.onOperateMifareCardResult(arg0);
+        }
     }
 
     @Override

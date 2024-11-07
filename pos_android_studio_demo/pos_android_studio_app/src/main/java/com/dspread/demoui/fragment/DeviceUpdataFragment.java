@@ -151,7 +151,7 @@ public class DeviceUpdataFragment extends Fragment implements View.OnClickListen
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_WRITE_EXTERNAL_STORAGE);
         } else {
             byte[] data = null;
-            data = FileUtils.readAssetsLine("A27CAYC_S1(Ecobank)_master.asc", getActivity());
+            data = FileUtils.readAssetsLine("D20(PVT Xflash)_master.asc", getActivity());
             if (data != null) {
                 int a = pos.updatePosFirmware(data, (String) preferencesUtil.get(Constants.BluetoothAddress,""));
                 if (a == -1) {
