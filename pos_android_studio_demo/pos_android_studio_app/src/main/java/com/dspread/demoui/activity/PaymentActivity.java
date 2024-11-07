@@ -52,6 +52,7 @@ import com.dspread.demoui.R;
 import com.dspread.demoui.beans.BluetoothToolsBean;
 import com.dspread.demoui.beans.Constants;
 
+import com.dspread.demoui.beans.GlobalErrorEvent;
 import com.dspread.demoui.enums.POS_TYPE;
 import com.dspread.demoui.interfaces.TransactionCallback;
 import com.dspread.demoui.utils.SharedPreferencesUtil;
@@ -96,6 +97,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import pl.droidsonroids.gif.GifImageView;
 
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONObject;
 
 public class PaymentActivity extends AppCompatActivity implements View.OnClickListener {
@@ -123,7 +127,6 @@ public class PaymentActivity extends AppCompatActivity implements View.OnClickLi
     private TextView tvAmount;
     private TextView tradeSuccess;
     private EditText statusEditText, pinpadEditText;
-    private RelativeLayout mrllayout;
     private ScrollView scvText;
     public static PinPadDialog pinPadDialog;
     private ProgressBar progressBar;
@@ -167,7 +170,7 @@ public class PaymentActivity extends AppCompatActivity implements View.OnClickLi
             goToMainPage();
         }
         TRACE.setContext(this);
-
+        EventBus.getDefault().register(this);
     }
 
     private void goToMainPage() {
@@ -185,7 +188,6 @@ public class PaymentActivity extends AppCompatActivity implements View.OnClickLi
         tvAmount.setText(amount);
         tradeSuccess = findViewById(R.id.trade_success_flag);
         scvText = findViewById(R.id.scv_text);
-        mrllayout = findViewById(R.id.rl_layout);
         mbtnNewpay = findViewById(R.id.btn_newpay);
         mtvinfo = findViewById(R.id.tv_info);
         mllinfo = findViewById(R.id.ll_info);
@@ -198,6 +200,13 @@ public class PaymentActivity extends AppCompatActivity implements View.OnClickLi
         ivBlue.setOnClickListener(this);
         mbtnNewpay.setOnClickListener(this);
         tvTitle.setOnClickListener(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onGlobalErrorEvent(GlobalErrorEvent event) {
+        // 处理事件
+        TRACE.i("payment error == "+event.errorState);
+        QPOSService.Error error = event.errorState;
     }
 
     @Override
@@ -1009,11 +1018,9 @@ public class PaymentActivity extends AppCompatActivity implements View.OnClickLi
                 msg = "card removed";
             } else if (displayMsg == QPOSService.Display.TRANSACTION_TERMINATED) {
                 msg = "transaction terminated";
-                mrllayout.setVisibility(View.GONE);
             } else if (displayMsg == QPOSService.Display.PlEASE_TAP_CARD_AGAIN) {
                 msg = getString(R.string.please_tap_card_again);
             }
-//            Toast.makeText(CheckActivity.this, msg, Toast.LENGTH_SHORT).show();
             Mydialog.loading(PaymentActivity.this, msg);
         }
 
@@ -1138,6 +1145,7 @@ public class PaymentActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        EventBus.getDefault().unregister(this);
         dismissDialog();
          if (pos!=null){
              pos = null;

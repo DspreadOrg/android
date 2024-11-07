@@ -5,19 +5,26 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dspread.demoui.BaseApplication;
 import com.dspread.demoui.R;
+import com.dspread.demoui.beans.GlobalErrorEvent;
 import com.dspread.demoui.interfaces.MifareCardOperationCallback;
 import com.dspread.demoui.utils.TRACE;
 import com.dspread.xpos.QPOSService;
 
 import org.bouncycastle.jcajce.provider.symmetric.ARC4;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.Hashtable;
 
@@ -30,12 +37,16 @@ public class MifareCardsActivity extends AppCompatActivity implements View.OnCli
     private String blockaddr = "";
     private EditText etDesfireState, etSendApdu;
     private Button btnPowerOnNfc, btnSendApdu, btnPowerOffNfc;
+    private TextView tvTitle;
     private String mifareCardOperationType = "add";
     private QPOSService pos;
+    private ImageView ivBackTitle;;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         setContentView(R.layout.activity_mifare_cards);
         initView();
         Intent intent = getIntent();
@@ -43,15 +54,20 @@ public class MifareCardsActivity extends AppCompatActivity implements View.OnCli
         if("Classic".equals(type)){
             ll_classic.setVisibility(View.VISIBLE);
             ll_desfire.setVisibility(View.GONE);
+            tvTitle.setText(getString(R.string.operate_mifareCards));
         }else if("Desfire".equals(type)){
             ll_classic.setVisibility(View.GONE);
             ll_desfire.setVisibility(View.VISIBLE);
+            tvTitle.setText(getString(R.string.operate_mifarDesfire));
         }
         pos = ((BaseApplication)getApplication()).getQposService();
         MyQposClass.setMifareCardOperationCallback(this);
+        EventBus.getDefault().register(this);
     }
 
     private void initView(){
+        tvTitle = findViewById(R.id.tv_title);
+        ivBackTitle = findViewById(R.id.iv_back_title);
         ll_classic = findViewById(R.id.ll_classic);
         ll_desfire = findViewById(R.id.ll_desfire);
         btnPollCard = findViewById(R.id.btn_pollCard);
@@ -84,6 +100,7 @@ public class MifareCardsActivity extends AppCompatActivity implements View.OnCli
         btnWriteCard.setOnClickListener(this);
         btnReadCard.setOnClickListener(this);
         btnFinishCard.setOnClickListener(this);
+        ivBackTitle.setOnClickListener(this);
 
         rgkeyClass.setOnCheckedChangeListener((group, checkedId) -> {
             switch (checkedId) {
@@ -117,6 +134,9 @@ public class MifareCardsActivity extends AppCompatActivity implements View.OnCli
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.iv_back_title:
+                finish();
+                break;
             case R.id.btn_pollCard:
                 pos.pollOnMifareCard(20);
                 break;
@@ -167,6 +187,25 @@ public class MifareCardsActivity extends AppCompatActivity implements View.OnCli
             default:
                 break;
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onGlobalErrorEvent(GlobalErrorEvent event) {
+        // 处理事件
+        TRACE.i("error == "+event.errorState);
+       QPOSService.Error error = event.errorState;
+       if(ll_desfire.getVisibility() == View.VISIBLE){
+           etDesfireState.setText("Operate cards failed! "+event.errorState);
+       }else {
+           etCardstate.setText("Operate cards failed! "+event.errorState);
+       }
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 
     @Override

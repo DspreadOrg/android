@@ -14,6 +14,7 @@ import android.widget.ListView;
 
 import com.dspread.demoui.R;
 import com.dspread.demoui.beans.Constants;
+import com.dspread.demoui.beans.GlobalErrorEvent;
 import com.dspread.demoui.interfaces.BluetoothConnectCallback;
 import com.dspread.demoui.interfaces.ConnectStateCallback;
 import com.dspread.demoui.interfaces.MifareCardOperationCallback;
@@ -32,6 +33,8 @@ import com.lzy.okgo.OkGo;
 import com.lzy.okgo.callback.AbsCallback;
 import com.lzy.okgo.model.Response;
 import com.lzy.okgo.request.base.Request;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -295,13 +298,11 @@ public class MyQposClass extends CQPOSService {
 
     @Override
     public void onError(QPOSService.Error errorState) {
-//            if (updateThread != null) {
-//                updateThread.concelSelf();
-//            }
         TRACE.i("onerror "+errorState);
-        if(transactionCallback != null){
-            transactionCallback.onError(errorState);
-        }
+        EventBus.getDefault().post(new GlobalErrorEvent(errorState));
+//        if(transactionCallback != null){
+//            transactionCallback.onError(errorState);
+//        }
     }
 
     @Override
