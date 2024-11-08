@@ -104,10 +104,6 @@ import org.json.JSONObject;
 
 public class PaymentActivity extends AppCompatActivity implements View.OnClickListener {
     private String transactionTypeString = "";
-
-    private UsbDevice usbDevice;
-
-    private static final String ACTION_USB_PERMISSION = "com.android.example.USB_PERMISSION";
     private static Dialog dialog;
     private String nfcLog = "";
     private String nfcData;
@@ -129,8 +125,6 @@ public class PaymentActivity extends AppCompatActivity implements View.OnClickLi
     private EditText statusEditText, pinpadEditText;
     private ScrollView scvText;
     public static PinPadDialog pinPadDialog;
-    private ProgressBar progressBar;
-    private TextView tvProgress;
     private boolean dealDoneflag = false;
     private SystemKeyListener systemKeyListener;
     private boolean isNormal = false;
@@ -194,8 +188,6 @@ public class PaymentActivity extends AppCompatActivity implements View.OnClickLi
         mllchrccard = findViewById(R.id.ll_chrccard);
         statusEditText = findViewById(R.id.statusEditText);
         pinpadEditText = findViewById(R.id.pinpadEditText);
-        progressBar = findViewById(R.id.progressBar);
-        tvProgress = findViewById(R.id.tv_progress);
         ivBackTitle.setOnClickListener(this);
         ivBlue.setOnClickListener(this);
         mbtnNewpay.setOnClickListener(this);
@@ -387,7 +379,6 @@ public class PaymentActivity extends AppCompatActivity implements View.OnClickLi
         putInfoToDingding(tlvData, data);
     }
 
-    private List<String> keyBoardList = new ArrayList<>();
     private static KeyboardUtil keyboardUtil;
 
     class TransactionCallbackCls implements TransactionCallback {
@@ -510,14 +501,9 @@ public class PaymentActivity extends AppCompatActivity implements View.OnClickLi
             }
             dismissDialog();
             mllchrccard.setVisibility(View.GONE);
-            keyBoardList = dataList;
-            MyKeyboardView.setKeyBoardListener(new KeyBoardNumInterface() {
-                @Override
-                public void getNumberValue(String value) {
-//                    statusEditText.setText("Pls click "+dataList.get(0));
-                    if(pos!=null) {
-                        pos.pinMapSync(value, 20);
-                    }
+            MyKeyboardView.setKeyBoardListener(value -> {
+                if(pos!=null) {
+                    pos.pinMapSync(value, 20);
                 }
             });
             pinpadEditText.setVisibility(View.VISIBLE);
@@ -549,8 +535,8 @@ public class PaymentActivity extends AppCompatActivity implements View.OnClickLi
 
                 @Override
                 public void onPaypass() {
-//                pos.bypassPin();
-                    pos.sendPin("".getBytes());
+                    pos.bypassPin();
+//                    pos.sendPin("".getBytes());
                     pinPadDialog.dismiss();
                 }
 
@@ -1095,52 +1081,6 @@ public class PaymentActivity extends AppCompatActivity implements View.OnClickLi
         String pinBlock2 = AESUtil.encrypt(AESKey, pin);
         return pinBlock2;
     }
-
-    private void devicePermissionRequest(UsbManager mManager, UsbDevice usbDevice) {
-        PendingIntent mPermissionIntent;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
-            mPermissionIntent = PendingIntent.getBroadcast(this, 0, new Intent("com.android.example.USB_PERMISSION"), PendingIntent.FLAG_IMMUTABLE);
-        } else {
-            mPermissionIntent = PendingIntent.getBroadcast(this, 0, new Intent("com.android.example.USB_PERMISSION"), 0);
-        }
-        IntentFilter filter = new IntentFilter(ACTION_USB_PERMISSION);
-        registerReceiver(mUsbReceiver, filter);
-        mManager.requestPermission(usbDevice, mPermissionIntent);
-    }
-
-    private List getPermissionDeviceList() {
-        UsbManager mManager = (UsbManager) getSystemService(Context.USB_SERVICE);
-        List deviceList = new ArrayList<UsbDevice>();
-        // check for existing devices
-        for (UsbDevice device : mManager.getDeviceList().values()) {
-            deviceList.add(device);
-        }
-        return deviceList;
-    }
-
-    private final BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (ACTION_USB_PERMISSION.equals(action)) {
-                synchronized (this) {
-                    UsbDevice device = (UsbDevice) intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
-                    if (intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false)) {
-                        if (device != null) {
-                            // call method to set up device communication
-                            TRACE.i("usb" + "permission granted for device " + device);
-                            pos.setPermissionDevice(device);
-                        }
-                    } else {
-                        TRACE.i("usb" + "permission denied for device " + device);
-
-                    }
-                    unregisterReceiver(mUsbReceiver);
-                }
-            }
-        }
-    };
 
     @Override
     protected void onDestroy() {

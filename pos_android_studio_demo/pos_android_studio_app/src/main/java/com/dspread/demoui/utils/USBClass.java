@@ -74,9 +74,6 @@ public class USBClass {
         }
         IntentFilter filter = new IntentFilter(ACTION_USB_PERMISSION);
         context.registerReceiver(mUsbReceiver, filter);
-
-
-
         /*
          * check for existing devices
          **/
