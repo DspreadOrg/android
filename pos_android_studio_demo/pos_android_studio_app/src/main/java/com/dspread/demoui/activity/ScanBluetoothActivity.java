@@ -10,7 +10,9 @@ import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dspread.demoui.BaseApplication;
@@ -38,6 +40,9 @@ public class ScanBluetoothActivity extends AppCompatActivity implements Bluetoot
     private QPOSService pos;
     private String blueTootchAddress,bluTitle;
     private SharedPreferencesUtil preferencesUtil;
+    private TextView tvTitle;
+    private ImageView ivBackTitle;;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +54,9 @@ public class ScanBluetoothActivity extends AppCompatActivity implements Bluetoot
     }
 
     private void initView(){
+        tvTitle = findViewById(R.id.tv_title);
+        tvTitle.setText(getString(R.string.scan_bt_device));
+        ivBackTitle = findViewById(R.id.iv_back_title);
         BaseApplication application = (BaseApplication) getApplication();
         MyQposClass.setBluetoothConnectCallback(this);
         application.open(QPOSService.CommunicationMode.BLUETOOTH, this);
@@ -63,7 +71,15 @@ public class ScanBluetoothActivity extends AppCompatActivity implements Bluetoot
             m_Adapter.notifyDataSetChanged();
         }
         rlBluListView.setAdapter(m_Adapter);
+        ivBackTitle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+
+            }
+        });
     }
+
 
     private void refreshAdapter() {
         if (m_Adapter != null) {
