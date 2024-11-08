@@ -78,7 +78,7 @@ public class SettingFragment extends Fragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         titleListener = (TitleUpdateListener) getActivity();
-        titleListener.setTitle(getString(R.string.menu_setting));
+        titleListener.setFragmentTitle(getString(R.string.menu_setting));
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -211,8 +211,9 @@ public class SettingFragment extends Fragment {
     @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
+        TRACE.i("ishide === "+ hidden);
         if (!hidden) {
-            titleListener.setTitle(getString(R.string.menu_setting));
+            titleListener.setFragmentTitle(getString(R.string.menu_setting));
         }
     }
 

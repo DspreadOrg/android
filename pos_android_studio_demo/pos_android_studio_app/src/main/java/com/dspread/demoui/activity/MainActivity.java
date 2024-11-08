@@ -123,7 +123,6 @@ public class MainActivity extends AppCompatActivity implements TitleUpdateListen
             public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
                 String packageVersionName = UpdateAppHelper.getPackageVersionName(MainActivity.this, "com.dspread.demoui");
                 tvAppVersion.setText(getString(R.string.app_version) + packageVersionName);
-                TRACE.i("onDrawerSlide == ");
                 drawerStateChanged();
             }
 
@@ -166,8 +165,8 @@ public class MainActivity extends AppCompatActivity implements TitleUpdateListen
     }
 
     @Override
-    public void setTitle(String value) {
-        new Activity().setTitle(value);
+    public void setFragmentTitle(String value) {
+        setTitle(value);
     }
 
     @Override

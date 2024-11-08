@@ -62,7 +62,7 @@ public class AboutFragment extends Fragment implements View.OnClickListener {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         myListener = (TitleUpdateListener) getActivity();
-        myListener.setTitle(getString(R.string.about));
+        myListener.setFragmentTitle(getString(R.string.about));
     }
 
     @Override

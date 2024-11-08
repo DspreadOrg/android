@@ -1,14 +1,8 @@
 package com.dspread.demoui.fragment;
 
-import static com.dspread.demoui.ui.dialog.Mydialog.BLUETOOTH;
-import static com.dspread.demoui.ui.dialog.Mydialog.UART;
-import static com.dspread.demoui.ui.dialog.Mydialog.USB_OTG_CDC_ACM;
-
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,20 +11,14 @@ import android.widget.RelativeLayout;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.dspread.demoui.BaseApplication;
 import com.dspread.demoui.R;
 import com.dspread.demoui.activity.MainActivity;
 import com.dspread.demoui.activity.MifareCardsActivity;
-import com.dspread.demoui.activity.PaymentActivity;
-import com.dspread.demoui.activity.ScanBluetoothActivity;
-import com.dspread.demoui.utils.SharedPreferencesUtil;
 import com.dspread.demoui.utils.TitleUpdateListener;
 import com.dspread.xpos.QPOSService;
-
-import org.bouncycastle.asn1.cms.PasswordRecipientInfo;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -49,7 +37,7 @@ public class MifareCardsFragment extends Fragment implements View.OnClickListene
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         myListener = (TitleUpdateListener) getActivity();
-        myListener.setTitle(getString(R.string.menu_mifareCards));
+        myListener.setFragmentTitle(getString(R.string.menu_mifareCards));
     }
 
     @Override

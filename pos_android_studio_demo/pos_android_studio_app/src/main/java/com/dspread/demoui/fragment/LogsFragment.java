@@ -51,7 +51,7 @@ public class LogsFragment extends Fragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         myListener = (TitleUpdateListener) getActivity();
-        myListener.setTitle(getString(R.string.show_log));
+        myListener.setFragmentTitle(getString(R.string.show_log));
         TRACE.setContext(getContext());
     }
 

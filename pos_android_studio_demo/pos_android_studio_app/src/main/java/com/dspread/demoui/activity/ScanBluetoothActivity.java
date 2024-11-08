@@ -10,6 +10,7 @@ import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -41,12 +42,12 @@ public class ScanBluetoothActivity extends AppCompatActivity implements Bluetoot
     private String blueTootchAddress,bluTitle;
     private SharedPreferencesUtil preferencesUtil;
     private TextView tvTitle;
-    private ImageView ivBackTitle;;
-
+    private ImageView ivBackTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         setContentView(R.layout.activity_scanbluetooeh);
         preferencesUtil = SharedPreferencesUtil.getInstance(this);
@@ -71,15 +72,16 @@ public class ScanBluetoothActivity extends AppCompatActivity implements Bluetoot
             m_Adapter.notifyDataSetChanged();
         }
         rlBluListView.setAdapter(m_Adapter);
-        ivBackTitle.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-
+        ivBackTitle.setOnClickListener(v -> finish());
+        llScanBlu.setOnClickListener(v -> {
+            pos.clearBluetoothBuffer();
+            pos.scanQPos2Mode(this, 20);
+            refreshAdapter();
+            if (m_Adapter != null) {
+                m_Adapter.notifyDataSetChanged();
             }
         });
     }
-
 
     private void refreshAdapter() {
         if (m_Adapter != null) {

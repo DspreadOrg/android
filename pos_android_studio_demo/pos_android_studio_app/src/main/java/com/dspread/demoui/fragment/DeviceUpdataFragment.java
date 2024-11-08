@@ -1,13 +1,9 @@
 package com.dspread.demoui.fragment;
 
-import static com.dspread.demoui.ui.dialog.Mydialog.BLUETOOTH;
-import static com.dspread.demoui.ui.dialog.Mydialog.UART;
-import static com.dspread.demoui.ui.dialog.Mydialog.USB_OTG_CDC_ACM;
 import static com.dspread.demoui.utils.Utils.getKeyIndex;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -28,10 +24,8 @@ import com.dspread.demoui.R;
 
 import com.dspread.demoui.activity.MainActivity;
 import com.dspread.demoui.activity.MyQposClass;
-import com.dspread.demoui.activity.PaymentActivity;
 import com.dspread.demoui.beans.Constants;
 import com.dspread.demoui.interfaces.PosUpdateCallback;
-import com.dspread.demoui.ui.dialog.Mydialog;
 import com.dspread.demoui.utils.FileUtils;
 import com.dspread.demoui.utils.SharedPreferencesUtil;
 import com.dspread.demoui.utils.TitleUpdateListener;
@@ -61,7 +55,7 @@ public class DeviceUpdataFragment extends Fragment implements View.OnClickListen
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         myListener = (TitleUpdateListener) getActivity();
-        myListener.setTitle(getString(R.string.device_update));
+        myListener.setFragmentTitle(getString(R.string.device_update));
     }
 
     @Override
