@@ -31,16 +31,13 @@ public interface TransactionCallback {
 
     void onRequestBatchData(String tlv);
 
-    void onError(QPOSService.Error errorState);
-
     void onQposIsCardExist(boolean cardIsExist);
 
     void onRequestDisplay(QPOSService.Display displayMsg);
 
     void onReturnReversalData(String tlv);
 
-
-    void onReturnGetKeyBoardInputResult(String result);
+    void onReturnGetPinInputResult(int num);
 
     void onGetCardNoResult(String cardNo);
 

@@ -161,31 +161,15 @@ public class MyQposClass extends CQPOSService {
     @Override
     public void onReturnGetKeyBoardInputResult(String result) {
         super.onReturnGetKeyBoardInputResult(result);
-        if(transactionCallback != null){
-            transactionCallback.onReturnGetKeyBoardInputResult(result);
-        }
         Log.w("checkUactivity", "onReturnGetKeyBoardInputResult");
     }
 
     @Override
     public void onReturnGetPinInputResult(int num) {
-//        super.onReturnGetPinInputResult(num);
-//        String s = "";
-//        if (num == -1) {
-////                if (keyboardUtil != null) {
-////                    keyboardUtil.hide();
-////                    pinpadEditText.setVisibility(View.GONE);
-////                }
-//        } else {
-//            for (int i = 0; i < num; i++) {
-//                s += "*";
-//            }
-////                pinpadEditText.setText(s);
-//            KeyboardUtil.pinpadEditText.setText(s);
-//        }
-//        if(transactionCallback != null){
-//            transactionCallback.onReturnGetPinInputResult(num);
-//        }
+        TRACE.i("parent onReturnGetPinInputResult"+num);
+        if(transactionCallback != null){
+            transactionCallback.onReturnGetPinInputResult(num);
+        }
     }
 
     @Override

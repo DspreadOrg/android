@@ -119,6 +119,7 @@ public class SettingFragment extends Fragment {
                         Intent data = result.getData();
                         if (data != null) {
                             boolean isConnected = data.getBooleanExtra("isConnected",false);
+                            posType = POS_TYPE.BLUETOOTH;
                             if(isConnected){
                                 connectStateCallback.onRequestQposConnected();
                             }else {
@@ -146,20 +147,18 @@ public class SettingFragment extends Fragment {
                     close();
                     bluetoothRelaPer();
                     posType = POS_TYPE.BLUETOOTH;
-                    tvConnectType.setText(getString(R.string.setting_blu));
                     break;
                 case R.id.rbtn_serialport:
                     if(!rBtnSerialPort.isChecked()){
                         return;
                     }
                     close();
-                    posType = POS_TYPE.UART;
-                    tvConnectType.setText(getString(R.string.setting_uart));
                     application.open(QPOSService.CommunicationMode.UART,getContext());
                     pos = application.getQposService();
                     preferencesUtil.put(Constants.BluetoothAddress,"/dev/ttyS1");
                     pos.setDeviceAddress("/dev/ttyS1");
                     pos.openUart();
+                    posType = POS_TYPE.UART;
                     break;
                 case R.id.rbtn_usb:
                     if(!rBtnUsb.isChecked()){
@@ -168,7 +167,6 @@ public class SettingFragment extends Fragment {
                     close();
                     posType = POS_TYPE.USB;
                     openUSBDevice();
-                    tvConnectType.setText(getString(R.string.setting_usb));
                     break;
                 default:
                     break;
@@ -187,6 +185,9 @@ public class SettingFragment extends Fragment {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if(item.getItemId() == Menu.FIRST){
             close();
+            rgType.clearCheck();
+            tvConnectType.setText(getString(R.string.setting_connectiontype));
+            posType = null;
             clearConnectStatus();
         }
         return super.onOptionsItemSelected(item);
@@ -194,6 +195,7 @@ public class SettingFragment extends Fragment {
 
     private void close(){
         if (pos == null || posType == null) {
+            TRACE.d("return close");
             return;
         } else if (posType == POS_TYPE.BLUETOOTH) {
             pos.disconnectBT();
@@ -269,9 +271,7 @@ public class SettingFragment extends Fragment {
     private void clearConnectStatus(){
         application.setQposService(null);
         preferencesUtil.put(Constants.connType,"");
-        posType = null;
-        rgType.clearCheck();
-        tvConnectType.setText(getString(R.string.setting_connectiontype));
+//        posType = null;
     }
 
     public void bluetoothRelaPer() {
@@ -363,7 +363,20 @@ public class SettingFragment extends Fragment {
 
         @Override
         public void onRequestQposConnected() {
-            preferencesUtil.put(Constants.connType,posType.name());
+            if(posType != null) {
+                TRACE.d("connected "+posType.name());
+                preferencesUtil.put(Constants.connType, posType.name());
+                if(posType == POS_TYPE.BLUETOOTH){
+                    tvConnectType.setText(getString(R.string.setting_blu));
+                }else if(posType == POS_TYPE.UART){
+                    tvConnectType.setText(getString(R.string.setting_uart));
+                }else if(posType == POS_TYPE.USB){
+                    tvConnectType.setText(getString(R.string.setting_usb));
+                }
+            }else {
+                tvConnectType.setText(getString(R.string.setting_blu));
+            }
+
             Toast.makeText(getContext(),"Device connected succeed!", Toast.LENGTH_LONG).show();
         }
 

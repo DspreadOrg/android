@@ -1,28 +1,8 @@
 package com.dspread.demoui.activity;
 
-
-import static android.content.pm.PackageManager.PERMISSION_GRANTED;
-
-import static com.dspread.demoui.ui.dialog.Mydialog.BLUETOOTH;
-import static com.dspread.demoui.ui.dialog.Mydialog.UART;
-import static com.dspread.demoui.ui.dialog.Mydialog.USB_OTG_CDC_ACM;
 import static com.dspread.demoui.utils.QPOSUtil.HexStringToByteArray;
-import static com.dspread.demoui.utils.Utils.getKeyIndex;
-
-import android.Manifest;
-import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.PendingIntent;
-import android.bluetooth.BluetoothDevice;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.pm.PackageManager;
-import android.hardware.usb.UsbDevice;
-import android.hardware.usb.UsbManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -39,64 +19,36 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import com.dspread.demoui.BaseApplication;
 import com.dspread.demoui.R;
-import com.dspread.demoui.beans.BluetoothToolsBean;
 import com.dspread.demoui.beans.Constants;
-
 import com.dspread.demoui.beans.GlobalErrorEvent;
 import com.dspread.demoui.enums.POS_TYPE;
 import com.dspread.demoui.interfaces.TransactionCallback;
 import com.dspread.demoui.utils.SharedPreferencesUtil;
-import com.dspread.demoui.widget.pinpad.keyboard.KeyBoardNumInterface;
 import com.dspread.demoui.widget.pinpad.keyboard.KeyboardUtil;
 import com.dspread.demoui.widget.pinpad.keyboard.MyKeyboardView;
-import com.dspread.xpos.CQPOSService;
 import com.dspread.xpos.QPOSService;
-
 import com.dspread.demoui.ui.dialog.Mydialog;
 import com.dspread.demoui.utils.DUKPK2009_CBC;
 import com.dspread.demoui.utils.DeviceUtils;
 import com.dspread.demoui.utils.DingTalkTest;
-import com.dspread.demoui.utils.FileUtils;
-import com.dspread.demoui.utils.ParseASN1Util;
-import com.dspread.demoui.utils.QPOSUtil;
 import com.dspread.demoui.utils.SystemKeyListener;
 import com.dspread.demoui.utils.TRACE;
-import com.dspread.demoui.utils.USBClass;
-
-import com.dspread.demoui.widget.BluetoothAdapter;
 import com.dspread.demoui.widget.pinpad.PinPadDialog;
 import com.dspread.demoui.widget.pinpad.PinPadView;
-
 import com.dspread.xpos.Util;
 import com.dspread.xpos.utils.AESUtil;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import pl.droidsonroids.gif.GifImageView;
-
-
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -110,7 +62,6 @@ public class PaymentActivity extends AppCompatActivity implements View.OnClickLi
     private String cashbackAmounts = "";
     private String amounts = "";
     private String amount = "";
-
     private ListView appListView;
     private QPOSService.TransactionType transactionType = QPOSService.TransactionType.GOODS;
     private boolean isPinCanceled = false;
@@ -198,7 +149,62 @@ public class PaymentActivity extends AppCompatActivity implements View.OnClickLi
     public void onGlobalErrorEvent(GlobalErrorEvent event) {
         // 处理事件
         TRACE.i("payment error == "+event.errorState);
-        QPOSService.Error error = event.errorState;
+        QPOSService.Error errorState = event.errorState;
+        dismissDialog();
+        String msg = "";
+        if (errorState == QPOSService.Error.CMD_NOT_AVAILABLE) {
+            msg = getString(R.string.command_not_available);
+        } else if (errorState == QPOSService.Error.TIMEOUT) {
+            msg = getString(R.string.device_no_response);
+        } else if (errorState == QPOSService.Error.DEVICE_RESET) {
+            msg = getString(R.string.device_reset);
+        } else if (errorState == QPOSService.Error.UNKNOWN) {
+            msg = getString(R.string.unknown_error);
+        } else if (errorState == QPOSService.Error.DEVICE_BUSY) {
+            msg = getString(R.string.device_busy);
+            if (pos != null) {
+                pos.resetPosStatus();
+            }
+        } else if (errorState == QPOSService.Error.INPUT_OUT_OF_RANGE) {
+            msg = getString(R.string.out_of_range);
+        } else if (errorState == QPOSService.Error.INPUT_INVALID_FORMAT) {
+            msg = getString(R.string.invalid_format);
+        } else if (errorState == QPOSService.Error.INPUT_ZERO_VALUES) {
+            msg = getString(R.string.zero_values);
+        } else if (errorState == QPOSService.Error.INPUT_INVALID) {
+            msg = getString(R.string.input_invalid);
+        } else if (errorState == QPOSService.Error.CASHBACK_NOT_SUPPORTED) {
+            msg = getString(R.string.cashback_not_supported);
+        } else if (errorState == QPOSService.Error.CRC_ERROR) {
+            msg = getString(R.string.crc_error);
+        } else if (errorState == QPOSService.Error.COMM_ERROR) {
+            msg = getString(R.string.comm_error);
+        } else if (errorState == QPOSService.Error.MAC_ERROR) {
+            msg = getString(R.string.mac_error);
+        } else if (errorState == QPOSService.Error.APP_SELECT_TIMEOUT) {
+            msg = getString(R.string.app_select_timeout_error);
+        } else if (errorState == QPOSService.Error.CMD_TIMEOUT) {
+            msg = getString(R.string.cmd_timeout);
+        } else if (errorState == QPOSService.Error.ICC_ONLINE_TIMEOUT) {
+            if (pos == null) {
+                return;
+            }
+            pos.resetPosStatus();
+            msg = getString(R.string.device_reset);
+        }else {
+            msg = errorState.name();
+        }
+        Mydialog.ErrorDialog(PaymentActivity.this, msg, new Mydialog.OnMyClickListener() {
+            @Override
+            public void onCancel() {
+            }
+
+            @Override
+            public void onConfirm() {
+                finish();
+                Mydialog.ErrorDialog.dismiss();
+            }
+        });
     }
 
     @Override
@@ -282,7 +288,7 @@ public class PaymentActivity extends AppCompatActivity implements View.OnClickLi
         }
     }
 
-    private final Handler dingdingHandler = new Handler(){
+    private final Handler dingdingHandler = new Handler(Looper.myLooper()){
         @Override
         public void handleMessage(@NonNull Message msg) {
             super.handleMessage(msg);
@@ -899,67 +905,6 @@ public class PaymentActivity extends AppCompatActivity implements View.OnClickLi
         }
 
         @Override
-        public void onError(QPOSService.Error errorState) {
-            TRACE.d("onError" + errorState.toString());
-            dismissDialog();
-            String msg = "";
-            if (errorState == QPOSService.Error.CMD_NOT_AVAILABLE) {
-                msg = getString(R.string.command_not_available);
-            } else if (errorState == QPOSService.Error.TIMEOUT) {
-                msg = getString(R.string.device_no_response);
-            } else if (errorState == QPOSService.Error.DEVICE_RESET) {
-                msg = getString(R.string.device_reset);
-            } else if (errorState == QPOSService.Error.UNKNOWN) {
-                msg = getString(R.string.unknown_error);
-            } else if (errorState == QPOSService.Error.DEVICE_BUSY) {
-                msg = getString(R.string.device_busy);
-                if (pos != null) {
-                    pos.resetPosStatus();
-                }
-            } else if (errorState == QPOSService.Error.INPUT_OUT_OF_RANGE) {
-                msg = getString(R.string.out_of_range);
-            } else if (errorState == QPOSService.Error.INPUT_INVALID_FORMAT) {
-                msg = getString(R.string.invalid_format);
-            } else if (errorState == QPOSService.Error.INPUT_ZERO_VALUES) {
-                msg = getString(R.string.zero_values);
-            } else if (errorState == QPOSService.Error.INPUT_INVALID) {
-                msg = getString(R.string.input_invalid);
-            } else if (errorState == QPOSService.Error.CASHBACK_NOT_SUPPORTED) {
-                msg = getString(R.string.cashback_not_supported);
-            } else if (errorState == QPOSService.Error.CRC_ERROR) {
-                msg = getString(R.string.crc_error);
-            } else if (errorState == QPOSService.Error.COMM_ERROR) {
-                msg = getString(R.string.comm_error);
-            } else if (errorState == QPOSService.Error.MAC_ERROR) {
-                msg = getString(R.string.mac_error);
-            } else if (errorState == QPOSService.Error.APP_SELECT_TIMEOUT) {
-                msg = getString(R.string.app_select_timeout_error);
-            } else if (errorState == QPOSService.Error.CMD_TIMEOUT) {
-                msg = getString(R.string.cmd_timeout);
-            } else if (errorState == QPOSService.Error.ICC_ONLINE_TIMEOUT) {
-                if (pos == null) {
-                    return;
-                }
-                pos.resetPosStatus();
-                msg = getString(R.string.device_reset);
-            }else {
-                msg = errorState.name();
-            }
-            Mydialog.ErrorDialog(PaymentActivity.this, msg, new Mydialog.OnMyClickListener() {
-                @Override
-                public void onCancel() {
-
-                }
-
-                @Override
-                public void onConfirm() {
-                    finish();
-                    Mydialog.ErrorDialog.dismiss();
-                }
-            });
-        }
-
-        @Override
         public void onQposIsCardExist(boolean cardIsExist) {
             TRACE.d("onQposIsCardExist(boolean cardIsExist):" + cardIsExist);
             if (cardIsExist) {
@@ -1020,8 +965,19 @@ public class PaymentActivity extends AppCompatActivity implements View.OnClickLi
         }
 
         @Override
-        public void onReturnGetKeyBoardInputResult(String result) {
-
+        public void onReturnGetPinInputResult(int num) {
+            String s = "";
+            if (num == -1) {
+                    if (keyboardUtil != null) {
+                        keyboardUtil.hide();
+                        pinpadEditText.setVisibility(View.GONE);
+                    }
+            } else {
+                for (int i = 0; i < num; i++) {
+                    s += "*";
+                }
+                pinpadEditText.setText(s);
+            }
         }
 
         @Override
@@ -1032,12 +988,10 @@ public class PaymentActivity extends AppCompatActivity implements View.OnClickLi
 
         @Override
         public void onGetCardInfoResult(Hashtable<String, String> cardInfo) {
-
         }
 
         @Override
         public void onEmvICCExceptionData(String tlv) {
-
         }
 
         @Override

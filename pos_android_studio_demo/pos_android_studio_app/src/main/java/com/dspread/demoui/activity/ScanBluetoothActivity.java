@@ -17,6 +17,7 @@ import com.dspread.demoui.BaseApplication;
 import com.dspread.demoui.R;
 import com.dspread.demoui.beans.BluetoothToolsBean;
 import com.dspread.demoui.beans.Constants;
+import com.dspread.demoui.enums.POS_TYPE;
 import com.dspread.demoui.interfaces.BluetoothConnectCallback;
 import com.dspread.demoui.ui.dialog.Mydialog;
 import com.dspread.demoui.utils.SharedPreferencesUtil;
@@ -125,6 +126,7 @@ public class ScanBluetoothActivity extends AppCompatActivity implements Bluetoot
 
     @Override
     public void onRequestQposConnected() {
+        preferencesUtil.put(Constants.connType, POS_TYPE.BLUETOOTH.name());
         Intent resultIntent = new Intent();
         resultIntent.putExtra("isConnected", true);
         setResult(Activity.RESULT_OK, resultIntent);
