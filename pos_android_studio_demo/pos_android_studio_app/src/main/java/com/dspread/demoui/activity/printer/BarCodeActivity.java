@@ -49,7 +49,7 @@ public class BarCodeActivity extends BaseActivity implements View.OnClickListene
     private TextView brTextDensitylevel;
     private LinearLayout brcodeDensitylevel;
     private PrintLineStyle printLineStyle;
-    private String alignText = "";
+    private String alignText = "CENTER";
     private String brContent = "";
     private String brHeight = "";
     private String brWidth = "";
@@ -98,8 +98,8 @@ public class BarCodeActivity extends BaseActivity implements View.OnClickListene
         brTextDensitylevel = findViewById(R.id.br_text_densitylevel);
         brcodeDensitylevel = findViewById(R.id.brcode_densitylevel);
         brcodeSymbology = findViewById(R.id.brcode_symbology);
+        brcodeSymbology.setVisibility(View.GONE);
         brcodeTextSymbology = findViewById(R.id.brcode_text_symbology);
-
         if ("mp600".equals(Build.MODEL)) {
             brcodeSpeedlevels.setVisibility(View.VISIBLE);
             brcodeDensitylevel.setVisibility(View.VISIBLE);

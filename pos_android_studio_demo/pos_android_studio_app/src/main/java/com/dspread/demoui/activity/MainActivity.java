@@ -1,8 +1,6 @@
 package com.dspread.demoui.activity;
 
-import android.app.Activity;
 import android.content.Context;
-
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -15,17 +13,8 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
 import com.dspread.demoui.BaseApplication;
 import com.dspread.demoui.R;
-import com.dspread.demoui.ui.dialog.Mydialog;
 import com.dspread.demoui.fragment.AboutFragment;
 import com.dspread.demoui.fragment.DeviceInfoFragment;
 import com.dspread.demoui.fragment.DeviceUpdataFragment;
@@ -35,6 +24,7 @@ import com.dspread.demoui.fragment.MifareCardsFragment;
 import com.dspread.demoui.fragment.PrinterHelperFragment;
 import com.dspread.demoui.fragment.ScanFragment;
 import com.dspread.demoui.fragment.SettingFragment;
+import com.dspread.demoui.ui.dialog.Mydialog;
 import com.dspread.demoui.utils.SharedPreferencesUtil;
 import com.dspread.demoui.utils.TRACE;
 import com.dspread.demoui.utils.TitleUpdateListener;
@@ -42,8 +32,13 @@ import com.dspread.demoui.utils.UpdateAppHelper;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
-import org.bouncycastle.jcajce.provider.symmetric.ARC4;
-
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 public class MainActivity extends AppCompatActivity implements TitleUpdateListener, NavigationView.OnNavigationItemSelectedListener {
     DrawerLayout drawerLayout;
     NavigationView navigationView;

@@ -107,7 +107,7 @@ public class PrinterStatusActivity extends BaseActivity implements View.OnClickL
         tvGetTemperature.setText("");
         tvGetVoltage.setText("");
         tvPrintStatusInfo.setText("");
-        if (Build.MODEL.equalsIgnoreCase("D70") || Build.MODEL.equalsIgnoreCase("D30")) {
+        if (Build.MODEL.equalsIgnoreCase("D70") || Build.MODEL.equalsIgnoreCase("D30") || Build.MODEL.equalsIgnoreCase("D30M")) {
             btnGetDensity.setVisibility(View.GONE);
             btnGetSpeed.setVisibility(View.GONE);
             btnGetTemperature.setVisibility(View.GONE);

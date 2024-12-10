@@ -41,7 +41,7 @@ public class QRCodeActivity extends BaseActivity implements View.OnClickListener
     private PrintLineStyle printLineStyle;
     private String qrCodeSize = "";
     private int qrSize;
-    private String alignText;
+    private String alignText = "CENTER";
     private int printLineAlign;
     private String qrContent = "";
     private String qrGraylevel = "";
@@ -85,6 +85,7 @@ public class QRCodeActivity extends BaseActivity implements View.OnClickListener
         qrcodeErrorLevel = findViewById(R.id.qrcode_errorLevel);
         qrcodeTextErrorLevel = findViewById(R.id.qrcode_text_errorLevel);
         qrcodeSpeedlevel.setVisibility(View.GONE);
+        qrcodeErrorLevel.setVisibility(View.GONE);
         qrcodeDensitylevel.setVisibility(View.GONE);
         ivBackTitle.setOnClickListener(this);
         qrcodeContent.setOnClickListener(this);
