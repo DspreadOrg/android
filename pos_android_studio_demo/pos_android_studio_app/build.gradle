@@ -99,7 +99,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
     implementation 'org.greenrobot:eventbus:3.3.1'
 
-    implementation 'com.dspread.print:dspread_print_sdk:1.3.6-beta'
+    implementation 'com.dspread.print:dspread_print_sdk:1.3.7-beta'
 //    implementation 'com.dspread.library:dspread_pos_sdk:6.0.4'
 
 }

@@ -92,7 +92,6 @@ public class PrinterHelperFragment extends Fragment {
 
     class PrinterWordListAdapter extends RecyclerView.Adapter<PrinterWordListAdapter.MyViewHolder> {
 
-
         @NonNull
         @Override
         public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -110,6 +109,9 @@ public class PrinterHelperFragment extends Fragment {
 
         @Override
         public int getItemCount() {
+            if (Build.MODEL.equalsIgnoreCase("D30")) {
+                return demos.length - 1;
+            }
             return demos.length;
         }
 

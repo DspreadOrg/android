@@ -1,8 +1,6 @@
 package com.dspread.demoui.activity;
 
-import android.app.Activity;
 import android.content.Context;
-
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -15,17 +13,8 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
 import com.dspread.demoui.BaseApplication;
 import com.dspread.demoui.R;
-import com.dspread.demoui.ui.dialog.Mydialog;
 import com.dspread.demoui.fragment.AboutFragment;
 import com.dspread.demoui.fragment.DeviceInfoFragment;
 import com.dspread.demoui.fragment.DeviceUpdataFragment;
@@ -35,6 +24,7 @@ import com.dspread.demoui.fragment.MifareCardsFragment;
 import com.dspread.demoui.fragment.PrinterHelperFragment;
 import com.dspread.demoui.fragment.ScanFragment;
 import com.dspread.demoui.fragment.SettingFragment;
+import com.dspread.demoui.ui.dialog.Mydialog;
 import com.dspread.demoui.utils.SharedPreferencesUtil;
 import com.dspread.demoui.utils.TRACE;
 import com.dspread.demoui.utils.TitleUpdateListener;
@@ -42,7 +32,13 @@ import com.dspread.demoui.utils.UpdateAppHelper;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
-import org.bouncycastle.jcajce.provider.symmetric.ARC4;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 public class MainActivity extends AppCompatActivity implements TitleUpdateListener, NavigationView.OnNavigationItemSelectedListener {
     DrawerLayout drawerLayout;
@@ -130,6 +126,7 @@ public class MainActivity extends AppCompatActivity implements TitleUpdateListen
             public void onDrawerOpened(@NonNull View drawerView) {
                 HideKeyboard(drawerView);
             }
+
             @Override
             public void onDrawerClosed(@NonNull View drawerView) {
             }
@@ -154,7 +151,7 @@ public class MainActivity extends AppCompatActivity implements TitleUpdateListen
             deviceConnectType.setText(getString(R.string.setting_uart));
         } else if ("usb".equals(conType)) {
             deviceConnectType.setText(getString(R.string.setting_usb));
-        } else if ("Dspread".equals(deviceManufacturer) || "D20".equals(deviceModel) || "D30".equals(deviceModel) || "mp600".equals(deviceModel) || "D60".equals(deviceModel)|| "D70".equals(deviceModel)) {
+        } else if ("Dspread".equals(deviceManufacturer) || "D20".equals(deviceModel) || "D30".equals(deviceModel) || "mp600".equals(deviceModel) || "D60".equals(deviceModel) || "D70".equals(deviceModel)) {
             connectType.put("conType", "uart");
             deviceConnectType.setText(getString(R.string.setting_uart));
         } else {
@@ -224,6 +221,7 @@ public class MainActivity extends AppCompatActivity implements TitleUpdateListen
                     public void onCancel() {
                         Mydialog.manualExitDialog.dismiss();
                     }
+
                     @Override
                     public void onConfirm() {
                         finish();
@@ -352,7 +350,7 @@ public class MainActivity extends AppCompatActivity implements TitleUpdateListen
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ((BaseApplication)getApplication()).setQposService(null);
+        ((BaseApplication) getApplication()).setQposService(null);
         System.exit(0);
 //        finish();
     }
@@ -365,11 +363,10 @@ public class MainActivity extends AppCompatActivity implements TitleUpdateListen
             drawerLayout.close();
             exit();
             return true;
-        }
-        else if (homeFragment != null) {
+        } else if (homeFragment != null) {
             return homeFragment.onKeyDown(keyCode, event);  // 让 Fragment 处理按键事件
         }
-        TRACE.i("main keyode = "+keyCode);
+        TRACE.i("main keyode = " + keyCode);
 
         return super.onKeyDown(keyCode, event);
     }

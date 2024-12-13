@@ -40,7 +40,7 @@ public class PrintTextActivity extends BaseActivity implements View.OnClickListe
     private Button btnPrint;
     private LinearLayout textAll;
     private PrintLineStyle printLineStyle;
-    private String alignText = "";
+    private String alignText = "CENTER";
     private String fontText = "";
     private String textSizeStr = "";
     private String textMaxHeightStr = "";
@@ -81,6 +81,10 @@ public class PrintTextActivity extends BaseActivity implements View.OnClickListe
         layoutMaxHeight = findViewById(R.id.Layout_maxHeight);
         if (Build.MODEL.equalsIgnoreCase("D70")) {
             layoutMaxHeight.setVisibility(View.GONE);
+        }
+        if (Build.MODEL.equalsIgnoreCase("D30M")) {
+            layoutMaxHeight.setVisibility(View.GONE);
+            layoutSetFontStyle.setVisibility(View.GONE);
         }
         textContentMaxHeight = findViewById(R.id.text_content_maxHeight);
         textSet = findViewById(R.id.text_set);
@@ -183,7 +187,6 @@ public class PrintTextActivity extends BaseActivity implements View.OnClickListe
                             textSize = Integer.parseInt(textSizeStr);
                         } else {
                             textSize = Integer.parseInt(textSizeStr);
-
                         }
                         printLineStyle.setFontSize(textSize);
                         mPrinter.setPrintStyle(printLineStyle);
@@ -220,7 +223,6 @@ public class PrintTextActivity extends BaseActivity implements View.OnClickListe
                     public void onCancel() {
 
                     }
-
                     @Override
                     public void onConfirm(String str) {
                         textContentMaxHeight.setText(str);
