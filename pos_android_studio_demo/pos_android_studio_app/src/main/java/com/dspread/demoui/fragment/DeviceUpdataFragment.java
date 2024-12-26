@@ -151,6 +151,7 @@ public class DeviceUpdataFragment extends Fragment implements View.OnClickListen
     };
 
     public void updateFirmware() {
+        preferencesUtil.put("operationType","updateFirmware");
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             //request permission
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_WRITE_EXTERNAL_STORAGE);

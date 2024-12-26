@@ -76,6 +76,7 @@ public class SettingFragment extends Fragment {
     private UsbDevice usbDevice;
     public AlertDialog alertDialog;
     private ProgressBar progressBar;
+    private boolean closeConnection =false;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -84,14 +85,13 @@ public class SettingFragment extends Fragment {
         titleListener.setFragmentTitle(getString(R.string.menu_setting));
     }
 
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_setting, null);
         initView(view);
         preferencesUtil = SharedPreferencesUtil.getInstance(getActivity());
         connType = (String) preferencesUtil.get(Constants.connType, "");
-        TRACE.i("setting contype == "+connType);
-        if(!"".equals(connType)){
+        TRACE.i("setting contype == " + connType);
+        if (!"".equals(connType)) {
             return view;
         }
         if (Constants.BLUETOOTH.equals(connType)) {
@@ -125,41 +125,43 @@ public class SettingFragment extends Fragment {
         rgType = view.findViewById(R.id.rg_type);
         tvConnectType = view.findViewById(R.id.tv_connect_type);
         rBtnBlue.setOnClickListener(v -> {
-            if(tBtnClicked != null && tBtnClicked != rBtnBlue){
+            if (tBtnClicked != null && tBtnClicked != rBtnBlue) {
                 isChecked = false;
             }
             rBtnBlue.setChecked(!isChecked);
             isChecked = rBtnBlue.isChecked();
             tBtnClicked = rBtnBlue;
-            if(rBtnBlue.isChecked()) {
+            if (rBtnBlue.isChecked()) {
                 close();
                 bluetoothRelaPer();
                 posType = POS_TYPE.BLUETOOTH;
-            }else {
-                if(tBtnClicked != null && tBtnClicked == rBtnBlue){
+            } else {
+                if (tBtnClicked != null && tBtnClicked == rBtnBlue) {
                     close();
+                    closeConnection = true;
                     rgType.clearCheck();
                 }
             }
         });
         rBtnSerialPort.setOnClickListener(v -> {
-            if(tBtnClicked != null && tBtnClicked != rBtnSerialPort){
+            if (tBtnClicked != null && tBtnClicked != rBtnSerialPort) {
                 close();
                 isChecked = false;
             }
             rBtnSerialPort.setChecked(!isChecked);
             isChecked = rBtnSerialPort.isChecked();
             tBtnClicked = rBtnSerialPort;
-            if(rBtnSerialPort.isChecked()) {
+            if (rBtnSerialPort.isChecked()) {
                 posType = POS_TYPE.UART;
                 progressBar.setVisibility(View.VISIBLE);
-                application.open(QPOSService.CommunicationMode.UART,getContext());
+                application.open(QPOSService.CommunicationMode.UART, getContext());
                 pos = application.getQposService();
-                preferencesUtil.put(Constants.BluetoothAddress,"/dev/ttyS1");
+                preferencesUtil.put(Constants.BluetoothAddress, "/dev/ttyS1");
                 pos.setDeviceAddress("/dev/ttyS1");
                 pos.openUart();
-            }else {
-                if(tBtnClicked != null && tBtnClicked == rBtnSerialPort){
+            } else {
+                if (tBtnClicked != null && tBtnClicked == rBtnSerialPort) {
+                    closeConnection = true;
                     close();
                     rgType.clearCheck();
                 }
@@ -167,18 +169,19 @@ public class SettingFragment extends Fragment {
         });
 
         rBtnUsb.setOnClickListener(v -> {
-            if(tBtnClicked != null && tBtnClicked != rBtnUsb){
+            if (tBtnClicked != null && tBtnClicked != rBtnUsb) {
                 isChecked = false;
             }
             rBtnUsb.setChecked(!isChecked);
             isChecked = rBtnUsb.isChecked();
             tBtnClicked = rBtnUsb;
-            if(rBtnUsb.isChecked()) {
+            if (rBtnUsb.isChecked()) {
                 close();
                 posType = POS_TYPE.USB;
                 openUSBDevice();
-            }else {
-                if(tBtnClicked != null && tBtnClicked == rBtnUsb){
+            } else {
+                if (tBtnClicked != null && tBtnClicked == rBtnUsb) {
+                    closeConnection = true;
                     close();
                     rgType.clearCheck();
                 }
@@ -189,13 +192,12 @@ public class SettingFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        menu.add(0, Menu.FIRST, Menu.NONE, getString(R.string.disconnect))
-                .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS); // show the text menu
+        menu.add(0, Menu.FIRST, Menu.NONE, getString(R.string.disconnect)).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS); // show the text menu
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if(item.getItemId() == Menu.FIRST){
+        if (item.getItemId() == Menu.FIRST) {
             close();
             rgType.clearCheck();
             isChecked = false;
@@ -207,8 +209,8 @@ public class SettingFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    private void close(){
-       pos = application.getQposService();
+    private void close() {
+        pos = application.getQposService();
         if (pos == null || posType == null) {
             TRACE.d("return close");
         } else if (posType == POS_TYPE.BLUETOOTH) {
@@ -225,7 +227,7 @@ public class SettingFragment extends Fragment {
     @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
-        TRACE.i("ishide === "+ hidden);
+        TRACE.i("ishide === " + hidden);
         if (!hidden) {
             titleListener.setFragmentTitle(getString(R.string.menu_setting));
         }
@@ -237,7 +239,7 @@ public class SettingFragment extends Fragment {
         clearConnectStatus();
     }
 
-    private void openUSBDevice(){
+    private void openUSBDevice() {
         USBClass usb = new USBClass();
         ArrayList<String> deviceList = usb.GetUSBDevices(getContext());
 
@@ -251,7 +253,7 @@ public class SettingFragment extends Fragment {
         if (items.length == 1) {
             String selectedDevice = (String) items[0];
             usbDevice = USBClass.getMdevices().get(selectedDevice);
-            application.open(QPOSService.CommunicationMode.USB_OTG_CDC_ACM,getContext());
+            application.open(QPOSService.CommunicationMode.USB_OTG_CDC_ACM, getContext());
             pos = application.getQposService();
             pos.openUsb(usbDevice);
         } else {
@@ -273,7 +275,7 @@ public class SettingFragment extends Fragment {
                         String selectedDevice = items[item].toString();
                         dialog.dismiss();
                         usbDevice = USBClass.getMdevices().get(selectedDevice);
-                        application.open(QPOSService.CommunicationMode.USB_OTG_CDC_ACM,getContext());
+                        application.open(QPOSService.CommunicationMode.USB_OTG_CDC_ACM, getContext());
                         pos = application.getQposService();
                         pos.openUsb(usbDevice);
                     }
@@ -286,9 +288,9 @@ public class SettingFragment extends Fragment {
         }
     }
 
-    private void clearConnectStatus(){
+    private void clearConnectStatus() {
         application.setQposService(null);
-        preferencesUtil.put(Constants.connType,"");
+        preferencesUtil.put(Constants.connType, "");
 //        posType = null;
     }
 
@@ -300,8 +302,8 @@ public class SettingFragment extends Fragment {
         }
         LocationManager lm = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
         List<String> listProvider = lm.getAllProviders();
-        for(String str: listProvider){
-            TRACE.i("provider : "+str);
+        for (String str : listProvider) {
+            TRACE.i("provider : " + str);
         }
         boolean ok = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
         if (ok) {//Location service is on
@@ -312,29 +314,28 @@ public class SettingFragment extends Fragment {
                     if (ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.BLUETOOTH_ADVERTISE) != PackageManager.PERMISSION_GRANTED) {
                         String[] list = new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.BLUETOOTH_SCAN, android.Manifest.permission.BLUETOOTH_CONNECT, android.Manifest.permission.BLUETOOTH_ADVERTISE};
                         requestPermissions(list, BLUETOOTH_CODE);
-                        Log.w("bluetoothRelaPer","bluetoothRelaPer--1");
-                    }else {
+                        Log.w("bluetoothRelaPer", "bluetoothRelaPer--1");
+                    } else {
                         navigateToBluActivity();
                     }
                 } else {
-                    Log.w("bluetoothRelaPer","bluetoothRelaPer--2");
-                    String[] permissions = { android.Manifest.permission.ACCESS_COARSE_LOCATION,
-                            android.Manifest.permission.ACCESS_FINE_LOCATION};
-                    requestPermissions(permissions,BLUETOOTH_CODE);
+                    Log.w("bluetoothRelaPer", "bluetoothRelaPer--2");
+                    String[] permissions = {android.Manifest.permission.ACCESS_COARSE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION};
+                    requestPermissions(permissions, BLUETOOTH_CODE);
                 }
             } else {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                     if (ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.BLUETOOTH_ADVERTISE) != PackageManager.PERMISSION_GRANTED) {
                         String[] list = new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.BLUETOOTH_SCAN, android.Manifest.permission.BLUETOOTH_CONNECT, android.Manifest.permission.BLUETOOTH_ADVERTISE};
                         requestPermissions(list, BLUETOOTH_CODE);
-                        Log.w("bluetoothRelaPer","bluetoothRelaPer--3");
-                    }else {
+                        Log.w("bluetoothRelaPer", "bluetoothRelaPer--3");
+                    } else {
                         navigateToBluActivity();
                     }
-                }else {
+                } else {
                     navigateToBluActivity();
                 }
-                Log.w("ermission Granted","ermission Granted");
+                Log.w("ermission Granted", "ermission Granted");
             }
         } else {
             clearConnectStatus();
@@ -349,7 +350,7 @@ public class SettingFragment extends Fragment {
                     }
                 });
                 launcher.launch(intent);
-            }catch (Exception e){
+            } catch (Exception e) {
                 Toast.makeText(getActivity(), "Pls open the LOCATION in your device settings! ", Toast.LENGTH_SHORT).show();
             }
 
@@ -362,13 +363,13 @@ public class SettingFragment extends Fragment {
         if (requestCode == BLUETOOTH_CODE) {
             TRACE.d("permission grant ---!");
             for (int i = 0; i < permissions.length; i++) {
-                TRACE.d("permission grant ---!"+ i);
+                TRACE.d("permission grant ---!" + i);
                 if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
                     clearConnectStatus();
                     TRACE.d("permission deined!");
                     return;
                 }
-                if(i == permissions.length-1){
+                if (i == permissions.length - 1) {
                     navigateToBluActivity();
                 }
             }
@@ -376,44 +377,45 @@ public class SettingFragment extends Fragment {
         }
     }
 
-    private void navigateToBluActivity(){
-        Intent intent = new Intent(getContext(),ScanBluetoothActivity.class);
+    private void navigateToBluActivity() {
+        Intent intent = new Intent(getContext(), ScanBluetoothActivity.class);
         startActivity(intent);
     }
 
-    private class ConnectStatusCls implements ConnectStateCallback{
+    private class ConnectStatusCls implements ConnectStateCallback {
 
         @Override
         public void onRequestQposConnected() {
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    preferencesUtil.put(Constants.updateFirmwareStatus,false);
-                    if(posType != null) {
+                    preferencesUtil.put(Constants.updateFirmwareStatus, false);
+                    if (posType != null) {
                         TRACE.d("setting onRequestQposConnected()");
-                        TRACE.d("connected "+posType.name());
+                        TRACE.d("connected " + posType.name());
                         preferencesUtil.put(Constants.connType, posType.name());
-                        if(posType == POS_TYPE.BLUETOOTH){
+                        if (posType == POS_TYPE.BLUETOOTH) {
                             tvConnectType.setText(getString(R.string.setting_blu));
-                        }else if(posType == POS_TYPE.UART){
+                        } else if (posType == POS_TYPE.UART) {
                             tvConnectType.setText(getString(R.string.setting_uart));
-                        }else if(posType == POS_TYPE.USB){
+                        } else if (posType == POS_TYPE.USB) {
                             tvConnectType.setText(getString(R.string.setting_usb));
                         }
-                    }else {
+                    } else {
                         tvConnectType.setText(getString(R.string.setting_blu));
                     }
-                    if(tBtnClicked != null) {
+                    if (tBtnClicked != null) {
                         tBtnClicked.setChecked(true);
                     }
                     progressBar.setVisibility(View.GONE);
-                    Toast.makeText(getContext(),"Device connected succeed!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), "Device connected succeed!", Toast.LENGTH_LONG).show();
                 }
             });
         }
 
         @Override
         public void onRequestQposDisconnected() {
+            TRACE.i("onRequestQposDisconnected ==");
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -422,16 +424,22 @@ public class SettingFragment extends Fragment {
 //                        posType = null;
 //                        tvConnectType.setText(getString(R.string.setting_connectiontype));
 //                    }
-                    boolean status = (boolean) preferencesUtil.get(Constants.updateFirmwareStatus,false);
-                    TRACE.i("statuas =="+status);
-                    if(status){
+                    boolean status = (boolean) preferencesUtil.get(Constants.updateFirmwareStatus, false);
+
+                    TRACE.i("statuas ==" + status);
+                    if (status) {
                         isChecked = false;
                         tBtnClicked = null;
                     }
-                    TRACE.i("statuas disconnect =="+status+" ischeck = "+isChecked);
-                    rgType.clearCheck();
-                    clearConnectStatus();
-                    Toast.makeText(getContext(),"Device disconnect!", Toast.LENGTH_LONG).show();
+                    TRACE.i("statuas disconnect ==" + status + " ischeck = " + isChecked);
+                    String updateFirmware= (String)preferencesUtil.get("operationType","");
+                    if (closeConnection || "updateFirmware".equals(updateFirmware)) {
+                        rgType.clearCheck();
+                        clearConnectStatus();
+                        closeConnection = false;
+                        preferencesUtil.put("operationType","");
+                    }
+                    Toast.makeText(getContext(), "Device disconnect!", Toast.LENGTH_LONG).show();
                 }
             });
 
@@ -443,7 +451,7 @@ public class SettingFragment extends Fragment {
                 @Override
                 public void run() {
                     clearConnectStatus();
-                    Toast.makeText(getContext(),"Device connect failed! Pls try again", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), "Device connect failed! Pls try again", Toast.LENGTH_LONG).show();
                 }
             });
 
