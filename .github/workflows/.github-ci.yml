@@ -92,6 +92,15 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code (again for the next job)
+        uses: actions/checkout@v2
+
+      - name: Create a new Git tag
+        run: |
+          TAG_NAME="v$(date +'%Y%m%d%H%M%S')"  # 使用当前时间戳生成一个标签
+          git tag $TAG_NAME  # 创建新的标签
+          git push origin $TAG_NAME  # 推送标签到远程仓库
+    
       - name: Download APK artifact
         uses: actions/download-artifact@v4
         with:
