@@ -82,11 +82,11 @@ jobs:
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: app-release
-          path: pos_android_studio_demo/pos_android_studio_app/build/outputs/apk/release/app-release.apk
+          name: pos_android_studio_app-release
+          path: pos_android_studio_demo/pos_android_studio_app/build/outputs/apk/release/pos_android_studio_app-release.apk
 
       - name: List APK files
-        run: ls -R pos_android_studio_demo/pos_android_studio_app/build/outputs/apk  # 列出 APK 文件，确保路径正确
+        run: ls -R pos_android_studio_demo/pos_android_studio_app/build/outputs/apk/release  # 列出 APK 文件，确保路径正确
           
   upload_to_github:
     needs: build
@@ -95,11 +95,11 @@ jobs:
       - name: Download APK artifact
         uses: actions/download-artifact@v4
         with:
-          name: app-release  # 下载上一步上传的 APK artifact
+          name: pos_android_studio_app-release  # 下载上一步上传的 APK artifact
       - name: Upload APK to GitHub Releases
         uses: softprops/action-gh-release@v2
         with:
-          files: pos_android_studio_demo/pos_android_studio_app/build/outputs/apk/release/app-release.apkk  # 上传 APK 到 GitHub Releases
+          files: pos_android_studio_demo/pos_android_studio_app/build/outputs/apk/release/pos_android_studio_app-release.apk  # 上传 APK 到 GitHub Releases
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # 使用 GitHub Token 进行认证
           
