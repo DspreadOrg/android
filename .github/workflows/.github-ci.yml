@@ -82,7 +82,7 @@ jobs:
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: app-release-apk
+          name: app-release
           path: pos_android_studio_demo/pos_android_studio_app/build/outputs/apk/release/app-release.apk
           
   upload_to_github:
