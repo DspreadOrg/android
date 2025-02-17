@@ -84,6 +84,9 @@ jobs:
         with:
           name: app-release
           path: pos_android_studio_demo/pos_android_studio_app/build/outputs/apk/release/app-release.apk
+
+      - name: List APK files
+        run: ls -R app/build/outputs/apk  # 列出 APK 文件，确保路径正确
           
   upload_to_github:
     needs: build
