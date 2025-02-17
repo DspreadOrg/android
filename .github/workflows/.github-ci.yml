@@ -93,13 +93,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code (again for the next job)
-        uses: actions/checkout@v2
+        uses: actions/checkout@v2  # 再次检出代码以确保可以访问标签
 
       - name: Create a new Git tag
         run: |
-          TAG_NAME="v$(date +'%Y%m%d%H%M%S')"  # 使用当前时间戳生成一个标签
-          git tag $TAG_NAME  # 创建新的标签
-          git push origin $TAG_NAME  # 推送标签到远程仓库
+          TAG_NAME="v$(date +'%Y%m%d%H%M%S')"  # 使用时间戳生成唯一标签
+          echo "Creating tag: $TAG_NAME"
+          git tag $TAG_NAME  # 创建标签
+          git push origin $TAG_NAME  # 推送标签到 GitHub
+
+      - name: Checkout tags
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0  # 需要完全检出标签
     
       - name: Download APK artifact
         uses: actions/download-artifact@v4
