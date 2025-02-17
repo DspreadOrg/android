@@ -92,11 +92,11 @@ jobs:
       - name: Download APK artifact
         uses: actions/download-artifact@v4
         with:
-          name: my-apk  # 下载上一步上传的 APK artifact
+          name: app-release  # 下载上一步上传的 APK artifact
       - name: Upload APK to GitHub Releases
         uses: softprops/action-gh-release@v2
         with:
-          files: app/build/outputs/apk/release/app-release.apk  # 上传 APK 到 GitHub Releases
+          files: pos_android_studio_demo/pos_android_studio_app/build/outputs/apk/release/app-release.apkk  # 上传 APK 到 GitHub Releases
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # 使用 GitHub Token 进行认证
           
