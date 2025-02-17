@@ -84,14 +84,22 @@ jobs:
         with:
           name: app-release-apk
           path: pos_android_studio_demo/pos_android_studio_app/build/outputs/apk/release/app-release.apk
-
-      - name: Upload APK to GitHub Releases
-        uses: actions/upload-release-asset@v1
+          
+  upload_to_github:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download APK artifact
+        uses: actions/download-artifact@v2
         with:
-          tag: ${{ github.ref }}
-          file: app/build/outputs/apk/release/app-release.apk
-          asset_name: app-release.apk
-          release_id: ${{ steps.create_release.outputs.id }}
+          name: my-apk  # 下载上一步上传的 APK artifact
+      - name: Upload APK to GitHub Releases
+        uses: ghcr.io/softprops/action-gh-release@v1
+        with:
+          files: app/build/outputs/apk/release/app-release.apk  # 上传 APK 到 GitHub Releases
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # 使用 GitHub Token 进行认证
+          
   release:
     runs-on: ubuntu-latest
     needs: [build]  # 依赖于 build 作业的成功
