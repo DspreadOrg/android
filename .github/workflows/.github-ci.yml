@@ -86,7 +86,7 @@ jobs:
           path: pos_android_studio_demo/pos_android_studio_app/build/outputs/apk/release/app-release.apk
 
       - name: Upload APK to GitHub Releases
-        uses: gh-actions/upload-release-asset@v1
+        uses: actions/upload-release-asset@v4
         with:
           tag: ${{ github.ref }}
           file: app/build/outputs/apk/release/app-release.apk
