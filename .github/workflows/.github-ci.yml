@@ -90,11 +90,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download APK artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: my-apk  # 下载上一步上传的 APK artifact
       - name: Upload APK to GitHub Releases
-        uses: ghcr.io/softprops/action-gh-release@v1
+        uses: ghcr.io/softprops/action-gh-release@v2
         with:
           files: app/build/outputs/apk/release/app-release.apk  # 上传 APK 到 GitHub Releases
         env:
