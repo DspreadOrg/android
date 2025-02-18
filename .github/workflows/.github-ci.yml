@@ -150,6 +150,7 @@ jobs:
       - name: Upload JSON to GitHub Releases
         uses: softprops/action-gh-release@v1
         with:
+          tag_name: ${{ github.ref_name }}
           files: version_info.json  # 上传 version_info.json 文件
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # 使用 GitHub Token 进行认证
