@@ -105,7 +105,17 @@ jobs:
           draft: false
           prerelease: false
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # GitHub 自动生成的 Token，用于权限认证        
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # GitHub 自动生成的 Token，用于权限认证 
+
+       # 上传 APK 到 GitHub Releases
+      - name: Upload APK to GitHub Releases
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: "Release ${{ env.tag_name }}"  # 使用环境变量传递标签
+          files: pos_android_studio_demo/pos_android_studio_app/build/outputs/apk/release/pos_android_studio_app-release.apk  # APK 路径，确保这个路径正确
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # 使用 GitHub Token 进行认证
+          
   release:
     runs-on: ubuntu-latest
     needs: [build]  # 依赖于 build 作业的成功
@@ -126,16 +136,7 @@ jobs:
       - name: Run semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx semantic-release
-
-     # 上传 APK 到 GitHub Releases
-      - name: Upload APK to GitHub Releases
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: "Release ${{ env.tag_name }}"  # 使用环境变量传递标签
-          files: pos_android_studio_demo/pos_android_studio_app/build/outputs/apk/release/pos_android_studio_app-release.apk  # APK 路径，确保这个路径正确
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # 使用 GitHub Token 进行认证 
+        run: npx semantic-release 
           
   deploy:
     runs-on: ubuntu-latest  # 使用 Ubuntu 作为运行环境
