@@ -131,7 +131,8 @@ jobs:
       - name: Upload APK to GitHub Releases
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ github.ref_name }}  # 使用环境变量传递标签
+          tag_name: ${{ env.tag_name }}
+          #tag_name: ${{ github.ref_name }}  # 使用环境变量传递标签
           #tag_name: v${{ env.VERSION_NAME }}
           files: pos_android_studio_demo/pos_android_studio_app/build/outputs/apk/release/pos_android_studio_app-release.apk  # APK 路径，确保这个路径正确
         env:
