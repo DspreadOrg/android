@@ -63,6 +63,21 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
+
+      - name: Get version information
+        id: version
+        run: |
+          VERSION_CODE=$(grep versionCode app/build.gradle | head -n 1 | sed 's/.*versionCode\s*\([0-9]\+\).*/\1/')
+          VERSION_NAME=$(grep versionName app/build.gradle | head -n 1 | sed 's/.*versionName\s*"\([^"]\+\)".*/\1/')
+          echo "VERSION_CODE=$VERSION_CODE" >> $GITHUB_ENV
+          echo "VERSION_NAME=$VERSION_NAME" >> $GITHUB_ENV  
+
+      - name: Get commit message
+        id: commit
+        run: |
+          COMMIT_MESSAGE=$(git log -1 --pretty=%B)
+          echo "COMMIT_MESSAGE=$COMMIT_MESSAGE" >> $GITHUB_ENV
+
        #  解码并保存 keystore 文件
       - name: Decode and Save Keystore
         run: |
@@ -109,6 +124,7 @@ jobs:
 
       - name: List APK files
         run: ls -R pos_android_studio_demo/pos_android_studio_app/build/outputs/apk/release  # 列出 APK 文件，确保路径正确
+
    
         # 上传 APK 到 GitHub Releases
       - name: Upload APK to GitHub Releases
@@ -118,7 +134,17 @@ jobs:
           tag_name: ${{ env.tag_name }}
           files: pos_android_studio_demo/pos_android_studio_app/build/outputs/apk/release/pos_android_studio_app-release.apk  # APK 路径，确保这个路径正确
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # 使用 GitHub Token 进行认证     
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # 使用 GitHub Token 进行认证  
+
+      - name: Generate JSON file
+        run: |
+          echo "Generating version information JSON file..."
+          echo '{
+            "versionCode": "'${{ env.VERSION_CODE }}'",
+            "versionName": "'${{ env.VERSION_NAME }}'",
+            "commitMessage": "'${{ env.COMMIT_MESSAGE }}'",
+            "buildId": "'${GITHUB_SHA}'"
+          }' > version_info.json   
           
   release:
     runs-on: ubuntu-latest
