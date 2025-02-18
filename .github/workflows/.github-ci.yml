@@ -141,7 +141,7 @@ jobs:
       - name: Generate JSON file
         run: |
           echo "Generating version information JSON file..."
-          APK_DOWNLOAD_PATH="https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/pos_android_studio_app-release.apk"
+          APK_DOWNLOAD_PATH="https://github.com/${{ github.repository }}/releases/download/${{ env.tag_name }}/pos_android_studio_app-release.apk"
           echo '{
             "VersionCode": "'${{ env.VERSION_CODE }}'",
             "VersionName": "'${{ env.VERSION_NAME }}'",
