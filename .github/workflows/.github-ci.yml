@@ -146,7 +146,14 @@ jobs:
             "commitMessage": "'${{ env.COMMIT_MESSAGE }}'",
             "buildId": "'${GITHUB_SHA}'"
           }' > version_info.json   
-          
+
+      - name: Upload JSON to GitHub Releases
+        uses: softprops/action-gh-release@v1
+        with:
+          files: version_info.json  # 上传 version_info.json 文件
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # 使用 GitHub Token 进行认证
+      
   release:
     runs-on: ubuntu-latest
     needs: [build]  # 依赖于 build 作业的成功
