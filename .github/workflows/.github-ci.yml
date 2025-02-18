@@ -67,8 +67,8 @@ jobs:
       - name: Get version information
         id: version
         run: |
-          VERSION_CODE=$(grep versionCode app/build.gradle | head -n 1 | sed 's/.*versionCode\s*\([0-9]\+\).*/\1/')
-          VERSION_NAME=$(grep versionName app/build.gradle | head -n 1 | sed 's/.*versionName\s*"\([^"]\+\)".*/\1/')
+          VERSION_CODE=$(grep versionCode pos_android_studio_demo/pos_android_studio_app/build.gradle | head -n 1 | sed 's/.*versionCode\s*\([0-9]\+\).*/\1/')
+          VERSION_NAME=$(grep versionName pos_android_studio_demo/pos_android_studio_app/build.gradle | head -n 1 | sed 's/.*versionName\s*"\([^"]\+\)".*/\1/')
           echo "VERSION_CODE=$VERSION_CODE" >> $GITHUB_ENV
           echo "VERSION_NAME=$VERSION_NAME" >> $GITHUB_ENV  
 
