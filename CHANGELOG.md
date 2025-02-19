@@ -1,3 +1,10 @@
+## [4.8.5](https://github.com/DspreadOrg/android/compare/v4.8.4...v4.8.5) (2025-02-19)
+
+
+### Bug Fixes
+
+* update printSDK to 1.3.9 version ([f282902](https://github.com/DspreadOrg/android/commit/f2829021303ce82cec454a0c62b97b80a236b2f6))
+
 ## [5.1.1](https://github.com/DspreadOrg/android/compare/v4.8.3...v5.1.1) (2025-02-19)
 
 
