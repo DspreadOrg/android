@@ -6,6 +6,16 @@ public class VersionEnty {
 
     private Object VersionName;
 
+    public String getBuildId() {
+        return buildId;
+    }
+
+    public void setBuildId(String buildId) {
+        this.buildId = buildId;
+    }
+
+    private  String buildId;
+
 
     public Object getVersionCode() {
         return VersionCode;

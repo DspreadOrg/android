@@ -131,6 +131,7 @@ public class AboutFragment extends Fragment implements View.OnClickListener {
 
     private void checkNewVersion() throws IOException {
         String commitUrl = "https://gitlab.com/api/v4/projects/4128550/jobs/artifacts/master/raw/pos_android_studio_demo/pos_android_studio_app/build/outputs/apk/release/commit.json?job=assembleRelease";
+        commitUrl = "https://github.com/DspreadOrg/android/releases/download/Release/version_info.json";
         downloadFileCourse(getActivity(), commitUrl, PathUtils.getAppExtCachePath(), "commit.json");
     }
 
@@ -152,10 +153,10 @@ public class AboutFragment extends Fragment implements View.OnClickListener {
                                 Log.e("download_Success-JSON;", s);
                                 VersionEnty versionEnty = gson.fromJson(s, VersionEnty.class);
                                 String versionCode = (String) versionEnty.getVersionCode();
-                                String replace = versionCode.trim().replace(" ", "");
-                                int length = replace.length();
-                                String substring = replace.substring(11, length);
-                                int versionCodeInt = Integer.parseInt(substring);
+                                //String replace = versionCode.trim().replace(" ", "");
+                               // int length = replace.length();
+                                //String substring = replace.substring(11, length);
+                                int versionCodeInt = Integer.parseInt(versionCode);
                                 Object versionName = versionEnty.getVersionName();
                                 String modifyContent = (String) versionEnty.getModifyContent();
                                 if (modifyContent.length() > 300) {
