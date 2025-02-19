@@ -1,3 +1,10 @@
+## [4.8.6](https://github.com/DspreadOrg/android/compare/v4.8.5...v4.8.6) (2025-02-19)
+
+
+### Bug Fixes
+
+* update changelog ([ae00747](https://github.com/DspreadOrg/android/commit/ae0074777baea63af905243a3ca168845d7d315d))
+
 ## [4.8.5](https://github.com/DspreadOrg/android/compare/v4.8.4...v4.8.5) (2025-02-19)
 
 
