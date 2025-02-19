@@ -1,3 +1,10 @@
+## [4.8.3](https://github.com/DspreadOrg/android/compare/v4.8.2...v4.8.3) (2025-02-19)
+
+
+### Bug Fixes
+
+* test CICD build APK update and download ([6b23cbb](https://github.com/DspreadOrg/android/commit/6b23cbbbc363e221e252a781af99b773ebe5e559))
+
 ## [4.8.2](https://github.com/DspreadOrg/android/compare/v4.8.1...v4.8.2) (2025-02-12)
 
 
