@@ -1,3 +1,10 @@
+## [4.8.4](https://github.com/DspreadOrg/android/compare/v4.8.3...v4.8.4) (2025-02-19)
+
+
+### Bug Fixes
+
+* fix APK version update download ([4e1381b](https://github.com/DspreadOrg/android/commit/4e1381b33eb77d738bc57824e265f15ea779df11))
+
 ## [4.8.3](https://github.com/DspreadOrg/android/compare/v4.8.2...v4.8.3) (2025-02-19)
 
 
