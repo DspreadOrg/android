@@ -1,24 +1,39 @@
 package com.dspread.demoui.fragment;
 
+import static android.app.Activity.RESULT_OK;
 import static com.dspread.demoui.utils.Utils.getKeyIndex;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.provider.Settings;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
@@ -36,7 +51,10 @@ import com.dspread.demoui.utils.SharedPreferencesUtil;
 import com.dspread.demoui.utils.TitleUpdateListener;
 import com.dspread.xpos.QPOSService;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -56,6 +74,8 @@ public class DeviceUpdataFragment extends Fragment implements View.OnClickListen
     private UpdateThread updateThread;
     private SharedPreferencesUtil preferencesUtil;
     private static final int REQUEST_WRITE_EXTERNAL_STORAGE = 1001;
+    private static final int FILE_SELECT_REQUEST_CODE = 1002;
+    private ActivityResultLauncher<Intent> fileSelectLauncher;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -90,6 +110,32 @@ public class DeviceUpdataFragment extends Fragment implements View.OnClickListen
         updateFirmware.setOnClickListener(this);
         updateFirmwareByOTA.setOnClickListener(this);
         updateEmvByXml.setOnClickListener(this);
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // 注册 Activity Result 回调
+        fileSelectLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK) {
+                        Intent data = result.getData();
+                        if (data != null) {
+                            // 获取所选文件的 Uri
+                            Uri uri = data.getData();
+                            if (uri != null) {
+                                // 处理所选文件的 Uri，例如获取文件名等信息
+                                try {
+                                    byte[] fileData = FileUtils.readBytesFromUri(uri);
+                                    startUpdateFirmware("",fileData);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    }
+                });
     }
 
     @Override
@@ -155,21 +201,92 @@ public class DeviceUpdataFragment extends Fragment implements View.OnClickListen
         preferencesUtil.put("operationType","updateFirmware");
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             //request permission
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_WRITE_EXTERNAL_STORAGE);
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_WRITE_EXTERNAL_STORAGE);
         } else {
-            byte[] data = null;
-            data = FileUtils.readAssetsLine("A29DW.asc", getActivity());
-            if (data != null) {
-                int a = pos.updatePosFirmware(data, (String) preferencesUtil.get(Constants.BluetoothAddress,""));
-                if (a == -1) {
-                    tv_pos_result.setText(getString(R.string.charging_warning));
-                }else {
-                    updateThread = new UpdateThread();
-                    updateThread.start();
+            showDialog();
+
+        }
+    }
+
+    private void showDialog() {
+        // 加载对话框布局
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_firmware_update_layout, null);
+        ListView assetsListView = dialogView.findViewById(R.id.assets_listview);
+        ImageView gotoStorageButton = dialogView.findViewById(R.id.goto_storage_button);
+
+        try {
+            // 读取 assets 文件夹中的文件
+            String[] fileNames = getActivity().getAssets().list("");
+            List<String> ascFileList = new ArrayList<>();
+            if (fileNames != null) {
+                for(String name : fileNames){
+                    if(name.endsWith(".asc")){
+                       ascFileList.add(name);
+                    }
                 }
-            } else {
-                tv_pos_result.setText(getString(R.string.does_the_file_exist));
+
+                // 创建适配器并设置给 ListView
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                        getActivity(),
+                        android.R.layout.simple_list_item_1,
+                        ascFileList.toArray(new String[ascFileList.size()])
+                );
+                assetsListView.setAdapter(adapter);
             }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // 设置跳转按钮的点击监听器
+        gotoStorageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Settings.ACTION_SETTINGS);
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                intent.setType("*/*"); // 可以选择任意类型的文件
+                try {
+                    fileSelectLauncher.launch(intent);
+                }catch (ActivityNotFoundException e){
+                    Toast.makeText(getActivity(),"Can't open the setting fiolder!",Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
+        // 创建并显示对话框
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setView(dialogView);
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+        // 为 ListView 设置条目点击事件监听器
+        assetsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String selectedFileName = (String) parent.getItemAtPosition(position);
+                //update firmware
+                startUpdateFirmware(selectedFileName,null);
+                dialog.dismiss();
+            }
+        });
+    }
+
+    private void startUpdateFirmware(String selectedFileName, byte[] datas){
+        byte[] data;
+        if(datas == null){
+            data = FileUtils.readAssetsLine(selectedFileName, getActivity());
+        }else {
+            data = datas;
+        }
+        if (data != null) {
+            int a = pos.updatePosFirmware(data, (String) preferencesUtil.get(Constants.BluetoothAddress,""));
+            if (a == -1) {
+                tv_pos_result.setText(getString(R.string.charging_warning));
+            }else {
+                updateThread = new UpdateThread();
+                updateThread.start();
+            }
+        } else {
+            tv_pos_result.setText(getString(R.string.does_the_file_exist));
         }
     }
 

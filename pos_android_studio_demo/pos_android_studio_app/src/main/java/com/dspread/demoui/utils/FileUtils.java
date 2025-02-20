@@ -1,13 +1,20 @@
 package com.dspread.demoui.utils;
 
+import static com.xuexiang.xutil.XUtil.getContentResolver;
+
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.res.AssetManager;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Environment;
+import android.provider.OpenableColumns;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -130,5 +137,26 @@ public class FileUtils {
             }
         }
         return fileList;
+    }
+
+    public static byte[] readBytesFromUri(Uri uri) {
+        try {
+            // 通过 ContentResolver 打开文件输入流
+            java.io.InputStream inputStream = getContentResolver().openInputStream(uri);
+            if (inputStream != null) {
+                java.io.ByteArrayOutputStream outputStream = new java.io.ByteArrayOutputStream();
+                byte[] buffer = new byte[4 * 1024]; // 4KB 缓冲区
+                int read;
+                while ((read = inputStream.read(buffer)) != -1) {
+                    outputStream.write(buffer, 0, read);
+                }
+                outputStream.flush();
+                inputStream.close();
+                return outputStream.toByteArray();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
