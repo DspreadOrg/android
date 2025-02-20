@@ -2,6 +2,7 @@ package com.dspread.demoui.widget.pinpad.keyboard;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Rect;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -53,6 +54,10 @@ public class KeyboardUtil {
         mKeyBoardMarginEditTextTopHeight = mEditTextHeight * 2;
         mHeightPixels = context.getResources().getDisplayMetrics().heightPixels;
 
+        //need to add the Status bar height
+        Rect rect = new Rect();
+        context.getWindow().getDecorView().getWindowVisibleDisplayFrame(rect);
+        mHeightPixels = rect.bottom;
     }
     public KeyboardUtil(Activity context, List<String> dataList) {
         LinearLayout mIncludeKeyboardview = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.include_pinpad, null);

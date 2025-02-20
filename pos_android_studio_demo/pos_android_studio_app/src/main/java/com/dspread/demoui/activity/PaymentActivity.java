@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -94,7 +95,7 @@ public class PaymentActivity extends AppCompatActivity implements View.OnClickLi
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         setContentView(R.layout.activity_payment);
-
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         transactionCallbackCls = new TransactionCallbackCls();
         com.dspread.demoui.activity.MyQposClass.setTransactionCallback(transactionCallbackCls);
         preferencesUtil = SharedPreferencesUtil.getInstance(this);
@@ -111,6 +112,7 @@ public class PaymentActivity extends AppCompatActivity implements View.OnClickLi
         initView();
         if (pos != null && !"".equals(connType)) {
             if(connType.equals(POS_TYPE.UART.name())){
+                pos.setRandomKeyboardFlag(true);// for new smartpos
                 pos.setCardTradeMode(QPOSService.CardTradeMode.SWIPE_TAP_INSERT_CARD_NOTUP);
             }
             pos.doTrade(20);

@@ -113,6 +113,7 @@ public class DeviceUpdataFragment extends Fragment implements View.OnClickListen
 //                        "1A4D672DCA6CB3351FD1B02B237AF9AE", "08D7B4FB629D0885",  //TRACK KEY
 //                        "1A4D672DCA6CB3351FD1B02B237AF9AE", "08D7B4FB629D0885", //MAC KEY
 //                        0, 5);
+
                 pos.updateWorkKey(0,"1A4D672DCA6CB3351FD1B02B237AF9AE", "08D7B4FB629D0885",
                         "1A4D672DCA6CB3351FD1B02B237AF9AE", "08D7B4FB629D0885",
                         "1A4D672DCA6CB3351FD1B02B237AF9AE", "08D7B4FB629D0885");
