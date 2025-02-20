@@ -118,11 +118,11 @@ public class PrintTextActivity extends BaseActivity implements View.OnClickListe
                     public void onConfirm(String content) {
                         textTextAlign.setText(content);
                         alignText = content;
-                        if ("LEFT".equals(content)) {
+                        if (getString(R.string.at_the_left).equals(content)) {
                             alignText = "LEFT";
-                        } else if ("RIGHT".equals(content)) {
+                        } else if (getString(R.string.at_the_right).equals(content)) {
                             alignText = "RIGHT";
-                        } else if ("CENTER".equals(content)) {
+                        } else if (getString(R.string.at_the_center).equals(content)) {
                             alignText = "CENTER";
                         }
                     }
