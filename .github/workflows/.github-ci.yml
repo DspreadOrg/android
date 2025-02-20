@@ -76,6 +76,8 @@ jobs:
         id: commit
         run: |
           COMMIT_MESSAGE=$(git log -1 --pretty=%B)
+          COMMIT_MESSAGE=$(echo "$COMMIT_MESSAGE" | sed 's/^[0-9]\+\.[ ]*//g')
+          COMMIT_MESSAGE=$(echo "$COMMIT_MESSAGE" | tr -d '\n')
           echo "COMMIT_MESSAGE=$COMMIT_MESSAGE" >> $GITHUB_ENV
 
        #  解码并保存 keystore 文件
