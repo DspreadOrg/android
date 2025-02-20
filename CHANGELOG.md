@@ -1,3 +1,11 @@
+## [4.8.7](https://github.com/DspreadOrg/android/compare/v4.8.6...v4.8.7) (2025-02-20)
+
+
+### Bug Fixes
+
+* update sdk to 6.1.5 ([3270774](https://github.com/DspreadOrg/android/commit/32707741f615271b87a3163ae5cafb6ccedadfe7))
+* update the fimware UI logic ([2fca64e](https://github.com/DspreadOrg/android/commit/2fca64e021e6e063ce0d6e0a70489d346db8f4e9))
+
 ## [4.8.6](https://github.com/DspreadOrg/android/compare/v4.8.5...v4.8.6) (2025-02-19)
 
 
