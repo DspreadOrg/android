@@ -1,3 +1,10 @@
+## [4.8.8](https://github.com/DspreadOrg/android/compare/v4.8.7...v4.8.8) (2025-02-20)
+
+
+### Bug Fixes
+
+* update apk version to 5.1.4 ([12b3ea4](https://github.com/DspreadOrg/android/commit/12b3ea402eeffdcc43de9825d46f1da1fb425506))
+
 ## [4.8.7](https://github.com/DspreadOrg/android/compare/v4.8.6...v4.8.7) (2025-02-20)
 
 
