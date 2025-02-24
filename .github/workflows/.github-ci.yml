@@ -181,7 +181,8 @@ jobs:
       - name: Run semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx semantic-release 
+          VERSION_NAME: ${{ env.VERSION_NAME }}
+        run: npx semantic-release --tag ${env.VERSION_NAME}
           
   deploy:
     runs-on: ubuntu-latest  # 使用 Ubuntu 作为运行环境
