@@ -2,6 +2,7 @@
     "branches": [
       "master"
     ],
+    "tagFormat": "v${VERSION_NAME}",
     "plugins": [
         "@semantic-release/commit-analyzer",
         "@semantic-release/release-notes-generator",
@@ -27,7 +28,7 @@
         "assets": [
           {
             "path": "pos_android_studio_demo/pos_android_studio_app/build/outputs/apk/release/pos_android_studio_app-release.apk",
-            "label": "App Release APK"
+            "label": "pos_android_studio_app-release.apk"
           }
         ]
       }

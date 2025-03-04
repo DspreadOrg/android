@@ -167,9 +167,9 @@ jobs:
       - name: Extract version from build.gradle
         id: extract-version
         run: |
-          VERSION=$(grep -oP 'versionName\s+\"\K[^"]+' pos_android_studio_demo/pos_android_studio_app/build.gradle)
-          echo "Extracted version: $VERSION"
-          echo "VERSION_CODE=$VERSION" >> $GITHUB_ENV
+          VERSION_NAME=$(grep -oP 'versionName\s+\"\K[^"]+' pos_android_studio_demo/pos_android_studio_app/build.gradle)
+          echo "Extracted version: $VERSION_NAME"
+          echo "VERSION_NAME=$VERSION_NAME" >> $GITHUB_ENV
 
       - name: Install Semantic Release and dependencies
         run: |
@@ -178,7 +178,7 @@ jobs:
       - name: Run semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx semantic-release --tag v${{ env.VERSION_CODE }} --no-ci
+        run: npx semantic-release
 
       - name: Generate JSON file
         run: |
