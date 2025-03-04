@@ -1,3 +1,13 @@
+## [4.8.10](https://github.com/DspreadOrg/android/compare/v4.8.9...v4.8.10) (2025-03-04)
+
+
+### Bug Fixes
+
+* add download Artifact in semantic-release ([f7b6512](https://github.com/DspreadOrg/android/commit/f7b6512facc989005dbf8de516eb7c481195fec9))
+* update actions workflow to upload apk ([db9886c](https://github.com/DspreadOrg/android/commit/db9886c8c6ab406f3cdb2678e924f364dac11148))
+* update apk workflow and sdk version ([cf11ceb](https://github.com/DspreadOrg/android/commit/cf11ceb7a6432372bf6e9d37b7a9b0d8f34817a2))
+* update workflow for semantic-release ([7766647](https://github.com/DspreadOrg/android/commit/7766647edfc766209450571c1afc9d5129c58a7e))
+
 ## [4.8.9](https://github.com/DspreadOrg/android/compare/v4.8.8...v4.8.9) (2025-03-04)
 
 
