@@ -171,11 +171,18 @@ jobs:
           echo "Extracted version: $VERSION_NAME"
           echo "VERSION_NAME=$VERSION_NAME" >> $GITHUB_ENV
 
+      - name: Create Git Tag Manually
+        run: |
+          git config --global user.email "github-actions@github.com"
+          git config --global user.name "GitHub Actions"
+          git tag -a v${VERSION_NAME} -m "v${VERSION_NAME}"
+          git push origin v${VERSION_NAME}
+
       - name: Install Semantic Release and dependencies
         run: |
           npm install -g semantic-release @semantic-release/git @semantic-release/github @semantic-release/changelog conventional-changelog-conventionalcommits --force
 
-      - name: Run semantic-release
+      - name: Run semantic-release --no-ci --branches master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npx semantic-release
