@@ -155,14 +155,20 @@ jobs:
         with:
           node-version: '18'
 
+      - name: Verify APK file in release
+        run: ls -R pos_android_studio_demo/pos_android_studio_app/build/outputs/apk/release  # 列出 APK 文件，确保路径正确
+
+      - name: Set APK file permissions
+        run: chmod 644 pos_android_studio_demo/pos_android_studio_app/build/outputs/apk/release/pos_android_studio_app-release.apk
+
       - name: Install Semantic Release and dependencies
         run: |
           npm install -g semantic-release @semantic-release/git @semantic-release/github @semantic-release/changelog conventional-changelog-conventionalcommits --force
 
       - name: Run semantic-release
-        uses: semantic-release/github@v5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx semantic-release 
         with:
           assets: pos_android_studio_demo/pos_android_studio_app/build/outputs/apk/release/pos_android_studio_app-release.apk 
           tag: v${{ env.VERSION_CODE }}
