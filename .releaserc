@@ -24,12 +24,7 @@
     [
       "@semantic-release/github",
       {
-        "assets": [
-          {
-            "path": "pos_android_studio_demo/pos_android_studio_app/build/outputs/apk/release/pos_android_studio_app-release.apk",
-            "label": "Release APK"
-          }
-        ]
+        "assets": "pos_android_studio_demo/pos_android_studio_app/build/outputs/apk/release/pos_android_studio_app-release.apk"
       }
     ]
         

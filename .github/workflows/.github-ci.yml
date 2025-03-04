@@ -160,9 +160,12 @@ jobs:
           npm install -g semantic-release @semantic-release/git @semantic-release/github @semantic-release/changelog conventional-changelog-conventionalcommits --force
 
       - name: Run semantic-release
+        uses: semantic-release/github@v5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx semantic-release 
+        with:
+          assets: pos_android_studio_demo/pos_android_studio_app/build/outputs/apk/release/pos_android_studio_app-release.apk 
+          tag: v${{ env.VERSION_CODE }}
 
       - name: Generate JSON file
         run: |
