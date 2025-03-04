@@ -21,7 +21,7 @@ import com.dspread.demoui.interfaces.MifareCardOperationCallback;
 import com.dspread.demoui.utils.TRACE;
 import com.dspread.xpos.QPOSService;
 
-import org.bouncycastle.jcajce.provider.symmetric.ARC4;
+//import org.bouncycastle.jcajce.provider.symmetric.ARC4;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -40,7 +40,7 @@ public class MifareCardsActivity extends AppCompatActivity implements View.OnCli
     private TextView tvTitle;
     private String mifareCardOperationType = "add";
     private QPOSService pos;
-    private ImageView ivBackTitle;;
+    private ImageView ivBackTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

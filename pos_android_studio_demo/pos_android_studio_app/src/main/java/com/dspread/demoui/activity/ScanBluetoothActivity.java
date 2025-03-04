@@ -29,7 +29,7 @@ import com.dspread.demoui.utils.TRACE;
 import com.dspread.demoui.widget.BluetoothAdapter;
 import com.dspread.xpos.QPOSService;
 
-import org.bouncycastle.jcajce.provider.symmetric.ARC4;
+//import org.bouncycastle.jcajce.provider.symmetric.ARC4;
 
 import java.util.ArrayList;
 import java.util.HashMap;

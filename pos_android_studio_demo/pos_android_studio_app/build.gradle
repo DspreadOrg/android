@@ -41,9 +41,9 @@ android {
         minSdk 24
         targetSdk 33
 
-        versionCode 49
+        versionCode 50
 
-        versionName "5.1.4"
+        versionName "5.1.5"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -104,14 +104,14 @@ dependencies {
 
     implementation 'cn.hutool:hutool-all:5.1.0'
     implementation 'com.alibaba:fastjson:1.2.83'
-    implementation files('libs\\dspread_pos_sdk_6.1.5.jar')
+//    implementation files('libs\\dspread_pos_sdk_7.0.3.jar')
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
     implementation 'org.greenrobot:eventbus:3.3.1'
 
     implementation 'com.dspread.print:dspread_print_sdk:1.3.9-beta'
-//    implementation 'com.dspread.library:dspread_pos_sdk:6.0.4'
+    implementation 'com.dspread.library:dspread_pos_sdk:7.0.3'
 
 }
 

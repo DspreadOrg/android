@@ -114,7 +114,9 @@ public class PaymentActivity extends AppCompatActivity implements View.OnClickLi
             if(connType.equals(POS_TYPE.UART.name())){
                 pos.setRandomKeyboardFlag(true);// for new smartpos
                 pos.setCardTradeMode(QPOSService.CardTradeMode.SWIPE_TAP_INSERT_CARD_NOTUP);
+
             }
+            pos.setDelayCheckingCardTime(20);
             pos.doTrade(20);
         }else {
             goToMainPage();

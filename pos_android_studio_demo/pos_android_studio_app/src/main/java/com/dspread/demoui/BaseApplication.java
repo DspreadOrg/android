@@ -29,7 +29,7 @@ import okhttp3.OkHttpClient;
 
 import static com.xuexiang.xupdate.entity.UpdateError.ERROR.CHECK_NO_NEW_VERSION;
 
-import org.bouncycastle.jcajce.provider.symmetric.ARC4;
+//import org.bouncycastle.jcajce.provider.symmetric.ARC4;
 
 /**
  * @author user
