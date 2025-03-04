@@ -161,6 +161,13 @@ jobs:
       - name: Set APK file permissions
         run: chmod 644 pos_android_studio_demo/pos_android_studio_app/build/outputs/apk/release/pos_android_studio_app-release.apk
 
+      - name: Extract version from build.gradle
+        id: extract-version
+        run: |
+          VERSION=$(grep -oP 'versionName\s+\"\K[^"]+' pos_android_studio_demo/pos_android_studio_app/build.gradle)
+          echo "Extracted version: $VERSION"
+          echo "VERSION_CODE=$VERSION" >> $GITHUB_ENV
+
       - name: Install Semantic Release and dependencies
         run: |
           npm install -g semantic-release @semantic-release/git @semantic-release/github @semantic-release/changelog conventional-changelog-conventionalcommits --force
@@ -168,10 +175,7 @@ jobs:
       - name: Run semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx semantic-release 
-        with:
-          assets: pos_android_studio_demo/pos_android_studio_app/build/outputs/apk/release/pos_android_studio_app-release.apk 
-          tag: v${{ env.VERSION_CODE }}
+        run: npx semantic-release --tag v${{ env.VERSION_CODE }} --no-ci
 
       - name: Generate JSON file
         run: |
