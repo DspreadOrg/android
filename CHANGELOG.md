@@ -1,3 +1,10 @@
+## [4.8.9](https://github.com/DspreadOrg/android/compare/v4.8.8...v4.8.9) (2025-03-04)
+
+
+### Bug Fixes
+
+* update app with latest sdk ([07292f1](https://github.com/DspreadOrg/android/commit/07292f1a0506ce9885af8f8b833201d1a96c2cc8))
+
 ## [4.8.8](https://github.com/DspreadOrg/android/compare/v4.8.7...v4.8.8) (2025-02-20)
 
 
