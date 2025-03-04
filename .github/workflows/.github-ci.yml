@@ -155,11 +155,14 @@ jobs:
         with:
           node-version: '18'
 
+      - name: Download APK Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: pos_android_studio_app-release
+          path: pos_android_studio_demo/pos_android_studio_app/build/outputs/apk/release
+
       - name: Verify APK file in release
         run: ls -R pos_android_studio_demo/pos_android_studio_app/build/outputs/apk/release  # 列出 APK 文件，确保路径正确
-
-      - name: Set APK file permissions
-        run: chmod 644 pos_android_studio_demo/pos_android_studio_app/build/outputs/apk/release/pos_android_studio_app-release.apk
 
       - name: Extract version from build.gradle
         id: extract-version
