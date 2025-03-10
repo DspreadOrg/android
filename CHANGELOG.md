@@ -1,3 +1,10 @@
+## [5.1.6](https://github.com/DspreadOrg/android/compare/v5.1.5...v5.1.6) (2025-03-10)
+
+
+### Bug Fixes
+
+* update SDK and add update PIN feature for smart pos ([b01a121](https://github.com/DspreadOrg/android/commit/b01a121185c9ee562d314f9df9286a2c15d8819e))
+
 ## [4.8.10](https://github.com/DspreadOrg/android/compare/v4.8.9...v4.8.10) (2025-03-04)
 
 
