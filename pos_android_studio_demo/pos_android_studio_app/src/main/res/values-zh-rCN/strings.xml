@@ -500,4 +500,7 @@
     <string name="auto_trade">自动交易</string>
     <string name="trade_returnfailed">交易数据返回失败</string>
     <string name="please_tap_card_again">请再次贴卡</string>
+    <string name="input_new_pin_first_time">请输入新密码</string>
+    <string name="input_new_pin_confirm">请确认新密码</string>
+    <string name="input_new_pin_check_error">输入新密码不一致</string>
 </resources>

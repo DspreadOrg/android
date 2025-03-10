@@ -467,6 +467,9 @@
     <string name="content_barcode">BarCode</string>
     <string name="symbology_barcode">Symbology</string>
     <string name="please_tap_card_again">Please tap card again</string>
+    <string name="input_new_pin_first_time">Please input new PIN</string>
+    <string name="input_new_pin_confirm">Please confirm new PIN</string>
+    <string name="input_new_pin_check_error">Input different PIN</string>
 
 
     <string name="barcode_height">BarCodeHeight</string>

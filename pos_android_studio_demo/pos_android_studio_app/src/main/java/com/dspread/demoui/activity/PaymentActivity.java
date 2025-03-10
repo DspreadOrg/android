@@ -89,6 +89,11 @@ public class PaymentActivity extends AppCompatActivity implements View.OnClickLi
     private SharedPreferencesUtil preferencesUtil;
     private String connType;
     private TransactionCallbackCls transactionCallbackCls;
+
+    private boolean isChangePin = false;
+
+    private int timeOfPinInput = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -514,15 +519,29 @@ public class PaymentActivity extends AppCompatActivity implements View.OnClickLi
                 public void run() {
                     if(pos!=null){
                         boolean onlinePin = pos.isOnlinePin();
-                        if (onlinePin) {
-                            tvTitle.setText(getString(R.string.input_onlinePin));
+                        pinpadEditText.setText("");
+                        if(keyboardUtil!=null) {
+                            keyboardUtil.hide();
+                        }
+                        if(isChangePin){
+                            if(timeOfPinInput == 1){
+                                tvTitle.setText(getString(R.string.input_new_pin_first_time));
+                            } else if (timeOfPinInput == 2) {
+                                tvTitle.setText(getString(R.string.input_new_pin_confirm));
+                                timeOfPinInput = 0;
+                            }
+
                         } else {
-                            int cvmPinTryLimit = pos.getCvmPinTryLimit();
-                            TRACE.d("PinTryLimit:" + cvmPinTryLimit);
-                            if (cvmPinTryLimit == 1) {
-                                tvTitle.setText(getString(R.string.input_offlinePin_last));
+                            if (onlinePin) {
+                                tvTitle.setText(getString(R.string.input_onlinePin));
                             } else {
-                                tvTitle.setText(getString(R.string.input_offlinePin));
+                                int cvmPinTryLimit = pos.getCvmPinTryLimit();
+                                TRACE.d("PinTryLimit:" + cvmPinTryLimit);
+                                if (cvmPinTryLimit == 1) {
+                                    tvTitle.setText(getString(R.string.input_offlinePin_last));
+                                } else {
+                                    tvTitle.setText(getString(R.string.input_offlinePin));
+                                }
                             }
                         }
                     }
@@ -874,6 +893,7 @@ public class PaymentActivity extends AppCompatActivity implements View.OnClickLi
         @Override
         public void onRequestTransactionResult(QPOSService.TransactionResult transactionResult) {
             TRACE.d("onRequestTransactionResult()" + transactionResult.toString());
+            isChangePin = false;
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -1024,6 +1044,13 @@ public class PaymentActivity extends AppCompatActivity implements View.OnClickLi
                 msg = "transaction terminated";
             } else if (displayMsg == QPOSService.Display.PlEASE_TAP_CARD_AGAIN) {
                 msg = getString(R.string.please_tap_card_again);
+            } else if(displayMsg == QPOSService.Display.INPUT_NEW_PIN){
+//                msg = getString(R.string.input_new_pin);
+                isChangePin = true;
+                timeOfPinInput++;
+            } else if(displayMsg == QPOSService.Display.INPUT_NEW_PIN_CHECK_ERROR){
+                msg = getString(R.string.input_new_pin_check_error);
+                timeOfPinInput = 0;
             }
             Mydialog.loading(PaymentActivity.this, msg);
                 }
