@@ -1,5 +1,8 @@
 package com.dspread.demoui.activity;
 
+import static com.dspread.demoui.BaseApplication.addActivity;
+import static com.dspread.demoui.BaseApplication.finishAllActivities;
+
 import android.content.Context;
 import android.location.LocationManager;
 import android.os.Build;
@@ -79,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements TitleUpdateListen
         drawerStateChanged();
         setSupportActionBar(toolbar);
         navigationView.bringToFront();
-
+        addActivity(this);
         toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
@@ -225,7 +228,8 @@ public class MainActivity extends AppCompatActivity implements TitleUpdateListen
 
                     @Override
                     public void onConfirm() {
-                        finish();
+//                        finish();
+                        finishAllActivities();
                         Mydialog.manualExitDialog.dismiss();
                     }
                 });
@@ -352,8 +356,10 @@ public class MainActivity extends AppCompatActivity implements TitleUpdateListen
     protected void onDestroy() {
         super.onDestroy();
         ((BaseApplication) getApplication()).setQposService(null);
-        System.exit(0);
+//        System.exit(0);
 //        finish();
+        finishAllActivities();
+//        System.exit(0);
     }
 
     @Override
@@ -395,8 +401,8 @@ public class MainActivity extends AppCompatActivity implements TitleUpdateListen
 
                 @Override
                 public void onConfirm() {
-                    finish();
-
+//                    finish();
+                    finishAllActivities();
                     Mydialog.manualExitDialog.dismiss();
                 }
             });

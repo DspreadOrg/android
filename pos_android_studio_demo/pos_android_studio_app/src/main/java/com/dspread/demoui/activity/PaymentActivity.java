@@ -134,6 +134,7 @@ public class PaymentActivity extends AppCompatActivity implements View.OnClickLi
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra("showSettingFragment", true);
         startActivity(intent);
+        finish();
     }
 
     private void initView() {

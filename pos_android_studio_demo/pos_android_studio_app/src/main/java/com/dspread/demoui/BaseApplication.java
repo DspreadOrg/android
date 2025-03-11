@@ -1,5 +1,6 @@
 package com.dspread.demoui;
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.os.Handler;
@@ -23,6 +24,7 @@ import com.xuexiang.xupdate.utils.UpdateUtils;
 import com.xuexiang.xutil.tip.ToastUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
 
+import java.util.Stack;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -39,7 +41,21 @@ public class BaseApplication extends Application {
     private BaseApplication baseApplication;
     private QPOSService pos;
     public static Handler handler;
-
+    private static Stack<Activity> activityStack = new Stack<>();
+    public static void addActivity(Activity activity) {
+          activityStack.push(activity);
+    }
+    public static Activity popActivity() {
+            return activityStack.pop();
+    }
+    public static void finishAllActivities() {
+            while (!activityStack.isEmpty()) {
+                Activity activity = popActivity();
+                if (!activity.isFinishing()) {
+                    activity.finish();
+                }
+            }
+    }
 
     public QPOSService getQposService(){
         if(pos != null){
