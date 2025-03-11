@@ -1,3 +1,10 @@
+## [5.1.7](https://github.com/DspreadOrg/android/compare/v5.1.6...v5.1.7) (2025-03-11)
+
+
+### Bug Fixes
+
+* fix input keyboard 00 and optimize the demo exit issue ([3f436b4](https://github.com/DspreadOrg/android/commit/3f436b4f300f4cabe141fc35b89a7b5c4dbc00a9))
+
 ## [5.1.6](https://github.com/DspreadOrg/android/compare/v5.1.5...v5.1.6) (2025-03-10)
 
 
