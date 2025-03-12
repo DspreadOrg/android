@@ -121,7 +121,7 @@ public class PaymentActivity extends AppCompatActivity implements View.OnClickLi
                 pos.setCardTradeMode(QPOSService.CardTradeMode.SWIPE_TAP_INSERT_CARD_NOTUP);
 
             }
-            pos.setDelayCheckingCardTime(20);
+            pos.setDelayCheckingCardTime(500);
             pos.doTrade(20);
         }else {
             goToMainPage();
@@ -162,64 +162,69 @@ public class PaymentActivity extends AppCompatActivity implements View.OnClickLi
     public void onGlobalErrorEvent(GlobalErrorEvent event) {
         // 处理事件
         TRACE.i("payment error == "+event.errorState);
-        QPOSService.Error errorState = event.errorState;
-        dismissDialog();
-        String msg = "";
-        if (errorState == QPOSService.Error.CMD_NOT_AVAILABLE) {
-            msg = getString(R.string.command_not_available);
-        } else if (errorState == QPOSService.Error.TIMEOUT) {
-            msg = getString(R.string.device_no_response);
-        } else if (errorState == QPOSService.Error.DEVICE_RESET) {
-            msg = getString(R.string.device_reset);
-        } else if (errorState == QPOSService.Error.UNKNOWN) {
-            msg = getString(R.string.unknown_error);
-        } else if (errorState == QPOSService.Error.DEVICE_BUSY) {
-            msg = getString(R.string.device_busy);
-            if (pos != null) {
-                pos.resetPosStatus();
-            }
-        } else if (errorState == QPOSService.Error.INPUT_OUT_OF_RANGE) {
-            msg = getString(R.string.out_of_range);
-        } else if (errorState == QPOSService.Error.INPUT_INVALID_FORMAT) {
-            msg = getString(R.string.invalid_format);
-        } else if (errorState == QPOSService.Error.INPUT_ZERO_VALUES) {
-            msg = getString(R.string.zero_values);
-        } else if (errorState == QPOSService.Error.INPUT_INVALID) {
-            msg = getString(R.string.input_invalid);
-        } else if (errorState == QPOSService.Error.CASHBACK_NOT_SUPPORTED) {
-            msg = getString(R.string.cashback_not_supported);
-        } else if (errorState == QPOSService.Error.CRC_ERROR) {
-            msg = getString(R.string.crc_error);
-        } else if (errorState == QPOSService.Error.COMM_ERROR) {
-            msg = getString(R.string.comm_error);
-        } else if (errorState == QPOSService.Error.MAC_ERROR) {
-            msg = getString(R.string.mac_error);
-        } else if (errorState == QPOSService.Error.APP_SELECT_TIMEOUT) {
-            msg = getString(R.string.app_select_timeout_error);
-        } else if (errorState == QPOSService.Error.CMD_TIMEOUT) {
-            msg = getString(R.string.cmd_timeout);
-        } else if (errorState == QPOSService.Error.ICC_ONLINE_TIMEOUT) {
-            if (pos == null) {
-                return;
-            }
-            pos.resetPosStatus();
-            msg = getString(R.string.device_reset);
-        }else {
-            msg = errorState.name();
-        }
-        String finalMsg = msg;
-        runOnUiThread(() -> {
-            Mydialog.ErrorDialog(PaymentActivity.this, finalMsg, new Mydialog.OnMyClickListener() {
-                @Override
-                public void onCancel() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                QPOSService.Error errorState = event.errorState;
+                dismissDialog();
+                String msg = "";
+                if (errorState == QPOSService.Error.CMD_NOT_AVAILABLE) {
+                    msg = getString(R.string.command_not_available);
+                } else if (errorState == QPOSService.Error.TIMEOUT) {
+                    msg = getString(R.string.device_no_response);
+                } else if (errorState == QPOSService.Error.DEVICE_RESET) {
+                    msg = getString(R.string.device_reset);
+                } else if (errorState == QPOSService.Error.UNKNOWN) {
+                    msg = getString(R.string.unknown_error);
+                } else if (errorState == QPOSService.Error.DEVICE_BUSY) {
+                    msg = getString(R.string.device_busy);
+                    if (pos != null) {
+                        pos.resetPosStatus();
+                    }
+                } else if (errorState == QPOSService.Error.INPUT_OUT_OF_RANGE) {
+                    msg = getString(R.string.out_of_range);
+                } else if (errorState == QPOSService.Error.INPUT_INVALID_FORMAT) {
+                    msg = getString(R.string.invalid_format);
+                } else if (errorState == QPOSService.Error.INPUT_ZERO_VALUES) {
+                    msg = getString(R.string.zero_values);
+                } else if (errorState == QPOSService.Error.INPUT_INVALID) {
+                    msg = getString(R.string.input_invalid);
+                } else if (errorState == QPOSService.Error.CASHBACK_NOT_SUPPORTED) {
+                    msg = getString(R.string.cashback_not_supported);
+                } else if (errorState == QPOSService.Error.CRC_ERROR) {
+                    msg = getString(R.string.crc_error);
+                } else if (errorState == QPOSService.Error.COMM_ERROR) {
+                    msg = getString(R.string.comm_error);
+                } else if (errorState == QPOSService.Error.MAC_ERROR) {
+                    msg = getString(R.string.mac_error);
+                } else if (errorState == QPOSService.Error.APP_SELECT_TIMEOUT) {
+                    msg = getString(R.string.app_select_timeout_error);
+                } else if (errorState == QPOSService.Error.CMD_TIMEOUT) {
+                    msg = getString(R.string.cmd_timeout);
+                } else if (errorState == QPOSService.Error.ICC_ONLINE_TIMEOUT) {
+                    if (pos == null) {
+                        return;
+                    }
+                    pos.resetPosStatus();
+                    msg = getString(R.string.device_reset);
+                }else {
+                    msg = errorState.name();
                 }
-    
-                @Override
-                public void onConfirm() {
-                    finish();
-                    Mydialog.ErrorDialog.dismiss();
-                }
-            });
+                String finalMsg = msg;
+                runOnUiThread(() -> {
+                    Mydialog.ErrorDialog(PaymentActivity.this, finalMsg, new Mydialog.OnMyClickListener() {
+                        @Override
+                        public void onCancel() {
+                        }
+
+                        @Override
+                        public void onConfirm() {
+                            finish();
+                            Mydialog.ErrorDialog.dismiss();
+                        }
+                    });
+                });
+            }
         });
     }
 
