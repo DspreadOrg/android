@@ -1,3 +1,10 @@
+## [5.1.9](https://github.com/DspreadOrg/android/compare/v5.1.8...v5.1.9) (2025-03-12)
+
+
+### Bug Fixes
+
+* update the sdk and fix onerror issue ([d5b3146](https://github.com/DspreadOrg/android/commit/d5b3146efda7a4ae4e9f3d77ad66c5f44522d31f))
+
 ## [5.1.8](https://github.com/DspreadOrg/android/compare/v5.1.7...v5.1.8) (2025-03-12)
 
 
