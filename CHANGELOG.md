@@ -1,3 +1,10 @@
+## [5.1.8](https://github.com/DspreadOrg/android/compare/v5.1.7...v5.1.8) (2025-03-12)
+
+
+### Bug Fixes
+
+* fix the bug of amount input ([3824606](https://github.com/DspreadOrg/android/commit/3824606236e830c686da1f3a6f49d9ee50797404))
+
 ## [5.1.7](https://github.com/DspreadOrg/android/compare/v5.1.6...v5.1.7) (2025-03-11)
 
 
