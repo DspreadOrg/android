@@ -65,7 +65,7 @@ public class HomeFragment extends Fragment {
                 Double dAmount = Double.parseDouble(edt_amount.getText().toString().substring(1));
                 TRACE.i("dAmount = "+dAmount);
                 if(dAmount > 0){
-                    inputMoney = (long) (dAmount*100);
+                    inputMoney = Math.round(dAmount * 100);
                     if (!canshow) {
                         return;
                     }
