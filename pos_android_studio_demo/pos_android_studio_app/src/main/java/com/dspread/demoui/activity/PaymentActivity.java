@@ -26,6 +26,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+
 import com.dspread.demoui.BaseApplication;
 import com.dspread.demoui.R;
 import com.dspread.demoui.beans.Constants;
@@ -46,13 +47,16 @@ import com.dspread.demoui.widget.pinpad.PinPadDialog;
 import com.dspread.demoui.widget.pinpad.PinPadView;
 import com.dspread.xpos.Util;
 import com.dspread.xpos.utils.AESUtil;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Hashtable;
 import java.util.List;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -104,7 +108,7 @@ public class PaymentActivity extends AppCompatActivity implements View.OnClickLi
         transactionCallbackCls = new TransactionCallbackCls();
         com.dspread.demoui.activity.MyQposClass.setTransactionCallback(transactionCallbackCls);
         preferencesUtil = SharedPreferencesUtil.getInstance(this);
-        connType = (String) preferencesUtil.get(Constants.connType,"");
+        connType = (String) preferencesUtil.get(Constants.connType, "");
         baseApplication = (BaseApplication) getApplication();
         pos = baseApplication.getQposService();
         transactionTypeString = getIntent().getStringExtra("paytype");
@@ -116,14 +120,14 @@ public class PaymentActivity extends AppCompatActivity implements View.OnClickLi
         isNormal = false;
         initView();
         if (pos != null && !"".equals(connType)) {
-            if(connType.equals(POS_TYPE.UART.name())){
+            if (connType.equals(POS_TYPE.UART.name())) {
                 pos.setRandomKeyboardFlag(true);// for new smartpos
                 pos.setCardTradeMode(QPOSService.CardTradeMode.SWIPE_TAP_INSERT_CARD_NOTUP);
 
             }
             pos.setDelayCheckingCardTime(500);
             pos.doTrade(20);
-        }else {
+        } else {
             goToMainPage();
         }
         TRACE.setContext(this);
@@ -161,12 +165,15 @@ public class PaymentActivity extends AppCompatActivity implements View.OnClickLi
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onGlobalErrorEvent(GlobalErrorEvent event) {
         // 处理事件
-        TRACE.i("payment error == "+event.errorState);
+        TRACE.i("payment error == " + event.errorState);
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 QPOSService.Error errorState = event.errorState;
                 dismissDialog();
+                if (keyboardUtil != null) {
+                    keyboardUtil.hide();
+                }
                 String msg = "";
                 if (errorState == QPOSService.Error.CMD_NOT_AVAILABLE) {
                     msg = getString(R.string.command_not_available);
@@ -207,22 +214,21 @@ public class PaymentActivity extends AppCompatActivity implements View.OnClickLi
                     }
                     pos.resetPosStatus();
                     msg = getString(R.string.device_reset);
-                }else {
+                } else {
                     msg = errorState.name();
                 }
                 String finalMsg = msg;
-                runOnUiThread(() -> {
-                    Mydialog.ErrorDialog(PaymentActivity.this, finalMsg, new Mydialog.OnMyClickListener() {
-                        @Override
-                        public void onCancel() {
-                        }
 
-                        @Override
-                        public void onConfirm() {
-                            finish();
-                            Mydialog.ErrorDialog.dismiss();
-                        }
-                    });
+                Mydialog.ErrorDialog(PaymentActivity.this, finalMsg, new Mydialog.OnMyClickListener() {
+                    @Override
+                    public void onCancel() {
+                    }
+
+                    @Override
+                    public void onConfirm() {
+                        finish();
+                        Mydialog.ErrorDialog.dismiss();
+                    }
                 });
             }
         });
@@ -233,10 +239,10 @@ public class PaymentActivity extends AppCompatActivity implements View.OnClickLi
         switch (v.getId()) {
             case R.id.iv_back_title:
                 dismissDialog();
-                if(keyboardUtil!=null){
+                if (keyboardUtil != null) {
                     keyboardUtil.hide();
                 }
-                if(!isNormal) {
+                if (!isNormal) {
                     if (pos != null) {
                         pos.cancelTrade();
                     }
@@ -278,7 +284,7 @@ public class PaymentActivity extends AppCompatActivity implements View.OnClickLi
                     } else {
                         content = statusEditText.getText().toString() + "\nNFCbatchData: " + nfcLog;
                     }
-                    sendRequestToBackend(nfcData+content);
+                    sendRequestToBackend(nfcData + content);
                     break;
                 default:
                     break;
@@ -309,13 +315,13 @@ public class PaymentActivity extends AppCompatActivity implements View.OnClickLi
         }
     }
 
-    private final Handler dingdingHandler = new Handler(Looper.myLooper()){
+    private final Handler dingdingHandler = new Handler(Looper.myLooper()) {
         @Override
         public void handleMessage(@NonNull Message msg) {
             super.handleMessage(msg);
-            switch (msg.what){
+            switch (msg.what) {
                 case 101:
-                    if(isICC){
+                    if (isICC) {
                         dismissDialog();
                         TRACE.i("onError==");
 
@@ -332,14 +338,14 @@ public class PaymentActivity extends AppCompatActivity implements View.OnClickLi
                                 pos.sendOnlineProcessResult(offlineDeclinedCode);
                             }
                         });
-                    }else {
+                    } else {
                         Mydialog.ErrorDialog(PaymentActivity.this, getString(R.string.network_failed), null);
                     }
                     break;
                 case 100:
-                    if(isICC){
+                    if (isICC) {
                         pos.sendOnlineProcessResult("8A023030");
-                    }else {
+                    } else {
                         isNormal = true;
                         pinpadEditText.setVisibility(View.GONE);
                         tvTitle.setText(getText(R.string.transaction_result));
@@ -355,36 +361,36 @@ public class PaymentActivity extends AppCompatActivity implements View.OnClickLi
         }
     };
 
-    private void putInfoToDingding(String tlv, String info){
+    private void putInfoToDingding(String tlv, String info) {
         new Thread(() -> {
             try {
                 boolean isAtAll = false;
-                String content = "issues: "+info;
+                String content = "issues: " + info;
                 String reqStr = DingTalkTest.buildReqStr(content, isAtAll);
-                String result =DingTalkTest.postJson(Constants.dingdingUrl, reqStr);
+                String result = DingTalkTest.postJson(Constants.dingdingUrl, reqStr);
                 Message msg = new Message();
-                if(result != null){
+                if (result != null) {
                     System.out.println("result == " + result);
                     JSONObject object = new JSONObject(result);
                     String errmsg = object.getString("errmsg");
                     int errcode = object.getInt("errcode");
-                    if (errcode == 0){
+                    if (errcode == 0) {
                         msg.what = 100;
                         msg.obj = tlv;
                         dingdingHandler.sendMessage(msg);
-                    }else {
+                    } else {
                         msg.what = 101;
                         dingdingHandler.sendMessage(msg);
-                        Log.e("Exception","Network fail");
+                        Log.e("Exception", "Network fail");
                     }
-                }else {
+                } else {
                     msg.what = 101;
                     dingdingHandler.sendMessage(msg);
-                    Log.e("Exception","Network fail");
+                    Log.e("Exception", "Network fail");
                 }
 
-            }catch (Exception e){
-                Log.e("Exception","e:"+e.toString());
+            } catch (Exception e) {
+                Log.e("Exception", "e:" + e.toString());
                 e.printStackTrace();
 
             }
@@ -406,8 +412,8 @@ public class PaymentActivity extends AppCompatActivity implements View.OnClickLi
         pinpadEditText.setVisibility(View.GONE);
         tvTitle.setText(getText(R.string.transaction_result));
         String requestTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
-        String data = "{\"createdAt\": "+requestTime + ", \"deviceInfo\": "+DeviceUtils.getPhoneDetail()+", \"countryCode\": "+DeviceUtils.getDevieCountry(PaymentActivity.this)
-                +", \"tlv\": "+tlvData+"}";
+        String data = "{\"createdAt\": " + requestTime + ", \"deviceInfo\": " + DeviceUtils.getPhoneDetail() + ", \"countryCode\": " + DeviceUtils.getDevieCountry(PaymentActivity.this)
+                + ", \"tlv\": " + tlvData + "}";
 
         Mydialog.loading(PaymentActivity.this, getString(R.string.processing));
         putInfoToDingding(tlvData, data);
@@ -483,7 +489,7 @@ public class PaymentActivity extends AppCompatActivity implements View.OnClickLi
         @Override
         public void onRequestSelectEmvApp(ArrayList<String> appList) {
             TRACE.d("onRequestSelectEmvApp():" + appList.toString());
-            runOnUiThread(() ->{
+            runOnUiThread(() -> {
                 dismissDialog();
                 dialog = new Dialog(PaymentActivity.this);
                 dialog.setContentView(R.layout.emv_app_dialog);
@@ -523,14 +529,14 @@ public class PaymentActivity extends AppCompatActivity implements View.OnClickLi
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    if(pos!=null){
+                    if (pos != null) {
                         boolean onlinePin = pos.isOnlinePin();
                         pinpadEditText.setText("");
-                        if(keyboardUtil!=null) {
+                        if (keyboardUtil != null) {
                             keyboardUtil.hide();
                         }
-                        if(isChangePin){
-                            if(timeOfPinInput == 1){
+                        if (isChangePin) {
+                            if (timeOfPinInput == 1) {
                                 tvTitle.setText(getString(R.string.input_new_pin_first_time));
                             } else if (timeOfPinInput == 2) {
                                 tvTitle.setText(getString(R.string.input_new_pin_confirm));
@@ -554,12 +560,12 @@ public class PaymentActivity extends AppCompatActivity implements View.OnClickLi
                     dismissDialog();
                     mllchrccard.setVisibility(View.GONE);
                     MyKeyboardView.setKeyBoardListener(value -> {
-                        if(pos!=null) {
+                        if (pos != null) {
                             pos.pinMapSync(value, 20);
                         }
                     });
                     pinpadEditText.setVisibility(View.VISIBLE);
-                    if(pos!=null) {
+                    if (pos != null) {
                         keyboardUtil = new KeyboardUtil(PaymentActivity.this, scvText, dataList);
                         keyboardUtil.initKeyboard(MyKeyboardView.KEYBOARDTYPE_Only_Num_Pwd, pinpadEditText);//Random keyboard
                     }
@@ -600,23 +606,23 @@ public class PaymentActivity extends AppCompatActivity implements View.OnClickLi
 
                         @Override
                         public void onCencel() {
-                        pos.cancelPin();
-                        pinPadDialog.dismiss();
-                    }
+                            pos.cancelPin();
+                            pinPadDialog.dismiss();
+                        }
 
-                    @Override
-                    public void onPaypass() {
-                        pos.bypassPin();
-    //                    pos.sendPin("".getBytes());
-                        pinPadDialog.dismiss();
-                    }
+                        @Override
+                        public void onPaypass() {
+                            pos.bypassPin();
+                            //                    pos.sendPin("".getBytes());
+                            pinPadDialog.dismiss();
+                        }
 
-                    @Override
-                    public void onConfirm(String password) {
-                        String pinBlock = buildCvmPinBlock(pos.getEncryptData(), password);// build the ISO format4 pin block
-                        pos.sendCvmPin(pinBlock, true);
-                        pinPadDialog.dismiss();
-                    }
+                        @Override
+                        public void onConfirm(String password) {
+                            String pinBlock = buildCvmPinBlock(pos.getEncryptData(), password);// build the ISO format4 pin block
+                            pos.sendCvmPin(pinBlock, true);
+                            pinPadDialog.dismiss();
+                        }
                     });
                 }
             });
@@ -642,229 +648,229 @@ public class PaymentActivity extends AppCompatActivity implements View.OnClickLi
                 public void run() {
 
 
-            dismissDialog();
-            String cardNo = "";
-            String msg = "";
-            isICC = false;
-            if(pos == null){
-                msg = "Pls open device";
-                Mydialog.ErrorDialog(PaymentActivity.this, msg, null);
-                return;
-            }
-            if (result == QPOSService.DoTradeResult.NONE) {
-//                statusEditText.setText(getString(R.string.no_card_detected));
-                msg = getString(R.string.no_card_detected);
-            } else if (result == QPOSService.DoTradeResult.TRY_ANOTHER_INTERFACE) {
-                statusEditText.setText(getString(R.string.try_another_interface));
-            } else if (result == QPOSService.DoTradeResult.ICC) {
-                isICC = true;
-                statusEditText.setText(getString(R.string.icc_card_inserted));
-                pos.doEmvApp(QPOSService.EmvOption.START);
-            } else if (result == QPOSService.DoTradeResult.NOT_ICC) {
-//                statusEditText.setText(getString(R.string.card_inserted));
-                msg = getString(R.string.card_inserted);
-            } else if (result == QPOSService.DoTradeResult.BAD_SWIPE) {
-                statusEditText.setText(getString(R.string.bad_swipe));
-                msg = getString(R.string.bad_swipe);
-            } else if (result == QPOSService.DoTradeResult.CARD_NOT_SUPPORT) {
-                statusEditText.setText("GPO NOT SUPPORT");
-                msg = "GPO NOT SUPPORT";
-            } else if (result == QPOSService.DoTradeResult.PLS_SEE_PHONE) {
-                statusEditText.setText("PLS SEE PHONE");
-                msg = "PLS SEE PHONE";
-            } else if (result == QPOSService.DoTradeResult.MCR) {//Magnetic card
-                String content = getString(R.string.card_swiped);
-                String formatID = decodeData.get("formatID");
-                if (formatID.equals("31") || formatID.equals("40") || formatID.equals("37") || formatID.equals("17") || formatID.equals("11") || formatID.equals("10")) {
-                    String maskedPAN = decodeData.get("maskedPAN");
-                    String expiryDate = decodeData.get("expiryDate");
-                    String cardHolderName = decodeData.get("cardholderName");
-                    String serviceCode = decodeData.get("serviceCode");
-                    String trackblock = decodeData.get("trackblock");
-                    String psamId = decodeData.get("psamId");
-                    String posId = decodeData.get("posId");
-                    String pinblock = decodeData.get("pinblock");
-                    String macblock = decodeData.get("macblock");
-                    String activateCode = decodeData.get("activateCode");
-                    String trackRandomNumber = decodeData.get("trackRandomNumber");
-                    content += getString(R.string.format_id) + " " + formatID + "\n";
-                    content += getString(R.string.masked_pan) + " " + maskedPAN + "\n";
-                    content += getString(R.string.expiry_date) + " " + expiryDate + "\n";
-                    content += getString(R.string.cardholder_name) + " " + cardHolderName + "\n";
-                    content += getString(R.string.service_code) + " " + serviceCode + "\n";
-                    content += "trackblock: " + trackblock + "\n";
-                    content += "psamId: " + psamId + "\n";
-                    content += "posId: " + posId + "\n";
-                    content += getString(R.string.pinBlock) + " " + pinblock + "\n";
-                    content += "macblock: " + macblock + "\n";
-                    content += "activateCode: " + activateCode + "\n";
-                    content += "trackRandomNumber: " + trackRandomNumber + "\n";
-                    cardNo = maskedPAN;
-                } else if (formatID.equals("FF")) {
-                    String type = decodeData.get("type");
-                    String encTrack1 = decodeData.get("encTrack1");
-                    String encTrack2 = decodeData.get("encTrack2");
-                    String encTrack3 = decodeData.get("encTrack3");
-                    content += "cardType:" + " " + type + "\n";
-                    content += "track_1:" + " " + encTrack1 + "\n";
-                    content += "track_2:" + " " + encTrack2 + "\n";
-                    content += "track_3:" + " " + encTrack3 + "\n";
-                } else {
-                    String orderID = decodeData.get("orderId");
-                    String maskedPAN = decodeData.get("maskedPAN");
-                    String expiryDate = decodeData.get("expiryDate");
-                    String cardHolderName = decodeData.get("cardholderName");
-//					String ksn = decodeData.get("ksn");
-                    String serviceCode = decodeData.get("serviceCode");
-                    String track1Length = decodeData.get("track1Length");
-                    String track2Length = decodeData.get("track2Length");
-                    String track3Length = decodeData.get("track3Length");
-                    String encTracks = decodeData.get("encTracks");
-                    String encTrack1 = decodeData.get("encTrack1");
-                    String encTrack2 = decodeData.get("encTrack2");
-                    String encTrack3 = decodeData.get("encTrack3");
-                    String partialTrack = decodeData.get("partialTrack");
-                    String pinKsn = decodeData.get("pinKsn");
-                    String trackksn = decodeData.get("trackksn");
-                    String pinBlock = decodeData.get("pinBlock");
-                    String encPAN = decodeData.get("encPAN");
-                    String trackRandomNumber = decodeData.get("trackRandomNumber");
-                    String pinRandomNumber = decodeData.get("pinRandomNumber");
-                    if (orderID != null && !"".equals(orderID)) {
-                        content += "orderID:" + orderID;
+                    dismissDialog();
+                    String cardNo = "";
+                    String msg = "";
+                    isICC = false;
+                    if (pos == null) {
+                        msg = "Pls open device";
+                        Mydialog.ErrorDialog(PaymentActivity.this, msg, null);
+                        return;
                     }
-                    content += getString(R.string.format_id) + " " + formatID + "\n";
-                    content += getString(R.string.masked_pan) + " " + maskedPAN + "\n";
-                    content += getString(R.string.expiry_date) + " " + expiryDate + "\n";
-                    content += getString(R.string.cardholder_name) + " " + cardHolderName + "\n";
-//					content += getString(R.string.ksn) + " " + ksn + "\n";
-                    content += getString(R.string.pinKsn) + " " + pinKsn + "\n";
-                    content += getString(R.string.trackksn) + " " + trackksn + "\n";
-                    content += getString(R.string.service_code) + " " + serviceCode + "\n";
-                    content += getString(R.string.track_1_length) + " " + track1Length + "\n";
-                    content += getString(R.string.track_2_length) + " " + track2Length + "\n";
-                    content += getString(R.string.track_3_length) + " " + track3Length + "\n";
-                    content += getString(R.string.encrypted_tracks) + " " + encTracks + "\n";
-                    content += getString(R.string.encrypted_track_1) + " " + encTrack1 + "\n";
-                    content += getString(R.string.encrypted_track_2) + " " + encTrack2 + "\n";
-                    content += getString(R.string.encrypted_track_3) + " " + encTrack3 + "\n";
-                    content += getString(R.string.partial_track) + " " + partialTrack + "\n";
-                    content += getString(R.string.pinBlock) + " " + pinBlock + "\n";
-                    content += "encPAN: " + encPAN + "\n";
-                    content += "trackRandomNumber: " + trackRandomNumber + "\n";
-                    content += "pinRandomNumber:" + " " + pinRandomNumber + "\n";
-                    cardNo = maskedPAN;
-                    String realPan = null;
-
-                }
-                if(decodeData.get("maskedPAN")!=null&&!"".equals(decodeData.get("maskedPAN"))){
-                    sendRequestToBackend(content);
-                }else{
-                    Mydialog.ErrorDialog(PaymentActivity.this, getString(R.string.trade_returnfailed), new Mydialog.OnMyClickListener() {
-                        @Override
-                        public void onCancel() {
-
-                        }
-
-                        @Override
-                        public void onConfirm() {
-                            if(pos!=null){
-                                pos.cancelTrade();
+                    if (result == QPOSService.DoTradeResult.NONE) {
+//                statusEditText.setText(getString(R.string.no_card_detected));
+                        msg = getString(R.string.no_card_detected);
+                    } else if (result == QPOSService.DoTradeResult.TRY_ANOTHER_INTERFACE) {
+                        statusEditText.setText(getString(R.string.try_another_interface));
+                    } else if (result == QPOSService.DoTradeResult.ICC) {
+                        isICC = true;
+                        statusEditText.setText(getString(R.string.icc_card_inserted));
+                        pos.doEmvApp(QPOSService.EmvOption.START);
+                    } else if (result == QPOSService.DoTradeResult.NOT_ICC) {
+//                statusEditText.setText(getString(R.string.card_inserted));
+                        msg = getString(R.string.card_inserted);
+                    } else if (result == QPOSService.DoTradeResult.BAD_SWIPE) {
+                        statusEditText.setText(getString(R.string.bad_swipe));
+                        msg = getString(R.string.bad_swipe);
+                    } else if (result == QPOSService.DoTradeResult.CARD_NOT_SUPPORT) {
+                        statusEditText.setText("GPO NOT SUPPORT");
+                        msg = "GPO NOT SUPPORT";
+                    } else if (result == QPOSService.DoTradeResult.PLS_SEE_PHONE) {
+                        statusEditText.setText("PLS SEE PHONE");
+                        msg = "PLS SEE PHONE";
+                    } else if (result == QPOSService.DoTradeResult.MCR) {//Magnetic card
+                        String content = getString(R.string.card_swiped);
+                        String formatID = decodeData.get("formatID");
+                        if (formatID.equals("31") || formatID.equals("40") || formatID.equals("37") || formatID.equals("17") || formatID.equals("11") || formatID.equals("10")) {
+                            String maskedPAN = decodeData.get("maskedPAN");
+                            String expiryDate = decodeData.get("expiryDate");
+                            String cardHolderName = decodeData.get("cardholderName");
+                            String serviceCode = decodeData.get("serviceCode");
+                            String trackblock = decodeData.get("trackblock");
+                            String psamId = decodeData.get("psamId");
+                            String posId = decodeData.get("posId");
+                            String pinblock = decodeData.get("pinblock");
+                            String macblock = decodeData.get("macblock");
+                            String activateCode = decodeData.get("activateCode");
+                            String trackRandomNumber = decodeData.get("trackRandomNumber");
+                            content += getString(R.string.format_id) + " " + formatID + "\n";
+                            content += getString(R.string.masked_pan) + " " + maskedPAN + "\n";
+                            content += getString(R.string.expiry_date) + " " + expiryDate + "\n";
+                            content += getString(R.string.cardholder_name) + " " + cardHolderName + "\n";
+                            content += getString(R.string.service_code) + " " + serviceCode + "\n";
+                            content += "trackblock: " + trackblock + "\n";
+                            content += "psamId: " + psamId + "\n";
+                            content += "posId: " + posId + "\n";
+                            content += getString(R.string.pinBlock) + " " + pinblock + "\n";
+                            content += "macblock: " + macblock + "\n";
+                            content += "activateCode: " + activateCode + "\n";
+                            content += "trackRandomNumber: " + trackRandomNumber + "\n";
+                            cardNo = maskedPAN;
+                        } else if (formatID.equals("FF")) {
+                            String type = decodeData.get("type");
+                            String encTrack1 = decodeData.get("encTrack1");
+                            String encTrack2 = decodeData.get("encTrack2");
+                            String encTrack3 = decodeData.get("encTrack3");
+                            content += "cardType:" + " " + type + "\n";
+                            content += "track_1:" + " " + encTrack1 + "\n";
+                            content += "track_2:" + " " + encTrack2 + "\n";
+                            content += "track_3:" + " " + encTrack3 + "\n";
+                        } else {
+                            String orderID = decodeData.get("orderId");
+                            String maskedPAN = decodeData.get("maskedPAN");
+                            String expiryDate = decodeData.get("expiryDate");
+                            String cardHolderName = decodeData.get("cardholderName");
+//					String ksn = decodeData.get("ksn");
+                            String serviceCode = decodeData.get("serviceCode");
+                            String track1Length = decodeData.get("track1Length");
+                            String track2Length = decodeData.get("track2Length");
+                            String track3Length = decodeData.get("track3Length");
+                            String encTracks = decodeData.get("encTracks");
+                            String encTrack1 = decodeData.get("encTrack1");
+                            String encTrack2 = decodeData.get("encTrack2");
+                            String encTrack3 = decodeData.get("encTrack3");
+                            String partialTrack = decodeData.get("partialTrack");
+                            String pinKsn = decodeData.get("pinKsn");
+                            String trackksn = decodeData.get("trackksn");
+                            String pinBlock = decodeData.get("pinBlock");
+                            String encPAN = decodeData.get("encPAN");
+                            String trackRandomNumber = decodeData.get("trackRandomNumber");
+                            String pinRandomNumber = decodeData.get("pinRandomNumber");
+                            if (orderID != null && !"".equals(orderID)) {
+                                content += "orderID:" + orderID;
                             }
-                            finish();
+                            content += getString(R.string.format_id) + " " + formatID + "\n";
+                            content += getString(R.string.masked_pan) + " " + maskedPAN + "\n";
+                            content += getString(R.string.expiry_date) + " " + expiryDate + "\n";
+                            content += getString(R.string.cardholder_name) + " " + cardHolderName + "\n";
+//					content += getString(R.string.ksn) + " " + ksn + "\n";
+                            content += getString(R.string.pinKsn) + " " + pinKsn + "\n";
+                            content += getString(R.string.trackksn) + " " + trackksn + "\n";
+                            content += getString(R.string.service_code) + " " + serviceCode + "\n";
+                            content += getString(R.string.track_1_length) + " " + track1Length + "\n";
+                            content += getString(R.string.track_2_length) + " " + track2Length + "\n";
+                            content += getString(R.string.track_3_length) + " " + track3Length + "\n";
+                            content += getString(R.string.encrypted_tracks) + " " + encTracks + "\n";
+                            content += getString(R.string.encrypted_track_1) + " " + encTrack1 + "\n";
+                            content += getString(R.string.encrypted_track_2) + " " + encTrack2 + "\n";
+                            content += getString(R.string.encrypted_track_3) + " " + encTrack3 + "\n";
+                            content += getString(R.string.partial_track) + " " + partialTrack + "\n";
+                            content += getString(R.string.pinBlock) + " " + pinBlock + "\n";
+                            content += "encPAN: " + encPAN + "\n";
+                            content += "trackRandomNumber: " + trackRandomNumber + "\n";
+                            content += "pinRandomNumber:" + " " + pinRandomNumber + "\n";
+                            cardNo = maskedPAN;
+                            String realPan = null;
+
                         }
-                    });
-                }
+                        if (decodeData.get("maskedPAN") != null && !"".equals(decodeData.get("maskedPAN"))) {
+                            sendRequestToBackend(content);
+                        } else {
+                            Mydialog.ErrorDialog(PaymentActivity.this, getString(R.string.trade_returnfailed), new Mydialog.OnMyClickListener() {
+                                @Override
+                                public void onCancel() {
 
-            } else if ((result == QPOSService.DoTradeResult.NFC_ONLINE) || (result == QPOSService.DoTradeResult.NFC_OFFLINE)) {
-                nfcLog = decodeData.get("nfcLog");
-                String content = getString(R.string.tap_card);
-                String formatID = decodeData.get("formatID");
-                if (formatID.equals("31") || formatID.equals("40") || formatID.equals("37") || formatID.equals("17") || formatID.equals("11") || formatID.equals("10")) {
-                    String maskedPAN = decodeData.get("maskedPAN");
-                    String expiryDate = decodeData.get("expiryDate");
-                    String cardHolderName = decodeData.get("cardholderName");
-                    String serviceCode = decodeData.get("serviceCode");
-                    String trackblock = decodeData.get("trackblock");
-                    String psamId = decodeData.get("psamId");
-                    String posId = decodeData.get("posId");
-                    String pinblock = decodeData.get("pinblock");
-                    String macblock = decodeData.get("macblock");
-                    String activateCode = decodeData.get("activateCode");
-                    String trackRandomNumber = decodeData.get("trackRandomNumber");
+                                }
 
-                    content += getString(R.string.format_id) + " " + formatID + "\n";
-                    content += getString(R.string.masked_pan) + " " + maskedPAN + "\n";
-                    content += getString(R.string.expiry_date) + " " + expiryDate + "\n";
-                    content += getString(R.string.cardholder_name) + " " + cardHolderName + "\n";
+                                @Override
+                                public void onConfirm() {
+                                    if (pos != null) {
+                                        pos.cancelTrade();
+                                    }
+                                    finish();
+                                }
+                            });
+                        }
 
-                    content += getString(R.string.service_code) + " " + serviceCode + "\n";
-                    content += "trackblock: " + trackblock + "\n";
-                    content += "psamId: " + psamId + "\n";
-                    content += "posId: " + posId + "\n";
-                    content += getString(R.string.pinBlock) + " " + pinblock + "\n";
-                    content += "macblock: " + macblock + "\n";
-                    content += "activateCode: " + activateCode + "\n";
-                    content += "trackRandomNumber: " + trackRandomNumber + "\n";
-                    cardNo = maskedPAN;
+                    } else if ((result == QPOSService.DoTradeResult.NFC_ONLINE) || (result == QPOSService.DoTradeResult.NFC_OFFLINE)) {
+                        nfcLog = decodeData.get("nfcLog");
+                        String content = getString(R.string.tap_card);
+                        String formatID = decodeData.get("formatID");
+                        if (formatID.equals("31") || formatID.equals("40") || formatID.equals("37") || formatID.equals("17") || formatID.equals("11") || formatID.equals("10")) {
+                            String maskedPAN = decodeData.get("maskedPAN");
+                            String expiryDate = decodeData.get("expiryDate");
+                            String cardHolderName = decodeData.get("cardholderName");
+                            String serviceCode = decodeData.get("serviceCode");
+                            String trackblock = decodeData.get("trackblock");
+                            String psamId = decodeData.get("psamId");
+                            String posId = decodeData.get("posId");
+                            String pinblock = decodeData.get("pinblock");
+                            String macblock = decodeData.get("macblock");
+                            String activateCode = decodeData.get("activateCode");
+                            String trackRandomNumber = decodeData.get("trackRandomNumber");
 
-                } else {
-                    String maskedPAN = decodeData.get("maskedPAN");
-                    String expiryDate = decodeData.get("expiryDate");
-                    String cardHolderName = decodeData.get("cardholderName");
-                    String serviceCode = decodeData.get("serviceCode");
-                    String track1Length = decodeData.get("track1Length");
-                    String track2Length = decodeData.get("track2Length");
-                    String track3Length = decodeData.get("track3Length");
-                    String encTracks = decodeData.get("encTracks");
-                    String encTrack1 = decodeData.get("encTrack1");
-                    String encTrack2 = decodeData.get("encTrack2");
-                    String encTrack3 = decodeData.get("encTrack3");
-                    String partialTrack = decodeData.get("partialTrack");
-                    String pinKsn = decodeData.get("pinKsn");
-                    String trackksn = decodeData.get("trackksn");
-                    String pinBlock = decodeData.get("pinBlock");
-                    String encPAN = decodeData.get("encPAN");
-                    String trackRandomNumber = decodeData.get("trackRandomNumber");
-                    String pinRandomNumber = decodeData.get("pinRandomNumber");
+                            content += getString(R.string.format_id) + " " + formatID + "\n";
+                            content += getString(R.string.masked_pan) + " " + maskedPAN + "\n";
+                            content += getString(R.string.expiry_date) + " " + expiryDate + "\n";
+                            content += getString(R.string.cardholder_name) + " " + cardHolderName + "\n";
 
-                    content += getString(R.string.format_id) + " " + formatID + "\n";
-                    content += getString(R.string.masked_pan) + " " + maskedPAN + "\n";
-                    content += getString(R.string.expiry_date) + " " + expiryDate + "\n";
-                    content += getString(R.string.cardholder_name) + " " + cardHolderName + "\n";
-                    content += getString(R.string.pinKsn) + " " + pinKsn + "\n";
-                    content += getString(R.string.trackksn) + " " + trackksn + "\n";
-                    content += getString(R.string.service_code) + " " + serviceCode + "\n";
-                    content += getString(R.string.track_1_length) + " " + track1Length + "\n";
-                    content += getString(R.string.track_2_length) + " " + track2Length + "\n";
-                    content += getString(R.string.track_3_length) + " " + track3Length + "\n";
-                    content += getString(R.string.encrypted_tracks) + " " + encTracks + "\n";
-                    content += getString(R.string.encrypted_track_1) + " " + encTrack1 + "\n";
-                    content += getString(R.string.encrypted_track_2) + " " + encTrack2 + "\n";
-                    content += getString(R.string.encrypted_track_3) + " " + encTrack3 + "\n";
-                    content += getString(R.string.partial_track) + " " + partialTrack + "\n";
-                    content += getString(R.string.pinBlock) + " " + pinBlock + "\n";
-                    content += "encPAN: " + encPAN + "\n";
-                    content += "trackRandomNumber: " + trackRandomNumber + "\n";
-                    content += "pinRandomNumber:" + " " + pinRandomNumber + "\n";
-                    cardNo = maskedPAN;
-                }
-                nfcData = content;
-                sendMsg(8003);
-            } else if ((result == QPOSService.DoTradeResult.NFC_DECLINED)) {
-                statusEditText.setText(getString(R.string.transaction_declined));
-                msg = getString(R.string.transaction_declined);
-            } else if (result == QPOSService.DoTradeResult.NO_RESPONSE) {
-                statusEditText.setText(getString(R.string.card_no_response));
-                getString(R.string.card_no_response);
-            } else {
-                statusEditText.setText(getString(R.string.unknown_error));
-                msg = getString(R.string.unknown_error);
-            }
-            if (msg != null && !"".equals(msg)) {
-                Mydialog.ErrorDialog(PaymentActivity.this, msg, null);
-            }
-            dealDoneflag = true;
+                            content += getString(R.string.service_code) + " " + serviceCode + "\n";
+                            content += "trackblock: " + trackblock + "\n";
+                            content += "psamId: " + psamId + "\n";
+                            content += "posId: " + posId + "\n";
+                            content += getString(R.string.pinBlock) + " " + pinblock + "\n";
+                            content += "macblock: " + macblock + "\n";
+                            content += "activateCode: " + activateCode + "\n";
+                            content += "trackRandomNumber: " + trackRandomNumber + "\n";
+                            cardNo = maskedPAN;
+
+                        } else {
+                            String maskedPAN = decodeData.get("maskedPAN");
+                            String expiryDate = decodeData.get("expiryDate");
+                            String cardHolderName = decodeData.get("cardholderName");
+                            String serviceCode = decodeData.get("serviceCode");
+                            String track1Length = decodeData.get("track1Length");
+                            String track2Length = decodeData.get("track2Length");
+                            String track3Length = decodeData.get("track3Length");
+                            String encTracks = decodeData.get("encTracks");
+                            String encTrack1 = decodeData.get("encTrack1");
+                            String encTrack2 = decodeData.get("encTrack2");
+                            String encTrack3 = decodeData.get("encTrack3");
+                            String partialTrack = decodeData.get("partialTrack");
+                            String pinKsn = decodeData.get("pinKsn");
+                            String trackksn = decodeData.get("trackksn");
+                            String pinBlock = decodeData.get("pinBlock");
+                            String encPAN = decodeData.get("encPAN");
+                            String trackRandomNumber = decodeData.get("trackRandomNumber");
+                            String pinRandomNumber = decodeData.get("pinRandomNumber");
+
+                            content += getString(R.string.format_id) + " " + formatID + "\n";
+                            content += getString(R.string.masked_pan) + " " + maskedPAN + "\n";
+                            content += getString(R.string.expiry_date) + " " + expiryDate + "\n";
+                            content += getString(R.string.cardholder_name) + " " + cardHolderName + "\n";
+                            content += getString(R.string.pinKsn) + " " + pinKsn + "\n";
+                            content += getString(R.string.trackksn) + " " + trackksn + "\n";
+                            content += getString(R.string.service_code) + " " + serviceCode + "\n";
+                            content += getString(R.string.track_1_length) + " " + track1Length + "\n";
+                            content += getString(R.string.track_2_length) + " " + track2Length + "\n";
+                            content += getString(R.string.track_3_length) + " " + track3Length + "\n";
+                            content += getString(R.string.encrypted_tracks) + " " + encTracks + "\n";
+                            content += getString(R.string.encrypted_track_1) + " " + encTrack1 + "\n";
+                            content += getString(R.string.encrypted_track_2) + " " + encTrack2 + "\n";
+                            content += getString(R.string.encrypted_track_3) + " " + encTrack3 + "\n";
+                            content += getString(R.string.partial_track) + " " + partialTrack + "\n";
+                            content += getString(R.string.pinBlock) + " " + pinBlock + "\n";
+                            content += "encPAN: " + encPAN + "\n";
+                            content += "trackRandomNumber: " + trackRandomNumber + "\n";
+                            content += "pinRandomNumber:" + " " + pinRandomNumber + "\n";
+                            cardNo = maskedPAN;
+                        }
+                        nfcData = content;
+                        sendMsg(8003);
+                    } else if ((result == QPOSService.DoTradeResult.NFC_DECLINED)) {
+                        statusEditText.setText(getString(R.string.transaction_declined));
+                        msg = getString(R.string.transaction_declined);
+                    } else if (result == QPOSService.DoTradeResult.NO_RESPONSE) {
+                        statusEditText.setText(getString(R.string.card_no_response));
+                        getString(R.string.card_no_response);
+                    } else {
+                        statusEditText.setText(getString(R.string.unknown_error));
+                        msg = getString(R.string.unknown_error);
+                    }
+                    if (msg != null && !"".equals(msg)) {
+                        Mydialog.ErrorDialog(PaymentActivity.this, msg, null);
+                    }
+                    dealDoneflag = true;
                 }
             });
         }
@@ -877,21 +883,21 @@ public class PaymentActivity extends AppCompatActivity implements View.OnClickLi
                 public void run() {
 
 
-            tvTitle.setText(getString(R.string.online_process_requested));
-            dismissDialog();
+                    tvTitle.setText(getString(R.string.online_process_requested));
+                    dismissDialog();
 
-            Hashtable<String, String> decodeData = pos.anlysEmvIccData(tlv);
+                    Hashtable<String, String> decodeData = pos.anlysEmvIccData(tlv);
 //            TRACE.d("anlysEmvIccData(tlv):" + decodeData.toString());
-            if (isPinCanceled) {
-                mllchrccard.setVisibility(View.GONE);
-            } else {
-                mllchrccard.setVisibility(View.GONE);
-            }
-            String requestTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
-            String data = "{\"createdAt\": "+requestTime + ", \"deviceInfo\": "+DeviceUtils.getPhoneDetail()+", \"countryCode\": "+DeviceUtils.getDevieCountry(PaymentActivity.this)
-                    +", \"tlv\": "+tlv+"}";
-            Mydialog.loading(PaymentActivity.this, getString(R.string.processing));
-            putInfoToDingding(tlv, data);
+                    if (isPinCanceled) {
+                        mllchrccard.setVisibility(View.GONE);
+                    } else {
+                        mllchrccard.setVisibility(View.GONE);
+                    }
+                    String requestTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
+                    String data = "{\"createdAt\": " + requestTime + ", \"deviceInfo\": " + DeviceUtils.getPhoneDetail() + ", \"countryCode\": " + DeviceUtils.getDevieCountry(PaymentActivity.this)
+                            + ", \"tlv\": " + tlv + "}";
+                    Mydialog.loading(PaymentActivity.this, getString(R.string.processing));
+                    putInfoToDingding(tlv, data);
                 }
             });
         }
@@ -905,69 +911,69 @@ public class PaymentActivity extends AppCompatActivity implements View.OnClickLi
                 public void run() {
 
 
-            if (transactionResult == QPOSService.TransactionResult.CARD_REMOVED) {
-            }
-            dealDoneflag = true;
-            dismissDialog();
-            String msg = "";
-            if (transactionResult == QPOSService.TransactionResult.APPROVED) {
-            } else if (transactionResult == QPOSService.TransactionResult.TERMINATED) {
-                msg = getString(R.string.transaction_terminated);
-            } else if (transactionResult == QPOSService.TransactionResult.DECLINED) {
-                msg = getString(R.string.transaction_declined);
-            } else if (transactionResult == QPOSService.TransactionResult.CANCEL) {
-                msg = getString(R.string.transaction_cancel);
-            } else if (transactionResult == QPOSService.TransactionResult.CAPK_FAIL) {
-                msg = getString(R.string.transaction_capk_fail);
-            } else if (transactionResult == QPOSService.TransactionResult.NOT_ICC) {
-                msg = getString(R.string.transaction_not_icc);
-            } else if (transactionResult == QPOSService.TransactionResult.SELECT_APP_FAIL) {
-                msg = getString(R.string.transaction_app_fail);
-            } else if (transactionResult == QPOSService.TransactionResult.DEVICE_ERROR) {
-                msg = getString(R.string.transaction_device_error);
-            } else if (transactionResult == QPOSService.TransactionResult.TRADE_LOG_FULL) {
-                msg = "the trade log has fulled!pls clear the trade log!";
-            } else if (transactionResult == QPOSService.TransactionResult.CARD_NOT_SUPPORTED) {
-                msg = getString(R.string.card_not_supported);
-            } else if (transactionResult == QPOSService.TransactionResult.MISSING_MANDATORY_DATA) {
-                msg = getString(R.string.missing_mandatory_data);
-            } else if (transactionResult == QPOSService.TransactionResult.CARD_BLOCKED_OR_NO_EMV_APPS) {
-                msg = getString(R.string.card_blocked_or_no_evm_apps);
-            } else if (transactionResult == QPOSService.TransactionResult.INVALID_ICC_DATA) {
-                msg = getString(R.string.invalid_icc_data);
-            } else if (transactionResult == QPOSService.TransactionResult.FALLBACK) {
-                msg = "trans fallback";
-            } else if (transactionResult == QPOSService.TransactionResult.NFC_TERMINATED) {
-                msg = "NFC Terminated";
-            } else if (transactionResult == QPOSService.TransactionResult.CARD_REMOVED) {
-                msg = "CARD REMOVED";
-            } else if (transactionResult == QPOSService.TransactionResult.CONTACTLESS_TRANSACTION_NOT_ALLOW) {
-                msg = "TRANS NOT ALLOW";
-            } else if (transactionResult == QPOSService.TransactionResult.CARD_BLOCKED) {
-                msg = "CARD BLOCKED";
-            } else if (transactionResult == QPOSService.TransactionResult.TRANS_TOKEN_INVALID) {
-                msg = "TOKEN INVALID";
-            } else if (transactionResult == QPOSService.TransactionResult.APP_BLOCKED) {
-                msg = "APP BLOCKED";
-            }else {
-                msg = transactionResult.name();
-            }
-            if (!"".equals(msg)) {
-                Mydialog.ErrorDialog(PaymentActivity.this, msg, new Mydialog.OnMyClickListener() {
-                    @Override
-                    public void onCancel() {
+                    if (transactionResult == QPOSService.TransactionResult.CARD_REMOVED) {
                     }
+                    dealDoneflag = true;
+                    dismissDialog();
+                    String msg = "";
+                    if (transactionResult == QPOSService.TransactionResult.APPROVED) {
+                    } else if (transactionResult == QPOSService.TransactionResult.TERMINATED) {
+                        msg = getString(R.string.transaction_terminated);
+                    } else if (transactionResult == QPOSService.TransactionResult.DECLINED) {
+                        msg = getString(R.string.transaction_declined);
+                    } else if (transactionResult == QPOSService.TransactionResult.CANCEL) {
+                        msg = getString(R.string.transaction_cancel);
+                    } else if (transactionResult == QPOSService.TransactionResult.CAPK_FAIL) {
+                        msg = getString(R.string.transaction_capk_fail);
+                    } else if (transactionResult == QPOSService.TransactionResult.NOT_ICC) {
+                        msg = getString(R.string.transaction_not_icc);
+                    } else if (transactionResult == QPOSService.TransactionResult.SELECT_APP_FAIL) {
+                        msg = getString(R.string.transaction_app_fail);
+                    } else if (transactionResult == QPOSService.TransactionResult.DEVICE_ERROR) {
+                        msg = getString(R.string.transaction_device_error);
+                    } else if (transactionResult == QPOSService.TransactionResult.TRADE_LOG_FULL) {
+                        msg = "the trade log has fulled!pls clear the trade log!";
+                    } else if (transactionResult == QPOSService.TransactionResult.CARD_NOT_SUPPORTED) {
+                        msg = getString(R.string.card_not_supported);
+                    } else if (transactionResult == QPOSService.TransactionResult.MISSING_MANDATORY_DATA) {
+                        msg = getString(R.string.missing_mandatory_data);
+                    } else if (transactionResult == QPOSService.TransactionResult.CARD_BLOCKED_OR_NO_EMV_APPS) {
+                        msg = getString(R.string.card_blocked_or_no_evm_apps);
+                    } else if (transactionResult == QPOSService.TransactionResult.INVALID_ICC_DATA) {
+                        msg = getString(R.string.invalid_icc_data);
+                    } else if (transactionResult == QPOSService.TransactionResult.FALLBACK) {
+                        msg = "trans fallback";
+                    } else if (transactionResult == QPOSService.TransactionResult.NFC_TERMINATED) {
+                        msg = "NFC Terminated";
+                    } else if (transactionResult == QPOSService.TransactionResult.CARD_REMOVED) {
+                        msg = "CARD REMOVED";
+                    } else if (transactionResult == QPOSService.TransactionResult.CONTACTLESS_TRANSACTION_NOT_ALLOW) {
+                        msg = "TRANS NOT ALLOW";
+                    } else if (transactionResult == QPOSService.TransactionResult.CARD_BLOCKED) {
+                        msg = "CARD BLOCKED";
+                    } else if (transactionResult == QPOSService.TransactionResult.TRANS_TOKEN_INVALID) {
+                        msg = "TOKEN INVALID";
+                    } else if (transactionResult == QPOSService.TransactionResult.APP_BLOCKED) {
+                        msg = "APP BLOCKED";
+                    } else {
+                        msg = transactionResult.name();
+                    }
+                    if (!"".equals(msg)) {
+                        Mydialog.ErrorDialog(PaymentActivity.this, msg, new Mydialog.OnMyClickListener() {
+                            @Override
+                            public void onCancel() {
+                            }
 
-                    @Override
-                    public void onConfirm() {
+                            @Override
+                            public void onConfirm() {
 //                        pos.cancelTrade();
-                        finish();
-                        Mydialog.ErrorDialog.dismiss();
+                                finish();
+                                Mydialog.ErrorDialog.dismiss();
+                            }
+                        });
                     }
-                });
-            }
-            amounts = "";
-            cashbackAmounts = "";
+                    amounts = "";
+                    cashbackAmounts = "";
                 }
             });
         }
@@ -1016,49 +1022,49 @@ public class PaymentActivity extends AppCompatActivity implements View.OnClickLi
                 @Override
                 public void run() {
 
-            dismissDialog();
-            String msg = "";
-            if (displayMsg == QPOSService.Display.CLEAR_DISPLAY_MSG) {
-                msg = "";
-            } else if (displayMsg == QPOSService.Display.MSR_DATA_READY) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(PaymentActivity.this);
-                builder.setTitle("Audio");
-                builder.setMessage("Success,Contine ready");
-                builder.setPositiveButton("Confirm", null);
-                builder.show();
-            } else if (displayMsg == QPOSService.Display.PLEASE_WAIT) {
-                msg = getString(R.string.wait);
-            } else if (displayMsg == QPOSService.Display.REMOVE_CARD) {
-                msg = getString(R.string.remove_card);
-            } else if (displayMsg == QPOSService.Display.TRY_ANOTHER_INTERFACE) {
-                msg = getString(R.string.try_another_interface);
-            } else if (displayMsg == QPOSService.Display.PROCESSING) {
+                    dismissDialog();
+                    String msg = "";
+                    if (displayMsg == QPOSService.Display.CLEAR_DISPLAY_MSG) {
+                        msg = "";
+                    } else if (displayMsg == QPOSService.Display.MSR_DATA_READY) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(PaymentActivity.this);
+                        builder.setTitle("Audio");
+                        builder.setMessage("Success,Contine ready");
+                        builder.setPositiveButton("Confirm", null);
+                        builder.show();
+                    } else if (displayMsg == QPOSService.Display.PLEASE_WAIT) {
+                        msg = getString(R.string.wait);
+                    } else if (displayMsg == QPOSService.Display.REMOVE_CARD) {
+                        msg = getString(R.string.remove_card);
+                    } else if (displayMsg == QPOSService.Display.TRY_ANOTHER_INTERFACE) {
+                        msg = getString(R.string.try_another_interface);
+                    } else if (displayMsg == QPOSService.Display.PROCESSING) {
 
-                msg = getString(R.string.processing);
+                        msg = getString(R.string.processing);
 
-            } else if (displayMsg == QPOSService.Display.INPUT_PIN_ING) {
-                msg = "please input pin on pos";
+                    } else if (displayMsg == QPOSService.Display.INPUT_PIN_ING) {
+                        msg = "please input pin on pos";
 
-            } else if (displayMsg == QPOSService.Display.INPUT_OFFLINE_PIN_ONLY || displayMsg == QPOSService.Display.INPUT_LAST_OFFLINE_PIN) {
-                msg = "please input offline pin on pos";
+                    } else if (displayMsg == QPOSService.Display.INPUT_OFFLINE_PIN_ONLY || displayMsg == QPOSService.Display.INPUT_LAST_OFFLINE_PIN) {
+                        msg = "please input offline pin on pos";
 
-            } else if (displayMsg == QPOSService.Display.MAG_TO_ICC_TRADE) {
-                msg = "please insert chip card on pos";
-            } else if (displayMsg == QPOSService.Display.CARD_REMOVED) {
-                msg = "card removed";
-            } else if (displayMsg == QPOSService.Display.TRANSACTION_TERMINATED) {
-                msg = "transaction terminated";
-            } else if (displayMsg == QPOSService.Display.PlEASE_TAP_CARD_AGAIN) {
-                msg = getString(R.string.please_tap_card_again);
-            } else if(displayMsg == QPOSService.Display.INPUT_NEW_PIN){
+                    } else if (displayMsg == QPOSService.Display.MAG_TO_ICC_TRADE) {
+                        msg = "please insert chip card on pos";
+                    } else if (displayMsg == QPOSService.Display.CARD_REMOVED) {
+                        msg = "card removed";
+                    } else if (displayMsg == QPOSService.Display.TRANSACTION_TERMINATED) {
+                        msg = "transaction terminated";
+                    } else if (displayMsg == QPOSService.Display.PlEASE_TAP_CARD_AGAIN) {
+                        msg = getString(R.string.please_tap_card_again);
+                    } else if (displayMsg == QPOSService.Display.INPUT_NEW_PIN) {
 //                msg = getString(R.string.input_new_pin);
-                isChangePin = true;
-                timeOfPinInput++;
-            } else if(displayMsg == QPOSService.Display.INPUT_NEW_PIN_CHECK_ERROR){
-                msg = getString(R.string.input_new_pin_check_error);
-                timeOfPinInput = 0;
-            }
-            Mydialog.loading(PaymentActivity.this, msg);
+                        isChangePin = true;
+                        timeOfPinInput++;
+                    } else if (displayMsg == QPOSService.Display.INPUT_NEW_PIN_CHECK_ERROR) {
+                        msg = getString(R.string.input_new_pin_check_error);
+                        timeOfPinInput = 0;
+                    }
+                    Mydialog.loading(PaymentActivity.this, msg);
                 }
             });
         }
@@ -1080,16 +1086,16 @@ public class PaymentActivity extends AppCompatActivity implements View.OnClickLi
 
         @Override
         public void onReturnGetPinInputResult(int num) {
-            TRACE.i("onReturnGetPinInputResult  ==="+num);
+            TRACE.i("onReturnGetPinInputResult  ===" + num);
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     String s = "";
                     if (num == -1) {
-                            if (keyboardUtil != null) {
-                                keyboardUtil.hide();
-                                pinpadEditText.setVisibility(View.GONE);
-                            }
+                        if (keyboardUtil != null) {
+                            keyboardUtil.hide();
+                            pinpadEditText.setVisibility(View.GONE);
+                        }
                     } else {
                         for (int i = 0; i < num; i++) {
                             s += "*";
@@ -1168,15 +1174,14 @@ public class PaymentActivity extends AppCompatActivity implements View.OnClickLi
     }
 
 
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
         dismissDialog();
-         if (pos!=null){
-             pos = null;
-         }
+        if (pos != null) {
+            pos = null;
+        }
 
         if (!dealDoneflag) {
             if (pos != null) {
@@ -1192,16 +1197,16 @@ public class PaymentActivity extends AppCompatActivity implements View.OnClickLi
 
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             dismissDialog();
-            if(keyboardUtil!=null){
-                Log.w("keyboardUtil","keyboardUtil.hide");
+            if (keyboardUtil != null) {
+                Log.w("keyboardUtil", "keyboardUtil.hide");
                 keyboardUtil.hide();
             }
 
-                if(!isNormal) {
+            if (!isNormal) {
 
-                    if (pos != null) {
-                        pos.cancelTrade();
-                    }
+                if (pos != null) {
+                    pos.cancelTrade();
+                }
 
             }
             finish();
@@ -1209,34 +1214,37 @@ public class PaymentActivity extends AppCompatActivity implements View.OnClickLi
         }
         return super.onKeyDown(keyCode, event);
     }
+
     private void systemKeyStart() {
         systemKeyListener.setOnSystemKeyListener(new SystemKeyListener.OnSystemKeyListener() {
             @Override
             public void onHomePressed() {
                 dismissDialog();
-                if(keyboardUtil!=null){
+                if (keyboardUtil != null) {
                     keyboardUtil.hide();
                 }
-                if(!isNormal) {
+                if (!isNormal) {
                     if (pos != null) {
                         pos.cancelTrade();
                     }
                 }
                 finish();
             }
+
             @Override
             public void onMenuPressed() {
                 dismissDialog();
-                if(keyboardUtil!=null){
+                if (keyboardUtil != null) {
                     keyboardUtil.hide();
                 }
-                if(!isNormal) {
+                if (!isNormal) {
                     if (pos != null) {
                         pos.cancelTrade();
                     }
                 }
                 finish();
             }
+
             @Override
             public void onScreenOff() {
             }
@@ -1248,4 +1256,4 @@ public class PaymentActivity extends AppCompatActivity implements View.OnClickLi
         });
     }
 
-  }
+}

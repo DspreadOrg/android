@@ -126,7 +126,11 @@ public class KeyboardUtil {
             }
             if (number.toString().length() > 0 && number.toString().length() < 13) {
                 Long amount = Long.parseLong(number.toString());
-                mEditText.setText("¥"+MoneyUtil.fen2yuan(amount));
+                if (amount == 0) {
+                    number.delete(0, number.length());
+                } else {
+                    mEditText.setText("¥" + MoneyUtil.fen2yuan(amount));
+                }
             }else if(number.toString().length() == 0){
                 mEditText.setText("¥0.00");
             }
