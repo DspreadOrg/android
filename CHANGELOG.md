@@ -1,3 +1,10 @@
+## [5.1.10](https://github.com/DspreadOrg/android/compare/v5.1.9...v5.1.10) (2025-03-14)
+
+
+### Bug Fixes
+
+* optimize keyboard ([eeabbce](https://github.com/DspreadOrg/android/commit/eeabbced3d249dfa2bfbe5c134e00b7572281e40))
+
 ## [5.1.9](https://github.com/DspreadOrg/android/compare/v5.1.8...v5.1.9) (2025-03-12)
 
 
