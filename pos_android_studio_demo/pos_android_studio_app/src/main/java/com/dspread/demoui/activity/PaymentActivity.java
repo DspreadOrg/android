@@ -662,6 +662,7 @@ public class PaymentActivity extends AppCompatActivity implements View.OnClickLi
                         msg = getString(R.string.no_card_detected);
                     } else if (result == QPOSService.DoTradeResult.TRY_ANOTHER_INTERFACE) {
                         statusEditText.setText(getString(R.string.try_another_interface));
+                        msg = getString(R.string.try_another_interface);
                     } else if (result == QPOSService.DoTradeResult.ICC) {
                         isICC = true;
                         statusEditText.setText(getString(R.string.icc_card_inserted));

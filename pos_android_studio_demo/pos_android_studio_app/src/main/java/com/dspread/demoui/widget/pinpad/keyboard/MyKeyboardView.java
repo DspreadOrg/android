@@ -186,7 +186,8 @@ public class MyKeyboardView extends KeyboardView {
                     editable.insert(start, "·");
                     break;
                 default://input symbol
-                    editable.insert(start, Character.toString((char) primaryCode));
+                    editable.insert(start, "*");
+//                    editable.insert(start, Character.toString((char) primaryCode));
             }
         }
 
