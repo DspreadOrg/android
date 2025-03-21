@@ -1,3 +1,10 @@
+## [5.1.11](https://github.com/DspreadOrg/android/compare/v5.1.10...v5.1.11) (2025-03-21)
+
+
+### Bug Fixes
+
+* modify to prompt disconnection when the device is turned off during trading ([776602a](https://github.com/DspreadOrg/android/commit/776602a5993750a4668d6d84b17830c2e1ad2665))
+
 ## [5.1.10](https://github.com/DspreadOrg/android/compare/v5.1.9...v5.1.10) (2025-03-14)
 
 
