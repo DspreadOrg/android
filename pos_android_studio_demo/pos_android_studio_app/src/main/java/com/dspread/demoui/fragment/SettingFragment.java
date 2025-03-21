@@ -40,6 +40,7 @@ import com.dspread.demoui.activity.MyQposClass;
 import com.dspread.demoui.activity.ScanBluetoothActivity;
 import com.dspread.demoui.beans.Constants;
 import com.dspread.demoui.interfaces.ConnectStateCallback;
+import com.dspread.demoui.ui.dialog.Mydialog;
 import com.dspread.demoui.utils.SharedPreferencesUtil;
 import com.dspread.demoui.utils.TRACE;
 import com.dspread.demoui.utils.TitleUpdateListener;
@@ -443,7 +444,14 @@ public class SettingFragment extends Fragment {
                         closeConnection = false;
                         preferencesUtil.put("operationType","");
                     }
-                    Toast.makeText(getContext(), "Device disconnect!", Toast.LENGTH_LONG).show();
+                    if(BaseApplication.getApplicationInstance!=null&&"PaymentActivity".equals(BaseApplication.getApplicationInstance.getClass().getSimpleName())){
+                        Mydialog.ErrorDialog((Activity) BaseApplication.getApplicationInstance,"Device disconnect!",null);
+                        rgType.clearCheck();
+                        clearConnectStatus();
+                    }else{
+                        Toast.makeText(getContext(), "Device disconnect!", Toast.LENGTH_LONG).show();
+                    }
+
                 }
             });
 
