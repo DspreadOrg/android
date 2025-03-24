@@ -376,7 +376,7 @@ public class Utils {
 		if ((curClickTime - lastClickTime) >= MIN_CLICK_DELAY_TIME2) {
 			flag = true;
 		}
-		MIN_CLICK_DELAY_TIME2 = 00;
+//		MIN_CLICK_DELAY_TIME2 = 00;
 		lastClickTime = curClickTime;
 		return flag;
 	}

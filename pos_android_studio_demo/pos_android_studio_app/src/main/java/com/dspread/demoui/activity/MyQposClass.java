@@ -154,7 +154,7 @@ public class MyQposClass extends CQPOSService {
 
     @Override
     public void onRequestSetAmount() {
-        TRACE.d("onRequestSetAmount()");
+        TRACE.d("parent onRequestSetAmount()");
         if(transactionCallback != null){
             transactionCallback.onRequestSetAmount();
         }
@@ -186,7 +186,7 @@ public class MyQposClass extends CQPOSService {
 
     @Override
     public void onRequestDisplay(QPOSService.Display displayMsg) {
-        TRACE.d("onRequestDisplay(Display displayMsg):" + displayMsg.toString());
+        TRACE.d("patent onRequestDisplay(Display displayMsg):" + displayMsg.toString());
         if(transactionCallback != null){
             transactionCallback.onRequestDisplay(displayMsg);
         }

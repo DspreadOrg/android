@@ -31,6 +31,9 @@ import java.util.Random;
 public class KeyboardUtil {
     private Activity mActivity;
     private boolean  mIfRandom;
+    // 添加防重复点击变量
+    private static final long CLICK_INTERVAL = 1000L; // 1秒内不能重复点击
+    private long lastClickTime = 0;
 
     private MyKeyBoardView mKeyboardView;
     private Keyboard       mKeyboardNumber;//数字键盘
@@ -108,6 +111,12 @@ public class KeyboardUtil {
                     number.deleteCharAt(number.length() - 1);
                 }
             } else if (primaryCode == 66) {// confirm
+                // 添加防重复点击判断
+                long currentTime = System.currentTimeMillis();
+                if (currentTime - lastClickTime < CLICK_INTERVAL) {
+                    return;
+                }
+                lastClickTime = currentTime;
                 number.delete(0, number.length());
                 if (mOnOkClick != null) {
                     mOnOkClick.onOkClick();
