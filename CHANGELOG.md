@@ -1,3 +1,10 @@
+# [5.2.0](https://github.com/DspreadOrg/android/compare/v5.1.11...v5.2.0) (2025-03-24)
+
+
+### Features
+
+* update the sdk version and fix bugs ([f7ab688](https://github.com/DspreadOrg/android/commit/f7ab688d15c6bb51e5e9c86a5fc0c58795b6140c))
+
 ## [5.1.11](https://github.com/DspreadOrg/android/compare/v5.1.10...v5.1.11) (2025-03-21)
 
 
