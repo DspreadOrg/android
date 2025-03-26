@@ -1,3 +1,10 @@
+## [5.2.2](https://github.com/DspreadOrg/android/compare/v5.2.1...v5.2.2) (2025-03-26)
+
+
+### Bug Fixes
+
+* fix the workflow of .json upload ([497efe9](https://github.com/DspreadOrg/android/commit/497efe9fe9893a6ac10514ec271a8f1d6f08d259))
+
 ## [5.2.1](https://github.com/DspreadOrg/android/compare/v5.2.0...v5.2.1) (2025-03-26)
 
 
