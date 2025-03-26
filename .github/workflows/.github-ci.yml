@@ -193,13 +193,14 @@ jobs:
             "buildId": "'${GITHUB_SHA}'"
           }' > version_info.json   
 
+      # 上传 version_info.json 和library 文件
       - name: Upload JSON to GitHub Releases
         uses: softprops/action-gh-release@v1
         with:
           #tag_name: ${{ github.ref_name }}
           tag_name: "Release"
           files: |
-            version_info.json  # 上传 version_info.json 文件
+            version_info.json  
             ${{ steps.verify-sdk.outputs.POS_SDK }}
             ${{ steps.verify-sdk.outputs.PRINT_SDK }}
         env:
