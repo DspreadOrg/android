@@ -1,3 +1,10 @@
+## [5.2.1](https://github.com/DspreadOrg/android/compare/v5.2.0...v5.2.1) (2025-03-26)
+
+
+### Bug Fixes
+
+* add SDK library and update CI/CD workflow ([3c46caf](https://github.com/DspreadOrg/android/commit/3c46cafca1f45ec4fac5f652b5748ce52ce8d800))
+
 # [5.2.0](https://github.com/DspreadOrg/android/compare/v5.1.11...v5.2.0) (2025-03-24)
 
 
