@@ -1,3 +1,10 @@
+## [5.2.3](https://github.com/DspreadOrg/android/compare/v5.2.2...v5.2.3) (2025-04-01)
+
+
+### Bug Fixes
+
+* fix the printer and scan code to adapt to D30M and update apk version to 5.2.3 ([9c543f6](https://github.com/DspreadOrg/android/commit/9c543f69984a9f70eca35243e1dd2098c4c2758f))
+
 ## [5.2.2](https://github.com/DspreadOrg/android/compare/v5.2.1...v5.2.2) (2025-03-26)
 
 
