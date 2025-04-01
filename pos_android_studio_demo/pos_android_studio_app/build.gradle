@@ -41,9 +41,9 @@ android {
         minSdk 24
         targetSdk 33
 
-        versionCode 57
+        versionCode 58
 
-        versionName "5.2.3"
+        versionName "5.2.4"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -109,9 +109,8 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
     implementation 'org.greenrobot:eventbus:3.3.1'
-
     implementation 'com.dspread.print:dspread_print_sdk:1.4.0-beta'
-    implementation 'com.dspread.library:dspread_pos_sdk:7.1.2'
+    implementation 'com.dspread.library:dspread_pos_sdk:7.1.3'
 
 }
 

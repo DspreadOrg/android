@@ -54,7 +54,7 @@ jobs:
           api-level: 30
           build-tools: 30.0.3
 
-       #  缓存 Gradle 依赖项
+      #  缓存 Gradle 依赖项
       - name: Cache Gradle packages
         uses: actions/cache@v3
         with:
@@ -104,6 +104,15 @@ jobs:
 
       - name: List APK files
         run: ls -R pos_android_studio_demo/pos_android_studio_app/build/outputs/apk/release  # 列出 APK 文件，确保路径正确
+
+        # 保存SDK 库文件
+      - name: Upload SDK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dspread-sdks
+          path: |
+            pos_android_studio_demo/pos_android_studio_app/libs/dspread_pos_sdk_*.jar
+            pos_android_studio_demo/pos_android_studio_app/libs/dspread_print_sdk-*-beta.aar  
       
       # - name: Generate short SHA for tag
       #   id: generate_tag
@@ -164,10 +173,6 @@ jobs:
       - name: Verify APK file in release
         run: ls -R pos_android_studio_demo/pos_android_studio_app/build/outputs/apk/release  # 列出 APK 文件，确保路径正确
 
-      - name: Install Semantic Release and dependencies
-        run: |
-          npm install -g semantic-release @semantic-release/git @semantic-release/github @semantic-release/changelog conventional-changelog-conventionalcommits --force
-
       - name: Verify SDK Files
         id: verify-sdk
         run: |
@@ -176,10 +181,20 @@ jobs:
             echo "POS_SDK=$POS_SDK" >> $GITHUB_OUTPUT
             echo "PRINT_SDK=$PRINT_SDK" >> $GITHUB_OUTPUT
 
+      - name: Install Semantic Release and dependencies
+        run: |
+          npm install -g semantic-release @semantic-release/git @semantic-release/github @semantic-release/changelog conventional-changelog-conventionalcommits --force
+
       - name: Run semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npx semantic-release
+
+      - name: Get latest tag
+        id: get-latest-tag
+        run: |
+          LATEST_TAG=$(git describe --tags --abbrev=0)
+          echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_OUTPUT
 
       - name: Generate JSON file
         run: |
@@ -192,6 +207,17 @@ jobs:
             "DownloadUrl": "'$APK_DOWNLOAD_PATH'",
             "buildId": "'${GITHUB_SHA}'"
           }' > version_info.json   
+
+      # 读取并上传 SDK 库
+      - name: Upload SDK Libraries
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.get-latest-tag.outputs.LATEST_TAG }}
+          files: |
+            pos_android_studio_demo/pos_android_studio_app/libs/dspread_pos_sdk_*.jar
+            pos_android_studio_demo/pos_android_studio_app/libs/dspread_print_sdk-*-beta.aar
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # 使用 GitHub Token 进行认证  
 
       # 上传 version_info.json 和library 文件
       - name: Upload JSON to GitHub Releases
