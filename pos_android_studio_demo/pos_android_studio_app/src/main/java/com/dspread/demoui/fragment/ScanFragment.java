@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.dspread.demoui.R;
 import com.dspread.demoui.scan.D30MScanner;
+import com.dspread.demoui.utils.DeviceUtils;
 import com.dspread.demoui.utils.TRACE;
 import com.dspread.sdkdevservice.aidl.constant.SDKDevConstant;
 import com.dspread.sdkdevservice.aidl.scanner.SDKScanListener;
@@ -37,6 +38,9 @@ public class ScanFragment extends Fragment {
     private TextView tvScanInfo;
     private ImageButton btnScan;
     private D30MScanner d30MScanner;
+    private String pkg;
+    private String cls;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -48,7 +52,7 @@ public class ScanFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         tvScanInfo = view.findViewById(R.id.tv_scan_info);
         btnScan = view.findViewById(R.id.btn_scan);
-        initDevice(Build.MODEL);
+        //initDevice(Build.MODEL);
         startScan();
     }
 
@@ -63,24 +67,6 @@ public class ScanFragment extends Fragment {
     public void onResume() {
         super.onResume();
         TRACE.d("initDevice:----onResume");
-    }
-
-    private void initDevice(String model) {
-        switch (model) {
-            case "D30M":
-            case "D50":
-                TRACE.d("initDevice:----" + model);
-                try {
-                    d30MScanner = new D30MScanner();
-                    d30MScanner.initScannerDevice();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                break;
-            default:
-                break;
-        }
     }
 
     @Override
@@ -104,47 +90,45 @@ public class ScanFragment extends Fragment {
         btnScan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (Build.MODEL.equalsIgnoreCase("D30M") || Build.MODEL.equalsIgnoreCase("D50")) {
-                    D30MstartScan();
+                if (DeviceUtils.isAppInstalled(getContext(), DeviceUtils.UART_AIDL_SERVICE_APP_PACKAGE_NAME)) {
+                    //D30MstartScan();
+                    pkg = "com.dspread.sdkservice";
+                    cls = "com.dspread.sdkservice.base.scan.ScanActivity";
                 } else {
                     if (!canshow) {
                         return;
                     }
                     canshow = false;
                     showTimer.start();
-                    Intent intent = new Intent();
-                    ComponentName comp = new ComponentName("com.dspread.components.scan.service", "com.dspread.components.scan.service.ScanActivity");
-                    try {
-                        intent.putExtra("amount", "CHARGE ￥1");
-                        intent.setComponent(comp);
-                        launcher.launch(intent);
-                    } catch (ActivityNotFoundException e) {
-                        Log.w("e", "e==" + e);
-                        Toast toast = Toast.makeText(getActivity(), getString(R.string.scan_toast), Toast.LENGTH_SHORT);
-                        toast.setGravity(Gravity.CENTER, 0, 0);
-                        toast.show();
-                    }
+                    pkg = "com.dspread.components.scan.service";
+                    cls = "com.dspread.components.scan.service.ScanActivity";
+                }
+                Intent intent = new Intent();
+                ComponentName comp = new ComponentName(pkg, cls);
+                try {
+                    intent.putExtra("amount", "CHARGE ￥1");
+                    intent.setComponent(comp);
+                    launcher.launch(intent);
+                } catch (ActivityNotFoundException e) {
+                    Log.w("e", "e==" + e);
+                    Toast toast = Toast.makeText(getActivity(), getString(R.string.scan_toast), Toast.LENGTH_SHORT);
+                    toast.setGravity(Gravity.CENTER, 0, 0);
+                    toast.show();
                 }
             }
         });
     }
 
-    private void D30MstartScan() {
-        try {
-            SDKScanner scannerDevice = d30MScanner.getScannerDevice();
-            Bundle bundle = new Bundle();
-            bundle.putInt("deviceType", SDKDevConstant.DeviceType.INTERNAL);
-            bundle.putString("title", "Scanning");
-            bundle.putString("message", "Scanning Code");
-            bundle.putString("information", "Amount 0.01");
-            bundle.putInt("cameraId", SDKDevConstant.CameraId.BACK);
-            bundle.putInt("timeout", 60);
-            bundle.putInt("scanMode", 0);
-            scannerDevice.startScan(bundle, initScannerListener());
-        } catch (RemoteException e) {
-            throw new RuntimeException(e);
+    ActivityResultLauncher<Intent> launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        if (result.getResultCode() != RESULT_OK || result.getData() == null) {
+            return;
         }
-    }
+        String str = result.getData().getStringExtra("data");
+        Log.w("scan", "strcode==" + str);
+        tvScanInfo.setText(str);
+    });
+
+
 
     @NonNull
     private SDKScanListener.Stub initScannerListener() {
@@ -172,12 +156,39 @@ public class ScanFragment extends Fragment {
         };
     }
 
-    ActivityResultLauncher<Intent> launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
-        if (result.getResultCode() != RESULT_OK || result.getData() == null) {
-            return;
+
+    private void D30MstartScan() {
+        try {
+            SDKScanner scannerDevice = d30MScanner.getScannerDevice();
+            Bundle bundle = new Bundle();
+            bundle.putInt("deviceType", SDKDevConstant.DeviceType.INTERNAL);
+            bundle.putString("title", "Scanning");
+            bundle.putString("message", "Scanning Code");
+            bundle.putString("information", "Amount 0.01");
+            bundle.putInt("cameraId", SDKDevConstant.CameraId.BACK);
+            bundle.putInt("timeout", 60);
+            bundle.putInt("scanMode", 0);
+            scannerDevice.startScan(bundle, initScannerListener());
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
         }
-        String str = result.getData().getStringExtra("data");
-        Log.w("scan", "strcode==" + str);
-        tvScanInfo.setText(str);
-    });
+    }
+
+    private void initDevice(String model) {
+        switch (model) {
+            case "D30M":
+            case "D50":
+                TRACE.d("initDevice:----" + model);
+                try {
+                    d30MScanner = new D30MScanner();
+                    d30MScanner.initScannerDevice();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                break;
+            default:
+                break;
+        }
+    }
 }

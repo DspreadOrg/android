@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 
+import com.dspread.demoui.utils.DeviceUtils;
 import com.dspread.print.device.PrintListener;
 import com.dspread.print.device.PrinterDevice;
 import com.dspread.print.device.PrinterInitListener;
@@ -31,13 +32,12 @@ public abstract class BaseActivity extends AppCompatActivity {
             PrinterAlertDialog.showAlertDialog(this);
             return;
         }
-        if ("D30".equalsIgnoreCase(Build.MODEL)) {
+        if ("D30".equalsIgnoreCase(Build.MODEL) && !DeviceUtils.isAppInstalled(getApplicationContext(), DeviceUtils.UART_AIDL_SERVICE_APP_PACKAGE_NAME)) {
             mPrinter.initPrinter(BaseActivity.this, new PrinterInitListener() {
                 @Override
                 public void connected() {
                     mPrinter.setPrinterTerminatedState(PrinterDevice.PrintTerminationState.PRINT_STOP);
                 }
-
                 @Override
                 public void disconnected() {
                 }

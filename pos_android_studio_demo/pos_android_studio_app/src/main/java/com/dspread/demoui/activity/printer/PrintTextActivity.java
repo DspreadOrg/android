@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.action.printerservice.PrintStyle;
 import com.dspread.demoui.R;
 import com.dspread.demoui.ui.dialog.PrintDialog;
+import com.dspread.demoui.utils.DeviceUtils;
 import com.dspread.helper.printer.PrinterClass;
 import com.dspread.print.device.PrintListener;
 import com.dspread.print.device.PrinterDevice;
@@ -82,7 +83,7 @@ public class PrintTextActivity extends BaseActivity implements View.OnClickListe
         if (Build.MODEL.equalsIgnoreCase("D70")) {
             layoutMaxHeight.setVisibility(View.GONE);
         }
-        if (Build.MODEL.equalsIgnoreCase("D30M")) {
+        if (DeviceUtils.isAppInstalled(getApplicationContext(),DeviceUtils.UART_AIDL_SERVICE_APP_PACKAGE_NAME)) {
             layoutMaxHeight.setVisibility(View.GONE);
             layoutSetFontStyle.setVisibility(View.GONE);
         }

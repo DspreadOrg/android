@@ -122,4 +122,22 @@ public class DeviceUtils {
         }
 
 
+
+
+    public static boolean isAppInstalled(Context context, String packageName) {
+        PackageManager packageManager = context.getPackageManager();
+        try {
+            packageManager.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES);
+            TRACE.d("[PrinterManager] isAppInstalled ");
+            return true;
+        } catch (PackageManager.NameNotFoundException e) {
+            TRACE.d("not found pacakge == " + e.toString());
+            return false;
+        }
+    }
+
+    public static final String UART_AIDL_SERVICE_APP_PACKAGE_NAME = "com.dspread.sdkservice";//新架构的service包名
+
+
+
 }
