@@ -126,10 +126,11 @@ public class HomeFragment extends Fragment {
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         TRACE.i("home on keydown = "+keyCode);
-        if(keyCode == 4){
-
-        }else {
-            keyboardUtil.getmOnKeyboardActionListener().onKey(keyCode, null);
+        if (event.getAction() == KeyEvent.ACTION_UP) {
+            if(keyCode == 4){
+            }else {
+                keyboardUtil.getmOnKeyboardActionListener().onKey(keyCode, null);
+            }
         }
         return true;
     }

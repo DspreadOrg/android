@@ -362,20 +362,23 @@ public class MainActivity extends AppCompatActivity implements TitleUpdateListen
 //        System.exit(0);
     }
 
+
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        int action = event.getAction();
+        int keyCode = event.getKeyCode();
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            toolbar.setTitle(getString(R.string.menu_payment));
-            switchFragment(0);
-            drawerLayout.close();
-            exit();
+            if (action == KeyEvent.ACTION_UP) {
+                toolbar.setTitle(getString(R.string.menu_payment));
+                switchFragment(0);
+                drawerLayout.close();
+                exit();
+            }
             return true;
         } else if (homeFragment != null) {
             return homeFragment.onKeyDown(keyCode, event);  // 让 Fragment 处理按键事件
         }
-        TRACE.i("main keyode = " + keyCode);
-
-        return super.onKeyDown(keyCode, event);
+        return super.dispatchKeyEvent(event); // 调用父类的dispatchKeyEvent方法，将事件传递给其他组件
     }
 
     private static boolean isExit = false;
