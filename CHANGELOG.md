@@ -1,3 +1,10 @@
+## [5.2.5](https://github.com/DspreadOrg/android/compare/v5.2.4...v5.2.5) (2025-04-08)
+
+
+### Bug Fixes
+
+* update the latest android sdk ([d59a72b](https://github.com/DspreadOrg/android/commit/d59a72b4da249959f0888cd6020f075d11a0d398))
+
 ## [5.2.4](https://github.com/DspreadOrg/android/compare/v5.2.3...v5.2.4) (2025-04-01)
 
 
