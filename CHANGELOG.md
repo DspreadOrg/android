@@ -1,3 +1,10 @@
+## [5.2.6](https://github.com/DspreadOrg/android/compare/v5.2.5...v5.2.6) (2025-04-09)
+
+
+### Bug Fixes
+
+* set pin num EditText not focusable and update SDK verison ([a3be87c](https://github.com/DspreadOrg/android/commit/a3be87c96f189f3c5e425179d5fb247d4dbf49f0))
+
 ## [5.2.5](https://github.com/DspreadOrg/android/compare/v5.2.4...v5.2.5) (2025-04-08)
 
 
