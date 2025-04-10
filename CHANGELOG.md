@@ -1,3 +1,10 @@
+## [5.2.7](https://github.com/DspreadOrg/android/compare/v5.2.6...v5.2.7) (2025-04-10)
+
+
+### Bug Fixes
+
+* update printer sdk version is 1.4.2 ([b50f4df](https://github.com/DspreadOrg/android/commit/b50f4df507155973c7d1f3faf61407b390a2ae2a))
+
 ## [5.2.6](https://github.com/DspreadOrg/android/compare/v5.2.5...v5.2.6) (2025-04-09)
 
 
