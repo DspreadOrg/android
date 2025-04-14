@@ -1,3 +1,10 @@
+## [5.2.9](https://github.com/DspreadOrg/android/compare/v5.2.8...v5.2.9) (2025-04-14)
+
+
+### Bug Fixes
+
+* optimized the method to prevent rapid duplicate clicks ([0a96da7](https://github.com/DspreadOrg/android/commit/0a96da7ccfd50de2c5164ed542d41adbf1788e64))
+
 ## [5.2.8](https://github.com/DspreadOrg/android/compare/v5.2.7...v5.2.8) (2025-04-14)
 
 
