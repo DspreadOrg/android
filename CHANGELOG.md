@@ -1,3 +1,10 @@
+## [5.2.8](https://github.com/DspreadOrg/android/compare/v5.2.7...v5.2.8) (2025-04-14)
+
+
+### Bug Fixes
+
+* support OTA communication for android 14+ ([6a32547](https://github.com/DspreadOrg/android/commit/6a32547f7b78e83d9a9979f6636dd6e2948832a7))
+
 ## [5.2.7](https://github.com/DspreadOrg/android/compare/v5.2.6...v5.2.7) (2025-04-10)
 
 
