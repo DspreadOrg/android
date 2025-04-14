@@ -356,27 +356,15 @@ public class Utils {
            return string;
 			}
 
-//	private static final int MIN_CLICK_DELAY_TIME = 2000;
-	private static long lastClickTime;
-//
-//	public static boolean isFastClick() {
-//		boolean flag = false;
-//		long curClickTime = System.currentTimeMillis();
-//		if ((curClickTime - lastClickTime) >= MIN_CLICK_DELAY_TIME) {
-//			flag = true;
-//		}
-//		lastClickTime = curClickTime;
-//		return flag;
-//	}
-	public static int MIN_CLICK_DELAY_TIME2 = 3000;
-	public static boolean islistFastClick() {
+	private static long lastClickTime=0;
+	public static int MIN_CLICK_DELAY_TIME2 = 1000;
+	public static synchronized boolean islistFastClick() {
 		TRACE.d("islistFastClick");
 		boolean flag = false;
 		long curClickTime = System.currentTimeMillis();
 		if ((curClickTime - lastClickTime) >= MIN_CLICK_DELAY_TIME2) {
 			flag = true;
 		}
-//		MIN_CLICK_DELAY_TIME2 = 00;
 		lastClickTime = curClickTime;
 		return flag;
 	}
