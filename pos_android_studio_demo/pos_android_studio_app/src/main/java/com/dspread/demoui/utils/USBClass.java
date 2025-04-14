@@ -66,11 +66,12 @@ public class USBClass {
         ArrayList<String> deviceList = new ArrayList<String>();
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
-            mPermissionIntent = PendingIntent.getBroadcast(context, 0, new Intent(
-                    "com.android.example.USB_PERMISSION"), PendingIntent.FLAG_IMMUTABLE);
+            Intent usbIntent = new Intent(ACTION_USB_PERMISSION);
+            usbIntent.setPackage(context.getPackageName());
+            mPermissionIntent = PendingIntent.getBroadcast(context, 0, usbIntent, PendingIntent.FLAG_MUTABLE);
         } else {
             mPermissionIntent = PendingIntent.getBroadcast(context, 0, new Intent(
-                    "com.android.example.USB_PERMISSION"), 0);
+                    ACTION_USB_PERMISSION), 0);
         }
         IntentFilter filter = new IntentFilter(ACTION_USB_PERMISSION);
         context.registerReceiver(mUsbReceiver, filter);
