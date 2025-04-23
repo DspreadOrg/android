@@ -1,3 +1,10 @@
+## [5.2.11](https://github.com/DspreadOrg/android/compare/v5.2.10...v5.2.11) (2025-04-23)
+
+
+### Bug Fixes
+
+* update the firmware of CR100 and qpos cute ([21cbf97](https://github.com/DspreadOrg/android/commit/21cbf97e863b1273bd6499c37875eed890ed02dd))
+
 ## [5.2.10](https://github.com/DspreadOrg/android/compare/v5.2.9...v5.2.10) (2025-04-22)
 
 
