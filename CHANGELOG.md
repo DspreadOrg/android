@@ -1,3 +1,10 @@
+## [5.2.12](https://github.com/DspreadOrg/android/compare/v5.2.11...v5.2.12) (2025-04-24)
+
+
+### Bug Fixes
+
+* add USB permission request logic and update version 5.3.0 ([a0dd917](https://github.com/DspreadOrg/android/commit/a0dd917bce461d3370483a67e1c5f33705a6fd4d))
+
 ## [5.2.11](https://github.com/DspreadOrg/android/compare/v5.2.10...v5.2.11) (2025-04-23)
 
 
