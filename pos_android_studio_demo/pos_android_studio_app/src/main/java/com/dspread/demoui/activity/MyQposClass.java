@@ -823,6 +823,9 @@ public class MyQposClass extends CQPOSService {
     @Override
     public void onRequestDevice() {
         Log.w("onRequestDevice", "onRequestDevice");
+        if(posUpdateCallback !=null){
+            posUpdateCallback.onRequestDevice();
+        }
     }
 
     @Override

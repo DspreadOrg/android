@@ -12,4 +12,5 @@ public interface PosUpdateCallback {
     void onRequestUpdateWorkKeyResult(QPOSService.UpdateInformationResult result);
     void onUpdatePosFirmwareResult(QPOSService.UpdateInformationResult arg0);
     void onReturnCustomConfigResult(boolean isSuccess, String result);
+    void onRequestDevice();
 }

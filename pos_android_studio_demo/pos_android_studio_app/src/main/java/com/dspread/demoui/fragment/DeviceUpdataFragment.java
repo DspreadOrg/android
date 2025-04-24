@@ -5,11 +5,16 @@ import static com.dspread.demoui.utils.Utils.getKeyIndex;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.content.ActivityNotFoundException;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.hardware.usb.UsbDevice;
+import android.hardware.usb.UsbManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -48,6 +53,7 @@ import com.dspread.demoui.interfaces.PosUpdateCallback;
 import com.dspread.demoui.utils.FileUtils;
 import com.dspread.demoui.utils.SharedPreferencesUtil;
 
+import com.dspread.demoui.utils.TRACE;
 import com.dspread.demoui.utils.TitleUpdateListener;
 import com.dspread.xpos.QPOSService;
 
@@ -198,14 +204,12 @@ public class DeviceUpdataFragment extends Fragment implements View.OnClickListen
     };
 
     public void updateFirmware() {
-        preferencesUtil.put("operationType","updateFirmware");
+        preferencesUtil.put("operationType", "updateFirmware");
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             //request permission
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_WRITE_EXTERNAL_STORAGE);
-        } else {
-            showDialog();
-
-        }
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_WRITE_EXTERNAL_STORAGE);
+        } 
+        showDialog();
     }
 
     private void showDialog() {
@@ -383,10 +387,76 @@ public class DeviceUpdataFragment extends Fragment implements View.OnClickListen
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                tv_pos_result.setText("update EMV is "+isSuccess);
+                tv_pos_result.setText("update EMV is " + isSuccess);
             }
         });
 
+    }
+
+    @Override
+    public void onRequestDevice() {
+        List<UsbDevice> deviceList = getPermissionDeviceList();
+        UsbManager mManager = (UsbManager) getActivity().getSystemService(Context.USB_SERVICE);
+        for (int i = 0; i < deviceList.size(); i++) {
+            UsbDevice usbDevice = deviceList.get(i);
+            if (usbDevice.getVendorId() == 1003 || usbDevice.getVendorId() == 0x03EB) {
+                if (mManager.hasPermission(usbDevice)) {
+                    pos.setPermissionDevice(usbDevice);
+                } else {
+                    devicePermissionRequest(mManager, usbDevice);
+                }
+            }
+        }
+
+    }
+
+    private static final String ACTION_USB_PERMISSION = "com.android.example.USB_PERMISSION";
+
+    private void devicePermissionRequest(UsbManager mManager, UsbDevice usbDevice) {
+        PendingIntent mPermissionIntent;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+            mPermissionIntent = PendingIntent.getBroadcast(getContext(), 0, new Intent("com.android.example.USB_PERMISSION"), PendingIntent.FLAG_IMMUTABLE);
+        } else {
+            mPermissionIntent = PendingIntent.getBroadcast(getContext(), 0, new Intent("com.android.example.USB_PERMISSION"), 0);
+        }
+        IntentFilter filter = new IntentFilter(ACTION_USB_PERMISSION);
+        getActivity().registerReceiver(mUsbReceiver, filter);
+        mManager.requestPermission(usbDevice, mPermissionIntent);
+    }
+
+
+    private final BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (ACTION_USB_PERMISSION.equals(action)) {
+                synchronized (this) {
+                    UsbDevice device = (UsbDevice) intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
+                    if (intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false)) {
+                        if (device != null) {
+                            // call method to set up device communication
+                            TRACE.i("usb" + "permission granted for device " + device);
+                            pos.setPermissionDevice(device);
+                        }
+                    } else {
+                        TRACE.i("usb" + "permission denied for device " + device);
+
+                    }
+                    getActivity().unregisterReceiver(mUsbReceiver);
+                }
+            }
+        }
+    };
+
+    private List getPermissionDeviceList() {
+        UsbManager mManager = (UsbManager) getActivity().getSystemService(Context.USB_SERVICE);
+        List deviceList = new ArrayList<UsbDevice>();
+        // check for existing devices
+        for (UsbDevice device : mManager.getDeviceList().values()) {
+            deviceList.add(device);
+        }
+        return deviceList;
     }
 
     class UpdateThread extends Thread {
@@ -395,7 +465,7 @@ public class DeviceUpdataFragment extends Fragment implements View.OnClickListen
 
         @Override
         public void run() {
-            preferencesUtil.put(Constants.updateFirmwareStatus,true);
+            preferencesUtil.put(Constants.updateFirmwareStatus, true);
             while (!concelFlag) {
                 int i = 0;
                 while (!concelFlag && i < 100) {
