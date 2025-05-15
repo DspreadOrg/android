@@ -17,12 +17,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dspread.demoui.R;
-import com.dspread.demoui.scan.D30MScanner;
 import com.dspread.demoui.utils.DeviceUtils;
 import com.dspread.demoui.utils.TRACE;
-import com.dspread.sdkdevservice.aidl.constant.SDKDevConstant;
-import com.dspread.sdkdevservice.aidl.scanner.SDKScanListener;
-import com.dspread.sdkdevservice.aidl.scanner.SDKScanner;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -37,7 +33,7 @@ public class ScanFragment extends Fragment {
 
     private TextView tvScanInfo;
     private ImageButton btnScan;
-    private D30MScanner d30MScanner;
+
     private String pkg;
     private String cls;
 
@@ -127,68 +123,4 @@ public class ScanFragment extends Fragment {
         Log.w("scan", "strcode==" + str);
         tvScanInfo.setText(str);
     });
-
-
-
-    @NonNull
-    private SDKScanListener.Stub initScannerListener() {
-        return new SDKScanListener.Stub() {
-            @Override
-            public void onSuccess(Bundle respData) throws RemoteException {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        String barcode = respData.getString("barcode");
-                        tvScanInfo.setText(barcode);
-                    }
-                });
-            }
-
-            @Override
-            public void onError(int errorCode, String errorMsg) throws RemoteException {
-            }
-
-            public void onCancel() throws RemoteException {
-            }
-
-            public void onTimeout() throws RemoteException {
-            }
-        };
-    }
-
-
-    private void D30MstartScan() {
-        try {
-            SDKScanner scannerDevice = d30MScanner.getScannerDevice();
-            Bundle bundle = new Bundle();
-            bundle.putInt("deviceType", SDKDevConstant.DeviceType.INTERNAL);
-            bundle.putString("title", "Scanning");
-            bundle.putString("message", "Scanning Code");
-            bundle.putString("information", "Amount 0.01");
-            bundle.putInt("cameraId", SDKDevConstant.CameraId.BACK);
-            bundle.putInt("timeout", 60);
-            bundle.putInt("scanMode", 0);
-            scannerDevice.startScan(bundle, initScannerListener());
-        } catch (RemoteException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private void initDevice(String model) {
-        switch (model) {
-            case "D30M":
-            case "D50":
-                TRACE.d("initDevice:----" + model);
-                try {
-                    d30MScanner = new D30MScanner();
-                    d30MScanner.initScannerDevice();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                break;
-            default:
-                break;
-        }
-    }
 }
