@@ -1,3 +1,10 @@
+# [5.3.0](https://github.com/DspreadOrg/android/compare/v5.2.12...v5.3.0) (2025-05-15)
+
+
+### Features
+
+* update SDK version to 7.2.8 and delete useless code ([c9bf809](https://github.com/DspreadOrg/android/commit/c9bf8091d262838071d135a3a823a56cd00b1806))
+
 ## [5.2.12](https://github.com/DspreadOrg/android/compare/v5.2.11...v5.2.12) (2025-04-24)
 
 
