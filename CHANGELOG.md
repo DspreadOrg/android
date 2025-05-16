@@ -1,3 +1,23 @@
+# [6.0.0](https://github.com/DspreadOrg/android/compare/v5.3.0...v6.0.0) (2025-05-16)
+
+
+### Bug Fixes
+
+* update the new CI work flow ([5ceb698](https://github.com/DspreadOrg/android/commit/5ceb698c9f92f002b522dc8fd0cde46df3d5b1ab))
+
+
+### Features
+
+* improve the demo code ([eb143c2](https://github.com/DspreadOrg/android/commit/eb143c2cc72b2a435ed0a0b260b6315592af5148))
+* update the demo structure ([321a076](https://github.com/DspreadOrg/android/commit/321a0767b009a05009a75447948d1d92844e101f))
+
+
+### BREAKING CHANGES
+
+* update the new demo struceture
+* update the app structure to MVVM
+* improve the demo logic
+
 # [5.3.0](https://github.com/DspreadOrg/android/compare/v5.2.12...v5.3.0) (2025-05-15)
 
 
