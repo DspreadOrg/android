@@ -87,7 +87,7 @@ jobs:
 
       - name: Build the release signed APK
         run: |
-            cd pos_android_studio_demo
+            cd pos_android_studio_demo/pos_android_app
             chmod +x ./gradlew
             ./gradlew assembleRelease \
             -Pandroid.injected.signing.store.file=app.keystore \

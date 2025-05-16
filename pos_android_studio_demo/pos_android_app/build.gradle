@@ -19,20 +19,20 @@ android {
             keyPassword 'dspread'
             keyAlias 'gundam_wing'
         }
-        config {
-            keyAlias 'key0'
-            keyPassword '123789'
-            storeFile file('dspread.jks')
-            storePassword '123789'
-        }
+//        config {
+//            keyAlias 'key0'
+//            keyPassword '123789'
+//            storeFile file('dspread.jks')
+//            storePassword '123789'
+//        }
     }
 
     defaultConfig {
         applicationId "com.dspread.pos_new_android_app"
         minSdk 24
         targetSdk 34
-        versionCode 8
-        versionName "1.0.7"
+        versionCode 65
+        versionName "6.0.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
