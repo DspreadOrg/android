@@ -1,0 +1,65 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.Despreaddemo" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/purple_500</item>
+        <item name="colorPrimaryVariant">@color/purple_700</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/teal_200</item>
+        <item name="colorSecondaryVariant">@color/teal_700</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+        <!-- Customize your theme here. -->
+    </style>
+
+    <style name="Theme.Despreaddemo.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <!-- 防止启动黑屏 ,可以设置背景图片或者使用透明背景 -->
+        <!--        <item name="android:windowBackground">@color/white</item>-->
+    </style>
+
+    <style name="Theme.Despreaddemo.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+
+
+        <!-- 设置Menu菜单的背景色 -->
+        <item name="android:itemBackground">@color/white</item>
+        <!-- 设置Menu菜单的字体颜色 -->
+        <item name="android:textColorPrimary">@color/teal_200</item>
+        <item name="colorControlNormal">@color/teal_200</item><!-- 主要是这个起作用,修改默认返回键的颜色-->
+        <!-- 设置Menu窗口不覆盖Toolbar视图 -->
+        <item name="overlapAnchor">false</item>
+    </style>
+
+    <style name="Theme.Despreaddemo.PopupOverlay" parent="ThemeOverlay.AppCompat.Light">
+    </style>
+
+    <style name="Theme.Despreaddemo1" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- 主要颜色 -->
+        <item name="colorPrimary">@color/number_button_background</item>
+        <item name="colorPrimaryVariant">@color/button_stroke</item>
+        <item name="colorOnPrimary">@color/number_button_text</item>
+
+        <!-- 次要颜色 -->
+        <item name="colorSecondary">@color/confirm_button_background</item>
+        <item name="colorSecondaryVariant">@color/clear_button_background</item>
+        <item name="colorOnSecondary">@color/confirm_button_text</item>
+
+        <!-- 状态栏颜色 -->
+        <item name="android:statusBarColor">@color/keyboard_background</item>
+
+        <!-- 按钮默认样式 -->
+        <item name="materialButtonStyle">@style/NumberKeyboardButton</item>
+
+        <!-- 背景颜色 -->
+        <item name="android:windowBackground">@color/keyboard_background</item>
+    </style>
+
+
+    <style name="popupAnimation" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/pop_in</item>
+        <item name="android:windowExitAnimation">@anim/pop_out</item>
+    </style>
+</resources>

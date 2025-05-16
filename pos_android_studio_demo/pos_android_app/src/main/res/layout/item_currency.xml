@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    
+    <data>
+        <variable
+            name="currency"
+            type="com.dspread.pos.ui.setting.device_config.DeviceConfigItem" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:background="?attr/selectableItemBackground">
+
+        <ImageView
+            android:id="@+id/flag_image"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@{currency.flagResId}"/>
+
+        <TextView
+            android:id="@+id/currency_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="16dp"
+            android:textSize="16sp"
+            android:textColor="@color/text_primary"
+            android:text="@{currency.name}"
+            tools:text="美元"/>
+
+        <TextView
+            android:id="@+id/currency_code"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textColor="@color/text_secondary"
+            android:text="@{currency.code}"
+            tools:text="USD"/>
+
+        <ImageView
+            android:id="@+id/check_icon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="16dp"
+            android:src="@drawable/ic_check"
+            android:visibility="@{currency.selected ? android.view.View.VISIBLE : android.view.View.GONE}"/>
+    </LinearLayout>
+</layout>

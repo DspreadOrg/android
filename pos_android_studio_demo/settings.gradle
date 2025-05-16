@@ -8,10 +8,6 @@ pluginManagement {
     }
 }
 
-
-
-
-
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
@@ -19,13 +15,19 @@ dependencyResolutionManagement {
         mavenCentral()
         jcenter() { url 'https://jcenter.bintray.com/' }
         maven { url 'https://jitpack.io' }
-        maven {
-            url 'https://gitlab.com/api/v4/projects/4128550/packages/maven'
-        }
 
         maven { setUrl("https://maven.aliyun.com/repository/public") }
         maven { setUrl("https://maven.aliyun.com/repository/google") }
+        maven { url "https://tencent-tds-maven.pkg.coding.net/repository/shiply/repo" }
+        maven {
+            url 'https://gitlab.com/api/v4/projects/4128550/packages/maven'
+        }
+        flatDir {
+            dirs 'libs'
+        }
     }
 }
-rootProject.name = "com.dspread.demoui"
-include ':pos_android_studio_app'
+
+//include ':app', ':mvvmhabit'
+include  ':mvvmhabit'
+include ':pos_android_app'

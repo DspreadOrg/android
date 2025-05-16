@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:binding="http://schemas.android.com/tools">
+    
+    <data>
+        <import type="android.view.View"/>
+        <variable
+            name="viewModel"
+            type="com.dspread.pos.ui.printer.activities.PrinterStatusViewModel" />
+    </data>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <Button
+            android:id="@+id/btn_getstatus"
+            style="@style/BtnStylePrint"
+            android:text="@string/get_printer_status"
+            binding:onClickCommand="@{viewModel.onGetStatusClick}"/>
+
+        <Button
+            android:id="@+id/btn_get_density"
+            style="@style/BtnStylePrint"
+            android:text="@string/get_printer_density"
+            android:visibility="@{viewModel.showExtraButtons ? View.VISIBLE : View.GONE}"
+            binding:onClickCommand="@{viewModel.onGetDensityClick}"/>
+        <Button
+            style="@style/BtnStylePrint"
+            android:text="@string/get_printer_speed"
+            binding:onClickCommand="@{viewModel.onGetSpeedClick}"/>
+        <Button
+            style="@style/BtnStylePrint"
+            android:text="@string/get_printer_temperature"
+            binding:onClickCommand="@{viewModel.onGetTemperatureClick}"/>
+        <Button
+            style="@style/BtnStylePrint"
+            android:text="@string/get_printer_voltage"
+            binding:onClickCommand="@{viewModel.onGetVoltageClick}"/>
+
+        <TextView
+            android:id="@+id/tv_printStatusInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:text="@{viewModel.resultInfo}"/>
+
+    </LinearLayout>
+    </ScrollView>
+</layout>

@@ -67,8 +67,8 @@ jobs:
       - name: Get version information
         id: version
         run: |
-          VERSION_CODE=$(grep versionCode pos_android_studio_demo/pos_android_studio_app/build.gradle | head -n 1 | sed 's/.*versionCode\s*\([0-9]\+\).*/\1/')
-          VERSION_NAME=$(grep versionName pos_android_studio_demo/pos_android_studio_app/build.gradle | head -n 1 | sed 's/.*versionName\s*"\([^"]\+\)".*/\1/')
+          VERSION_CODE=$(grep versionCode pos_android_studio_demo/pos_android_app/build.gradle | head -n 1 | sed 's/.*versionCode\s*\([0-9]\+\).*/\1/')
+          VERSION_NAME=$(grep versionName pos_android_studio_demo/pos_android_app/build.gradle | head -n 1 | sed 's/.*versionName\s*"\([^"]\+\)".*/\1/')
           echo "VERSION_CODE=$VERSION_CODE" >> $GITHUB_ENV
           echo "VERSION_NAME=$VERSION_NAME" >> $GITHUB_ENV  
 
@@ -83,7 +83,7 @@ jobs:
        #  解码并保存 keystore 文件
       - name: Decode and Save Keystore
         run: |
-          echo "${{ vars.KEYSTORE_FILE }}" | base64 -d > pos_android_studio_demo/app.keystore
+          echo "${{ vars.KEYSTORE_FILE }}" | base64 -d > pos_android_studio_demo/pos_android_app/app.keystore
 
       - name: Build the release signed APK
         run: |
@@ -99,11 +99,11 @@ jobs:
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: pos_android_studio_app-release
-          path: pos_android_studio_demo/pos_android_studio_app/build/outputs/apk/release/pos_android_studio_app-release.apk
+          name: pos_android_app-release
+          path: pos_android_studio_demo/pos_android_app/build/outputs/apk/release/pos_android_app-release.apk
 
       - name: List APK files
-        run: ls -R pos_android_studio_demo/pos_android_studio_app/build/outputs/apk/release  # 列出 APK 文件，确保路径正确
+        run: ls -R pos_android_studio_demo/pos_android_app/build/outputs/apk/release  # 列出 APK 文件，确保路径正确
 
         # 保存SDK 库文件
       - name: Upload SDK Artifact
@@ -111,8 +111,8 @@ jobs:
         with:
           name: dspread-sdks
           path: |
-            pos_android_studio_demo/pos_android_studio_app/libs/dspread_pos_sdk_*.aar
-            pos_android_studio_demo/pos_android_studio_app/libs/dspread_print_sdk-*-beta.aar  
+            pos_android_studio_demo/pos_android_app/libs/dspread_pos_sdk_*.aar
+            pos_android_studio_demo/pos_android_app/libs/dspread_print_sdk-*-beta.aar  
       
       # - name: Generate short SHA for tag
       #   id: generate_tag
@@ -167,17 +167,17 @@ jobs:
       - name: Download APK Artifact
         uses: actions/download-artifact@v4
         with:
-          name: pos_android_studio_app-release
-          path: pos_android_studio_demo/pos_android_studio_app/build/outputs/apk/release
+          name: pos_android_app-release
+          path: pos_android_studio_demo/pos_android_app/build/outputs/apk/release
 
       - name: Verify APK file in release
-        run: ls -R pos_android_studio_demo/pos_android_studio_app/build/outputs/apk/release  # 列出 APK 文件，确保路径正确
+        run: ls -R pos_android_studio_demo/pos_android_app/build/outputs/apk/release  # 列出 APK 文件，确保路径正确
 
       - name: Verify SDK Files
         id: verify-sdk
         run: |
-            POS_SDK=$(ls pos_android_studio_demo/pos_android_studio_app/libs/dspread_pos_sdk_*.aar)
-            PRINT_SDK=$(ls pos_android_studio_demo/pos_android_studio_app/libs/dspread_print_sdk-*-beta.aar)
+            POS_SDK=$(ls pos_android_studio_demo/pos_android_app/libs/dspread_pos_sdk_*.aar)
+            PRINT_SDK=$(ls pos_android_studio_demo/pos_android_app/libs/dspread_print_sdk-*-beta.aar)
             echo "POS_SDK=$POS_SDK" >> $GITHUB_OUTPUT
             echo "PRINT_SDK=$PRINT_SDK" >> $GITHUB_OUTPUT
 
@@ -199,7 +199,7 @@ jobs:
       - name: Generate JSON file
         run: |
           echo "Generating version information JSON file..."
-          APK_DOWNLOAD_PATH="https://github.com/${{ github.repository }}/releases/download/${{ env.tag_name }}/pos_android_studio_app-release.apk"
+          APK_DOWNLOAD_PATH="https://github.com/${{ github.repository }}/releases/download/${{ env.tag_name }}/pos_android_app-release.apk"
           echo '{
             "VersionCode": "'${{ env.VERSION_CODE }}'",
             "VersionName": "'${{ env.VERSION_NAME }}'",
@@ -214,8 +214,8 @@ jobs:
         with:
           tag_name: ${{ steps.get-latest-tag.outputs.LATEST_TAG }}
           files: |
-            pos_android_studio_demo/pos_android_studio_app/libs/dspread_pos_sdk_*.aar
-            pos_android_studio_demo/pos_android_studio_app/libs/dspread_print_sdk-*-beta.aar
+            pos_android_studio_demo/pos_android_app/libs/dspread_pos_sdk_*.aar
+            pos_android_studio_demo/pos_android_app/libs/dspread_print_sdk-*-beta.aar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # 使用 GitHub Token 进行认证  
 

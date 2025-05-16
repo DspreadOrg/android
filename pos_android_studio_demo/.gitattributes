@@ -1,0 +1,6 @@
+# Auto detect text files and perform LF normalization
+# * text=auto
+*.gradle text eol=lf   
+# 所有 Gradle 文件强制使用 LF 换行符
+*.bat text eol=crlf   
+ # Windows 脚本用 CRLF

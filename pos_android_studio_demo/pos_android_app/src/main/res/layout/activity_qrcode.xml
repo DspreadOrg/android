@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:binding="http://schemas.android.com/tools">
+    
+    <data>
+        <variable
+            name="viewModel"
+            type="com.dspread.pos.ui.printer.activities.QRCodeViewModel" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:id="@+id/qrcode_content"
+            style="@style/LinearLayoutStyle"
+            binding:onClickCommand="@{viewModel.onContentClick}">
+            
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="16sp"
+                android:text="@string/content_qrcode"/>
+                
+            <TextView
+                android:id="@+id/txt_content"
+                style="@style/TextviewPrint"
+                android:text="@{viewModel.content}"/>
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray" />
+        <LinearLayout
+            android:id="@+id/qrcode_errorLevel"
+            style="@style/LinearLayoutStyle"
+            binding:onClickCommand="@{viewModel.onErrorLevelClick}">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="16sp"
+                android:text="@string/QR_code_errorLevel"/>
+
+            <TextView
+                android:id="@+id/qrcode_text_errorLevel"
+                style="@style/TextviewPrint"
+                android:text="@{viewModel.errorLevel}"/>
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray" />
+        <!-- 其他设置项的布局，类似上面的结构 -->
+        <LinearLayout
+            android:id="@+id/qrcode_size"
+            style="@style/LinearLayoutStyle"
+            binding:onClickCommand="@{viewModel.onSizeClick}">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="16sp"
+                android:text="@string/QR_code_size"/>
+
+            <TextView
+                android:id="@+id/qrcode_text_size"
+                style="@style/TextviewPrint"
+                android:text="@{viewModel.size}"/>
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray" />
+        <LinearLayout
+            android:id="@+id/qrcode_align"
+            style="@style/LinearLayoutStyle"
+            binding:onClickCommand="@{viewModel.onAlignClick}">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="16sp"
+                android:text="@string/set_align"/>
+
+            <TextView
+                android:id="@+id/qr_text_align"
+                style="@style/TextviewPrint"
+                android:text="@{viewModel.align}"/>
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray" />
+        <LinearLayout
+            style="@style/LinearLayoutStyle"
+            binding:onClickCommand="@{viewModel.onGrayLevelClick}">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="16sp"
+                android:text="@string/grayLevel"/>
+
+            <TextView
+                style="@style/TextviewPrint"
+                android:text="@{viewModel.grayLevel}"/>
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray" />
+        <LinearLayout
+            android:id="@+id/lin_speed_level"
+            style="@style/LinearLayoutStyle"
+            binding:onClickCommand="@{viewModel.onSpeedLevelClick}">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="16sp"
+                android:text="@string/speedlevel"/>
+
+            <TextView
+                style="@style/TextviewPrint"
+                android:text="@{viewModel.speedLevel}"/>
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray" />
+        <LinearLayout
+            android:id="@+id/lin_density_level"
+            style="@style/LinearLayoutStyle"
+            binding:onClickCommand="@{viewModel.onDensityLevelClick}">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="16sp"
+                android:text="@string/density_level"/>
+
+            <TextView
+                style="@style/TextviewPrint"
+                android:text="@{viewModel.densityLevel}"/>
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/qrcode_image"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="16dp"
+            app:imageBitmap="@{viewModel.qrCodeImage}"/>
+
+    </LinearLayout>
+</layout>

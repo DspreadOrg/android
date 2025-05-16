@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.dspread.pos.ui.home.HomeFragment"
+        app:startDestination="@id/nav_home" />
+
+<!--    <fragment-->
+<!--        android:id="@+id/nav_autotrade"-->
+<!--        android:name="com.dspread.demoui.ui.fragment.AutoFragment"-->
+<!--        tools:layout="@layout/fragment_auto" />-->
+
+
+<!--    <fragment-->
+<!--        android:id="@+id/nav_scan"-->
+<!--        android:name="com.dspread.demoui.ui.fragment.ScanFragment"-->
+<!--        tools:layout="@layout/fragment_scan" />-->
+<!--    <fragment-->
+<!--        android:id="@+id/nav_deviceinfo"-->
+<!--        android:name="com.dspread.demoui.ui.fragment.DeviceInfoFragment"-->
+<!--        tools:layout="@layout/fragment_device_info" />-->
+<!--    <fragment-->
+<!--        android:id="@+id/nav_deviceupdate"-->
+<!--        android:name="com.dspread.demoui.ui.fragment.DeviceUpdataFragment"-->
+<!--        tools:layout="@layout/fragment_device_updata" />-->
+<!--    <fragment-->
+<!--        android:id="@+id/nav_setting"-->
+<!--        android:name="com.dspread.demoui.ui.fragment.SettingFragment"-->
+<!--        tools:layout="@layout/fragment_setting" />-->
+<!--    <fragment-->
+<!--        android:id="@+id/nav_printer"-->
+<!--        android:name="com.dspread.demoui.ui.fragment.PrinterHelperFragment"-->
+<!--        tools:layout="@layout/fragment_printer_helper" />-->
+<!--    <fragment-->
+<!--        android:id="@+id/nav_log"-->
+<!--        android:name="com.dspread.demoui.ui.fragment.LogsFragment"-->
+<!--        tools:layout="@layout/fragment_logs" />-->
+<!--    <fragment-->
+<!--        android:id="@+id/nav_about"-->
+<!--        android:name="com.dspread.demoui.ui.fragment.DeviceUpdataFragment"-->
+<!--        tools:layout="@layout/fragment_about" />-->
+<!--    <fragment-->
+<!--        android:id="@+id/nav_mifareCards"-->
+<!--        android:name="com.dspread.demoui.ui.fragment.MifareCardsFragment"-->
+<!--        tools:layout="@layout/fragment_mifarecards" />-->
+
+
+</navigation>
