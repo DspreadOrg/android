@@ -83,11 +83,11 @@ jobs:
        #  解码并保存 keystore 文件
       - name: Decode and Save Keystore
         run: |
-          echo "${{ vars.KEYSTORE_FILE }}" | base64 -d > pos_android_studio_demo/pos_android_app/app.keystore
+          echo "${{ vars.KEYSTORE_FILE }}" | base64 -d > pos_android_studio_demo/app.keystore
 
       - name: Build the release signed APK
         run: |
-            cd pos_android_studio_demo/pos_android_app
+            cd pos_android_studio_demo
             chmod +x ./gradlew
             ./gradlew assembleRelease \
             -Pandroid.injected.signing.store.file=app.keystore \
