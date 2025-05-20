@@ -16,6 +16,8 @@ import java.util.Hashtable;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import me.goldze.mvvmhabit.utils.SPUtils;
+
 public class MyQposClass extends CQPOSService {
     private final QPOSCallbackManager callbackManager = QPOSCallbackManager.getInstance();
 
@@ -195,6 +197,9 @@ public class MyQposClass extends CQPOSService {
     public void onRequestQposDisconnected() {
         TRACE.d("parent disconnected()");
         MyCustomQPOSCallback callback = callbackManager.getCallback(MyCustomQPOSCallback.class);
+        SPUtils.getInstance().put("device_type","");
+        SPUtils.getInstance().put("isConnected",false);
+        SPUtils.getInstance().put("isConnectedAutoed",false);
         if (callback != null) {
             callback.onRequestQposDisconnected();
         }

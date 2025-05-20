@@ -1,46 +1,19 @@
 package com.dspread.pos.ui.setting.device_selection;
 
-import static android.content.Context.LOCATION_SERVICE;
-
-import android.Manifest;
-import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Application;
-import android.bluetooth.BluetoothDevice;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.hardware.usb.UsbDevice;
-import android.location.LocationManager;
-import android.provider.Settings;
-import android.widget.RadioButton;
-import android.widget.Toast;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.databinding.ObservableArrayList;
 import androidx.databinding.ObservableField;
 import androidx.lifecycle.MutableLiveData;
 
-import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.dspread.pos.MyBaseApplication;
 import com.dspread.pos.common.enums.POS_TYPE;
 import com.dspread.pos.posAPI.POSCommand;
 import com.dspread.pos.utils.TRACE;
-import com.dspread.pos.utils.USBClass;
 import com.dspread.pos_new_android_app.R;
 import com.dspread.xpos.QPOSService;
-import com.tbruyelle.rxpermissions2.RxPermissions;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
-import io.reactivex.functions.Consumer;
 import me.goldze.mvvmhabit.base.BaseApplication;
 import me.goldze.mvvmhabit.base.BaseViewModel;
 import me.goldze.mvvmhabit.binding.command.BindingCommand;
@@ -55,6 +28,7 @@ public class DeviceSelectionViewModel extends BaseViewModel {
     public final ObservableField<String> bluetoothAddress = new ObservableField<>();
     public final ObservableField<String> bluetoothName = new ObservableField<>();
     public final ObservableField<Boolean> isConnecting = new ObservableField<>(false);
+    public SingleLiveEvent<Void> showUsbDeviceDialogEvent = new SingleLiveEvent<>();
 
     // 连接方式选项
     public final String[] connectionMethods = {"BLUETOOTH", "UART", "USB"};
@@ -164,7 +138,7 @@ public class DeviceSelectionViewModel extends BaseViewModel {
 
     public void openDevice(POS_TYPE posType){
         if(posType == POS_TYPE.USB){
-            openUSBDevice();
+            openUSBDeviceEvent();
         }else if(posType == POS_TYPE.UART){
             myBaseApplication.open(QPOSService.CommunicationMode.UART, getApplication());
             POSCommand.getInstance().setDeviceAddress("/dev/ttyS1");
@@ -174,48 +148,13 @@ public class DeviceSelectionViewModel extends BaseViewModel {
         }
     }
 
-    private void openUSBDevice() {
-        USBClass usb = new USBClass();
-        ArrayList<String> deviceList = usb.GetUSBDevices(getApplication());
+    private void openUSBDeviceEvent() {
+        showUsbDeviceDialogEvent.call();
+    }
 
-        if (deviceList == null) {
-            Toast.makeText(getApplication(), "No Permission", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        final CharSequence[] items = deviceList.toArray(new CharSequence[deviceList.size()]);
-        if (items.length == 1) {
-            String selectedDevice = (String) items[0];
-            UsbDevice usbDevice = USBClass.getMdevices().get(selectedDevice);
-            myBaseApplication.open(QPOSService.CommunicationMode.USB_OTG_CDC_ACM, getApplication());
-            POSCommand.getInstance().openUsb(usbDevice);
-        } else {
-            AlertDialog.Builder builder = new AlertDialog.Builder(getApplication());
-            builder.setTitle("Select a Reader");
-            if (items.length == 0) {
-                builder.setMessage(getApplication().getString(R.string.setting_disusb));
-                builder.setPositiveButton(getApplication().getString(R.string.confirm), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-            }
-            builder.setSingleChoiceItems(items, -1, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int item) {
-                    if (items.length > item) {
-                        String selectedDevice = items[item].toString();
-                        dialog.dismiss();
-                        UsbDevice usbDevice = USBClass.getMdevices().get(selectedDevice);
-                        myBaseApplication.open(QPOSService.CommunicationMode.USB_OTG_CDC_ACM, getApplication());
-                        POSCommand.getInstance().openUsb(usbDevice);
-                    }
-                }
-            });
-            AlertDialog alertDialog = builder.create();
-            alertDialog.setCanceledOnTouchOutside(false);
-            alertDialog.setCancelable(false);
-            alertDialog.show();
-        }
+    public void openUSBDevice(UsbDevice usbDevice) {
+        myBaseApplication.open(QPOSService.CommunicationMode.USB_OTG_CDC_ACM, getApplication());
+        POSCommand.getInstance().openUsb(usbDevice);
     }
 
     /**

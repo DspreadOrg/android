@@ -5,7 +5,9 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothDevice;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.hardware.usb.UsbDevice;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -28,12 +30,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.dspread.pos.common.enums.POS_TYPE;
 import com.dspread.pos.common.manager.QPOSCallbackManager;
 import com.dspread.pos.posAPI.MyCustomQPOSCallback;
+import com.dspread.pos.posAPI.POSCommand;
 import com.dspread.pos.utils.TRACE;
+import com.dspread.pos.utils.USBClass;
 import com.dspread.pos_new_android_app.BR;
 import com.dspread.pos_new_android_app.R;
 import com.dspread.pos_new_android_app.databinding.ActivityDeviceSelectionBinding;
+import com.dspread.xpos.QPOSService;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -52,6 +58,7 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
     private AlertDialog bluetoothDevicesDialog;
     private RecyclerView recyclerView;
     private POS_TYPE currentPOSType;
+    private ActivityResultLauncher<Intent> bluetoothEnableLauncher;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -77,12 +84,24 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
         initBluetoothDevicesDialog();
         // 设置事件监听
         setupEventListeners();
-
+        bluetoothEnableLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        // Bluetooth is enabled, now check location and request permissions
+                        viewModel.startScanBluetooth();
+                    } else {
+                        Toast.makeText(this, "Please enable Bluetooth to continue", Toast.LENGTH_LONG).show();
+                    }
+                });
     }
 
     @Override
     public void initViewObservable() {
         super.initViewObservable();
+        viewModel.showUsbDeviceDialogEvent.observe(this, v -> {
+            showUsbDeviceDialog();
+        });
     }
 
     /**
@@ -97,7 +116,7 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
             @Override
             public void onChanged(POS_TYPE posType) {
                 currentPOSType = posType;
-                bluetoothRelaPer(posType);
+                checkLocationAndRequestPermissions(posType);
             }
         });
     }
@@ -166,14 +185,13 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
                     Manifest.permission.ACCESS_COARSE_LOCATION
             ).subscribe(granted -> {
                 if (granted) {
-                    TRACE.i("permission grant ---");
+                    TRACE.i("permission grant above---");
                     if (!bluetoothDevicesDialog.isShowing()) {
                         bluetoothDevicesDialog.show();
                     }
-                    // 开始扫描蓝牙设备
-                    viewModel.startScanBluetooth();
+                    bluetoothRelaPer(posType);
                 } else {
-                    Toast.makeText(this, "需要蓝牙权限才能搜索设备", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "Pls grant the bluetooth permission first!", Toast.LENGTH_LONG).show();
                 }
             });
         } else {
@@ -185,29 +203,19 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
                     Manifest.permission.ACCESS_COARSE_LOCATION
             ).subscribe(granted -> {
                 if (granted) {
-                    TRACE.i("permission grant ---");
+                    TRACE.i("permission grant below---");
                     if (!bluetoothDevicesDialog.isShowing()) {
                         bluetoothDevicesDialog.show();
                     }
-                    // 开始扫描蓝牙设备
-                    viewModel.startScanBluetooth();
+                    bluetoothRelaPer(posType);
                 } else {
-                    Toast.makeText(this, "需要蓝牙权限才能搜索设备", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "Pls grant the bluetooth permission first!", Toast.LENGTH_LONG).show();
                 }
             });
         }
     }
 
-    public void bluetoothRelaPer(POS_TYPE posType) {
-        android.bluetooth.BluetoothAdapter adapter = android.bluetooth.BluetoothAdapter.getDefaultAdapter();
-        if (adapter != null && !adapter.isEnabled()) {//if bluetooth is disabled, add one fix
-            Intent enabler = new Intent(android.bluetooth.BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            try {
-                startActivity(enabler);
-            }catch (SecurityException e){
-                Toast.makeText(this,"Pls open the bluetooth in device Setting",Toast.LENGTH_LONG).show();
-            }
-        }
+    private void checkLocationAndRequestPermissions(POS_TYPE posType) {
         LocationManager lm = (LocationManager) getSystemService(LOCATION_SERVICE);
         List<String> listProvider = lm.getAllProviders();
         for (String str : listProvider) {
@@ -225,13 +233,92 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
                 ActivityResultLauncher<Intent> launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
                     @Override
                     public void onActivityResult(ActivityResult result) {
+                        TRACE.i("open setting---");
                     }
                 });
                 launcher.launch(intent);
             } catch (Exception e) {
                 Toast.makeText(this, "Pls open the LOCATION in your device settings! ", Toast.LENGTH_SHORT).show();
             }
+        }
+    }
 
+    public void bluetoothRelaPer(POS_TYPE posType) {
+        android.bluetooth.BluetoothAdapter adapter = android.bluetooth.BluetoothAdapter.getDefaultAdapter();
+        if (adapter != null && !adapter.isEnabled()) {
+            Intent enabler = new Intent(android.bluetooth.BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            try {
+                TRACE.i("blu is need to open");
+                bluetoothEnableLauncher.launch(enabler);
+            } catch (SecurityException e) {
+                Toast.makeText(this, "Please open the bluetooth in device Setting", Toast.LENGTH_LONG).show();
+            }
+        }else {
+            viewModel.startScanBluetooth();
+        }
+    }
+
+    private void showUsbDeviceDialog() {
+        if (isFinishing() || isDestroyed()) {
+            return;
+        }
+        USBClass usb = new USBClass();
+        ArrayList<String> deviceList = usb.GetUSBDevices(getApplication());
+        if(deviceList != null){
+            openUsbDeviceDialog(deviceList);
+        }
+        usb.setUsbPermissionListener(new USBClass.UsbPermissionListener() {
+            @Override
+            public void onPermissionGranted(UsbDevice device) {
+                // 权限获取成功，在这里处理你的业务逻辑
+                USBClass usb = new USBClass();
+                ArrayList<String> deviceList = usb.GetUSBDevices(getApplication());
+                openUsbDeviceDialog(deviceList);
+            }
+
+            @Override
+            public void onPermissionDenied(UsbDevice device) {
+                Toast.makeText(getApplication(), "No Permission", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
+
+    private void openUsbDeviceDialog(ArrayList<String> deviceList){
+//        USBClass usb = new USBClass();
+//        ArrayList<String> deviceList = usb.GetUSBDevices(getApplication());
+        final CharSequence[] items = deviceList.toArray(new CharSequence[deviceList.size()]);
+        if (items.length == 1) {
+            String selectedDevice = (String) items[0];
+            UsbDevice usbDevice = USBClass.getMdevices().get(selectedDevice);
+            viewModel.openUSBDevice(usbDevice);
+        } else {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Select a Reader");
+            if (items.length == 0) {
+                builder.setMessage(getApplication().getString(R.string.setting_disusb));
+                builder.setPositiveButton(getApplication().getString(R.string.confirm), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        finish();
+                    }
+                });
+            }
+            builder.setSingleChoiceItems(items, -1, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int item) {
+                    if (items.length > item) {
+                        String selectedDevice = items[item].toString();
+                        dialog.dismiss();
+                        UsbDevice usbDevice = USBClass.getMdevices().get(selectedDevice);
+                        viewModel.openUSBDevice(usbDevice);
+                    }
+                }
+            });
+            AlertDialog alertDialog = builder.create();
+            alertDialog.setCanceledOnTouchOutside(false);
+            alertDialog.setCancelable(false);
+            alertDialog.show();
         }
     }
 
@@ -256,9 +343,7 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
 
     @Override
     public void onRequestQposDisconnected() {
-        SPUtils.getInstance().put("device_type","");
-        SPUtils.getInstance().put("isConnected",false);
-        SPUtils.getInstance().put("isConnectedAutoed",false);
+       TRACE.i("device connection = disconnected");
         runOnUiThread(() -> {
             try {
                 viewModel.isConnecting.set(false);
@@ -301,6 +386,7 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
     @Override
     public void onDeviceFound(BluetoothDevice device) {
         runOnUiThread(() -> {
+            TRACE.i("onDeviceFound =="+device);
             if (bluetoothAdapter != null) {
                 if(device.getName() != null && !"".equals(device.getName())) {
                     bluetoothAdapter.addDevice(device);

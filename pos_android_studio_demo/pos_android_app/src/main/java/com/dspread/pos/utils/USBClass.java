@@ -29,6 +29,7 @@ public class USBClass {
 
     private static PendingIntent mPermissionIntent;
     private static final String ACTION_USB_PERMISSION = "com.android.example.USB_PERMISSION";
+    private UsbPermissionListener usbPermissionListener;
 
 
     private final BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
@@ -46,11 +47,17 @@ public class USBClass {
                             TRACE.i("usb" + "permission granted for device "
                                     + device);
                             Toast.makeText(context.getApplicationContext(), "Usb permission granted for device", Toast.LENGTH_SHORT).show();
+                            if (usbPermissionListener != null) {
+                                usbPermissionListener.onPermissionGranted(device);
+                            }
                         }
                     } else {
 //						mMyClickListener.onCencel();
                         TRACE.i("usb" + "permission denied for device " + device);
                         Toast.makeText(context.getApplicationContext(), "Usb permission denied", Toast.LENGTH_SHORT).show();
+                        if (usbPermissionListener != null) {
+                            usbPermissionListener.onPermissionDenied(device);
+                        }
                     }
                 }
             }
@@ -107,5 +114,14 @@ public class USBClass {
         }
         context.unregisterReceiver(mUsbReceiver);
         return deviceList;
+    }
+
+    public void setUsbPermissionListener(UsbPermissionListener listener) {
+        this.usbPermissionListener = listener;
+    }
+
+    public interface UsbPermissionListener {
+        void onPermissionGranted(UsbDevice device);
+        void onPermissionDenied(UsbDevice device);
     }
 }
