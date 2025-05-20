@@ -1,3 +1,10 @@
+## [6.0.1](https://github.com/DspreadOrg/android/compare/v6.0.0...v6.0.1) (2025-05-20)
+
+
+### Bug Fixes
+
+* fix the bluetooth connection code ([1d23f88](https://github.com/DspreadOrg/android/commit/1d23f888c3d8733e0c72e94ca70b79d57f0e1c6e))
+
 # [6.0.0](https://github.com/DspreadOrg/android/compare/v5.3.0...v6.0.0) (2025-05-16)
 
 
