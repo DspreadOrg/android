@@ -10,9 +10,9 @@ import androidx.lifecycle.ViewModel;
 
 import com.dspread.pos.ui.printer.activities.base.PrintDialog;
 import com.dspread.pos.ui.printer.activities.base.PrinterBaseActivity;
-import com.dspread.pos_new_android_app.R;
-import com.dspread.pos_new_android_app.databinding.ActivityBarCodeBinding;
-import com.dspread.pos_new_android_app.databinding.ActivityPrinterBaseBinding;
+import com.dspread.pos_android_app.R;
+import com.dspread.pos_android_app.databinding.ActivityBarCodeBinding;
+import com.dspread.pos_android_app.databinding.ActivityPrinterBaseBinding;
 import com.dspread.print.device.PrinterDevice;
 
 import me.tatarka.bindingcollectionadapter2.BR;

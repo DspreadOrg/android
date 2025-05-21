@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
     public void useAppContext() {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        assertEquals("com.dspread.pos_new_android_app", appContext.getPackageName());
+        assertEquals("com.dspread.pos_android_app", appContext.getPackageName());
     }
 }

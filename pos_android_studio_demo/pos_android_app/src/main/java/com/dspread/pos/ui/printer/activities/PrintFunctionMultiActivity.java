@@ -3,10 +3,10 @@ package com.dspread.pos.ui.printer.activities;
 import android.os.Bundle;
 
 import com.dspread.pos.ui.printer.activities.base.PrinterBaseActivity;
-import com.dspread.pos_new_android_app.BR;
-import com.dspread.pos_new_android_app.R;
-import com.dspread.pos_new_android_app.databinding.ActivityPrintFunctionMultiBinding;
-import com.dspread.pos_new_android_app.databinding.ActivityPrinterBaseBinding;
+import com.dspread.pos_android_app.BR;
+import com.dspread.pos_android_app.R;
+import com.dspread.pos_android_app.databinding.ActivityPrintFunctionMultiBinding;
+import com.dspread.pos_android_app.databinding.ActivityPrinterBaseBinding;
 import com.dspread.print.device.PrinterDevice;
 
 public class PrintFunctionMultiActivity extends PrinterBaseActivity<ActivityPrinterBaseBinding, PrintFunctionMultiViewModel> {

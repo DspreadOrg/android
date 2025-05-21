@@ -11,9 +11,9 @@ import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.dspread.pos.common.base.BaseFragment;
 import com.dspread.pos.ui.base.TitleProvider;
-import com.dspread.pos_new_android_app.BR;
-import com.dspread.pos_new_android_app.R;
-import com.dspread.pos_new_android_app.databinding.FragmentPrinterHelperBinding;
+import com.dspread.pos_android_app.BR;
+import com.dspread.pos_android_app.R;
+import com.dspread.pos_android_app.databinding.FragmentPrinterHelperBinding;
 
 public class PrinterHelperFragment extends BaseFragment<FragmentPrinterHelperBinding, PrinterViewModel> implements TitleProvider {
     @Override

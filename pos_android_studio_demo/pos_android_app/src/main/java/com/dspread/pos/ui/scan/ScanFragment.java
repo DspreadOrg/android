@@ -17,8 +17,8 @@ import androidx.annotation.Nullable;
 import com.dspread.pos.common.base.BaseFragment;
 import com.dspread.pos.ui.base.TitleProvider;
 import com.dspread.pos.utils.DeviceUtils;
-import com.dspread.pos_new_android_app.R;
-import com.dspread.pos_new_android_app.databinding.FragmentScanBinding;
+import com.dspread.pos_android_app.R;
+import com.dspread.pos_android_app.databinding.FragmentScanBinding;
 
 import me.goldze.mvvmhabit.utils.ToastUtils;
 import me.tatarka.bindingcollectionadapter2.BR;

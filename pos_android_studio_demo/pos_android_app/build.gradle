@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace 'com.dspread.pos_new_android_app'
+    namespace 'com.dspread.pos_android_app'
     compileSdk 34
 
     signingConfigs {
@@ -28,11 +28,11 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.dspread.pos_new_android_app"
+        applicationId "com.dspread.pos_android_app"
         minSdk 24
         targetSdk 34
-        versionCode 67
-        versionName "6.0.2"
+        versionCode 68
+        versionName "6.0.3"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 

@@ -18,7 +18,7 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
-import com.dspread.pos_new_android_app.R;
+import com.dspread.pos_android_app.R;
 import com.dspread.xpos.QPOSService;
 import com.dspread.xpos.Util;
 

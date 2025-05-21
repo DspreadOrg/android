@@ -12,9 +12,9 @@ import com.dspread.pos.posAPI.POSCommand;
 import com.dspread.pos.ui.base.TitleProvider;
 import com.dspread.pos.ui.payment.PaymentActivity;
 import com.dspread.pos.utils.TRACE;
-import com.dspread.pos_new_android_app.BR;
-import com.dspread.pos_new_android_app.R;
-import com.dspread.pos_new_android_app.databinding.FragmentHomeBinding;
+import com.dspread.pos_android_app.BR;
+import com.dspread.pos_android_app.R;
+import com.dspread.pos_android_app.databinding.FragmentHomeBinding;
 
 import me.goldze.mvvmhabit.utils.ToastUtils;
 

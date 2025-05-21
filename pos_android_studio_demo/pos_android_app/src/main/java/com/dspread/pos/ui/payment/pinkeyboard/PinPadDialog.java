@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.LinearLayout;
 
-import com.dspread.pos_new_android_app.R;
+import com.dspread.pos_android_app.R;
 
 
 public class PinPadDialog {

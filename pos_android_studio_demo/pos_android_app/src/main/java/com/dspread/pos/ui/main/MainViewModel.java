@@ -19,7 +19,7 @@ import com.dspread.pos.ui.scan.ScanFragment;
 import com.dspread.pos.ui.setting.connection_settings.ConnectionSettingsFragment;
 import com.dspread.pos.utils.DeviceUtils;
 import com.dspread.pos.utils.TRACE;
-import com.dspread.pos_new_android_app.R;
+import com.dspread.pos_android_app.R;
 import com.dspread.xpos.QPOSService;
 
 import java.lang.ref.WeakReference;

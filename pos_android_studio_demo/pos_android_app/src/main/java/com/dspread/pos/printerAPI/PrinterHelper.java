@@ -12,7 +12,7 @@ import com.action.printerservice.barcode.Barcode2D;
 import com.dspread.pos.utils.DeviceUtils;
 import com.dspread.pos.utils.QRCodeUtil;
 import com.dspread.pos.utils.TRACE;
-import com.dspread.pos_new_android_app.R;
+import com.dspread.pos_android_app.R;
 import com.dspread.print.device.PrinterDevice;
 import com.dspread.print.device.PrinterInitListener;
 import com.dspread.print.device.bean.PrintLineStyle;

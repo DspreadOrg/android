@@ -10,10 +10,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.dspread.pos.ui.printer.activities.base.PrinterBaseActivity;
-import com.dspread.pos_new_android_app.BR;
-import com.dspread.pos_new_android_app.R;
-import com.dspread.pos_new_android_app.databinding.ActivityBitmapBinding;
-import com.dspread.pos_new_android_app.databinding.ActivityPrinterBaseBinding;
+import com.dspread.pos_android_app.BR;
+import com.dspread.pos_android_app.R;
+import com.dspread.pos_android_app.databinding.ActivityBitmapBinding;
+import com.dspread.pos_android_app.databinding.ActivityPrinterBaseBinding;
 import com.dspread.print.device.PrinterDevice;
 import com.dspread.print.device.bean.PrintLineStyle;
 import com.dspread.print.widget.PrintLine;

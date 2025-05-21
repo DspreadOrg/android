@@ -5,9 +5,9 @@ import android.os.Bundle;
 import androidx.databinding.ViewDataBinding;
 
 import com.dspread.pos.utils.DeviceUtils;
-import com.dspread.pos_new_android_app.BR;
-import com.dspread.pos_new_android_app.R;
-import com.dspread.pos_new_android_app.databinding.ActivityPrinterBaseBinding;
+import com.dspread.pos_android_app.BR;
+import com.dspread.pos_android_app.R;
+import com.dspread.pos_android_app.databinding.ActivityPrinterBaseBinding;
 import com.dspread.print.device.PrintListener;
 import com.dspread.print.device.PrinterDevice;
 import com.dspread.print.device.PrinterInitListener;

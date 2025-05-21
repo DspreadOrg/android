@@ -22,7 +22,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.dspread.pos_new_android_app.R;
+import com.dspread.pos_android_app.R;
 
 import java.util.ArrayList;
 import java.util.List;

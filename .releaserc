@@ -26,8 +26,8 @@
       {
         "assets": [
           {
-            "path": "pos_android_studio_demo/pos_android_studio_app/build/outputs/apk/release/pos_android_studio_app-release.apk",
-            "label": "pos_android_studio_app-release.apk"
+            "path": "pos_android_studio_demo/pos_android_app/build/outputs/apk/release/pos_android_app-release.apk",
+            "label": "pos_android_app-release.apk"
           }
         ]
       }

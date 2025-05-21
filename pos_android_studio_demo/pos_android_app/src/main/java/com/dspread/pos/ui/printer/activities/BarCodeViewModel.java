@@ -13,7 +13,7 @@ import com.dspread.pos.printerAPI.PrinterHelper;
 import com.dspread.pos.ui.printer.activities.base.BasePrinterViewModel;
 import com.dspread.pos.ui.printer.activities.base.PrintDialog;
 import com.dspread.pos.utils.QRCodeUtil;
-import com.dspread.pos_new_android_app.R;
+import com.dspread.pos_android_app.R;
 import com.dspread.print.device.bean.PrintLineStyle;
 import com.dspread.print.widget.PrintLine;
 

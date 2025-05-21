@@ -10,7 +10,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.dspread.pos.common.enums.PaymentType;
 import com.dspread.pos.common.enums.TransCardMode;
-import com.dspread.pos_new_android_app.R;
+import com.dspread.pos_android_app.R;
 import com.mynameismidori.currencypicker.ExtendedCurrency;
 
 import java.util.ArrayList;

@@ -11,7 +11,7 @@ import com.dspread.pos.MyBaseApplication;
 import com.dspread.pos.common.enums.POS_TYPE;
 import com.dspread.pos.posAPI.POSCommand;
 import com.dspread.pos.utils.TRACE;
-import com.dspread.pos_new_android_app.R;
+import com.dspread.pos_android_app.R;
 import com.dspread.xpos.QPOSService;
 
 import me.goldze.mvvmhabit.base.BaseApplication;

@@ -33,9 +33,9 @@ import com.dspread.pos.ui.home.HomeFragment;
 import com.dspread.pos.utils.DevUtils;
 import com.dspread.pos.utils.Mydialog;
 import com.dspread.pos.utils.TRACE;
-import com.dspread.pos_new_android_app.BR;
-import com.dspread.pos_new_android_app.R;
-import com.dspread.pos_new_android_app.databinding.ActivityMainBinding;
+import com.dspread.pos_android_app.BR;
+import com.dspread.pos_android_app.R;
+import com.dspread.pos_android_app.databinding.ActivityMainBinding;
 import com.dspread.xpos.QPOSService;
 import com.google.android.material.navigation.NavigationView;
 import com.tencent.upgrade.core.DefaultUpgradeStrategyRequestCallback;
@@ -114,7 +114,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         viewModel.changeDrawerLayout.observe(this, new Observer<View>() {
             @Override
             public void onChanged(View drawerView) {
-                String packageVersionName = DevUtils.getPackageVersionName(MainActivity.this, "com.dspread.pos_new_android_app");
+                String packageVersionName = DevUtils.getPackageVersionName(MainActivity.this, "com.dspread.pos_android_app");
                 tvAppVersion.setText(getString(R.string.app_version) + packageVersionName);
                 checkUpdate();
             }

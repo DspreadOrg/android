@@ -14,9 +14,9 @@ import com.dspread.pos.ui.base.TitleProvider;
 import com.dspread.pos.ui.setting.device_config.DeviceConfigActivity;
 import com.dspread.pos.ui.setting.device_selection.DeviceSelectionActivity;
 import com.dspread.pos.utils.TRACE;
-import com.dspread.pos_new_android_app.BR;
-import com.dspread.pos_new_android_app.R;
-import com.dspread.pos_new_android_app.databinding.FragmentConnectionSettingsBinding;
+import com.dspread.pos_android_app.BR;
+import com.dspread.pos_android_app.R;
+import com.dspread.pos_android_app.databinding.FragmentConnectionSettingsBinding;
 
 import me.goldze.mvvmhabit.base.BaseFragment;
 import me.goldze.mvvmhabit.utils.ToastUtils;

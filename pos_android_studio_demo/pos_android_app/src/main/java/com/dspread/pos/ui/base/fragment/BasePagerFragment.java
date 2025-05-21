@@ -8,9 +8,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.dspread.pos.ui.base.adapter.BaseFragmentPagerAdapter;
-import com.dspread.pos_new_android_app.BR;
-import com.dspread.pos_new_android_app.R;
-import com.dspread.pos_new_android_app.databinding.FragmentBasePagerBinding;
+import com.dspread.pos_android_app.BR;
+import com.dspread.pos_android_app.R;
+import com.dspread.pos_android_app.databinding.FragmentBasePagerBinding;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.List;

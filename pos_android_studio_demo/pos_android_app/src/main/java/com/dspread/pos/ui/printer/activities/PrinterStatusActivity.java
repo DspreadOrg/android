@@ -4,10 +4,10 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.dspread.pos.ui.printer.activities.base.PrinterBaseActivity;
-import com.dspread.pos_new_android_app.BR;
-import com.dspread.pos_new_android_app.R;
-import com.dspread.pos_new_android_app.databinding.ActivityPrinterBaseBinding;
-import com.dspread.pos_new_android_app.databinding.ActivityPrinterStatusBinding;
+import com.dspread.pos_android_app.BR;
+import com.dspread.pos_android_app.R;
+import com.dspread.pos_android_app.databinding.ActivityPrinterBaseBinding;
+import com.dspread.pos_android_app.databinding.ActivityPrinterStatusBinding;
 import com.dspread.print.device.PrinterDevice;
 
 

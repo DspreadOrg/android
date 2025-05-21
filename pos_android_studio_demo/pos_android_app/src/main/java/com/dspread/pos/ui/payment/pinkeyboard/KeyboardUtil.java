@@ -13,7 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 
 
-import com.dspread.pos_new_android_app.R;
+import com.dspread.pos_android_app.R;
 
 import java.lang.reflect.Method;
 import java.util.List;

@@ -33,9 +33,9 @@ import com.dspread.pos.posAPI.MyCustomQPOSCallback;
 import com.dspread.pos.posAPI.POSCommand;
 import com.dspread.pos.utils.TRACE;
 import com.dspread.pos.utils.USBClass;
-import com.dspread.pos_new_android_app.BR;
-import com.dspread.pos_new_android_app.R;
-import com.dspread.pos_new_android_app.databinding.ActivityDeviceSelectionBinding;
+import com.dspread.pos_android_app.BR;
+import com.dspread.pos_android_app.R;
+import com.dspread.pos_android_app.databinding.ActivityDeviceSelectionBinding;
 import com.dspread.xpos.QPOSService;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 

@@ -27,9 +27,9 @@ import com.dspread.pos.utils.LogFileConfig;
 import com.dspread.pos.utils.QPOSUtil;
 import com.dspread.pos.utils.ReceiptGenerator;
 import com.dspread.pos.utils.TRACE;
-import com.dspread.pos_new_android_app.BR;
-import com.dspread.pos_new_android_app.R;
-import com.dspread.pos_new_android_app.databinding.ActivityPaymentBinding;
+import com.dspread.pos_android_app.BR;
+import com.dspread.pos_android_app.R;
+import com.dspread.pos_android_app.databinding.ActivityPaymentBinding;
 import com.dspread.xpos.QPOSService;
 
 import java.text.SimpleDateFormat;

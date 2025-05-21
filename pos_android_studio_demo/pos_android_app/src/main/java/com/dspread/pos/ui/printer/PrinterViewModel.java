@@ -15,8 +15,8 @@ import com.dspread.pos.ui.printer.activities.PrintTicketActivity;
 import com.dspread.pos.ui.printer.activities.PrinterStatusActivity;
 import com.dspread.pos.ui.printer.activities.QRCodeActivity;
 import com.dspread.pos.utils.TRACE;
-import com.dspread.pos_new_android_app.BR;
-import com.dspread.pos_new_android_app.R;
+import com.dspread.pos_android_app.BR;
+import com.dspread.pos_android_app.R;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -8,8 +8,8 @@ import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.dspread.pos.utils.TRACE;
-import com.dspread.pos_new_android_app.R;
-import com.dspread.pos_new_android_app.databinding.ItemCurrencyBinding;
+import com.dspread.pos_android_app.R;
+import com.dspread.pos_android_app.databinding.ItemCurrencyBinding;
 
 import java.util.ArrayList;
 import java.util.List;

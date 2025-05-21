@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 
-import com.dspread.pos_new_android_app.R;
+import com.dspread.pos_android_app.R;
 
 import java.util.List;
 
