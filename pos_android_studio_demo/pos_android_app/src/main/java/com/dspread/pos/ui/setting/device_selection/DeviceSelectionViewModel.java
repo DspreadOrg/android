@@ -131,6 +131,7 @@ public class DeviceSelectionViewModel extends BaseViewModel {
             openDevice(posTypes[index]);
         } else if(getApplication().getString(R.string.disconnect).equals(connectBtnTitle.get())){
             POSCommand.getInstance().close(currentPOSType);
+            POSCommand.getInstance().setQPOSService(null);
         }else {
             ToastUtils.showShort("Pls choose one connection method!");
         }

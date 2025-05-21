@@ -49,6 +49,12 @@ public class ConnectionSettingsFragment extends BaseFragment<FragmentConnectionS
         setupEventListeners();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        viewModel.loadSettings();
+    }
+
     /**
      * Setup event listeners
      */

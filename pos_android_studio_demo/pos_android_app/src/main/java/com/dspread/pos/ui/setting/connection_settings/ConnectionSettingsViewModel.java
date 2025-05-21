@@ -78,7 +78,10 @@ public class ConnectionSettingsViewModel extends BaseViewModel {
             }else  if(savedDeviceName.equals(POS_TYPE.BLUETOOTH.name())){
                 currentPOSType = POS_TYPE.BLUETOOTH;
             }
+        }else {
+            savedDeviceName = "No device";
         }
+        updateDeviceName(savedDeviceName);
         
         // 加载交易类型
         String savedTransType = SPUtils.getInstance().getString("transactionType", "");
@@ -131,9 +134,10 @@ public class ConnectionSettingsViewModel extends BaseViewModel {
                 if (isChecked) {
                     selectDeviceEvent.call();
                 } else {
-                    POSCommand.getInstance().close(currentPOSType);
+                    POSCommand.getInstance().close(DeviceUtils.getDevicePosType(deviceType));
                     SPUtils.getInstance().put("isConnectedAutoed",false);
                     updateDeviceName("No device");
+                    POSCommand.getInstance().setQPOSService(null);
                 }
             }
             saveSettings();

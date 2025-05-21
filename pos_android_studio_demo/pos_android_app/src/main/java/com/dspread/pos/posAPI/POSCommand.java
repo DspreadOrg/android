@@ -164,6 +164,8 @@ public class POSCommand {
             pos.closeUart();
         } else if (posType == POS_TYPE.USB) {
             pos.closeUsb();
+        }else {
+            pos.disconnectBT();
         }
     }
 }
