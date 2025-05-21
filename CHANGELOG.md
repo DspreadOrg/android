@@ -1,3 +1,10 @@
+## [6.0.3](https://github.com/DspreadOrg/android/compare/v6.0.2...v6.0.3) (2025-05-21)
+
+
+### Bug Fixes
+
+* change the package name ([bdfdef1](https://github.com/DspreadOrg/android/commit/bdfdef19c8c9c89832a67cd771a4cc395fe40859))
+
 ## [6.0.2](https://github.com/DspreadOrg/android/compare/v6.0.1...v6.0.2) (2025-05-21)
 
 
