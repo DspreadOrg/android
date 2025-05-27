@@ -1,3 +1,10 @@
+## [6.0.5](https://github.com/DspreadOrg/android/compare/v6.0.4...v6.0.5) (2025-05-27)
+
+
+### Bug Fixes
+
+* update the SDK version ([af75ea7](https://github.com/DspreadOrg/android/commit/af75ea777bc04ae6bfe7ea39b595237ce5e81bbf))
+
 ## [6.0.4](https://github.com/DspreadOrg/android/compare/v6.0.3...v6.0.4) (2025-05-26)
 
 
