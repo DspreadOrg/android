@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.os.Handler;
 import android.os.RemoteException;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.TextView;
 
@@ -169,6 +170,10 @@ public class PaymentViewModel extends BaseAppViewModel {
     });
 
     public Bitmap convertReceiptToBitmap(TextView receiptView) {
+        float originalTextSize = receiptView.getTextSize();
+        int originalWidth = receiptView.getWidth();
+        int originalHeight = receiptView.getHeight();
+        receiptView.setTextSize(TypedValue.COMPLEX_UNIT_PX, originalTextSize * 1.5f);
         receiptView.measure(
                 View.MeasureSpec.makeMeasureSpec(receiptView.getWidth(), View.MeasureSpec.EXACTLY),
                 View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
@@ -184,10 +189,11 @@ public class PaymentViewModel extends BaseAppViewModel {
         canvas.drawColor(Color.WHITE);
         receiptView.layout(0, 0, receiptView.getWidth(), receiptView.getMeasuredHeight());
         receiptView.draw(canvas);
+        receiptView.setTextSize(TypedValue.COMPLEX_UNIT_PX, originalTextSize);
+        receiptView.layout(0, 0, originalWidth, originalHeight);
         receiptBitmap = bitmap;
         return bitmap;
     }
-
     // send msg to dingding
     public void sendDingTalkMessage(boolean isICC, String tlvData, String message) {
         Map<String, Object> textContent = new HashMap<>();

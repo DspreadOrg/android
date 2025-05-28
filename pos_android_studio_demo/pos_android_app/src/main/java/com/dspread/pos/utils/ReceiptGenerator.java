@@ -10,7 +10,7 @@ import java.util.Hashtable;
 import me.goldze.mvvmhabit.utils.SPUtils;
 
 public class ReceiptGenerator {
-    private static final String DOTTED_LINE = "------------------------";
+    private static final String DOTTED_LINE = "-----------------------";
     private static final String BR = "<br/>";
 
     private static String center(String text) {

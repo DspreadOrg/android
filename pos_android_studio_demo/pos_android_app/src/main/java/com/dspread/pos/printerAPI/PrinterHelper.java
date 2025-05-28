@@ -148,7 +148,7 @@ public class PrinterHelper {
         Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.mipmap.test);
 
         PrintLineStyle printLineStyle = new PrintLineStyle();
-        mPrinter.setFooter(30);
+        mPrinter.setFooter(80);
         printLineStyle.setAlign(PrintLine.CENTER);
         mPrinter.setPrintStyle(printLineStyle);
         mPrinter.printBitmap(context, bitmap);
@@ -157,7 +157,7 @@ public class PrinterHelper {
     public Bitmap printBitmap(Context context,Bitmap bitmap) throws RemoteException {
 
         PrintLineStyle printLineStyle = new PrintLineStyle();
-        mPrinter.setFooter(30);
+        mPrinter.setFooter(50);
         printLineStyle.setAlign(PrintLine.CENTER);
         mPrinter.setPrintStyle(printLineStyle);
         mPrinter.printBitmap(context, bitmap);
@@ -165,7 +165,7 @@ public class PrinterHelper {
     }
 
     public void printMultipleColumns(Context context) throws RemoteException {
-        mPrinter.setFooter(30);
+        mPrinter.setFooter(50);
         mPrinter.addTexts(new String[]{"TEST1"}, new int[]{1}, new int[]{PrintStyle.Alignment.NORMAL});
         mPrinter.addTexts(new String[]{"TEST1", "TEST2"}, new int[]{1, 4}, new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.CENTER});
         mPrinter.addTexts(new String[]{"TEST1", "TEST2", "TEST3"}, new int[]{1, 2, 2}, new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.CENTER, PrintStyle.Alignment.ALIGN_OPPOSITE});
@@ -206,7 +206,7 @@ public class PrinterHelper {
         mPrinter.addBarCode(context, Barcode1D.CODE_128.name(), 400, 100, "123456", PrintLine.CENTER);
         mPrinter.addText("Please scan the QRCode for getting more information:");
         mPrinter.addQRCode(300, Barcode2D.QR_CODE.name(), "123456", PrintLine.CENTER);
-        mPrinter.setFooter(20);
+        mPrinter.setFooter(50);
         mPrinter.print(context);
     }
 
