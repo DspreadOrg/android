@@ -1,3 +1,10 @@
+## [6.0.6](https://github.com/DspreadOrg/android/compare/v6.0.5...v6.0.6) (2025-05-28)
+
+
+### Bug Fixes
+
+* update printer SDK version 1.5.1 and adjust the font size for print receipt ([d24de85](https://github.com/DspreadOrg/android/commit/d24de85ab163b4cc5960ad6e51b09714d133b474))
+
 ## [6.0.5](https://github.com/DspreadOrg/android/compare/v6.0.4...v6.0.5) (2025-05-27)
 
 
