@@ -803,7 +803,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
+        LogFileConfig.getInstance(this).readLog();
         QPOSCallbackManager.getInstance().unregisterCallback(MyCustomQPOSCallback.class);
         PrinterHelper.getInstance().close();
     }

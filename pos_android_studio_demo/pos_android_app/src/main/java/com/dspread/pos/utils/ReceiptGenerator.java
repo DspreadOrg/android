@@ -61,12 +61,12 @@ public class ReceiptGenerator {
                 .append(labelValue("TYPE of transaction(TXN TYPE)", size(transType,2)))
                 .append(labelValue("BATCH NO", size("000012",2)))
                 .append(center("******* RECEIPT *******"))
-                .append(labelValue("Date", size(result.getDate(),2)))
-                .append(labelValue("Currency", size(result.getTransCurrencyCode(),2)))
-                .append(labelValue("TVR", size(result.getTvr(),2)))
-                .append(labelValue("Amount", size(result.getAmount(),2)))
-                .append(labelValue("CVM Results", size(result.getCvmResults(),2)))
-                .append(labelValue("CID", size(result.getCidData(),2)))
+                .append(labelValue("Date", size(result.getDate() == null?"":result.getDate(),2)))
+                .append(labelValue("Currency", size(result.getTransCurrencyCode()==null?"":result.getTransCurrencyCode(),2)))
+                .append(labelValue("TVR", size(result.getTvr()==null?"":result.getTvr(),2)))
+                .append(labelValue("Amount", size(result.getAmount()==null?"":result.getAmount(),2)))
+                .append(labelValue("CVM Results", size(result.getCvmResults()==null?"":result.getCvmResults(),2)))
+                .append(labelValue("CID", size(result.getCidData()==null?"":result.getCidData(),2)))
                 .append(line())
                 .append(center(bold(size("Thank you",3))));
 

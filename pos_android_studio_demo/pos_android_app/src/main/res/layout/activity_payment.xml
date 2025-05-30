@@ -140,7 +140,7 @@
                         android:background="@drawable/bg_receipt"
                         android:fontFamily="monospace"
                         android:padding="16dp"
-                        android:textSize="14sp"
+                        android:textSize="16sp"
                         android:gravity="start"
                         android:textColor="@color/text_primary"
                         android:textIsSelectable="true"

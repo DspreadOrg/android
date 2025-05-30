@@ -70,7 +70,13 @@ public class PaymentViewModel extends BaseAppViewModel {
         TRACE.i("data = "+message);
         message = message.substring(message.indexOf(":")+2);
         TRACE.i("data 2 = "+message);
+        PaymentModel paymentModel = new PaymentModel();
+        String transType = SPUtils.getInstance().getString("transactionType");
+        paymentModel.setTransType(transType);
         List<TLV> tlvList = TLVParser.parse(message);
+        if(tlvList == null || tlvList.size() == 0){
+            return paymentModel;
+        }
         TLV dateTlv = TLVParser.searchTLV(tlvList,"9A");
 //        TLV transTypeTlv = TLVParser.searchTLV(tlvList,"9C");
         TLV transCurrencyCodeTlv = TLVParser.searchTLV(tlvList,"5F2A");
@@ -78,10 +84,7 @@ public class PaymentViewModel extends BaseAppViewModel {
         TLV tvrTlv = TLVParser.searchTLV(tlvList,"95");
         TLV cvmReusltTlv = TLVParser.searchTLV(tlvList,"9F34");
         TLV cidTlv = TLVParser.searchTLV(tlvList,"9F27");
-        PaymentModel paymentModel = new PaymentModel();
         paymentModel.setDate(dateTlv.value);
-        String transType = SPUtils.getInstance().getString("transactionType");
-        paymentModel.setTransType(transType);
         paymentModel.setTransCurrencyCode(transCurrencyCodeTlv == null? "":transCurrencyCodeTlv.value);
         paymentModel.setAmount(transAmountTlv == null? "":transAmountTlv.value);
         paymentModel.setTvr(tvrTlv == null? "":tvrTlv.value);
