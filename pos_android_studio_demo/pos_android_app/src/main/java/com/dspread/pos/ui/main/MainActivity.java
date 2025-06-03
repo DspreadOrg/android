@@ -93,6 +93,9 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         viewModel.openDevice();
+
+        //shiply update app
+        UpgradeManager.getInstance().checkUpgrade(false, null, new DefaultUpgradeStrategyRequestCallback());
     }
 
     @Override

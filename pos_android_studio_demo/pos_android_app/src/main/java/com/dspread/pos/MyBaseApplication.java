@@ -15,16 +15,11 @@ import com.dspread.pos_android_app.BuildConfig;
 import com.dspread.pos_android_app.R;
 import com.dspread.xpos.QPOSService;
 import com.tencent.bugly.crashreport.CrashReport;
-import com.tencent.raft.standard.storage.IRStorage;
-import com.tencent.rdelivery.DependencyInjector;
-import com.tencent.rdelivery.RDelivery;
-import com.tencent.rdelivery.RDeliverySetting;
-import com.tencent.rdelivery.dependencyimpl.HandlerTask;
-import com.tencent.rdelivery.dependencyimpl.HttpsURLConnectionNetwork;
-import com.tencent.rdelivery.dependencyimpl.MmkvStorage;
-import com.tencent.rdelivery.dependencyimpl.SystemLog;
 import com.tencent.upgrade.bean.UpgradeConfig;
 import com.tencent.upgrade.core.UpgradeManager;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import me.goldze.mvvmhabit.base.BaseApplication;
 import me.goldze.mvvmhabit.crash.CaocConfig;
@@ -111,11 +106,20 @@ public class MyBaseApplication extends BaseApplication {
     }
 
     private void initShiply(){
+        String appId = "6316d5169f"; // 在shiply前端页面申请的项目Android产品的appid
+        String appKey = "ffe00435-2389-4189-bd87-4b30ffcaff8e"; // 在shiply前端页面申请的项目Android产品的appkey
         UpgradeConfig.Builder builder = new UpgradeConfig.Builder();
-        UpgradeConfig config = builder.appId("592313ecc0").appKey("bd73c4b1-4d6f-4739-bf16-dd7acea9c3ce")
-                .cacheExpireTime(1000 * 60 * 60 * 6) // 灰度策略的缓存时长（ms），如果不设置，默认缓存时长为1天
-                .build();
+        UpgradeConfig config = builder.appId(appId).appKey(appKey).build();
         UpgradeManager.getInstance().init(this, config);
-
+//        Map<String, String> map = new HashMap<>();
+//        map.put("UserGender", "Male");
+//        builder.systemVersion(String.valueOf(Build.VERSION.SDK_INT))    // 用户手机系统版本，用于匹配shiply前端创建任务时设置的系统版本下发条件
+////                .customParams(map)                                      // 自定义属性键值对，用于匹配shiply前端创建任务时设置的自定义下发条件
+//                .cacheExpireTime(1000 * 60 * 60 * 6)                    // 灰度策略的缓存时长（ms），如果不设置，默认缓存时长为1天
+////                .internalInitMMKVForRDelivery(true)                     // 是否由sdk内部初始化mmkv(调用MMKV.initialize()),业务方如果已经初始化过mmkv可以设置为false
+////                .userId("xxx")                                          // 用户Id,用于匹配shiply前端创建的任务中的体验名单以及下发条件中的用户号码包
+//                .customLogger(new TRACE());// 日志实现接口，建议对接到业务方的日志接口，方便排查问题
+        builder.cacheExpireTime(1000 * 60 * 60 * 6)
+                .customLogger(new TRACE());
     }
 }

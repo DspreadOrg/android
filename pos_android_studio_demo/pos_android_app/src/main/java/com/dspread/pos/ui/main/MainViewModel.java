@@ -55,12 +55,6 @@ public class MainViewModel extends BaseViewModel {
         if(myBaseApplication == null){
             myBaseApplication = (MyBaseApplication) BaseApplication.getInstance();
         }
-        TRACE.i("22 = "+homeFragment);
-    }
-
-    public void setHomeFragment(HomeFragment fragment) {
-        this.homeFragment = fragment;
-        TRACE.i("11 = "+homeFragment);
     }
 
     public void openDevice(){
