@@ -1,3 +1,10 @@
+## [6.0.8](https://github.com/DspreadOrg/android/compare/v6.0.7...v6.0.8) (2025-06-03)
+
+
+### Bug Fixes
+
+* add in-app upgrades feature by shiply ([6262c92](https://github.com/DspreadOrg/android/commit/6262c9296b8b1bc481017efe1f466990a4f6fbf7))
+
 ## [6.0.7](https://github.com/DspreadOrg/android/compare/v6.0.6...v6.0.7) (2025-05-30)
 
 
