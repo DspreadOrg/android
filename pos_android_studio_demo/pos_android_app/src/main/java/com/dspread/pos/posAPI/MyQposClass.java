@@ -145,7 +145,7 @@ public class MyQposClass extends CQPOSService {
 
     @Override
     public void onRequestOnlineProcess(final String tlv) {
-        TRACE.d("onRequestOnlineProcess" + tlv);
+//        TRACE.d("onRequestOnlineProcess" + tlv);
         MyCustomQPOSCallback callback = callbackManager.getCallback(MyCustomQPOSCallback.class);
         if (callback != null) {
             callback.onRequestOnlineProcess(tlv);

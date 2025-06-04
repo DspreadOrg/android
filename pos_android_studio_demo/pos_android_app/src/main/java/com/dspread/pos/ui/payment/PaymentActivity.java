@@ -69,6 +69,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
         logFileConfig = LogFileConfig.getInstance(this);
         QPOSCallbackManager.getInstance().registerCallback(MyCustomQPOSCallback.class, this);
         binding.setVariable(BR.viewModel, viewModel);
+        viewModel.setmContext(this);
         viewModel.titleText.set("Paymenting");
         Intent intent = getIntent();
         if (intent != null) {
@@ -287,9 +288,6 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
                 viewModel.titleText.set(getString(R.string.input_pin));
                 viewModel.stopLoading();
                 viewModel.showPinpad.set(true);
-//                dismissDialog();
-//                pinpadEditText.setVisibility(View.VISIBLE);
-//                mllchrccard.setVisibility(View.GONE);
             }
         });
     }
@@ -732,8 +730,9 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
             public void run() {
                 String s = "";
                 if (num == -1) {
+                    binding.pinpadEditText.setText("");
+                    viewModel.showPinpad.set(false);
                     if (keyboardUtil != null) {
-                        binding.pinpadEditText.setText("");
                         keyboardUtil.hide();
                     }
                 } else {
@@ -787,10 +786,16 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
     @Override
     public void onError(QPOSService.Error error) {
         MyCustomQPOSCallback.super.onError(error);
-        viewModel.setTransactionFailed(error.name());
-        if(keyboardUtil != null){
-            keyboardUtil.hide();
-        }
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                viewModel.setTransactionFailed(error.name());
+                if(keyboardUtil != null){
+                    keyboardUtil.hide();
+                }
+            }
+        });
+
         TRACE.w(error.name());
     }
 

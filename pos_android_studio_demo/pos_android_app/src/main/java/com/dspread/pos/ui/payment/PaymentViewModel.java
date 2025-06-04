@@ -1,6 +1,7 @@
 package com.dspread.pos.ui.payment;
 
 import android.app.Application;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -64,6 +65,11 @@ public class PaymentViewModel extends BaseAppViewModel {
     public ObservableBoolean showResultStatus = new ObservableBoolean(false);
     public ObservableField<String> receiptContent = new ObservableField<>();
     private Bitmap receiptBitmap;
+    private Context mContext;
+
+    public void setmContext(Context mContext){
+        this.mContext = mContext;
+    }
     
     public PaymentModel setTransactionSuccess(String message) {
         setTransactionSuccess();
@@ -152,7 +158,7 @@ public class PaymentViewModel extends BaseAppViewModel {
             PrinterManager instance = PrinterManager.getInstance();
             PrinterDevice mPrinter = instance.getPrinter();
             PrinterHelper.getInstance().setPrinter(mPrinter);
-            PrinterHelper.getInstance().initPrinter(context);
+            PrinterHelper.getInstance().initPrinter(mContext);
             TRACE.i("bitmap = "+receiptBitmap);
             new Handler().postDelayed(() -> {
                 try {
@@ -163,7 +169,13 @@ public class PaymentViewModel extends BaseAppViewModel {
                 PrinterHelper.getInstance().getmPrinter().setPrintListener(new PrintListener() {
                     @Override
                     public void printResult(boolean b, String s, PrinterDevice.ResultType resultType) {
-                        ToastUtils.showShort("Print Finished!");
+                        ToastUtils.showShort("Print Finished! "+s);
+//                        if(resultType == PrinterDevice.ResultType.PRINT_RESULT && !"NO paper".equals(s)){
+//
+//                        }else {
+//                            isPrinting.set(true);
+//                        }
+
                         isPrinting.set(false);
                         finish();
                     }
