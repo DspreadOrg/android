@@ -1,3 +1,11 @@
+## [6.0.9](https://github.com/DspreadOrg/android/compare/v6.0.8...v6.0.9) (2025-06-04)
+
+
+### Bug Fixes
+
+* fix the printer "NO Paper" issue ([5cb01eb](https://github.com/DspreadOrg/android/commit/5cb01eb905db76484f22824b7a7ad4e7fd7bafb6))
+* update print result message ([35a8c70](https://github.com/DspreadOrg/android/commit/35a8c706b1967927afb3c7836baade6205326ce7))
+
 ## [6.0.8](https://github.com/DspreadOrg/android/compare/v6.0.7...v6.0.8) (2025-06-03)
 
 
