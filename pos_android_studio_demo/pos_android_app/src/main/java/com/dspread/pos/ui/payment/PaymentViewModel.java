@@ -169,13 +169,11 @@ public class PaymentViewModel extends BaseAppViewModel {
                 PrinterHelper.getInstance().getmPrinter().setPrintListener(new PrintListener() {
                     @Override
                     public void printResult(boolean b, String s, PrinterDevice.ResultType resultType) {
-                        ToastUtils.showShort("Print Finished! "+s);
-//                        if(resultType == PrinterDevice.ResultType.PRINT_RESULT && !"NO paper".equals(s)){
-//
-//                        }else {
-//                            isPrinting.set(true);
-//                        }
-
+                        if(b){
+                            ToastUtils.showShort("Print Finished!");
+                        }else {
+                            ToastUtils.showShort("Print Result: "+s);
+                        }
                         isPrinting.set(false);
                         finish();
                     }
