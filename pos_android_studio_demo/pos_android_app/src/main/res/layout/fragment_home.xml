@@ -107,7 +107,7 @@
                 style="@style/NumberKeyboardButton.Clear"
                 android:minWidth="0dp"
                 android:minHeight="0dp"
-                binding:onClickCommand="@{viewModel.onClearClickCommand}"
+                android:onClick="@{() -> viewModel.onClearClickCommand()}"
                 android:text="C" />
 
             <!-- 数字 0 -->

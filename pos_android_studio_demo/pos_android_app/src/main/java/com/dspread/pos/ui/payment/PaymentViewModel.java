@@ -141,13 +141,14 @@ public class PaymentViewModel extends BaseAppViewModel {
     public BindingCommand continueTxnsCommand = new BindingCommand(new BindingAction() {
         @Override
         public void call() {
-            titleText.set("Payment");
-            stopLoading();
-            showPinpad.set(false);
-            isSuccess.set(false);
-            isWaiting.set(false);
-            showResultStatus.set(false);
-            isContinueTrx.setValue(true);
+//            titleText.set("Payment");
+//            stopLoading();
+//            showPinpad.set(false);
+//            isSuccess.set(false);
+//            isWaiting.set(false);
+//            showResultStatus.set(false);
+//            isContinueTrx.setValue(true);
+            finish();
         }
     });
 

@@ -7,6 +7,10 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.lifecycle.DefaultLifecycleObserver;
+import androidx.lifecycle.LifecycleOwner;
+
 import com.dspread.pos.common.base.BaseFragment;
 import com.dspread.pos.posAPI.POSCommand;
 import com.dspread.pos.ui.base.TitleProvider;
@@ -65,6 +69,12 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
             Intent intent = new Intent(getActivity(), PaymentActivity.class);
             intent.putExtra("amount", String.valueOf(inputMoney));
             startActivity(intent);
+            // 获取系统标准跳转动画时间
+            int animTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+            getView().postOnAnimationDelayed(() -> {
+                viewModel.clearAmount();
+                TRACE.i("clear the amount");
+            }, animTime + 500);
         });
     }
 
@@ -104,7 +114,7 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
                     viewModel.onNumberClick("9");
                     return true;
                 case KeyEvent.KEYCODE_DEL:
-                    viewModel.onClearClickCommand.execute();
+                    viewModel.onClearClickCommand();
                     return true;
                 case KeyEvent.KEYCODE_ENTER:
                     viewModel.onConfirmClickCommand.execute();

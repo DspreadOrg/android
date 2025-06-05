@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.databinding.ObservableField;
 
 import com.dspread.pos.common.base.BaseAppViewModel;
+import com.dspread.pos.utils.TRACE;
 import com.dspread.pos_android_app.R;
 
 import me.goldze.mvvmhabit.binding.command.BindingCommand;
@@ -16,7 +17,7 @@ public class HomeViewModel extends BaseAppViewModel {
     public ObservableField<String> amount = new ObservableField<>("¥0.00");
     public SingleLiveEvent<Long> paymentStartEvent = new SingleLiveEvent<>();
     
-    private StringBuilder amountBuilder = new StringBuilder();
+    public StringBuilder amountBuilder = new StringBuilder();
     private static final int MAX_DIGITS = 12; // 最大金额位数
     
     public HomeViewModel(@NonNull Application application) {
@@ -43,6 +44,11 @@ public class HomeViewModel extends BaseAppViewModel {
         }
     }
 
+    public void clearAmount() {
+        amountBuilder.setLength(0);
+        amount.set("¥0.00");
+    }
+
     public void onNumberClick(String number){
         if (amountBuilder.length() >= MAX_DIGITS) {
             return;
@@ -56,11 +62,13 @@ public class HomeViewModel extends BaseAppViewModel {
         updateAmountDisplay();
     }
 
-    // 清除按钮命令
-    public BindingCommand onClearClickCommand = new BindingCommand(() -> {
-        amountBuilder.setLength(0);
+    public void onClearClickCommand(){
+        TRACE.i("delete the amount");
+        if(amountBuilder.length() > 0){
+            amountBuilder.delete(amountBuilder.length() - 1, amountBuilder.length());
+        }
         updateAmountDisplay();
-    });
+    }
 
     // 确认按钮命令
     public BindingCommand onConfirmClickCommand = new BindingCommand(() -> {

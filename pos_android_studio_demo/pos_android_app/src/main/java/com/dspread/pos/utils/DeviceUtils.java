@@ -125,7 +125,7 @@ public class DeviceUtils {
 
     public static boolean isPrinterDevices(){
         if("D30".equals(Build.MODEL)||"D60".equals(Build.MODEL)
-                ||"D70".equals(Build.MODEL)||"D30M".equals(Build.MODEL)){
+                ||"D70".equals(Build.MODEL)||"D30M".equals(Build.MODEL) || "D80".equals(Build.MODEL)||"D80K".equals(Build.MODEL)){
             return true;
         }
         return false;

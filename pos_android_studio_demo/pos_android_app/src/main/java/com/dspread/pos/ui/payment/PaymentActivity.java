@@ -70,6 +70,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
         QPOSCallbackManager.getInstance().registerCallback(MyCustomQPOSCallback.class, this);
         binding.setVariable(BR.viewModel, viewModel);
         viewModel.setmContext(this);
+        binding.pinpadEditText.setText("");
         viewModel.titleText.set("Paymenting");
         Intent intent = getIntent();
         if (intent != null) {
