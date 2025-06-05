@@ -1,3 +1,10 @@
+# [6.1.0](https://github.com/DspreadOrg/android/compare/v6.0.9...v6.1.0) (2025-06-05)
+
+
+### Features
+
+* update the amount keyboard logic ([ca16fa6](https://github.com/DspreadOrg/android/commit/ca16fa6ffa37557d7b183573637281ac8f6852f8))
+
 ## [6.0.9](https://github.com/DspreadOrg/android/compare/v6.0.8...v6.0.9) (2025-06-04)
 
 
