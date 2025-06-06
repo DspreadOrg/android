@@ -267,6 +267,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
                         }
                     }
                 }
+                binding.pinpadEditText.setText("");
                 MyKeyboardView.setKeyBoardListener(value -> {
                     if (POSCommand.getInstance().pos != null) {
                         POSCommand.getInstance().pinMapSync(value, 20);
