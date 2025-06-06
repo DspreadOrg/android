@@ -1,3 +1,11 @@
+## [6.1.1](https://github.com/DspreadOrg/android/compare/v6.1.0...v6.1.1) (2025-06-06)
+
+
+### Bug Fixes
+
+* fix the new pin ui ([4176bc7](https://github.com/DspreadOrg/android/commit/4176bc7c891b8606665bb26deccec87783f33733))
+* update the change pin logic ([3491cdb](https://github.com/DspreadOrg/android/commit/3491cdbb4413a4b846ff4e8cc36d87fe13da4234))
+
 # [6.1.0](https://github.com/DspreadOrg/android/compare/v6.0.9...v6.1.0) (2025-06-05)
 
 
