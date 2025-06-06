@@ -123,7 +123,7 @@ public class ConnectionSettingsFragment extends BaseFragment<FragmentConnectionS
                     viewModel.saveSettings();
                 }
 
-                ToastUtils.showShort("Selected Devices " + deviceName);
+//                ToastUtils.showShort("Selected Devices " + deviceName);
             } else if (requestCode == REQUEST_CODE_CURRENCY) {
                 String currencyName = data.getStringExtra("currency_name");
                 viewModel.currencyCode.set(currencyName);

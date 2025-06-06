@@ -64,6 +64,9 @@
     <string name="menu_update">qpos update</string>
     <string name="set_sleepMode_time">set sleep mode time</string>
     <string name="input_pin">Please input pin now</string>
+    <string name="input_pin_old">Please input old pin</string>
+    <string name="input_pin_new">Please input new pin</string>
+    <string name="input_pin_new_confirm">Please confirm new pin</string>
     <string name="input_onlinePin">Please input onlinePin now</string>
     <string name="input_offlinePin">Please input offlinePin now</string>
     <string name="input_offlinePin_last">Please try input last offlinePin</string>

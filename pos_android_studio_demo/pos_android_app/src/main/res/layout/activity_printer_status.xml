@@ -34,14 +34,17 @@
         <Button
             style="@style/BtnStylePrint"
             android:text="@string/get_printer_speed"
+            android:visibility="@{viewModel.showExtraButtons ? View.VISIBLE : View.GONE}"
             binding:onClickCommand="@{viewModel.onGetSpeedClick}"/>
         <Button
             style="@style/BtnStylePrint"
             android:text="@string/get_printer_temperature"
+            android:visibility="@{viewModel.showExtraButtons ? View.VISIBLE : View.GONE}"
             binding:onClickCommand="@{viewModel.onGetTemperatureClick}"/>
         <Button
             style="@style/BtnStylePrint"
             android:text="@string/get_printer_voltage"
+            android:visibility="@{viewModel.showExtraButtons ? View.VISIBLE : View.GONE}"
             binding:onClickCommand="@{viewModel.onGetVoltageClick}"/>
 
         <TextView

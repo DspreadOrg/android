@@ -53,6 +53,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
     public PinPadDialog pinPadDialog;
     private boolean isICC;
     private LogFileConfig logFileConfig;
+    private int changePinTimes;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -123,6 +124,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
 
     private void startTransaction() {
         isICC = false;
+        changePinTimes = 0;
         POSCommand.getInstance().setCardTradeMode();
         POSCommand.getInstance().doTrade(20);
     }
@@ -251,7 +253,6 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
                             viewModel.titleText.set(getString(R.string.input_new_pin_confirm));
                             timeOfPinInput = 0;
                         }
-
                     } else {
                         if (onlinePin) {
                             viewModel.titleText.set(getString(R.string.input_onlinePin));
@@ -286,7 +287,22 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
 
             @Override
             public void run() {
-                viewModel.titleText.set(getString(R.string.input_pin));
+                if(transactionType == QPOSService.TransactionType.UPDATE_PIN){
+                    changePinTimes ++;
+                    if(changePinTimes == 1){
+                        viewModel.titleText.set(getString(R.string.input_pin_old));
+                    }else if(changePinTimes == 2 || changePinTimes == 4 ){
+                        viewModel.titleText.set(getString(R.string.input_pin_new));
+                    }else if(changePinTimes == 3 ||changePinTimes == 5){
+                        viewModel.titleText.set(getString(R.string.input_new_pin_confirm));
+                    }
+                }else {
+                    if(isOfflinePin){
+                        viewModel.titleText.set(getString(R.string.input_offlinePin));
+                    }else {
+                        viewModel.titleText.set(getString(R.string.input_onlinePin));
+                    }
+                }
                 viewModel.stopLoading();
                 viewModel.showPinpad.set(true);
             }
@@ -685,7 +701,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
 
                 } else if (displayMsg == QPOSService.Display.INPUT_PIN_ING) {
                     msg = "please input pin on pos";
-
+                    TRACE.i("intput pin here");
                 } else if (displayMsg == QPOSService.Display.INPUT_OFFLINE_PIN_ONLY || displayMsg == QPOSService.Display.INPUT_LAST_OFFLINE_PIN) {
                     msg = "please input offline pin on pos";
 

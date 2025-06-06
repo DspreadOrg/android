@@ -33,7 +33,8 @@ public class PrinterStatusViewModel extends BasePrinterViewModel {
         super(application);
         if (Build.MODEL.equalsIgnoreCase("D70") ||
             Build.MODEL.equalsIgnoreCase("D30") ||
-            Build.MODEL.equalsIgnoreCase("D30M")) {
+            Build.MODEL.equalsIgnoreCase("D30M")
+        || Build.MODEL.equalsIgnoreCase("D80")|| Build.MODEL.equalsIgnoreCase("D80K")) {
             showExtraButtons.set(false);
         }
     }
