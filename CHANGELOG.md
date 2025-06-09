@@ -1,3 +1,10 @@
+## [6.1.2](https://github.com/DspreadOrg/android/compare/v6.1.1...v6.1.2) (2025-06-09)
+
+
+### Bug Fixes
+
+* update the txns type logic ([a6cf11b](https://github.com/DspreadOrg/android/commit/a6cf11b9974f0bd1fb91e7cb18446f0a2cbbed4c))
+
 ## [6.1.1](https://github.com/DspreadOrg/android/compare/v6.1.0...v6.1.1) (2025-06-06)
 
 
