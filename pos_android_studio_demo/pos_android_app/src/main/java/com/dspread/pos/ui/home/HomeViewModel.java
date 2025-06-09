@@ -11,6 +11,7 @@ import com.dspread.pos_android_app.R;
 
 import me.goldze.mvvmhabit.binding.command.BindingCommand;
 import me.goldze.mvvmhabit.bus.event.SingleLiveEvent;
+import me.goldze.mvvmhabit.utils.SPUtils;
 import me.goldze.mvvmhabit.utils.ToastUtils;
 
 public class HomeViewModel extends BaseAppViewModel {
@@ -72,20 +73,29 @@ public class HomeViewModel extends BaseAppViewModel {
 
     // 确认按钮命令
     public BindingCommand onConfirmClickCommand = new BindingCommand(() -> {
-        if (amountBuilder.length() == 0) {
-            ToastUtils.showShort(R.string.set_amount);
-            return;
-        }
-
-        try {
-            long amountInCents = Long.parseLong(amountBuilder.toString());
-            if (amountInCents > 0) {
-                paymentStartEvent.postValue(amountInCents);
-            } else {
+        if(amountBuilder.length() == 0){
+            if(SPUtils.getInstance().getString("transactionType") != null && !"".equals(SPUtils.getInstance().getString("transactionType"))){
+                String transactionTypeString = SPUtils.getInstance().getString("transactionType");
+                if(transactionTypeString.equals("CHANGE_PIN") || transactionTypeString.equals("BALANCE") ||transactionTypeString.equals("BALANCE_UPDATE") ){
+                    paymentStartEvent.postValue(0l);
+                }else {
+                    ToastUtils.showShort(R.string.set_amount);
+                }
+            }else {
                 ToastUtils.showShort(R.string.set_amount);
             }
-        } catch (NumberFormatException e) {
-            ToastUtils.showShort(R.string.set_amount);
+        }else {
+            try {
+                long amountInCents = Long.parseLong(amountBuilder.toString());
+                paymentStartEvent.postValue(amountInCents);
+//            if (amountInCents > 0) {
+//                paymentStartEvent.postValue(amountInCents);
+//            } else {
+//                ToastUtils.showShort(R.string.set_amount);
+//            }
+            } catch (NumberFormatException e) {
+                ToastUtils.showShort(R.string.set_amount);
+            }
         }
     });
 }

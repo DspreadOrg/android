@@ -12,7 +12,9 @@ public enum PaymentType {
     PAYMENT("PAYMENT"),
     SALE("SALE"),
     CHANGE_PIN("CHANGE_PIN"),
-    REFOUND("REFOUND");
+    BALANCE("BALANCE"),
+    BALANCE_UPDATE("BALANCE_UPDATE"),
+    REFOUND("REFUND");
 
     private final String value;
 

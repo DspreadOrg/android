@@ -169,16 +169,20 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
                 transactionType = QPOSService.TransactionType.ECQ_CASH_LOAD_VOID;
             } else if (transactionTypeString.equals("CHANGE_PIN")) {
                 transactionType = QPOSService.TransactionType.UPDATE_PIN;
-            } else if (transactionTypeString.equals("REFOUND")) {
+            } else if (transactionTypeString.equals("REFUND")) {
                 transactionType = QPOSService.TransactionType.REFUND;
             } else if (transactionTypeString.equals("SALES_NEW")) {
                 transactionType = QPOSService.TransactionType.SALES_NEW;
+            }else if (transactionTypeString.equals("BALANCE_UPDATE")) {
+                transactionType = QPOSService.TransactionType.BALANCE_UPDATE;
+            }else if (transactionTypeString.equals("BALANCE")) {
+                transactionType = QPOSService.TransactionType.BALANCE;
             }
             int currencyCode = SPUtils.getInstance().getInt("currencyCode");
             if(currencyCode == -1 || currencyCode == 0){
                 currencyCode = 156;
             }
-            TRACE.i("currencyCode = "+String.valueOf(currencyCode));
+            TRACE.i("currencyCode = "+String.valueOf(currencyCode)+" amounts = "+amount);
             POSCommand.getInstance().setAmount(amount, cashbackAmounts, String.valueOf(currencyCode), transactionType);
         }
     }
