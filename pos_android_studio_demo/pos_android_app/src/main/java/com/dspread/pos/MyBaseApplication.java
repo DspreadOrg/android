@@ -39,12 +39,12 @@ public class MyBaseApplication extends BaseApplication {
         initCrash();
         initBugly();
         initShiply();
-        // 初始化Fragment缓存
+        // Initialize Fragment Cache
         FragmentCacheManager.getInstance();
         TRACE.setContext(this);
     }
 
-    // 优化 QPOSService 获取方法
+    // Optimize the QPOSService retrieval method
     public static QPOSService getQposService() {
         return pos;
     }
@@ -68,57 +68,57 @@ public class MyBaseApplication extends BaseApplication {
 
     private void initCrash() {
         CaocConfig.Builder.create()
-                .backgroundMode(CaocConfig.BACKGROUND_MODE_SILENT) //背景模式,开启沉浸式
-                .enabled(true) //是否启动全局异常捕获
-                .showErrorDetails(true) //是否显示错误详细信息
-                .showRestartButton(true) //是否显示重启按钮
-                .trackActivities(true) //是否跟踪Activity
-                .minTimeBetweenCrashesMs(2000) //崩溃的间隔时间(毫秒)
-                .errorDrawable(R.mipmap.ic_dspread_logo) //错误图标
-                .restartActivity(MainActivity.class) //重新启动后的activity
-//                .errorActivity(YourCustomErrorActivity.class) //崩溃后的错误activity
-//                .eventListener(new YourCustomEventListener()) //崩溃后的错误监听
+                .backgroundMode(CaocConfig.BACKGROUND_MODE_SILENT) //Background mode, activate immersive mode
+                .enabled(true) //Do you want to initiate global exception capture
+                .showErrorDetails(true) //Whether to display detailed error information
+                .showRestartButton(true) //Is the restart button displayed
+                .trackActivities(true) //Whether to track Activity
+                .minTimeBetweenCrashesMs(2000) //Interval between crashes (milliseconds)
+                .errorDrawable(R.mipmap.ic_dspread_logo) //error icon
+                .restartActivity(MainActivity.class) //Activity after restart
+//                .errorActivity(YourCustomErrorActivity.class) //Error activity after crash
+//                .eventListener(new YourCustomEventListener()) //Error listening after crash
                 .apply();
     }
 
     private void initBugly() {
         Context context = getApplicationContext();
-        // 获取当前包名
+        // Get the current package name
         String packageName = context.getPackageName();
-        // 获取当前进程名
+        // Get the current process name
         String processName = DevUtils.getProcessName(android.os.Process.myPid());
-        // 设置是否为上报进程
+        // Set whether it is a reporting process
         CrashReport.UserStrategy strategy = new CrashReport.UserStrategy(context);
         strategy.setUploadProcess(processName == null || processName.equals(packageName));
         strategy.setAppVersion(DevUtils.getPackageVersionName(this, packageName));
         strategy.setAppPackageName(packageName);
 
-        // 初始化Bugly
+        // Initialize Bugly
         CrashReport.initCrashReport(context, "b2d80aa171", BuildConfig.DEBUG, strategy);
 
-        // 设置用户数据
+        // Set user data
         CrashReport.setUserId(DevUtils.getDeviceId(this));
 
-        // 添加自定义日志
-        CrashReport.setUserSceneTag(context, 9527); // 设置标签
+        // Add custom logs
+        CrashReport.setUserSceneTag(context, 9527); // Set label
         CrashReport.putUserData(context, "deviceModel", Build.MODEL);
         CrashReport.putUserData(context, "deviceManufacturer", Build.MANUFACTURER);
     }
 
     private void initShiply(){
-        String appId = "6316d5169f"; // 在shiply前端页面申请的项目Android产品的appid
-        String appKey = "ffe00435-2389-4189-bd87-4b30ffcaff8e"; // 在shiply前端页面申请的项目Android产品的appkey
+        String appId = "6316d5169f"; // The appid of the Android product applied for on the front-end page of Shiply
+        String appKey = "ffe00435-2389-4189-bd87-4b30ffcaff8e"; // The appkey for Android products applied for on the front-end page of Shiply
         UpgradeConfig.Builder builder = new UpgradeConfig.Builder();
         UpgradeConfig config = builder.appId(appId).appKey(appKey).build();
         UpgradeManager.getInstance().init(this, config);
 //        Map<String, String> map = new HashMap<>();
 //        map.put("UserGender", "Male");
-//        builder.systemVersion(String.valueOf(Build.VERSION.SDK_INT))    // 用户手机系统版本，用于匹配shiply前端创建任务时设置的系统版本下发条件
-////                .customParams(map)                                      // 自定义属性键值对，用于匹配shiply前端创建任务时设置的自定义下发条件
-//                .cacheExpireTime(1000 * 60 * 60 * 6)                    // 灰度策略的缓存时长（ms），如果不设置，默认缓存时长为1天
-////                .internalInitMMKVForRDelivery(true)                     // 是否由sdk内部初始化mmkv(调用MMKV.initialize()),业务方如果已经初始化过mmkv可以设置为false
-////                .userId("xxx")                                          // 用户Id,用于匹配shiply前端创建的任务中的体验名单以及下发条件中的用户号码包
-//                .customLogger(new TRACE());// 日志实现接口，建议对接到业务方的日志接口，方便排查问题
+//        builder.systemVersion(String.valueOf(Build.VERSION.SDK_INT))    // The user's mobile system version is used to match the system version distribution conditions set when creating tasks in the Shiply frontend
+////                .customParams(map)                                      // Custom attribute key value pairs are used to match the custom distribution conditions set when creating tasks in the shiply frontend
+//                .cacheExpireTime(1000 * 60 * 60 * 6)                    // The cache duration of the grayscale strategy (ms), if not set, defaults to 1 day
+////                .internalInitMMKVForRDelivery(true)                     // Is mmkv initialized internally by the SDK (calling MMKV. initializes)? If the business has already initialized mmkv, it can be set to false
+////                .userId("xxx")                                          // User ID, used to match the experience list in the tasks created by Shiply frontend and the user number package in the distribution conditions
+//                .customLogger(new TRACE());// Log implementation interface, it is recommended to connect to the log interface of the business side for easy troubleshooting
         builder.cacheExpireTime(1000 * 60 * 60 * 6)
                 .customLogger(new TRACE());
     }

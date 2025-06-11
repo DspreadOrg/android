@@ -19,9 +19,9 @@ public class PrinterItemViewModel extends ItemViewModel<PrinterViewModel> {
 
     public ObservableField<String> title = new ObservableField<>();
 
-    // 添加点击命令
+    // Add click command
     public BindingCommand itemClick = new BindingCommand(() -> {
-        // 通知 ViewModel 处理点击事件
+        // Notify ViewModel to handle click events
         viewModel.onItemClick(this);
     });
 

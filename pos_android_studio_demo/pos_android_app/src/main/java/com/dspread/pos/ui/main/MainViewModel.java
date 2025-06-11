@@ -87,7 +87,7 @@ public class MainViewModel extends BaseViewModel {
     public BindingCommand<Integer> switchFragmentCommand = new BindingCommand<>(integer -> {
         // switch Fragment
         TRACE.i("this is switch");
-        fragmentChangeEvent.setValue(integer); // 这里可以根据逻辑设置不同的Fragment
+        fragmentChangeEvent.setValue(integer); // Here, different fragments can be set according to logic
         handleNavigationItemClick(integer);
     });
 

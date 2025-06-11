@@ -8,14 +8,14 @@ import java.util.List;
 
 /**
  * Created by goldze on 2017/7/17.
- * FragmentPager适配器
+ * FragmentPager adapter
  */
 
 public class BaseFragmentPagerAdapter extends FragmentPagerAdapter {
-    private List<Fragment> list;//ViewPager要填充的fragment列表
-    private List<String> title;//tab中的title文字列表
+    private List<Fragment> list;//ViewPager List of fragment to be filled in
+    private List<String> title;//List of title text in tab
 
-    //使用构造方法来将数据传进去
+    //Using constructor to pass data in
     public BaseFragmentPagerAdapter(FragmentManager fm, List<Fragment> list, List<String> title) {
         super(fm);
         this.list = list;
@@ -32,7 +32,7 @@ public class BaseFragmentPagerAdapter extends FragmentPagerAdapter {
         return list.size();
     }
 
-    //FragmentPager的标题,如果重写这个方法就显示不出tab的标题内容
+    //FragmentPager's title, if this method is rewritten, the tab's title content will not be displayed
     @Override
     public CharSequence getPageTitle(int position) {
         return title.get(position);

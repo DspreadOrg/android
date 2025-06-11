@@ -268,7 +268,7 @@ public class PinPadView extends RelativeLayout {
     }
 
     /***
-     * 设置随机数
+     * Set random number
      * @param israndom
      */
     public PinPadView setRandomNumber(boolean israndom) {

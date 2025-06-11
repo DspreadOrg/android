@@ -10,14 +10,14 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.SOURCE)
 @Target(ElementType.METHOD)
 public @interface CallbackChange {
-    String version() default "7.1.5";         // 变更版本
-    String description();               // 变更描述
-    ChangeType type() default ChangeType.MODIFIED;  // 变更类型
+    String version() default "7.1.5";         // Change Version
+    String description();               // Change description
+    ChangeType type() default ChangeType.MODIFIED;  // Change type
     
     enum ChangeType {
-        ADDED("新增"),
-        MODIFIED("修改"),
-        DEPRECATED("废弃");
+        ADDED("newly added"),
+        MODIFIED("modify"),
+        DEPRECATED("discard");
         
         private final String description;
         

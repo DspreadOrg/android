@@ -45,7 +45,7 @@ public class DeviceConfigAdapter extends RecyclerView.Adapter<DeviceConfigAdapte
         holder.binding.executePendingBindings();
         
         holder.itemView.setOnClickListener(v -> {
-            // 更新选中状态
+            // Update selected status
             for (DeviceConfigItem currency : currencyList) {
                 currency.setSelected(currency == item);
             }

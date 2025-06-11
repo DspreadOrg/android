@@ -41,7 +41,7 @@ public class BarCodeViewModel extends BasePrinterViewModel {
     public SingleLiveEvent<String[]> showDensityLevelDialog = new SingleLiveEvent<>();
 
     public BindingCommand onContentClick = new BindingCommand(() -> {
-        // 显示内容输入对话框
+        // Display content input dialog box
         showInputDialog.call();
     });
     
@@ -100,8 +100,8 @@ public class BarCodeViewModel extends BasePrinterViewModel {
     }
     
     public void generateBarcode(Bitmap bitmap) {
-        // 生成条形码预览图
-        // ... 生成条形码的具体实现 ...
+        // Generate barcode preview image
+        // ... The specific implementation of generating barcodes ...
         barcodeBitmap.set(bitmap);
     }
 }

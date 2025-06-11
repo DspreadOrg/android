@@ -23,14 +23,14 @@ public class ReceiptGenerator {
 
     private static String labelValue(String label, String value) {
         StringBuilder result = new StringBuilder();
-        // 使用等宽字体的空格来对齐
-        result.append("<tt>");  // 使用等宽字体标签
+        // Align with equal width font spaces
+        result.append("<tt>");  // Use equal width font labels
         result.append(label);
 
         // 计算需要的空格数
-        int spaces = 30 - label.length();  // 可以根据需要调整总宽度
+        int spaces = 30 - label.length();  // The total width can be adjusted as needed
         for (int i = 0; i < spaces; i++) {
-            result.append(" ");  // 使用普通空格
+            result.append(" ");  // Use regular spaces
         }
 
         result.append(value);

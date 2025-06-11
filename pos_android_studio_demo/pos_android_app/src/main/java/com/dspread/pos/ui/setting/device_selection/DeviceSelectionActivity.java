@@ -50,7 +50,7 @@ import me.goldze.mvvmhabit.utils.ToastUtils;
 
 public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectionBinding, DeviceSelectionViewModel>  implements MyCustomQPOSCallback {
 
-    // 结果常量
+    // Result constant
     public static final String EXTRA_DEVICE_NAME = "device_name";
     public static final String EXTRA_CONNECTION_TYPE = "connection_type";
     public static final int REQUEST_CODE_SELECT_DEVICE = 10001;
@@ -79,10 +79,10 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
     public void initData() {
         super.initData();
         QPOSCallbackManager.getInstance().registerCallback(MyCustomQPOSCallback.class, this);
-        // 设置返回按钮点击事件
+        // Set return button click event
         binding.toolbar.setNavigationOnClickListener(v -> finish());
         initBluetoothDevicesDialog();
-        // 设置事件监听
+        // Set up event monitoring
         setupEventListeners();
         bluetoothEnableLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -105,13 +105,13 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
     }
 
     /**
-     * 设置事件监听
+     * Set up event monitoring
      */
     private void setupEventListeners() {
-        // 监听连接方式选择完成事件
+        // Monitor connection method selection completion event
         viewModel.connectionMethodSelectedEvent.observe(this, this::onConnectionMethodSelected);
 
-        // 监听显示蓝牙设备列表事件
+        // Monitor and display Bluetooth device list events
         viewModel.startScanBluetoothEvent.observe(this, new Observer<POS_TYPE>() {
             @Override
             public void onChanged(POS_TYPE posType) {
@@ -126,7 +126,7 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
         recyclerView = dialogView.findViewById(R.id.recycler_bluetooth_devices);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        // 初始化适配器
+        // Initialize adapter
         bluetoothAdapter = new BluetoothDeviceAdapter(this,device -> {
             viewModel.stopScanBluetooth();
             viewModel.connectBtnTitle.set("Connect to "+device.getAddress());
@@ -148,21 +148,21 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
     }
 
     /**
-     * 处理连接方式选择完成事件
+     * Process connection method selection completion event
      */
     private void onConnectionMethodSelected(POS_TYPE posType) {
-        // 创建返回结果
+        // Create return result
         Intent resultIntent = new Intent();
-        // 如果不是蓝牙连接，直接返回结果
+        // If it's not a Bluetooth connection, return the result directly
         if (posType == POS_TYPE.BLUETOOTH) {
             resultIntent.putExtra(EXTRA_DEVICE_NAME, viewModel.bluetoothName.get());
             SPUtils.getInstance().put("device_name",viewModel.bluetoothAddress.get());
         }
         resultIntent.putExtra(EXTRA_CONNECTION_TYPE, posType.name());
-        // 设置结果并关闭Activity
+        // Set the result and close it Activity
         setResult(Activity.RESULT_OK, resultIntent);
         finish();
-        // 如果是蓝牙连接，会在选择蓝牙设备后返回结果
+        // If it is a Bluetooth connection, the result will be returned after selecting the Bluetooth device
     }
 
     @Override
@@ -173,10 +173,10 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
 
     @SuppressLint("CheckResult")
     private void requestBluetoothPermissions(POS_TYPE posType) {
-        // 请求蓝牙权限
+        // Request Bluetooth permission
         RxPermissions rxPermissions = new RxPermissions(this);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            // Android 12 及以上版本
+            // Android 12 Version and above
             rxPermissions.request(
                     Manifest.permission.BLUETOOTH_SCAN,
                     Manifest.permission.BLUETOOTH_CONNECT,
@@ -195,7 +195,7 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
                 }
             });
         } else {
-            // Android 12 以下版本
+            // Android versions below 12
             rxPermissions.request(
                     Manifest.permission.BLUETOOTH,
                     Manifest.permission.BLUETOOTH_ADMIN,
@@ -270,7 +270,7 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
         usb.setUsbPermissionListener(new USBClass.UsbPermissionListener() {
             @Override
             public void onPermissionGranted(UsbDevice device) {
-                // 权限获取成功，在这里处理你的业务逻辑
+                // Permission obtained successfully, handle your business logic here
                 USBClass usb = new USBClass();
                 ArrayList<String> deviceList = usb.GetUSBDevices(getApplication());
                 openUsbDeviceDialog(deviceList);
@@ -349,16 +349,16 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
                 viewModel.isConnecting.set(false);
                 SPUtils.getInstance().put("device_name","");
                 if(viewModel.currentPOSType == viewModel.posTypes[viewModel.selectedIndex.getValue()]){
-                    // 设置ViewAdapter的isClearing为true，防止触发onCheckedChanged事件
+                    // Set the isClearing of ViewAdapter to true to prevent triggering the oCheckedChanged event
                     binding.radioGroupConnection.clearCheck();
                     viewModel.connectedDeviceName = null;
                     viewModel.selectedIndex.setValue(-1);
                     viewModel.connectBtnTitle.set(getString(R.string.str_connect));
                     viewModel.currentPOSType = null;
-                    // 现在可以安全地调用clearCheck()
+                    // Now it can be safely called clearCheck()
                 }
             } catch (Exception e) {
-                // 捕获并记录异常
+                // Capture and record anomalies
                 e.printStackTrace();
 
             }

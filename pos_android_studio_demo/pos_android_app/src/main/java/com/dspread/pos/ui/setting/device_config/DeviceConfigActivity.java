@@ -39,10 +39,10 @@ public class DeviceConfigActivity extends BaseActivity<ActivityCurrencySelection
         super.initData();
 
         currentType = getIntent().getIntExtra(EXTRA_LIST_TYPE, TYPE_CURRENCY);
-        // 设置返回按钮点击事件
+        // Set return button click event
         binding.toolbar.setNavigationOnClickListener(v -> finish());
         
-        // 设置搜索监听
+        // Set up search listening
         binding.searchEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -56,7 +56,7 @@ public class DeviceConfigActivity extends BaseActivity<ActivityCurrencySelection
             public void afterTextChanged(Editable s) {}
         });
         
-        // 设置RecyclerView适配器
+        // Set RecyclerView adapter
         DeviceConfigAdapter adapter = new DeviceConfigAdapter(item -> {
             Intent resultIntent = new Intent();
             if (currentType == TYPE_CURRENCY) {
@@ -76,7 +76,7 @@ public class DeviceConfigActivity extends BaseActivity<ActivityCurrencySelection
         binding.currencyRecyclerView.setAdapter(adapter);
 
         viewModel.init(currentType);
-        // 观察 ViewModel 中的货币列表数据变化
+        // Observe the changes in currency list data in ViewModel
         viewModel.currencyList.observe(this, items -> {
             if (currentType == TYPE_CURRENCY) {
                 handleCurrencyList(items, adapter);
@@ -118,7 +118,7 @@ public class DeviceConfigActivity extends BaseActivity<ActivityCurrencySelection
             if (selectedItem != null) {
                 List<DeviceConfigItem> sortedList = new ArrayList<>();
                 sortedList.add(selectedItem);
-                // 使用传统的循环替代 stream
+                //Replace stream with traditional loop
                 for (DeviceConfigItem item : items) {
                     if (item != selectedItem) {
                         sortedList.add(item);

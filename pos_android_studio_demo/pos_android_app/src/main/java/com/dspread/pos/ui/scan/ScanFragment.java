@@ -32,7 +32,7 @@ public class ScanFragment extends BaseFragment<FragmentScanBinding,ScanViewModel
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // 注册 ActivityResultLauncher
+        // register ActivityResultLauncher
         scanLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
@@ -46,7 +46,7 @@ public class ScanFragment extends BaseFragment<FragmentScanBinding,ScanViewModel
 
     @Override
     public void initViewObservable() {
-        // 观察扫描请求
+        // Observe scan requests
         viewModel.startScanEvent.observe(this, v -> {
 
             if (DeviceUtils.isAppInstalled(getContext(), DeviceUtils.UART_AIDL_SERVICE_APP_PACKAGE_NAME)) {

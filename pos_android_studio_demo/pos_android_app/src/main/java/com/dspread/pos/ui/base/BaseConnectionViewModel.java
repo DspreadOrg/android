@@ -16,7 +16,7 @@ import me.goldze.mvvmhabit.utils.SPUtils;
 
 public class BaseConnectionViewModel extends BaseAppViewModel {
     private SingleLiveEvent<Boolean> connectionStatus = new SingleLiveEvent<>();
-    // 当前选中的交易类型
+    // The currently selected transaction type
     public final ObservableField<String> selectedTransType = new ObservableField<>();
 
     public BaseConnectionViewModel(@NonNull Application application) {

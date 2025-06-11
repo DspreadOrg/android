@@ -32,7 +32,7 @@ public class DevUtils {
     }
 
     /**
-     * 获取进程名
+     * Get process name
      */
     public static String getProcessName(int pid) {
         BufferedReader reader = null;
@@ -58,32 +58,32 @@ public class DevUtils {
     }
 
     /**
-     * 获取设备唯一标识
+     * Obtain the unique identifier of the device
      */
     public static String getDeviceId(Context context) {
         String deviceId = "";
         try {
-            // 获取设备序列号
+            // Obtain the device serial number
             String serial = Build.SERIAL;
-            // 获取ANDROID_ID
+            // Obtain ANDROID_ID
             String androidId = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
-            // 获取设备硬件信息
+            // Obtain device hardware information
             String hardware = Build.HARDWARE;
-            // 获取设备指纹
+            // Obtain device fingerprint
             String fingerprint = Build.FINGERPRINT;
 
-            // 组合设备信息生成唯一ID
+            // Generate a unique ID by combining device information
             deviceId = SHA256(serial + androidId + hardware + fingerprint);
         } catch (Exception e) {
             e.printStackTrace();
-            // 如果获取失败，使用UUID作为备选方案
+            // If the acquisition fails, use UUID as an alternative solution
             deviceId = UUID.randomUUID().toString();
         }
         return deviceId;
     }
 
     /**
-     * SHA256加密
+     * SHA256 encryption
      */
     private static String SHA256(String str) {
         MessageDigest messageDigest;
@@ -99,7 +99,7 @@ public class DevUtils {
     }
 
     /**
-     * 将byte转为16进制
+     * Convert bytes to hex
      */
     private static String byte2Hex(byte[] bytes) {
         StringBuilder stringBuilder = new StringBuilder();

@@ -24,7 +24,7 @@ public class DeviceConfigSelectionViewModel extends BaseViewModel {
     private List<DeviceConfigItem> allCurrencies = new ArrayList<>();
 
     public void init(int type) {
-        allCurrencies.clear(); // 清除旧数据
+        allCurrencies.clear(); // Clear old data
         switch (type) {
             case DeviceConfigActivity.TYPE_CURRENCY:
                 initCurrencyList();
@@ -65,7 +65,7 @@ public class DeviceConfigSelectionViewModel extends BaseViewModel {
                 allCurrencies.add(new DeviceConfigItem(
                         currency.getCode(),
                         currency.getName(),
-                        currency.getFlag(),  // 这里直接使用库提供的国旗资源ID
+                        currency.getFlag(),  // Use the flag resource ID provided by the library directly here
                         numericCode
                 ));
             }catch (Exception e){

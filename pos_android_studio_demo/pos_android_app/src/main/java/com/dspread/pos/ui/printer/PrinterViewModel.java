@@ -29,7 +29,7 @@ public class PrinterViewModel extends BaseAppViewModel {
     public SingleLiveEvent<Intent> startActivityEvent = new SingleLiveEvent<>();
     public List<PrinterItemViewModel> items = new ArrayList<>();
     
-    // 添加 ItemBinding 配置
+    // Add ItemBinding configuration
     public ItemBinding<Object> itemBinding = ItemBinding.of(BR.item, R.layout.printer_work_item)
             .bindExtra(BR.viewModel, this);
 
@@ -41,7 +41,7 @@ public class PrinterViewModel extends BaseAppViewModel {
     });
 
     public void onItemClick(PrinterItemViewModel item) {
-        // 根据不同的打印项目跳转到对应的界面
+        // Jump to the corresponding interface based on different printing projects
         int title = item.titleId;
         int img = item.iconResId;
         TRACE.i("test print = "+title);

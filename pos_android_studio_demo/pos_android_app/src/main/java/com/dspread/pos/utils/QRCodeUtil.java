@@ -51,36 +51,36 @@ public class QRCodeUtil {
 
 
     /**
-     * 把一张Bitmap图片转化为打印机可以打印的字节流
+     * Convert a bitmap image into a byte stream that can be printed by the printer
      *
      * @param bmp
      * @return
      */
     public static byte[] draw2PxPoint(Bitmap bmp) {
-        //用来存储转换后的 bitmap 数据。为什么要再加1000，这是为了应对当图片高度无法
-        //整除24时的情况。比如bitmap 分辨率为 240 * 250，占用 7500 byte，
-        //但是实际上要存储11行数据，每一行需要 24 * 240 / 8 =720byte 的空间。再加上一些指令存储的开销，
-        //所以多申请 1000byte 的空间是稳妥的，不然运行时会抛出数组访问越界的异常。
+        //Used to store the converted bitmap data. Why do we need to add 1000 more? This is to deal with situations where the image height cannot be reached
+        //Divide by 24 hours. For example, the bitmap resolution is 240 * 250 and occupies 7500 bytes,
+        //But in reality, to store 11 rows of data, each row requires 720 bytes of space, which is 24 * 240/8. In addition to some instruction storage overhead,
+        //So it is safe to apply for an additional 1000 bytes of space, otherwise the runtime will throw an array access out of bounds exception.
         int size = bmp.getWidth() * bmp.getHeight() / 8 + 1000;
         byte[] data = new byte[size];
         int k = 0;
-        //设置行距为0的指令
+        //Instruction to set line spacing to 0
         data[k++] = 0x1B;
         data[k++] = 0x33;
         data[k++] = 0x00;
-        // 逐行打印
+        // Print line by line
         for (int j = 0; j < bmp.getHeight() / 24f; j++) {
-            //打印图片的指令
+            //Instructions for printing images
             data[k++] = 0x1B;
             data[k++] = 0x2A;
             data[k++] = 33;
             data[k++] = (byte) (bmp.getWidth() % 256); //nL
             data[k++] = (byte) (bmp.getWidth() / 256); //nH
-            //对于每一行，逐列打印
+            //Print column by column for each row
             for (int i = 0; i < bmp.getWidth(); i++) {
-                //每一列24个像素点，分为3个字节存储
+                //24 pixels per column, divided into 3 bytes for storage
                 for (int m = 0; m < 3; m++) {
-                    //每个字节表示8个像素点，0表示白色，1表示黑色
+                    //Each byte represents 8 pixels, 0 represents white, 1 represents black
                     for (int n = 0; n < 8; n++) {
                         byte b = px2Byte(i, j * 24 + m * 8 + n, bmp);
                         data[k] += data[k] + b;
@@ -88,26 +88,26 @@ public class QRCodeUtil {
                     k++;
                 }
             }
-            data[k++] = 10;//换行
+            data[k++] = 10;//newline
         }
         return data;
     }
 
     /**
-     * 灰度图片黑白化，黑色是1，白色是0
+     * Grayscale image is black and white, with black being 1 and white being 0
      *
-     * @param x   横坐标
-     * @param y   纵坐标
-     * @param bit 位图
+     * @param x   abscissa
+     * @param y   y-coordinate
+     * @param bit BITMAP
      * @return
      */
     public static byte px2Byte(int x, int y, Bitmap bit) {
         if (x < bit.getWidth() && y < bit.getHeight()) {
             byte b;
             int pixel = bit.getPixel(x, y);
-            int red = (pixel & 0x00ff0000) >> 16; // 取高两位
-            int green = (pixel & 0x0000ff00) >> 8; // 取中两位
-            int blue = pixel & 0x000000ff; // 取低两位
+            int red = (pixel & 0x00ff0000) >> 16; // Obtain the top two bit
+            int green = (pixel & 0x0000ff00) >> 8; // Get the two middle bit
+            int blue = pixel & 0x000000ff; // Get the lower two bit
             int gray = RGB2Gray(red, green, blue);
             if (gray < 128) {
                 b = 1;
@@ -120,7 +120,7 @@ public class QRCodeUtil {
     }
 
     /**
-     * 图片灰度的转化
+     * Conversion of image grayscale
      */
     private static int RGB2Gray(int r, int g, int b) {
         int gray = (int) (0.29900 * r + 0.58700 * g + 0.11400 * b);  //灰度转化公式
@@ -146,7 +146,7 @@ public class QRCodeUtil {
         }
         Bitmap bitmap = Bitmap.createBitmap(width, height,
                 Bitmap.Config.ARGB_8888);
-        // 通过像素数组生成bitmap,具体参�?api
+        // Generate a bitmap through a pixel array,
         bitmap.setPixels(pixels, 0, width, 0, 0, width, height);
         return bitmap;
     }
@@ -154,7 +154,7 @@ public class QRCodeUtil {
     public static Bitmap getQrcodeBM(String content, int size) {
 
         Hashtable<EncodeHintType, Object> hints = new Hashtable<>();
-        // 支持中文配置
+        // Support Chinese configuration
         hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");
         hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H);
         try {

@@ -57,13 +57,13 @@ public class BluetoothDeviceAdapter extends RecyclerView.Adapter<BluetoothDevice
     }
 
     public void addDevice(BluetoothDevice device) {
-        // 检查设备是否已存在
+        // Check if the device already exists
         for (BluetoothDevice existingDevice : devices) {
             if (existingDevice.getAddress().equals(device.getAddress())) {
                 return;
             }
         }
-        // 添加新设备并刷新列表
+        // Add a new device and refresh the list
         devices.add(device);
         notifyDataSetChanged();
     }

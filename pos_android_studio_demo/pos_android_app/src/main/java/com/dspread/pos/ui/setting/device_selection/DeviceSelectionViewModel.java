@@ -22,7 +22,7 @@ import me.goldze.mvvmhabit.utils.SPUtils;
 import me.goldze.mvvmhabit.utils.ToastUtils;
 
 public class DeviceSelectionViewModel extends BaseViewModel {
-    // 当前选中的连接方式
+    // The currently selected connection method
     public final ObservableField<String> selectedConnectionMethod = new ObservableField<>();
     public final ObservableField<String> connectBtnTitle = new ObservableField<>("Connect");
     public final ObservableField<String> bluetoothAddress = new ObservableField<>();
@@ -30,18 +30,18 @@ public class DeviceSelectionViewModel extends BaseViewModel {
     public final ObservableField<Boolean> isConnecting = new ObservableField<>(false);
     public SingleLiveEvent<Void> showUsbDeviceDialogEvent = new SingleLiveEvent<>();
 
-    // 连接方式选项
+    // Connection method options
     public final String[] connectionMethods = {"BLUETOOTH", "UART", "USB"};
 
-    // 连接方式对应的POS_TYPE
+    // POS_TTYPE corresponding to the connection method
     public final POS_TYPE[] posTypes = {POS_TYPE.BLUETOOTH, POS_TYPE.UART, POS_TYPE.USB};
 
-    // 事件：连接方式选择完成
+    // Event: Connection method selection completed
     public final SingleLiveEvent<POS_TYPE> connectionMethodSelectedEvent = new SingleLiveEvent<>();
 
     public final SingleLiveEvent<POS_TYPE> startScanBluetoothEvent = new SingleLiveEvent<>();
 
-    // 当前选中的连接方式索引
+    // Index of the currently selected connection method
     public final MutableLiveData<Integer> selectedIndex = new MutableLiveData<>(-1);
     public String connectedDeviceName;
     private MyBaseApplication myBaseApplication;
@@ -69,10 +69,10 @@ public class DeviceSelectionViewModel extends BaseViewModel {
 
 
     /**
-     * 加载已选择的连接方式
+     * Load the selected connection method
      */
     private void loadSelectedConnectionMethod(String savedConnectionType) {
-        // 根据保存的连接类型设置选中项
+        // Set the selection based on the saved connection type
         for (int i = 0; i < posTypes.length; i++) {
             if (posTypes[i].name().equals(savedConnectionType)) {
                 selectedIndex.setValue(i);
@@ -83,7 +83,7 @@ public class DeviceSelectionViewModel extends BaseViewModel {
     }
 
     /**
-     * 连接方式选择命令
+     * Connection method selection command
      */
     public BindingCommand<String> connectionMethodRadioSelectedCommand = new BindingCommand<>(radioText -> {
         TRACE.i("radio btn selected ="+radioText);
@@ -117,12 +117,12 @@ public class DeviceSelectionViewModel extends BaseViewModel {
     }
 
     /**
-     * 确认选择命令
+     * Confirm the selection command
      */
     public BindingCommand confirmSelectionCommand = new BindingCommand(() -> {
         Integer index = selectedIndex.getValue();
         if (index != null && index >= 0 && index < connectionMethods.length && !getApplication().getString(R.string.disconnect).equals(connectBtnTitle.get())) {
-            // 触发选择完成事件
+            // Trigger selection completion event
             isConnecting.set(true);
             if(!"".equals(SPUtils.getInstance().getString("device_type"))){
                 TRACE.i("currentPOSType = "+currentPOSType);
@@ -159,7 +159,7 @@ public class DeviceSelectionViewModel extends BaseViewModel {
     }
 
     /**
-     * 连接蓝牙设备
+     * Connect Bluetooth devices
      */
     public void connectBluetooth(POS_TYPE posType, String blueTootchAddress){
         if (posType == null || blueTootchAddress == null) {

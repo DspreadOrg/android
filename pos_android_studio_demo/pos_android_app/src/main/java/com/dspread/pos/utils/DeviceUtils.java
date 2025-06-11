@@ -18,34 +18,34 @@ import java.lang.reflect.Method;
 import java.util.Locale;
 
 /**
- * [一句话描述该类的功能]
+ * [Describe the functionality of this class in one sentence]
  *
  * @author : [DH]
  * @createTime : [2024/9/3 10:43]
- * @updateRemark : [说明本次修改内容]
+ * @updateRemark : [Explain the content of this modification]
  */
 public class DeviceUtils {
 
         /**
-         * 获取当前手机系统语言。
+         * Get the current mobile system language。
          *
-         * @return 返回当前系统语言。例如：当前设置的是“中文-中国”，则返回“zh-CN”
+         * @return Return the current system language. For example, if the current setting is "Chinese-China", return "zh-CN"
          */
         public static String getSystemLanguage() {
             return Locale.getDefault().getLanguage();
         }
 
         /**
-         * 获取当前系统上的语言列表(Locale列表)
+         * Retrieve the list of languages (Locale list) on the current system
          *
-         * @return  语言列表
+         * @return  Lists of languages
          */
         public static Locale[] getSystemLanguageList() {
             return Locale.getAvailableLocales();
         }
 
         /**
-         * 获取androidId
+         * obtain androidId
          * @return
          */
         public static String getAndroidId(Context context) {
@@ -53,7 +53,7 @@ public class DeviceUtils {
         }
 
         /**
-         * 相机是否可用
+         * Is the camera available
          *
          * @return
          */
@@ -63,35 +63,35 @@ public class DeviceUtils {
         }
 
         /**
-         * 获取手机厂商
+         * Obtain mobile phone manufacturers
          *  HuaWei
-         * @return 手机厂商
+         * @return Mobile phone manufacturers
          */
         public static String getPhoneBrand() {
             return Build.BRAND;
         }
 
         /**
-         * 获取手机型号
-         * @return 手机型号
+         * Get phone model
+         * @return Mobile phone model
          */
         public static String getPhoneModel() {
             return Build.MODEL;
         }
 
         /**
-         * 获取当前手机系统版本号
+         * Get the current mobile system version number
          * Android     10
-         * @return 系统版本号
+         * @return System Version Number
          */
         public static String getVersionRelease() {
             return Build.VERSION.RELEASE;
         }
 
         /**
-         * 获取当前手机设备名
-         * 设备统一型号,不是"关于手机"的中设备名
-         * @return 设备名
+         * Get the current mobile device name
+         * Unified device model, not the device name in 'About Mobile'
+         * @return device name
          */
         public static String getDeviceName() {
             return Build.DEVICE;
@@ -106,9 +106,9 @@ public class DeviceUtils {
         }
 
         /**
-         * 获取手机主板名
+         * Get the name of the phone motherboard
          *
-         * @return  主板名
+         * @return  Motherboard name
          */
         public static String getDeviceBoard() {
             return Build.BOARD;
@@ -132,9 +132,9 @@ public class DeviceUtils {
         return false;
     }
         /**
-         * 获取手机厂商名
+         * Obtain the name of the mobile phone manufacturer
          * HuaWei
-         * @return  手机厂商名
+         * @return  Mobile phone manufacturer name
          */
         public static String getDeviceManufacturer() {
             return Build.MANUFACTURER;

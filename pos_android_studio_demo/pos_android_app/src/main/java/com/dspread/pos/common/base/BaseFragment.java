@@ -14,7 +14,7 @@ public abstract class BaseFragment<V extends ViewDataBinding, VM extends BaseVie
     @Override
     public void initData() {
         super.initData();
-        // 统一处理 Fragment 的初始化逻辑
+        // Unified initialization logic for handling fragment
         if (getActivity() instanceof MainActivity && this instanceof TitleProvider) {
             ((MainActivity) getActivity()).setToolbarTitle(((TitleProvider) this).getTitle());
         }

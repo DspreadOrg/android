@@ -13,10 +13,10 @@ public class ImageProcessor {
     private static final int CONTRAST_MAX = 160;
 
     /**
-     * 同步方法：将 Bitmap 转换为黑白图（保留透明背景）。
+     * Synchronization method: Convert the bitmap to a black and white image (keeping the transparent background).
      *
-     * @param bmp 输入 Bitmap
-     * @return 转换后的黑白 Bitmap
+     * @param bmp input Bitmap
+     * @return Converted black and white Bitmap
      */
     public static Bitmap convertToBlackWhite(Bitmap bmp) {
         int width = bmp.getWidth();
@@ -90,10 +90,10 @@ public class ImageProcessor {
     }
 
     /**
-     * 异步方法：将 Bitmap 转换为黑白图（保留透明背景）。
+     * Asynchronous method: Convert the bitmap to a black and white image (preserving a transparent background).
      *
-     * @param bmp      输入 Bitmap
-     * @param listener 结果回调
+     * @param bmp      Input Bitmap
+     * @param listener Result callback
      */
     public static void convertToBlackWhiteAsync(Bitmap bmp, OnBitmapProcessedListener listener) {
         executorService.execute(() -> {
@@ -107,7 +107,7 @@ public class ImageProcessor {
     }
 
     /**
-     * 回调接口：Bitmap 处理完成后返回结果。
+     * Callback interface: Return the result after completing the bitmap processing.
      */
     public interface OnBitmapProcessedListener {
         void onBitmapProcessed(Bitmap bitmap);

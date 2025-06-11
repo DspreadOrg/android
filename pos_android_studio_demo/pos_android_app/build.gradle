@@ -37,7 +37,7 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         ndk {
-            // 设置支持的SO库架构
+            // Set up supported SO library architecture
             abiFilters 'armeabi-v7a' //, 'x86', 'armeabi-v7a', 'x86_64', 'arm64-v8a'
         }
     }
@@ -55,7 +55,7 @@ android {
     dataBinding {
         enabled true
     }
-    // 重要：禁用现代打包格式（否则会生成通用APK）
+    //Important: Disable modern packaging formats (otherwise a generic APK will be generated)
     packagingOptions {
         doNotStrip '**/lib/*.so' // 保留所有SO文件
     }
@@ -115,6 +115,6 @@ dependencies {
     implementation 'com.alibaba:fastjson:1.2.83'
 
     implementation("com.tencent.shiply:upgrade:2.2.0")
-    implementation("com.tencent.shiply:upgrade-ui:2.2.0") // 弹框ui相关，业务方如果自己自定义弹框，可以不依赖这个库
+    implementation("com.tencent.shiply:upgrade-ui:2.2.0") // Pop up UI related, if the business side customizes their own pop ups, they can not rely on this library
     implementation 'com.github.midorikocak:currency-picker-android:1.2.1'
 }

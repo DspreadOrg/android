@@ -38,13 +38,13 @@ public abstract class PrinterBaseActivity<V extends ViewDataBinding, VM extends 
             return;
         }
         
-        // 设置打印机实例到 ViewModel
+        // Set printer instance to ViewModel
         viewModel.setPrinter(mPrinter,this);
         
         MyPrinterListener myPrinterListener = new MyPrinterListener();
         mPrinter.setPrintListener(myPrinterListener);
 
-        // 设置返回按钮点击事件
+        // Set return button click event
         binding.toolbar.setNavigationOnClickListener(v -> finish());
     }
 

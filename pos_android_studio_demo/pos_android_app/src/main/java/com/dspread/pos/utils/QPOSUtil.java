@@ -154,7 +154,7 @@ public class QPOSUtil {
         return b;
     }
 
-    //低位在前
+    //Low position ahead
     public static byte[] intToBytes( int value )
     {
         byte[] src = new byte[2];

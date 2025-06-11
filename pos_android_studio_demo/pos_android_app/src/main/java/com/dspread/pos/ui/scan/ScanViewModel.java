@@ -16,7 +16,7 @@ public class ScanViewModel extends BaseAppViewModel {
     public ObservableBoolean isScanning = new ObservableBoolean(false);
     public ObservableBoolean hasResult = new ObservableBoolean(false);
     public ObservableField<String> scanResult = new ObservableField<>("");
-    // 移除 launcher 相关代码
+    // Remove launcher related code
     public SingleLiveEvent<Void> startScanEvent = new SingleLiveEvent<>();
 
 

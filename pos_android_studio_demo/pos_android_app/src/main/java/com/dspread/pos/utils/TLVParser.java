@@ -43,7 +43,7 @@ public class TLVParser {
 
             if ((data[index] & (byte) 0x20) == (byte) (0x20)) {
                 isNested = true;
-                //复合结构
+                //Composite structure
             } else {
                 isNested = false;
             }
@@ -175,7 +175,7 @@ public class TLVParser {
 
 
 
-    // 十六进制字符串转字节数组
+    // Hexadecimal string to byte array conversion
     public static byte[] hexToByteArray(String hexStr) {
         if (hexStr.length() < 1)
             return null;
@@ -229,10 +229,10 @@ public class TLVParser {
 
     /*
     *
-    * 验证tlv格式
-    * 只取第一个tlv作判断 一旦遇到0代表结束
-    * tlv 为true
-    * tv 为false
+    * Verify TLV format
+    * Only take the first tlv for judgment. Once 0 is encountered, it means the end
+    * tlv is true
+    * tv is false
     * */
     public static boolean VerifyTLV(String emvCfg) {
 

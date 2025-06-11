@@ -90,7 +90,7 @@ public class LogFileConfig {
             d.write(str.getBytes());
             d.flush();
             d.close();
-            // 上传日志到Bugly
+            // Upload logs to Bugly
 //            CrashReport.postCatchedException(new Exception(str));
         } catch (Exception e) {
 //            e.printStackTrace();
@@ -113,7 +113,7 @@ public class LogFileConfig {
                 result.append(temp);
             }
 
-            int maxLength = 512; // Bugly对每段数据长度有限制
+            int maxLength = 512; // Bugly has a limit on the length of each data segment
             int segments = (result.length() + maxLength - 1) / maxLength;
 
             for (int i = 0; i < segments; i++) {
@@ -121,7 +121,7 @@ public class LogFileConfig {
                 int end = Math.min((i + 1) * maxLength, result.length());
                 String segment = result.substring(start, end);
 
-                // 上传日志片段
+                // Upload log fragments
                 Map<String, String> map = new HashMap<>();
                 map.put("logFileName", file.getName());
                 map.put("segmentIndex", String.valueOf(i));
@@ -134,10 +134,10 @@ public class LogFileConfig {
             }
             CrashReport.putUserData(mContext,"POSID", SPUtils.getInstance().getString("posID"));
 
-            // 设置场景标签
+            // Set scene labels
             CrashReport.setUserSceneTag(mContext, 90001);
 
-            // 触发上传
+            // Trigger upload
             CrashReport.postCatchedException(
                     new Exception("CustomLog: " + file.getName() + ", segments: " + segments));
             Log.i("POS", "result:" + result);
@@ -185,7 +185,7 @@ public class LogFileConfig {
         } catch (Exception e) {
 
         }
-        Log.d("pos", "文件路径：" + file.getAbsolutePath());
+        Log.d("pos", "File Path：" + file.getAbsolutePath());
 
         return file;
     }
@@ -193,8 +193,8 @@ public class LogFileConfig {
 
 
     /**
-     * 递归删除目录下的所有文件及子目录下所有文件
-     * @param dir 将要删除的文件目录
+     * Recursively delete all files in the directory and all files in subdirectories
+     * @param dir Directory of files to be deleted
      * @return boolean Returns "true" if all deletions were successful.
      *                 If a deletion fails, the method stops attempting to
      *                 delete and returns "false".
@@ -227,7 +227,7 @@ public class LogFileConfig {
                     }
             }
             }
-        // 目录此时为空，可以删除
+        // The directory is currently empty and can be deleted
         return dir.delete();
 
     }

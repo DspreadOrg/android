@@ -20,7 +20,7 @@ import me.goldze.mvvmhabit.base.BaseViewModel;
 
 /**
  * Created by goldze on 2017/7/17.
- * 抽取的二级BasePagerFragment
+ * Extract the second level BasePagerFragment
  */
 
 public abstract class BasePagerFragment extends BaseFragment<FragmentBasePagerBinding, BaseViewModel> {
@@ -46,7 +46,7 @@ public abstract class BasePagerFragment extends BaseFragment<FragmentBasePagerBi
     public void initData() {
         mFragments = pagerFragment();
         titlePager = pagerTitleString();
-        //设置Adapter
+        //Set Adapter
         BaseFragmentPagerAdapter pagerAdapter = new BaseFragmentPagerAdapter(getChildFragmentManager(), mFragments, titlePager);
         binding.viewPager.setAdapter(pagerAdapter);
         binding.tabs.setupWithViewPager(binding.viewPager);

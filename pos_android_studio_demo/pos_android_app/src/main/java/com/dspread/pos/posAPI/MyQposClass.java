@@ -34,7 +34,7 @@ public class MyQposClass extends CQPOSService {
     }
 
     @CallbackChange(
-        description = "错误回调现在会通知所有注册的监听器",
+        description = "Error callback will now notify all registered listeners",
         type = CallbackChange.ChangeType.MODIFIED
     )
     @Override

@@ -19,13 +19,13 @@ public class HomeViewModel extends BaseAppViewModel {
     public SingleLiveEvent<Long> paymentStartEvent = new SingleLiveEvent<>();
     
     public StringBuilder amountBuilder = new StringBuilder();
-    private static final int MAX_DIGITS = 12; // 最大金额位数
+    private static final int MAX_DIGITS = 12; // Maximum amount digits
     
     public HomeViewModel(@NonNull Application application) {
         super(application);
     }
     
-    // 更新金额显示
+    // Update amount display
     private void updateAmountDisplay() {
         if (amountBuilder.length() == 0) {
             amount.set("¥0.00");
@@ -33,7 +33,7 @@ public class HomeViewModel extends BaseAppViewModel {
         }
         
         String amountStr = amountBuilder.toString();
-        // 转换为带两位小数的金额显示
+        // Convert to display an amount with two decimal places
         if (amountStr.length() == 1) {
             amount.set(String.format("¥0.0%s", amountStr));
         } else if (amountStr.length() == 2) {
@@ -71,7 +71,7 @@ public class HomeViewModel extends BaseAppViewModel {
         updateAmountDisplay();
     }
 
-    // 确认按钮命令
+    // Confirm button command
     public BindingCommand onConfirmClickCommand = new BindingCommand(() -> {
         if(amountBuilder.length() == 0){
             if(SPUtils.getInstance().getString("transactionType") != null && !"".equals(SPUtils.getInstance().getString("transactionType"))){

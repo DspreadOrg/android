@@ -17,7 +17,7 @@ public class BaseAppViewModel extends BaseViewModel {
         this.context = application.getApplicationContext();
     }
 
-    // 添加公共的 ViewModel 方法
+    // Add a public ViewModel method
     protected void showLoading() {
         showDialog();
     }

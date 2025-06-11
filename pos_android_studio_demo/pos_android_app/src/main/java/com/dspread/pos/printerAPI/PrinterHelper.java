@@ -61,7 +61,7 @@ public class PrinterHelper {
 
     public void printText(String alignText,String fontStyle,String textSize, String printContent) throws RemoteException {
         PrintLineStyle style = new PrintLineStyle();
-        // 设置对齐方式
+        // Set alignment method
         switch (alignText) {
             case "LEFT":
                 style.setAlign(PrintLine.LEFT);
@@ -74,7 +74,7 @@ public class PrinterHelper {
                 break;
         }
 
-        // 设置字体样式
+        // Set font style
         switch (fontStyle) {
             case "NORMAL":
                 style.setFontStyle(PrintStyle.FontStyle.NORMAL);

@@ -69,7 +69,7 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
             Intent intent = new Intent(getActivity(), PaymentActivity.class);
             intent.putExtra("amount", String.valueOf(inputMoney));
             startActivity(intent);
-            // 获取系统标准跳转动画时间
+            // Obtain the system standard jump animation time
             int animTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
             getView().postOnAnimationDelayed(() -> {
                 viewModel.clearAmount();
