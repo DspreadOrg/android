@@ -7,9 +7,9 @@ import androidx.annotation.NonNull;
 import androidx.databinding.ObservableField;
 import androidx.lifecycle.MutableLiveData;
 
-import com.dspread.pos.MyBaseApplication;
+import com.dspread.pos.TerminalApplication;
 import com.dspread.pos.common.enums.POS_TYPE;
-import com.dspread.pos.posAPI.POSCommand;
+import com.dspread.pos.posAPI.POS;
 import com.dspread.pos.utils.TRACE;
 import com.dspread.pos_android_app.R;
 import com.dspread.xpos.QPOSService;
@@ -44,13 +44,13 @@ public class DeviceSelectionViewModel extends BaseViewModel {
     // Index of the currently selected connection method
     public final MutableLiveData<Integer> selectedIndex = new MutableLiveData<>(-1);
     public String connectedDeviceName;
-    private MyBaseApplication myBaseApplication;
+    private TerminalApplication myBaseApplication;
     public POS_TYPE currentPOSType;
 
     public DeviceSelectionViewModel(@NonNull Application application) {
         super(application);
         if(myBaseApplication == null){
-            myBaseApplication = (MyBaseApplication) BaseApplication.getInstance();
+            myBaseApplication = (TerminalApplication) BaseApplication.getInstance();
         }
         if(!"".equals(SPUtils.getInstance().getString("device_type"))){
             connectedDeviceName = SPUtils.getInstance().getString("device_type");
@@ -109,11 +109,11 @@ public class DeviceSelectionViewModel extends BaseViewModel {
     });
 
     public void startScanBluetooth(){
-        POSCommand.getInstance().scanQPos2Mode(getApplication(),20);
+        POS.getInstance().scanQPos2Mode(getApplication(),20);
     }
 
     public void stopScanBluetooth(){
-        POSCommand.getInstance().stopScanQPos2Mode();
+        POS.getInstance().stopScanQPos2Mode();
     }
 
     /**
@@ -126,12 +126,12 @@ public class DeviceSelectionViewModel extends BaseViewModel {
             isConnecting.set(true);
             if(!"".equals(SPUtils.getInstance().getString("device_type"))){
                 TRACE.i("currentPOSType = "+currentPOSType);
-                POSCommand.getInstance().close(currentPOSType);
+                POS.getInstance().close(currentPOSType);
             }
             openDevice(posTypes[index]);
         } else if(getApplication().getString(R.string.disconnect).equals(connectBtnTitle.get())){
-            POSCommand.getInstance().close(currentPOSType);
-            POSCommand.getInstance().setQPOSService(null);
+            POS.getInstance().close(currentPOSType);
+            POS.getInstance().setQPOSService(null);
         }else {
             ToastUtils.showShort("Pls choose one connection method!");
         }
@@ -142,8 +142,7 @@ public class DeviceSelectionViewModel extends BaseViewModel {
             openUSBDeviceEvent();
         }else if(posType == POS_TYPE.UART){
             myBaseApplication.open(QPOSService.CommunicationMode.UART, getApplication());
-            POSCommand.getInstance().setDeviceAddress("/dev/ttyS1");
-            POSCommand.getInstance().openUart();
+            POS.getInstance().openUart();
         }else {
             connectBluetooth(posType, bluetoothAddress.get());
         }
@@ -155,7 +154,7 @@ public class DeviceSelectionViewModel extends BaseViewModel {
 
     public void openUSBDevice(UsbDevice usbDevice) {
         myBaseApplication.open(QPOSService.CommunicationMode.USB_OTG_CDC_ACM, getApplication());
-        POSCommand.getInstance().openUsb(usbDevice);
+        POS.getInstance().openUsb(usbDevice);
     }
 
     /**
@@ -165,11 +164,12 @@ public class DeviceSelectionViewModel extends BaseViewModel {
         if (posType == null || blueTootchAddress == null) {
             TRACE.d("return close");
         } else if (posType == POS_TYPE.BLUETOOTH) {
-            POSCommand.getInstance().stopScanQPos2Mode();
-            POSCommand.getInstance().connectBluetoothDevice(true, 25, blueTootchAddress);
+            POS.getInstance().stopScanQPos2Mode();
+            POS.getInstance().setDeviceAddress(blueTootchAddress);
+            POS.getInstance().connectBluetoothDevice(true, 25, blueTootchAddress);
         } else if (posType == POS_TYPE.BLUETOOTH_BLE) {
-            POSCommand.getInstance().stopScanQposBLE();
-            POSCommand.getInstance().connectBLE(blueTootchAddress);
+            POS.getInstance().stopScanQposBLE();
+            POS.getInstance().connectBLE(blueTootchAddress);
         }
     }
 

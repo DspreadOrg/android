@@ -7,12 +7,8 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-import androidx.annotation.NonNull;
-import androidx.lifecycle.DefaultLifecycleObserver;
-import androidx.lifecycle.LifecycleOwner;
-
 import com.dspread.pos.common.base.BaseFragment;
-import com.dspread.pos.posAPI.POSCommand;
+import com.dspread.pos.posAPI.POS;
 import com.dspread.pos.ui.base.TitleProvider;
 import com.dspread.pos.ui.payment.PaymentActivity;
 import com.dspread.pos.utils.TRACE;
@@ -60,7 +56,7 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
     public void initViewObservable() {
         viewModel.paymentStartEvent.observe(this, inputMoney -> {
             if (!canshow) return;
-            if(POSCommand.getInstance().getQPOSService() == null){
+            if(POS.getInstance().getQPOSService() == null){
                 ToastUtils.showShort(getString(R.string.connect_warnning));
                 return;
             }

@@ -6,13 +6,10 @@ import androidx.annotation.NonNull;
 import androidx.databinding.ObservableBoolean;
 import androidx.databinding.ObservableField;
 
-import com.dspread.pos.MyBaseApplication;
+import com.dspread.pos.TerminalApplication;
 import com.dspread.pos.common.enums.POS_TYPE;
-import com.dspread.pos.posAPI.POSCommand;
+import com.dspread.pos.posAPI.POS;
 import com.dspread.pos.utils.DeviceUtils;
-import com.dspread.pos.utils.TRACE;
-import com.dspread.pos_android_app.R;
-import com.dspread.xpos.QPOSService;
 
 import me.goldze.mvvmhabit.base.BaseApplication;
 import me.goldze.mvvmhabit.base.BaseViewModel;
@@ -20,7 +17,6 @@ import me.goldze.mvvmhabit.binding.command.BindingCommand;
 import me.goldze.mvvmhabit.binding.command.BindingConsumer;
 import me.goldze.mvvmhabit.bus.event.SingleLiveEvent;
 import me.goldze.mvvmhabit.utils.SPUtils;
-import me.goldze.mvvmhabit.utils.ToastUtils;
 
 public class ConnectionSettingsViewModel extends BaseViewModel {
     // The name of the currently connected device
@@ -49,14 +45,14 @@ public class ConnectionSettingsViewModel extends BaseViewModel {
     
     // Event: Currency Code Click
     public final SingleLiveEvent<Void> currencyCodeClickEvent = new SingleLiveEvent<>();
-    private MyBaseApplication baseApplication;
+    private TerminalApplication baseApplication;
     private POS_TYPE currentPOSType;
 
     public ConnectionSettingsViewModel(@NonNull Application application) {
         super(application);
         loadSettings();
         if(baseApplication == null){
-            baseApplication = (MyBaseApplication) BaseApplication.getInstance();
+            baseApplication = (TerminalApplication) BaseApplication.getInstance();
         }
     }
 
@@ -134,10 +130,10 @@ public class ConnectionSettingsViewModel extends BaseViewModel {
                 if (isChecked) {
                     selectDeviceEvent.call();
                 } else {
-                    POSCommand.getInstance().close(DeviceUtils.getDevicePosType(deviceType));
+                    POS.getInstance().close(DeviceUtils.getDevicePosType(deviceType));
                     SPUtils.getInstance().put("isConnectedAutoed",false);
                     updateDeviceName("No device");
-                    POSCommand.getInstance().setQPOSService(null);
+                    POS.getInstance().setQPOSService(null);
                 }
             }
             saveSettings();

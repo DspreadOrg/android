@@ -1,6 +1,5 @@
 package com.dspread.pos.ui.main;
 
-import android.content.Context;
 import android.content.pm.ActivityInfo;
 
 import android.os.Bundle;
@@ -10,25 +9,19 @@ import android.os.Message;
 import android.view.KeyEvent;
 
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
 
 import com.dspread.pos.common.enums.POS_TYPE;
-import com.dspread.pos.posAPI.MyCustomQPOSCallback;
+import com.dspread.pos.posAPI.CustomQPOSCallback;
 import com.dspread.pos.common.manager.QPOSCallbackManager;
-import com.dspread.pos.posAPI.POSCommand;
+import com.dspread.pos.posAPI.POS;
 import com.dspread.pos.ui.home.HomeFragment;
 import com.dspread.pos.utils.DevUtils;
 import com.dspread.pos.utils.Mydialog;
@@ -36,7 +29,6 @@ import com.dspread.pos.utils.TRACE;
 import com.dspread.pos_android_app.BR;
 import com.dspread.pos_android_app.R;
 import com.dspread.pos_android_app.databinding.ActivityMainBinding;
-import com.dspread.xpos.QPOSService;
 import com.google.android.material.navigation.NavigationView;
 import com.tencent.upgrade.core.DefaultUpgradeStrategyRequestCallback;
 import com.tencent.upgrade.core.UpgradeManager;
@@ -46,7 +38,7 @@ import java.util.Hashtable;
 import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.utils.SPUtils;
 
-public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewModel> implements MyCustomQPOSCallback{
+public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewModel> implements CustomQPOSCallback {
     public void setToolbarTitle(String title) {
         if (toolbar != null) {
             toolbar.setTitle(title);
@@ -79,7 +71,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     public void initData() {
         super.initData();
         viewModel.handleNavigationItemClick(R.id.nav_home);
-        QPOSCallbackManager.getInstance().registerCallback(MyCustomQPOSCallback.class, this);
+        QPOSCallbackManager.getInstance().registerCallback(CustomQPOSCallback.class, this);
 //        viewModel = new MainViewModel(getApplication(), this);
 //        binding.setVariable(BR.viewModel, viewModel);
         drawerLayout = binding.drawerLayout;
@@ -131,7 +123,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        QPOSCallbackManager.getInstance().unregisterCallback(MyCustomQPOSCallback.class);
+        QPOSCallbackManager.getInstance().unregisterCallback(CustomQPOSCallback.class);
         TRACE.i("main is onDestroy");
         SPUtils.getInstance().put("isConnected",false);
         SPUtils.getInstance().put("device_type", "");
@@ -192,7 +184,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
 
     @Override
     public void onRequestQposConnected() {
-        MyCustomQPOSCallback.super.onRequestQposConnected();
+        CustomQPOSCallback.super.onRequestQposConnected();
         SPUtils.getInstance().put("isConnected",true);
         SPUtils.getInstance().put("device_type", POS_TYPE.UART.name());
         if(viewModel.pos != null){
@@ -204,16 +196,16 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
 
     @Override
     public void onRequestNoQposDetected() {
-        MyCustomQPOSCallback.super.onRequestNoQposDetected();
+        CustomQPOSCallback.super.onRequestNoQposDetected();
         SPUtils.getInstance().put("isConnected",false);
-        POSCommand.getInstance().setQPOSService(null);
+        POS.getInstance().setQPOSService(null);
     }
 
     @Override
     public void onRequestQposDisconnected() {
-        MyCustomQPOSCallback.super.onRequestQposDisconnected();
+        CustomQPOSCallback.super.onRequestQposDisconnected();
         SPUtils.getInstance().put("isConnected",false);
-        POSCommand.getInstance().setQPOSService(null);
+        POS.getInstance().setQPOSService(null);
     }
 }
 

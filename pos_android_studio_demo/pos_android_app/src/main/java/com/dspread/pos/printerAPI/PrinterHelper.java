@@ -148,7 +148,7 @@ public class PrinterHelper {
         Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.mipmap.test);
 
         PrintLineStyle printLineStyle = new PrintLineStyle();
-        mPrinter.setFooter(80);
+        mPrinter.setFooter(20);
         printLineStyle.setAlign(PrintLine.CENTER);
         mPrinter.setPrintStyle(printLineStyle);
         mPrinter.printBitmap(context, bitmap);

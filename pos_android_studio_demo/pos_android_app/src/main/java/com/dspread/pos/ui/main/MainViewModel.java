@@ -2,7 +2,6 @@ package com.dspread.pos.ui.main;
 
 import android.app.Application;
 import android.view.KeyEvent;
-import android.view.MenuItem;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -10,7 +9,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.dspread.pos.MyBaseApplication;
+import com.dspread.pos.TerminalApplication;
 import com.dspread.pos.common.manager.FragmentCacheManager;
 import com.dspread.pos.ui.base.TitleProvider;
 import com.dspread.pos.ui.home.HomeFragment;
@@ -43,7 +42,7 @@ public class MainViewModel extends BaseViewModel {
     private WeakReference<MainActivity> activityRef;
     public Fragment currentFragment;
     public HomeFragment homeFragment;
-    private MyBaseApplication myBaseApplication;
+    private TerminalApplication myBaseApplication;
     public QPOSService pos;
 
     public MainViewModel(@NonNull Application application, MainActivity activity) {
@@ -53,7 +52,7 @@ public class MainViewModel extends BaseViewModel {
         this.activity = activity;
 //        initFragments();
         if(myBaseApplication == null){
-            myBaseApplication = (MyBaseApplication) BaseApplication.getInstance();
+            myBaseApplication = (TerminalApplication) BaseApplication.getInstance();
         }
     }
 
@@ -61,7 +60,6 @@ public class MainViewModel extends BaseViewModel {
         if(DeviceUtils.isSmartDevices()){
             myBaseApplication.open(QPOSService.CommunicationMode.UART, getApplication());
             pos = myBaseApplication.getQposService();
-            pos.setDeviceAddress("/dev/ttyS1");
             pos.openUart();
             SPUtils.getInstance().put("isConnectedAutoed",true);
         }

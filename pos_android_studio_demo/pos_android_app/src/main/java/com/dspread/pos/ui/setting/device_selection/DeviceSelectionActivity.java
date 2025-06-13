@@ -15,7 +15,6 @@ import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.RadioButton;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
@@ -29,26 +28,22 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.dspread.pos.common.enums.POS_TYPE;
 import com.dspread.pos.common.manager.QPOSCallbackManager;
-import com.dspread.pos.posAPI.MyCustomQPOSCallback;
-import com.dspread.pos.posAPI.POSCommand;
+import com.dspread.pos.posAPI.CustomQPOSCallback;
 import com.dspread.pos.utils.TRACE;
 import com.dspread.pos.utils.USBClass;
 import com.dspread.pos_android_app.BR;
 import com.dspread.pos_android_app.R;
 import com.dspread.pos_android_app.databinding.ActivityDeviceSelectionBinding;
-import com.dspread.xpos.QPOSService;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
-import io.reactivex.functions.Consumer;
 import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.utils.SPUtils;
 import me.goldze.mvvmhabit.utils.ToastUtils;
 
-public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectionBinding, DeviceSelectionViewModel>  implements MyCustomQPOSCallback {
+public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectionBinding, DeviceSelectionViewModel>  implements CustomQPOSCallback {
 
     // Result constant
     public static final String EXTRA_DEVICE_NAME = "device_name";
@@ -78,7 +73,7 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
     @Override
     public void initData() {
         super.initData();
-        QPOSCallbackManager.getInstance().registerCallback(MyCustomQPOSCallback.class, this);
+        QPOSCallbackManager.getInstance().registerCallback(CustomQPOSCallback.class, this);
         // Set return button click event
         binding.toolbar.setNavigationOnClickListener(v -> finish());
         initBluetoothDevicesDialog();
@@ -325,7 +320,7 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        QPOSCallbackManager.getInstance().unregisterCallback(MyCustomQPOSCallback.class);
+        QPOSCallbackManager.getInstance().unregisterCallback(CustomQPOSCallback.class);
     }
 
     @Override
@@ -367,7 +362,7 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
 
     @Override
     public void onRequestNoQposDetected() {
-        MyCustomQPOSCallback.super.onRequestNoQposDetected();
+        CustomQPOSCallback.super.onRequestNoQposDetected();
         runOnUiThread(() -> {
             SPUtils.getInstance().put("isConnectedAutoed",false);
             viewModel.isConnecting.set(false);
