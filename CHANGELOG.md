@@ -1,3 +1,10 @@
+## [6.1.4](https://github.com/DspreadOrg/android/compare/v6.1.3...v6.1.4) (2025-06-13)
+
+
+### Bug Fixes
+
+* optimise app class names and update SDK version. ([ce9ffd6](https://github.com/DspreadOrg/android/commit/ce9ffd6616aea9bc728804bf10a726c0da66afc0))
+
 ## [6.1.3](https://github.com/DspreadOrg/android/compare/v6.1.2...v6.1.3) (2025-06-11)
 
 
