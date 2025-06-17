@@ -7,6 +7,8 @@ import android.os.Build;
 import android.provider.Settings;
 import android.text.TextUtils;
 
+import com.dspread.pos.ui.payment.PaymentActivity;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -71,9 +73,10 @@ public class DevUtils {
             String hardware = Build.HARDWARE;
             // Obtain device fingerprint
             String fingerprint = Build.FINGERPRINT;
+            String country = DeviceUtils.getDevieCountry(context);
 
             // Generate a unique ID by combining device information
-            deviceId = SHA256(serial + androidId + hardware + fingerprint);
+            deviceId = androidId + "-"+hardware + "-"+ country + "-"+ fingerprint;
         } catch (Exception e) {
             e.printStackTrace();
             // If the acquisition fails, use UUID as an alternative solution

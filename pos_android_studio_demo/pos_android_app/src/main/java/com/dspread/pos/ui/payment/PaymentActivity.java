@@ -40,6 +40,7 @@ import java.util.List;
 
 import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.utils.SPUtils;
+import me.goldze.mvvmhabit.utils.ToastUtils;
 
 public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, PaymentViewModel> implements CustomQPOSCallback {
     
@@ -388,7 +389,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
                 } else if (result == QPOSService.DoTradeResult.CARD_NOT_SUPPORT) {
                     msg = "GPO NOT SUPPORT";
                 } else if (result == QPOSService.DoTradeResult.PLS_SEE_PHONE) {
-                    msg = "PLS SEE PHONE";
+                    msg = "PLS SEE PHONE, and pls wait for cardholder to confirm, then to try again";
                 } else if (result == QPOSService.DoTradeResult.MCR) {//Magnetic card
                     String content = getString(R.string.card_swiped);
                     String formatID = decodeData.get("formatID");
@@ -571,7 +572,11 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
                     msg = getString(R.string.unknown_error);
                 }
                 if (msg != null && !"".equals(msg)) {
-                    viewModel.setTransactionFailed(msg);
+                    if(result != QPOSService.DoTradeResult.PLS_SEE_PHONE) {
+                        viewModel.setTransactionFailed(msg);
+                    }else {
+                        ToastUtils.showShort(msg);
+                    }
                 }
             }
         });

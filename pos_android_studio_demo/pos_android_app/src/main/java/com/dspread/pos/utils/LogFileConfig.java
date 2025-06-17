@@ -60,7 +60,7 @@ public class LogFileConfig {
         String brand = Build.BRAND;
 
         Date date = new Date();
-        SimpleDateFormat format = new SimpleDateFormat("yyyy_MM_dd");
+        SimpleDateFormat format = new SimpleDateFormat("yy_MM_d-HH:mm:ss");
         String filename = format.format(date);
         if ("".equals(fileName) || null == fileName) {
             filename = filename + "_" + brand + "_" + model + ".txt";
@@ -129,12 +129,13 @@ public class LogFileConfig {
                 map.put("logContent", segment);
 
                 CrashReport.putUserData(mContext,
-                        "customLog_" + file.getName() + "_" + i,
+                        "customLog_" + SPUtils.getInstance().getString("posID")+"_"+file.getName() + "_" + i,
                         JSON.toJSONString(map));
             }
             CrashReport.putUserData(mContext,"POSID", SPUtils.getInstance().getString("posID"));
 
-            // Set scene labels
+            // 2. 设置日志文件路径（Bugly会在崩溃时自动上传）
+            // Set scene labels when payment
             CrashReport.setUserSceneTag(mContext, 90001);
 
             // Trigger upload

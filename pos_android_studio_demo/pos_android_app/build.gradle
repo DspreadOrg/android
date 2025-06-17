@@ -31,8 +31,8 @@ android {
         applicationId "com.dspread.pos_android_app"
         minSdk 24
         targetSdk 34
-        versionCode 79
-        versionName "6.1.4"
+        versionCode 80
+        versionName "6.1.5"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 

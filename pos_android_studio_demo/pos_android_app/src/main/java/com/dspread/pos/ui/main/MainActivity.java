@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.util.Log;
 import android.view.KeyEvent;
 
 import android.view.View;
@@ -191,6 +192,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
            Hashtable<String, Object> posIdTable = viewModel.pos.syncGetQposId(5);
             String posId = posIdTable.get("posId") == null ? "" : (String) posIdTable.get("posId");
             SPUtils.getInstance().put("posID",posId);
+            Log.i("POS", "posid22 :" + SPUtils.getInstance().getString("posID"));
         }
     }
 
