@@ -1,3 +1,10 @@
+## [6.1.5](https://github.com/DspreadOrg/android/compare/v6.1.4...v6.1.5) (2025-06-17)
+
+
+### Bug Fixes
+
+* add the posid for bugly system ([5df6eb5](https://github.com/DspreadOrg/android/commit/5df6eb515416fd35ebe79036393d9752112c6971))
+
 ## [6.1.4](https://github.com/DspreadOrg/android/compare/v6.1.3...v6.1.4) (2025-06-13)
 
 
