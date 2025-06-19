@@ -59,7 +59,7 @@ public class MainViewModel extends BaseViewModel {
     public void openDevice(){
         if(DeviceUtils.isSmartDevices()){
             myBaseApplication.open(QPOSService.CommunicationMode.UART, getApplication());
-            pos = myBaseApplication.getQposService();
+            pos = TerminalApplication.getQPOSService();
             pos.openUart();
             SPUtils.getInstance().put("isConnectedAutoed",true);
         }

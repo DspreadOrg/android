@@ -19,9 +19,10 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.dspread.pos.TerminalApplication;
 import com.dspread.pos.common.enums.POS_TYPE;
-import com.dspread.pos.posAPI.CustomQPOSCallback;
 import com.dspread.pos.common.manager.QPOSCallbackManager;
+import com.dspread.pos.posAPI.ConnectionServiceCallback;
 import com.dspread.pos.posAPI.POS;
 import com.dspread.pos.ui.home.HomeFragment;
 import com.dspread.pos.utils.DevUtils;
@@ -39,7 +40,7 @@ import java.util.Hashtable;
 import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.utils.SPUtils;
 
-public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewModel> implements CustomQPOSCallback {
+public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewModel> implements ConnectionServiceCallback {
     public void setToolbarTitle(String title) {
         if (toolbar != null) {
             toolbar.setTitle(title);
@@ -72,7 +73,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     public void initData() {
         super.initData();
         viewModel.handleNavigationItemClick(R.id.nav_home);
-        QPOSCallbackManager.getInstance().registerCallback(CustomQPOSCallback.class, this);
+        QPOSCallbackManager.getInstance().registerConnectionCallback(this);
 //        viewModel = new MainViewModel(getApplication(), this);
 //        binding.setVariable(BR.viewModel, viewModel);
         drawerLayout = binding.drawerLayout;
@@ -124,7 +125,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        QPOSCallbackManager.getInstance().unregisterCallback(CustomQPOSCallback.class);
+        QPOSCallbackManager.getInstance().unregisterConnectionCallback();
         TRACE.i("main is onDestroy");
         SPUtils.getInstance().put("isConnected",false);
         SPUtils.getInstance().put("device_type", "");
@@ -185,7 +186,6 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
 
     @Override
     public void onRequestQposConnected() {
-        CustomQPOSCallback.super.onRequestQposConnected();
         SPUtils.getInstance().put("isConnected",true);
         SPUtils.getInstance().put("device_type", POS_TYPE.UART.name());
         if(viewModel.pos != null){
@@ -198,16 +198,14 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
 
     @Override
     public void onRequestNoQposDetected() {
-        CustomQPOSCallback.super.onRequestNoQposDetected();
         SPUtils.getInstance().put("isConnected",false);
-        POS.getInstance().setQPOSService(null);
+        TerminalApplication.setQPOSService(null);
     }
 
     @Override
     public void onRequestQposDisconnected() {
-        CustomQPOSCallback.super.onRequestQposDisconnected();
         SPUtils.getInstance().put("isConnected",false);
-        POS.getInstance().setQPOSService(null);
+        TerminalApplication.setQPOSService(null);
     }
 }
 

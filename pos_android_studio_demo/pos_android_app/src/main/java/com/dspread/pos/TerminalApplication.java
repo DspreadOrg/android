@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.Build;
 
 
-import com.dspread.pos.posAPI.BaseQPOSClass;
+import com.dspread.pos.posAPI.BasePOSService;
 import com.dspread.pos.common.manager.FragmentCacheManager;
 import com.dspread.pos.posAPI.POS;
 import com.dspread.pos.ui.main.MainActivity;
@@ -41,13 +41,17 @@ public class TerminalApplication extends BaseApplication {
     }
 
     // Optimize the QPOSService retrieval method
-    public static QPOSService getQposService() {
+    public static QPOSService getQPOSService() {
         return pos;
+    }
+
+    public static void setQPOSService(QPOSService posService){
+       pos = posService;
     }
 
     public void open(QPOSService.CommunicationMode mode, Context context) {
         TRACE.d("open");
-       BaseQPOSClass listener = new BaseQPOSClass();
+       BasePOSService listener = new BasePOSService();
         pos = QPOSService.getInstance(context, mode);
         if (pos == null) {
             return;
@@ -58,7 +62,6 @@ public class TerminalApplication extends BaseApplication {
         }
         pos.setContext(this);
         pos.initListener(listener);
-        POS.getInstance().setQPOSService(pos);
     }
 
     private void initCrash() {

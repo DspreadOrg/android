@@ -32,9 +32,6 @@ public class POS {
         return this.pos;
     }
 
-    public void setQPOSService(QPOSService pos){
-        this.pos = pos;
-    }
 
     public void setDeviceAddress(String address){
         pos.setDeviceAddress(address);
@@ -67,22 +64,7 @@ public class POS {
         pos.connectBluetoothDevice(isAutoBind,time,deviceAddress);
     }
     public void setCardTradeMode(){
-        if(pos == null){
-            ToastUtils.showShort("Pls connect your devices first!");
-            return;
-        }
-        String modeName = SPUtils.getInstance().getString("cardMode");
-        if(modeName == null || "".equals(modeName)){
-            if(DeviceUtils.isSmartDevices()){
-                pos.setCardTradeMode(QPOSService.CardTradeMode.SWIPE_TAP_INSERT_CARD_NOTUP);
-            }else {
-                pos.setCardTradeMode(QPOSService.CardTradeMode.SWIPE_TAP_INSERT_CARD);
-            }
-        }else {
-            QPOSService.CardTradeMode mode = TransCardMode.valueOf(modeName).getCardTradeModeValue();
-            TRACE.i("card mode = " + mode);
-            pos.setCardTradeMode(mode);
-        }
+
     }
     public void doTrade(int timeout){
         pos.doTrade(timeout);

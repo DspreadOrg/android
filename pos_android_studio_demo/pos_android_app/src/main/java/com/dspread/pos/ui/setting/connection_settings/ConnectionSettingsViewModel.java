@@ -133,7 +133,7 @@ public class ConnectionSettingsViewModel extends BaseViewModel {
                     POS.getInstance().close(DeviceUtils.getDevicePosType(deviceType));
                     SPUtils.getInstance().put("isConnectedAutoed",false);
                     updateDeviceName("No device");
-                    POS.getInstance().setQPOSService(null);
+                    TerminalApplication.setQPOSService(null);
                 }
             }
             saveSettings();

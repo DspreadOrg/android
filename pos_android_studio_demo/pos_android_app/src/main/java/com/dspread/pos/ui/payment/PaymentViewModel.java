@@ -209,7 +209,7 @@ public class PaymentViewModel extends BaseAppViewModel {
         return bitmap;
     }
     // send msg to dingding
-    public void sendDingTalkMessage(boolean isICC, String tlvData, String message) {
+    public void sendDingTalkMessage(boolean isICC, String message) {
         Map<String, Object> textContent = new HashMap<>();
         textContent.put("text", message);
         textContent.put("title","issues");

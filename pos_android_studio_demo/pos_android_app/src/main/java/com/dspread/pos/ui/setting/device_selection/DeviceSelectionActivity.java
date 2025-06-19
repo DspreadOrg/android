@@ -28,7 +28,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.dspread.pos.common.enums.POS_TYPE;
 import com.dspread.pos.common.manager.QPOSCallbackManager;
-import com.dspread.pos.posAPI.CustomQPOSCallback;
+import com.dspread.pos.posAPI.ConnectionServiceCallback;
 import com.dspread.pos.utils.TRACE;
 import com.dspread.pos.utils.USBClass;
 import com.dspread.pos_android_app.BR;
@@ -43,7 +43,7 @@ import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.utils.SPUtils;
 import me.goldze.mvvmhabit.utils.ToastUtils;
 
-public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectionBinding, DeviceSelectionViewModel>  implements CustomQPOSCallback {
+public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectionBinding, DeviceSelectionViewModel>  implements ConnectionServiceCallback {
 
     // Result constant
     public static final String EXTRA_DEVICE_NAME = "device_name";
@@ -73,7 +73,7 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
     @Override
     public void initData() {
         super.initData();
-        QPOSCallbackManager.getInstance().registerCallback(CustomQPOSCallback.class, this);
+        QPOSCallbackManager.getInstance().registerConnectionCallback(this);
         // Set return button click event
         binding.toolbar.setNavigationOnClickListener(v -> finish());
         initBluetoothDevicesDialog();
@@ -320,7 +320,7 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        QPOSCallbackManager.getInstance().unregisterCallback(CustomQPOSCallback.class);
+        QPOSCallbackManager.getInstance().unregisterConnectionCallback();
     }
 
     @Override
@@ -362,7 +362,6 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
 
     @Override
     public void onRequestNoQposDetected() {
-        CustomQPOSCallback.super.onRequestNoQposDetected();
         runOnUiThread(() -> {
             SPUtils.getInstance().put("isConnectedAutoed",false);
             viewModel.isConnecting.set(false);

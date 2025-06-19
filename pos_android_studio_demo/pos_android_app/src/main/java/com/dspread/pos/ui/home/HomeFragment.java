@@ -7,6 +7,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
+import com.dspread.pos.TerminalApplication;
 import com.dspread.pos.common.base.BaseFragment;
 import com.dspread.pos.posAPI.POS;
 import com.dspread.pos.ui.base.TitleProvider;
@@ -56,7 +57,7 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
     public void initViewObservable() {
         viewModel.paymentStartEvent.observe(this, inputMoney -> {
             if (!canshow) return;
-            if(POS.getInstance().getQPOSService() == null){
+            if(TerminalApplication.getQPOSService() == null){
                 ToastUtils.showShort(getString(R.string.connect_warnning));
                 return;
             }
