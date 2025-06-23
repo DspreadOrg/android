@@ -59,7 +59,6 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
     private boolean isICC;
     private LogFileConfig logFileConfig;
     private int changePinTimes;
-    private QPOSService pos;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -73,7 +72,6 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
     
     @Override
     public void initData() {
-        pos = TerminalApplication.getQPOSService();
         logFileConfig = LogFileConfig.getInstance(this);
         QPOSCallbackManager.getInstance().registerPaymentCallback(this);
         binding.setVariable(BR.viewModel, viewModel);
@@ -127,23 +125,12 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
     private void startTransaction() {
         isICC = false;
         changePinTimes = 0;
-        if(pos == null){
+        if(!POS.getInstance().isPOSReady()){
             ToastUtils.showShort("Pls connect your devices first!");
             return;
         }
-        String modeName = SPUtils.getInstance().getString("cardMode","");
-        if(modeName.isEmpty()){
-            if(DeviceUtils.isSmartDevices()){
-                pos.setCardTradeMode(QPOSService.CardTradeMode.SWIPE_TAP_INSERT_CARD_NOTUP);
-            }else {
-                pos.setCardTradeMode(QPOSService.CardTradeMode.SWIPE_TAP_INSERT_CARD);
-            }
-        }else {
-            QPOSService.CardTradeMode mode = TransCardMode.valueOf(modeName).getCardTradeModeValue();
-            TRACE.i("card mode = " + mode);
-            pos.setCardTradeMode(mode);
-        }
-        pos.doTrade(20);
+        POS.getInstance().setCardTradeMode();
+        POS.getInstance().doTrade(20);
     }
 
     @Override
@@ -201,7 +188,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
     public void onQposRequestPinResult(List<String> dataList, int offlineTime) {
         TRACE.d("onQposRequestPinResult = " + dataList+"\nofflineTime: "+offlineTime);
         runOnUiThread(() -> {
-            if (POS.getInstance().pos != null) {
+            if (POS.getInstance().isPOSReady()) {
                 viewModel.stopLoading();
                 viewModel.showPinpad.set(true);
                 boolean onlinePin = POS.getInstance().isOnlinePin();
@@ -231,11 +218,11 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
             }
             binding.pinpadEditText.setText("");
             MyKeyboardView.setKeyBoardListener(value -> {
-                if (POS.getInstance().pos != null) {
+                if (POS.getInstance().isPOSReady()) {
                     POS.getInstance().pinMapSync(value, 20);
                 }
             });
-            if (POS.getInstance().pos != null) {
+            if (POS.getInstance().isPOSReady()) {
                 keyboardUtil = new KeyboardUtil(PaymentActivity.this, binding.scvText, dataList);
                 keyboardUtil.initKeyboard(MyKeyboardView.KEYBOARDTYPE_Only_Num_Pwd, binding.pinpadEditText);//Random keyboard
             }
@@ -273,7 +260,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
         runOnUiThread(() -> {
             viewModel.titleText.set(getString(R.string.input_pin));
             pinPadDialog = new PinPadDialog(PaymentActivity.this);
-            pinPadDialog.getPayViewPass().setRandomNumber(true).setPayClickListener(POS.getInstance().pos, new PinPadView.OnPayClickListener() {
+            pinPadDialog.getPayViewPass().setRandomNumber(true).setPayClickListener(POS.getInstance().getQPOSService(), new PinPadView.OnPayClickListener() {
 
                 @Override
                 public void onCencel() {
@@ -303,7 +290,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
         runOnUiThread(() -> {
             viewModel.showPinpad.set(false);
             String msg = "";
-            if (POS.getInstance().pos == null) {
+            if (!POS.getInstance().isPOSReady()) {
                 viewModel.setTransactionFailed("Pls open device");
                 return;
             }

@@ -3,7 +3,7 @@ package com.dspread.pos.common.base;
 import androidx.databinding.ViewDataBinding;
 
 
-import com.dspread.pos.ui.base.TitleProvider;
+import com.dspread.pos.TitleProviderListener;
 import com.dspread.pos.ui.main.MainActivity;
 
 import me.goldze.mvvmhabit.base.BaseViewModel;
@@ -15,8 +15,8 @@ public abstract class BaseFragment<V extends ViewDataBinding, VM extends BaseVie
     public void initData() {
         super.initData();
         // Unified initialization logic for handling fragment
-        if (getActivity() instanceof MainActivity && this instanceof TitleProvider) {
-            ((MainActivity) getActivity()).setToolbarTitle(((TitleProvider) this).getTitle());
+        if (getActivity() instanceof MainActivity && this instanceof TitleProviderListener) {
+            ((MainActivity) getActivity()).setToolbarTitle(((TitleProviderListener) this).getTitle());
         }
     }
 }

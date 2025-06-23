@@ -10,12 +10,12 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.dspread.pos.common.base.BaseFragment;
-import com.dspread.pos.ui.base.TitleProvider;
+import com.dspread.pos.TitleProviderListener;
 import com.dspread.pos_android_app.BR;
 import com.dspread.pos_android_app.R;
 import com.dspread.pos_android_app.databinding.FragmentPrinterHelperBinding;
 
-public class PrinterHelperFragment extends BaseFragment<FragmentPrinterHelperBinding, PrinterViewModel> implements TitleProvider {
+public class PrinterHelperFragment extends BaseFragment<FragmentPrinterHelperBinding, PrinterViewModel> implements TitleProviderListener {
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return R.layout.fragment_printer_helper;

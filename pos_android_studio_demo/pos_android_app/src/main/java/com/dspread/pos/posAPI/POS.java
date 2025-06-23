@@ -15,23 +15,61 @@ import me.goldze.mvvmhabit.utils.SPUtils;
 import me.goldze.mvvmhabit.utils.ToastUtils;
 
 public class POS {
-    public QPOSService pos;
-    public static POS posCommand;
-    public static POS getInstance(){
-        if(posCommand == null){
+    private static volatile POS instance;
+    private QPOSService pos;
+    private Context context;
+    private BasePOSService listener;
+    private POS(Context context) {
+        this.context = context.getApplicationContext();
+        this.listener = new BasePOSService();
+    }
+
+    public static void init(Context context) {
+        getInstance(context);
+    }
+
+    public static POS getInstance(Context context) {
+        if (instance == null) {
             synchronized (POS.class) {
-                if (posCommand == null) {
-                    posCommand = new POS();
+                if (instance == null) {
+                    instance = new POS(context);
                 }
             }
         }
-        return posCommand;
+        return instance;
     }
 
-    public QPOSService getQPOSService(){
-        return this.pos;
+    public static POS getInstance() {
+        if (instance == null) {
+            throw new IllegalStateException("POS must be initialized with context first");
+        }
+        return instance;
     }
 
+    public void open(QPOSService.CommunicationMode mode) {
+        pos = QPOSService.getInstance(context, mode);
+        if (pos == null) {
+            return;
+        }
+
+        if (mode == QPOSService.CommunicationMode.USB_OTG_CDC_ACM) {
+            pos.setUsbSerialDriver(QPOSService.UsbOTGDriver.CDCACM);
+        }
+        pos.setContext(context);
+        pos.initListener(listener);
+    }
+
+    public QPOSService getQPOSService() {
+        return pos;
+    }
+
+    public void clearPosService(){
+        pos = null;
+    }
+
+    public boolean isPOSReady() {
+        return pos != null;
+    }
 
     public void setDeviceAddress(String address){
         pos.setDeviceAddress(address);
@@ -64,7 +102,18 @@ public class POS {
         pos.connectBluetoothDevice(isAutoBind,time,deviceAddress);
     }
     public void setCardTradeMode(){
-
+        String modeName = SPUtils.getInstance().getString("cardMode","");
+        if(modeName.isEmpty()){
+            if(DeviceUtils.isSmartDevices()){
+                pos.setCardTradeMode(QPOSService.CardTradeMode.SWIPE_TAP_INSERT_CARD_NOTUP);
+            }else {
+                pos.setCardTradeMode(QPOSService.CardTradeMode.SWIPE_TAP_INSERT_CARD);
+            }
+        }else {
+            QPOSService.CardTradeMode mode = TransCardMode.valueOf(modeName).getCardTradeModeValue();
+            TRACE.i("card mode = " + mode);
+            pos.setCardTradeMode(mode);
+        }
     }
     public void doTrade(int timeout){
         pos.doTrade(timeout);

@@ -76,7 +76,7 @@ dependencies {
 //    implementation 'com.dspread.print:dspread_print_sdk:1.4.9-beta'
 //    implementation 'com.dspread.library:dspread_pos_sdk:7.1.2'
     implementation fileTree(dir: 'libs', include: ['*.aar', '*.jar'], exclude: [])
-    implementation project(':mvvmhabit')
+//    implementation project(':mvvmhabit')
 //    api files('libs/dspread_pos_sdk_7.2.8.jar')
 //    implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
     api rootProject.ext.dependencies["lifecycle-extensions"]
@@ -99,6 +99,10 @@ dependencies {
         exclude group: 'com.android.support'
     }
     api(rootProject.ext.dependencies["bindingcollectionadapter-viewpager2"]) {
+        exclude group: 'com.android.support'
+    }
+    //rx权限请求
+    api(rootProject.ext.dependencies.rxpermissions) {
         exclude group: 'com.android.support'
     }
 

@@ -90,8 +90,13 @@ public class ConnectionSettingsViewModel extends BaseViewModel {
         // Loading card mode
         String savedCardMode = SPUtils.getInstance().getString("cardMode", "");
         if (savedCardMode == null || "".equals(savedCardMode)) {
-            SPUtils.getInstance().put("cardMode","SWIPE_TAP_INSERT_CARD_NOTUP");
-            savedCardMode = "SWIPE_TAP_INSERT_CARD_NOTUP";
+            if(DeviceUtils.isSmartDevices()) {
+                SPUtils.getInstance().put("cardMode", "SWIPE_TAP_INSERT_CARD_NOTUP");
+                savedCardMode = "SWIPE_TAP_INSERT_CARD_NOTUP";
+            }else {
+                SPUtils.getInstance().put("cardMode", "SWIPE_TAP_INSERT_CARD");
+                savedCardMode = "SWIPE_TAP_INSERT_CARD";
+            }
         }
         cardMode.set(savedCardMode);
         
@@ -133,7 +138,7 @@ public class ConnectionSettingsViewModel extends BaseViewModel {
                     POS.getInstance().close(DeviceUtils.getDevicePosType(deviceType));
                     SPUtils.getInstance().put("isConnectedAutoed",false);
                     updateDeviceName("No device");
-                    TerminalApplication.setQPOSService(null);
+                    POS.getInstance().clearPosService();
                 }
             }
             saveSettings();

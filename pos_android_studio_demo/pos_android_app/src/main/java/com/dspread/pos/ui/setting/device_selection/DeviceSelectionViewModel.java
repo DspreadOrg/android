@@ -44,14 +44,10 @@ public class DeviceSelectionViewModel extends BaseViewModel {
     // Index of the currently selected connection method
     public final MutableLiveData<Integer> selectedIndex = new MutableLiveData<>(-1);
     public String connectedDeviceName;
-    private TerminalApplication myBaseApplication;
     public POS_TYPE currentPOSType;
 
     public DeviceSelectionViewModel(@NonNull Application application) {
         super(application);
-        if(myBaseApplication == null){
-            myBaseApplication = (TerminalApplication) BaseApplication.getInstance();
-        }
         if(!"".equals(SPUtils.getInstance().getString("device_type"))){
             connectedDeviceName = SPUtils.getInstance().getString("device_type");
             if(connectedDeviceName.equals(POS_TYPE.UART.name())){
@@ -63,9 +59,7 @@ public class DeviceSelectionViewModel extends BaseViewModel {
             }
             loadSelectedConnectionMethod(connectedDeviceName);
         }
-
     }
-
 
 
     /**
@@ -96,7 +90,7 @@ public class DeviceSelectionViewModel extends BaseViewModel {
                 if(currentPOSType != null && currentPOSType == posTypes[selectedIndex.getValue()]){
                     return;
                 }
-                myBaseApplication.open(QPOSService.CommunicationMode.BLUETOOTH, getApplication());
+                POS.getInstance().open(QPOSService.CommunicationMode.BLUETOOTH);
                 startScanBluetoothEvent.setValue(POS_TYPE.BLUETOOTH);
             }else if(connectionMethods[1].equals(radioText)){
                 selectedIndex.setValue(1);
@@ -131,7 +125,7 @@ public class DeviceSelectionViewModel extends BaseViewModel {
             openDevice(posTypes[index]);
         } else if(getApplication().getString(R.string.disconnect).equals(connectBtnTitle.get())){
             POS.getInstance().close(currentPOSType);
-            TerminalApplication.setQPOSService(null);
+            POS.getInstance().clearPosService();
         }else {
             ToastUtils.showShort("Pls choose one connection method!");
         }
@@ -141,7 +135,7 @@ public class DeviceSelectionViewModel extends BaseViewModel {
         if(posType == POS_TYPE.USB){
             openUSBDeviceEvent();
         }else if(posType == POS_TYPE.UART){
-            myBaseApplication.open(QPOSService.CommunicationMode.UART, getApplication());
+            POS.getInstance().open(QPOSService.CommunicationMode.UART);
             POS.getInstance().openUart();
         }else {
             connectBluetooth(posType, bluetoothAddress.get());
@@ -153,7 +147,7 @@ public class DeviceSelectionViewModel extends BaseViewModel {
     }
 
     public void openUSBDevice(UsbDevice usbDevice) {
-        myBaseApplication.open(QPOSService.CommunicationMode.USB_OTG_CDC_ACM, getApplication());
+        POS.getInstance().open(QPOSService.CommunicationMode.USB_OTG_CDC_ACM);
         POS.getInstance().openUsb(usbDevice);
     }
 

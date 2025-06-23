@@ -10,7 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.dspread.pos.common.enums.POS_TYPE;
-import com.dspread.pos.ui.base.TitleProvider;
+import com.dspread.pos.TitleProviderListener;
 import com.dspread.pos.ui.setting.device_config.DeviceConfigActivity;
 import com.dspread.pos.ui.setting.device_selection.DeviceSelectionActivity;
 import com.dspread.pos.utils.TRACE;
@@ -19,9 +19,8 @@ import com.dspread.pos_android_app.R;
 import com.dspread.pos_android_app.databinding.FragmentConnectionSettingsBinding;
 
 import me.goldze.mvvmhabit.base.BaseFragment;
-import me.goldze.mvvmhabit.utils.ToastUtils;
 
-public class ConnectionSettingsFragment extends BaseFragment<FragmentConnectionSettingsBinding, ConnectionSettingsViewModel> implements TitleProvider {
+public class ConnectionSettingsFragment extends BaseFragment<FragmentConnectionSettingsBinding, ConnectionSettingsViewModel> implements TitleProviderListener {
     private final int REQUEST_CODE_CURRENCY = 1000;
     private final int REQUEST_TRANSACTION_TYPE = 1001;
     private final int REQUEST_CARD_MODE = 1002;

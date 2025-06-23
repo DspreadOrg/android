@@ -188,8 +188,8 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     public void onRequestQposConnected() {
         SPUtils.getInstance().put("isConnected",true);
         SPUtils.getInstance().put("device_type", POS_TYPE.UART.name());
-        if(viewModel.pos != null){
-           Hashtable<String, Object> posIdTable = viewModel.pos.syncGetQposId(5);
+        if(POS.getInstance().isPOSReady()){
+           Hashtable<String, Object> posIdTable = POS.getInstance().getQPOSService().syncGetQposId(5);
             String posId = posIdTable.get("posId") == null ? "" : (String) posIdTable.get("posId");
             SPUtils.getInstance().put("posID",posId);
             Log.i("POS", "posid22 :" + SPUtils.getInstance().getString("posID"));
@@ -199,13 +199,13 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     @Override
     public void onRequestNoQposDetected() {
         SPUtils.getInstance().put("isConnected",false);
-        TerminalApplication.setQPOSService(null);
+        POS.getInstance().clearPosService();
     }
 
     @Override
     public void onRequestQposDisconnected() {
         SPUtils.getInstance().put("isConnected",false);
-        TerminalApplication.setQPOSService(null);
+        POS.getInstance().clearPosService();
     }
 }
 

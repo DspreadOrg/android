@@ -7,134 +7,131 @@ import java.util.Hashtable;
 import java.util.List;
 
 /**
- * 支付服务回调接口
- * 处理所有交易相关的回调方法
+ * Payment Service Callback Interface
+ * Handle all transaction-related callback methods
  */
 public interface PaymentServiceCallback {
     
-    // ==================== 交易核心回调 ====================
+    // ==================== Core Transaction Callbacks ====================
     
     /**
-     * 交易结果回调
+     * Transaction result callback
      */
     default void onDoTradeResult(QPOSService.DoTradeResult result, Hashtable<String, String> decodeData) {}
     
     /**
-     * 交易请求结果回调
+     * Transaction request result callback
      */
     default void onRequestTransactionResult(QPOSService.TransactionResult transactionResult) {}
     
     /**
-     * 交易取消回调
+     * Transaction cancelled callback
      */
     default void onTradeCancelled() {}
     
-    // ==================== 交易流程回调 ====================
+    // ==================== Transaction Process Callbacks ====================
     
     /**
-     * 请求设置金额
+     * Request to set amount
      */
     default void onRequestSetAmount() {}
     
     /**
-     * 等待用户操作（插卡/刷卡/挥卡）
+     * Waiting for user operation (insert/swipe/tap card)
      */
     default void onRequestWaitingUser() {}
     
     /**
-     * 请求时间
+     * Request time
      */
     default void onRequestTime() {}
     
     /**
-     * 请求选择EMV应用
+     * Request to select EMV application
      */
     default void onRequestSelectEmvApp(ArrayList<String> appList) {}
     
     /**
-     * 请求在线处理
+     * Request online processing
      */
     default void onRequestOnlineProcess(String tlv) {}
     
     /**
-     * 请求批次数据
+     * Request batch data
      */
     default void onRequestBatchData(String tlv) {}
     
     /**
-     * 请求显示信息
+     * Request to display message
      */
     default void onRequestDisplay(QPOSService.Display displayMsg) {}
     
     /**
-     * 请求最终确认
+     * Request final confirmation
      */
     default void onRequestFinalConfirm() {}
     
     /**
-     * 请求服务器连接状态
+     * Request server connection status
      */
     default void onRequestIsServerConnected() {}
     
-    // ==================== PIN相关回调 ====================
+    // ==================== PIN Related Callbacks ====================
     
     /**
-     * PIN请求结果
+     * PIN request result
      */
     default void onQposRequestPinResult(List<String> dataList, int offlineTime) {}
     
     /**
-     * PIN映射同步结果
-     */
-    default void onQposPinMapSyncResult(boolean isSuccess, boolean isNeedPin) {}
-    
-    /**
-     * 请求设置PIN
+     * Request to set PIN
      */
     default void onRequestSetPin(boolean isOfflinePin, int tryNum) {}
     
     /**
-     * 请求设置PIN（无参数）
+     * Request to set PIN (no parameters)
      */
     default void onRequestSetPin() {}
     
     /**
-     * 返回获取PIN结果
+     * Return get PIN result
      */
     default void onReturnGetPinResult(Hashtable<String, String> result) {}
     
     /**
-     * 返回PIN输入结果
+     * Return PIN input result
      */
     default void onReturnGetPinInputResult(int num) {}
     
     /**
-     * 返回键盘输入结果
+     * Return keyboard input result
      */
     default void onReturnGetKeyBoardInputResult(String result) {}
-
     
     /**
-     * 获取卡号结果
+     * Get card number result
      */
     default void onGetCardNoResult(String cardNo) {}
     
     /**
-     * 获取卡片信息结果
+     * Get card information result
      */
     default void onGetCardInfoResult(Hashtable<String, String> cardInfo) {}
     
     /**
-     * EMV ICC异常数据
+     * EMV ICC exception data
      */
     default void onEmvICCExceptionData(String tlv) {}
     
-    // ==================== 交易数据回调 ====================
+    // ==================== Transaction Data Callbacks ====================
     
     /**
-     * 返回冲正数据
+     * Return reversal data
      */
     default void onReturnReversalData(String tlv) {}
 
+    /**
+     * Error callback
+     */
     default void onError(QPOSService.Error errorState){}
 }

@@ -9,8 +9,8 @@ import android.view.ViewGroup;
 
 import com.dspread.pos.TerminalApplication;
 import com.dspread.pos.common.base.BaseFragment;
+import com.dspread.pos.TitleProviderListener;
 import com.dspread.pos.posAPI.POS;
-import com.dspread.pos.ui.base.TitleProvider;
 import com.dspread.pos.ui.payment.PaymentActivity;
 import com.dspread.pos.utils.TRACE;
 import com.dspread.pos_android_app.BR;
@@ -20,7 +20,7 @@ import com.dspread.pos_android_app.databinding.FragmentHomeBinding;
 import me.goldze.mvvmhabit.utils.ToastUtils;
 
 
-public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewModel> implements TitleProvider {
+public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewModel> implements TitleProviderListener {
 //    private KeyboardUtil keyboardUtil;
     private boolean canshow = true;
     private CountDownTimer showTimer;
@@ -57,7 +57,7 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
     public void initViewObservable() {
         viewModel.paymentStartEvent.observe(this, inputMoney -> {
             if (!canshow) return;
-            if(TerminalApplication.getQPOSService() == null){
+            if(!POS.getInstance().isPOSReady()){
                 ToastUtils.showShort(getString(R.string.connect_warnning));
                 return;
             }

@@ -11,7 +11,8 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.dspread.pos.TerminalApplication;
 import com.dspread.pos.common.manager.FragmentCacheManager;
-import com.dspread.pos.ui.base.TitleProvider;
+import com.dspread.pos.TitleProviderListener;
+import com.dspread.pos.posAPI.POS;
 import com.dspread.pos.ui.home.HomeFragment;
 import com.dspread.pos.ui.printer.PrinterHelperFragment;
 import com.dspread.pos.ui.scan.ScanFragment;
@@ -42,25 +43,18 @@ public class MainViewModel extends BaseViewModel {
     private WeakReference<MainActivity> activityRef;
     public Fragment currentFragment;
     public HomeFragment homeFragment;
-    private TerminalApplication myBaseApplication;
-    public QPOSService pos;
 
     public MainViewModel(@NonNull Application application, MainActivity activity) {
         super(application);
         TRACE.i("main activity init");
         this.activityRef = new WeakReference<>(activity);
         this.activity = activity;
-//        initFragments();
-        if(myBaseApplication == null){
-            myBaseApplication = (TerminalApplication) BaseApplication.getInstance();
-        }
     }
 
     public void openDevice(){
         if(DeviceUtils.isSmartDevices()){
-            myBaseApplication.open(QPOSService.CommunicationMode.UART, getApplication());
-            pos = TerminalApplication.getQPOSService();
-            pos.openUart();
+            POS.getInstance().open(QPOSService.CommunicationMode.UART);
+            POS.getInstance().openUart();
             SPUtils.getInstance().put("isConnectedAutoed",true);
         }
     }
@@ -108,8 +102,8 @@ public class MainViewModel extends BaseViewModel {
         if (targetFragment != null) {
             switchFragment(targetFragment);
             // set fragment title
-            if (targetFragment instanceof TitleProvider) {
-                activity.setTitle(((TitleProvider) targetFragment).getTitle());
+            if (targetFragment instanceof TitleProviderListener) {
+                activity.setTitle(((TitleProviderListener) targetFragment).getTitle());
             }
         }
     }

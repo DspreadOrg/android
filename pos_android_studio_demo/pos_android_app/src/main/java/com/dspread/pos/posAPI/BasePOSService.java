@@ -226,6 +226,15 @@ public class BasePOSService extends CQPOSService {
     }
 
     @Override
+    public void onGetCardInfoResult(Hashtable<String, String> cardInfo) {
+        super.onGetCardInfoResult(cardInfo);
+        PaymentServiceCallback callback = callbackManager.getPaymentCallback();
+        if (callback != null) {
+            callback.onGetCardInfoResult(cardInfo);
+        }
+    }
+
+    @Override
     public void onRequestSetPin(boolean isOfflinePin, int tryNum) {
         super.onRequestSetPin(isOfflinePin, tryNum);
         PaymentServiceCallback callback = callbackManager.getPaymentCallback();
@@ -263,6 +272,15 @@ public class BasePOSService extends CQPOSService {
         PaymentServiceCallback callback = callbackManager.getPaymentCallback();
         if (callback != null) {
             callback.onTradeCancelled();
+        }
+    }
+
+    @Override
+    public void onEmvICCExceptionData(String tlv) {
+        super.onEmvICCExceptionData(tlv);
+        PaymentServiceCallback callback = callbackManager.getPaymentCallback();
+        if (callback != null) {
+            callback.onEmvICCExceptionData(tlv);
         }
     }
 }

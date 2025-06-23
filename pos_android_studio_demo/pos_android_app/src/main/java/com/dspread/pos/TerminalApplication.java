@@ -25,43 +25,17 @@ import me.goldze.mvvmhabit.crash.CaocConfig;
  * @author user
  */
 public class TerminalApplication extends BaseApplication {
-    public static Context getApplicationInstance;
-    private static QPOSService pos;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        getApplicationInstance = this;
         initCrash();
         initBugly();
         initShiply();
         // Initialize Fragment Cache
         FragmentCacheManager.getInstance();
         TRACE.setContext(this);
-    }
-
-    // Optimize the QPOSService retrieval method
-    public static QPOSService getQPOSService() {
-        return pos;
-    }
-
-    public static void setQPOSService(QPOSService posService){
-       pos = posService;
-    }
-
-    public void open(QPOSService.CommunicationMode mode, Context context) {
-        TRACE.d("open");
-       BasePOSService listener = new BasePOSService();
-        pos = QPOSService.getInstance(context, mode);
-        if (pos == null) {
-            return;
-        }
-        
-        if (mode == QPOSService.CommunicationMode.USB_OTG_CDC_ACM) {
-            pos.setUsbSerialDriver(QPOSService.UsbOTGDriver.CDCACM);
-        }
-        pos.setContext(this);
-        pos.initListener(listener);
+        POS.init(this);
     }
 
     private void initCrash() {
