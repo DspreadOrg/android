@@ -81,7 +81,11 @@ public class USBClass {
                     ACTION_USB_PERMISSION), 0);
         }
         IntentFilter filter = new IntentFilter(ACTION_USB_PERMISSION);
-        context.registerReceiver(mUsbReceiver, filter);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            context.registerReceiver(mUsbReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
+        } else {
+            context.registerReceiver(mUsbReceiver, filter);
+        }
         /*
          * check for existing devices
          **/
