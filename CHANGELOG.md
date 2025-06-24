@@ -1,3 +1,10 @@
+## [6.1.7](https://github.com/DspreadOrg/android/compare/v6.1.6...v6.1.7) (2025-06-24)
+
+
+### Bug Fixes
+
+* fix the issue of missing flag bits in the usb connection function broadcast receiver ([5c8d42d](https://github.com/DspreadOrg/android/commit/5c8d42df771ca60049f0db61b149d8541853b540))
+
 ## [6.1.6](https://github.com/DspreadOrg/android/compare/v6.1.5...v6.1.6) (2025-06-20)
 
 
