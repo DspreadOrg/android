@@ -1,6 +1,8 @@
 package com.dspread.pos.utils;
 
 import android.content.Context;
+import android.content.ContextWrapper;
+import android.content.res.AssetManager;
 import android.os.Build;
 import android.os.Environment;
 import android.util.Log;
@@ -10,6 +12,7 @@ import com.tencent.bugly.crashreport.BuglyLog;
 import com.tencent.bugly.crashreport.CrashReport;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -113,35 +116,42 @@ public class LogFileConfig {
                 result.append(temp);
             }
 
-            int maxLength = 512; // Bugly has a limit on the length of each data segment
-            int segments = (result.length() + maxLength - 1) / maxLength;
-
-            for (int i = 0; i < segments; i++) {
-                int start = i * maxLength;
-                int end = Math.min((i + 1) * maxLength, result.length());
-                String segment = result.substring(start, end);
-
-                // Upload log fragments
-                Map<String, String> map = new HashMap<>();
-                map.put("logFileName", file.getName());
-                map.put("segmentIndex", String.valueOf(i));
-                map.put("totalSegments", String.valueOf(segments));
-                map.put("logContent", segment);
-
-                CrashReport.putUserData(mContext,
-                        "customLog_" + SPUtils.getInstance().getString("posID")+"_"+file.getName() + "_" + i,
-                        JSON.toJSONString(map));
-            }
+//            int maxLength = 512; // Bugly has a limit on the length of each data segment
+//            int segments = (result.length() + maxLength - 1) / maxLength;
+//
+//            for (int i = 0; i < segments; i++) {
+//                int start = i * maxLength;
+//                int end = Math.min((i + 1) * maxLength, result.length());
+//                String segment = result.substring(start, end);
+//
+//                // Upload log fragments
+//                Map<String, String> map = new HashMap<>();
+//                map.put("logFileName", file.getName());
+//                map.put("segmentIndex", String.valueOf(i));
+//                map.put("totalSegments", String.valueOf(segments));
+//                map.put("logContent", segment);
+//
+////                CrashReport.putUserData(mContext,
+////                        "customLog_" + SPUtils.getInstance().getString("posID")+"_"+file.getName() + "_" + i,
+////                        JSON.toJSONString(map));
+//            }
+            BuglyLog.e(
+                    file.getName(),
+                    result.toString());
             CrashReport.putUserData(mContext,"POSID", SPUtils.getInstance().getString("posID"));
 
             // 2. 设置日志文件路径（Bugly会在崩溃时自动上传）
             // Set scene labels when payment
             CrashReport.setUserSceneTag(mContext, 90001);
-
+            String uniqueID = java.util.UUID.randomUUID().toString() + "_"+ file.getName() + "_" + System.currentTimeMillis();
+            TRACE.i( "uniqueID:" + uniqueID);
+            CrashReport.putUserData(mContext, "log_uuid", uniqueID);
             // Trigger upload
             CrashReport.postCatchedException(
-                    new Exception("CustomLog: " + file.getName() + ", segments: " + segments));
-            Log.i("POS", "result:" + result);
+                        new BuglyCustomLogException("CustomLog: " +uniqueID));
+            //  info 级别日志，Bugly 控制台能看到独立的日志记录
+            TRACE.i( "result:" + result);
+            deleteDir(file);
             return result.toString();
         } catch (Exception e) {
             e.printStackTrace();
@@ -233,5 +243,26 @@ public class LogFileConfig {
 
     }
 
+    public static byte[] readAssetsLine(String fileName, Context context) {
+//        Tip.d("file name:"+fileName);
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        try {
+            android.content.ContextWrapper contextWrapper = new ContextWrapper(context);
+            AssetManager assetManager = contextWrapper.getAssets();
+            InputStream inputStream = assetManager.open(fileName);
+            byte[] data = new byte[512];
+            int current = 0;
+            while ((current = inputStream.read(data, 0, data.length)) != -1) {
+                buffer.write(data, 0, current);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
+
+        return buffer.toByteArray();
+    }
 
 }

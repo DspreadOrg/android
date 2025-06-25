@@ -636,6 +636,8 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
                     msg = getString(R.string.invalid_icc_data);
                 } else if (transactionResult == QPOSService.TransactionResult.FALLBACK) {
                     msg = "trans fallback";
+                    Hashtable<String,String> table= POS.getInstance().getTagValue();
+                    TRACE.i("fallback tlv = "+table.get("tlv"));
                 } else if (transactionResult == QPOSService.TransactionResult.NFC_TERMINATED) {
                     msg = "NFC Terminated";
                 } else if (transactionResult == QPOSService.TransactionResult.CARD_REMOVED) {

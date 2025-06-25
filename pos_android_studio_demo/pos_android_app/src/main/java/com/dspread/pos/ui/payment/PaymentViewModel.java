@@ -73,7 +73,6 @@ public class PaymentViewModel extends BaseAppViewModel {
     
     public PaymentModel setTransactionSuccess(String message) {
         setTransactionSuccess();
-        TRACE.i("data = "+message);
         message = message.substring(message.indexOf(":")+2);
         TRACE.i("data 2 = "+message);
         PaymentModel paymentModel = new PaymentModel();
