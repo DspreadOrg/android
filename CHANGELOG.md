@@ -1,3 +1,10 @@
+## [6.1.8](https://github.com/DspreadOrg/android/compare/v6.1.7...v6.1.8) (2025-06-25)
+
+
+### Bug Fixes
+
+* optimize bugly system logic ([a0957b5](https://github.com/DspreadOrg/android/commit/a0957b51e4f031fee51bb5e6d290a8276c80c2e3))
+
 ## [6.1.7](https://github.com/DspreadOrg/android/compare/v6.1.6...v6.1.7) (2025-06-24)
 
 
