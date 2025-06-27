@@ -195,7 +195,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
 
     @Override
     public void onRequestTime() {
-        dismissDialog();
+//        dismissDialog();
         String terminalTime = new SimpleDateFormat("yyyyMMddHHmmss").format(Calendar.getInstance().getTime());
         TRACE.d("onRequestTime: "+terminalTime);
         POS.getInstance().sendTime(terminalTime);
@@ -210,7 +210,6 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
             dialog.setTitle(R.string.please_select_app);
             String[] appNameList = new String[appList.size()];
             for (int i = 0; i < appNameList.length; ++i) {
-
                 appNameList[i] = appList.get(i);
             }
             ListView  appListView = (ListView) dialog.findViewById(R.id.appList);
@@ -222,7 +221,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
 
                     POS.getInstance().selectEmvApp(position);
                     TRACE.d("select emv app position = " + position);
-                    dismissDialog();
+                    dialog.dismiss();
                 }
 
             });
@@ -231,7 +230,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
                 @Override
                 public void onClick(View v) {
                     POS.getInstance().cancelSelectEmvApp();
-                    dismissDialog();
+                    dialog.dismiss();
                 }
             });
             dialog.show();
