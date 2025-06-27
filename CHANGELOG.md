@@ -1,3 +1,10 @@
+## [6.1.9](https://github.com/DspreadOrg/android/compare/v6.1.8...v6.1.9) (2025-06-27)
+
+
+### Bug Fixes
+
+* fix the select emv app dialog issue ([f24d47e](https://github.com/DspreadOrg/android/commit/f24d47eae5c30774522960bff228655b70fa3827))
+
 ## [6.1.8](https://github.com/DspreadOrg/android/compare/v6.1.7...v6.1.8) (2025-06-25)
 
 
