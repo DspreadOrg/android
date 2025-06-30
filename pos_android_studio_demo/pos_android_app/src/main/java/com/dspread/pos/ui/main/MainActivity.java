@@ -39,6 +39,7 @@ import java.util.Hashtable;
 
 import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.utils.SPUtils;
+import me.goldze.mvvmhabit.utils.ToastUtils;
 
 public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewModel> implements ConnectionServiceCallback {
     public void setToolbarTitle(String title) {
@@ -187,12 +188,25 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     @Override
     public void onRequestQposConnected() {
         SPUtils.getInstance().put("isConnected",true);
+
         SPUtils.getInstance().put("device_type", POS_TYPE.UART.name());
         if(POS.getInstance().isPOSReady()){
            Hashtable<String, Object> posIdTable = POS.getInstance().getQPOSService().syncGetQposId(5);
             String posId = posIdTable.get("posId") == null ? "" : (String) posIdTable.get("posId");
             SPUtils.getInstance().put("posID",posId);
-            Log.i("POS", "posid22 :" + SPUtils.getInstance().getString("posID"));
+            TRACE.i("posid :" + SPUtils.getInstance().getString("posID"));
+//            if(!SPUtils.getInstance().getBoolean("updateKEY",false)){
+//                viewModel.updateDukpt();
+//                viewModel.updateMKSK();
+//                SPUtils.getInstance().put("updateKEY",true);
+//            }
+//            if(!SPUtils.getInstance().getBoolean("updateEMV",false)){
+//                ToastUtils.showShort("is updating emv, pls wait");
+//                viewModel.updateDukpt();
+//                viewModel.updateMKSK();
+//                viewModel.updateEMVConfig(MainActivity.this);
+//                SPUtils.getInstance().put("updateEMV",true);
+//            }
         }
     }
 

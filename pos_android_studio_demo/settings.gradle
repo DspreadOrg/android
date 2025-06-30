@@ -29,5 +29,4 @@ dependencyResolutionManagement {
 }
 
 //include ':app', ':mvvmhabit'
-include  ':mvvmhabit'
 include ':pos_android_app'

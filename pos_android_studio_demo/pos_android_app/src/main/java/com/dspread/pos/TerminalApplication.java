@@ -12,7 +12,9 @@ import com.dspread.pos.utils.DevUtils;
 import com.dspread.pos.utils.TRACE;
 import com.dspread.pos_android_app.BuildConfig;
 import com.dspread.pos_android_app.R;
+import com.dspread.sdkdevservice.aidl.constant.SDKDevConstant;
 import com.dspread.xpos.QPOSService;
+import com.tencent.bugly.crashreport.BuglyLog;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.tencent.upgrade.bean.UpgradeConfig;
 import com.tencent.upgrade.core.UpgradeManager;
@@ -67,9 +69,11 @@ public class TerminalApplication extends BaseApplication {
 
         // Initialize Bugly
         CrashReport.initCrashReport(context, "b2d80aa171", BuildConfig.DEBUG, strategy);
+        BuglyLog.setCache(1024 * 10); // 设置本地缓存大小(10KB)
 
         // Set user data
         CrashReport.setUserId(DevUtils.getDeviceId(this));
+        CrashReport.setDeviceModel(this,Build.MODEL);
 
         // Add custom logs
         CrashReport.setUserSceneTag(context, 9527); // Set label

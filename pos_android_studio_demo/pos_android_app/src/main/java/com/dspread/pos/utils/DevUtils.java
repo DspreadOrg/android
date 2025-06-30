@@ -13,6 +13,8 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.security.MessageDigest;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.UUID;
 
 public class DevUtils {
@@ -71,12 +73,14 @@ public class DevUtils {
             String androidId = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
             // Obtain device hardware information
             String hardware = Build.HARDWARE;
+            String model = Build.MODEL;
             // Obtain device fingerprint
             String fingerprint = Build.FINGERPRINT;
             String country = DeviceUtils.getDevieCountry(context);
+            String time = new SimpleDateFormat("yyMMddHHmmss").format(Calendar.getInstance().getTime());
 
             // Generate a unique ID by combining device information
-            deviceId = androidId + "-"+hardware + "-"+ country + "-"+ fingerprint;
+            deviceId = model + "-"+hardware + "-"+ country + "-"+ time;
         } catch (Exception e) {
             e.printStackTrace();
             // If the acquisition fails, use UUID as an alternative solution

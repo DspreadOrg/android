@@ -152,7 +152,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
 
     @Override
     public void onRequestTime() {
-        dismissDialog();
+//        dismissDialog();
         String terminalTime = new SimpleDateFormat("yyyyMMddHHmmss").format(Calendar.getInstance().getTime());
         TRACE.d("onRequestTime: "+terminalTime);
         POS.getInstance().sendTime(terminalTime);

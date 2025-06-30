@@ -1,3 +1,31 @@
+## [6.1.9](https://github.com/DspreadOrg/android/compare/v6.1.8...v6.1.9) (2025-06-27)
+
+
+### Bug Fixes
+
+* fix the select emv app dialog issue ([f24d47e](https://github.com/DspreadOrg/android/commit/f24d47eae5c30774522960bff228655b70fa3827))
+
+## [6.1.8](https://github.com/DspreadOrg/android/compare/v6.1.7...v6.1.8) (2025-06-25)
+
+
+### Bug Fixes
+
+* optimize bugly system logic ([a0957b5](https://github.com/DspreadOrg/android/commit/a0957b51e4f031fee51bb5e6d290a8276c80c2e3))
+
+## [6.1.7](https://github.com/DspreadOrg/android/compare/v6.1.6...v6.1.7) (2025-06-24)
+
+
+### Bug Fixes
+
+* fix the issue of missing flag bits in the usb connection function broadcast receiver ([5c8d42d](https://github.com/DspreadOrg/android/commit/5c8d42df771ca60049f0db61b149d8541853b540))
+
+## [6.1.6](https://github.com/DspreadOrg/android/compare/v6.1.5...v6.1.6) (2025-06-20)
+
+
+### Bug Fixes
+
+* update sdk version to 7.4.3 ([53278b6](https://github.com/DspreadOrg/android/commit/53278b6b30d600380a9964834682020afcf0e83d))
+
 ## [6.1.5](https://github.com/DspreadOrg/android/compare/v6.1.4...v6.1.5) (2025-06-17)
 
 

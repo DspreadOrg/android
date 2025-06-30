@@ -6,6 +6,7 @@ import android.hardware.usb.UsbDevice;
 import com.dspread.pos.common.enums.POS_TYPE;
 import com.dspread.pos.common.enums.TransCardMode;
 import com.dspread.pos.utils.DeviceUtils;
+import com.dspread.pos.utils.LogFileConfig;
 import com.dspread.pos.utils.TRACE;
 import com.dspread.xpos.QPOSService;
 
@@ -198,5 +199,18 @@ public class POS {
         }else {
             pos.disconnectBT();
         }
+    }
+
+    public void getEMVAIDList(){
+        pos.updateEmvAPPByTlv(QPOSService.EMVDataOperation.AttainList,"");
+    }
+
+    public void updateEMVConfig(Context context){
+        pos.updateEMVConfigByXml(new String(LogFileConfig.readAssetsLine("emv_profile_tlv.xml",context)));
+    }
+
+    public Hashtable<String,String> getTagValue(){
+        Hashtable<String,String> table = pos.getICCTag(3,"844F9F06");
+        return table;
     }
 }
