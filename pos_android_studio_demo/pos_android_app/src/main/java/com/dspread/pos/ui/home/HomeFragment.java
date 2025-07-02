@@ -36,9 +36,7 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
     
     @Override
     public void initData() {
-        getActivity().setTitle(getString(R.string.menu_payment));
         initTimer();
-
     }
     
     private void initTimer() {

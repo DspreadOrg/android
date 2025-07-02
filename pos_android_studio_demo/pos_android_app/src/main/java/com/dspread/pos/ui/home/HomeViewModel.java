@@ -88,11 +88,6 @@ public class HomeViewModel extends BaseAppViewModel {
             try {
                 long amountInCents = Long.parseLong(amountBuilder.toString());
                 paymentStartEvent.postValue(amountInCents);
-//            if (amountInCents > 0) {
-//                paymentStartEvent.postValue(amountInCents);
-//            } else {
-//                ToastUtils.showShort(R.string.set_amount);
-//            }
             } catch (NumberFormatException e) {
                 ToastUtils.showShort(R.string.set_amount);
             }
