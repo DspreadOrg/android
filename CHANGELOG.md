@@ -1,3 +1,10 @@
+# [6.2.0](https://github.com/DspreadOrg/android/compare/v6.1.11...v6.2.0) (2025-07-02)
+
+
+### Features
+
+* delete the unused code ([a04cfa9](https://github.com/DspreadOrg/android/commit/a04cfa941ace6c832f513d44d051c9ebb125c506))
+
 ## [6.1.11](https://github.com/DspreadOrg/android/compare/v6.1.10...v6.1.11) (2025-07-02)
 
 
