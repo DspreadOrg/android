@@ -123,17 +123,6 @@ public class BasePOSService extends CQPOSService {
         }
     }
 
-    /**
-     */
-    @Override
-    public void onRequestIsServerConnected() {
-        TRACE.d("onRequestIsServerConnected()");
-        PaymentServiceCallback callback = callbackManager.getPaymentCallback();
-        if (callback != null) {
-            callback.onRequestIsServerConnected();
-        }
-    }
-
     @Override
     public void onRequestOnlineProcess(final String tlv) {
 //        TRACE.d("onRequestOnlineProcess" + tlv);
@@ -161,13 +150,6 @@ public class BasePOSService extends CQPOSService {
         }
     }
 
-    @Override
-    public void onRequestFinalConfirm() {
-        PaymentServiceCallback callback = callbackManager.getPaymentCallback();
-        if (callback != null) {
-            callback.onRequestFinalConfirm();
-        }
-    }
 
     @Override
     public void onRequestNoQposDetected() {

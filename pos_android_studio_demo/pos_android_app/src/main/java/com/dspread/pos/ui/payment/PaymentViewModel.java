@@ -74,7 +74,7 @@ public class PaymentViewModel extends BaseAppViewModel {
     public PaymentModel setTransactionSuccess(String message) {
         setTransactionSuccess();
         message = message.substring(message.indexOf(":")+2);
-        TRACE.i("data 2 = "+message);
+//        TRACE.i("data 2 = "+message);
         PaymentModel paymentModel = new PaymentModel();
         String transType = SPUtils.getInstance().getString("transactionType");
         paymentModel.setTransType(transType);

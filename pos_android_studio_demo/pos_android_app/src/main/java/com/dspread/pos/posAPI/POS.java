@@ -2,6 +2,7 @@ package com.dspread.pos.posAPI;
 
 import android.content.Context;
 import android.hardware.usb.UsbDevice;
+import android.os.Build;
 
 import com.dspread.pos.common.enums.POS_TYPE;
 import com.dspread.pos.common.enums.TransCardMode;
@@ -117,6 +118,9 @@ public class POS {
         }
     }
     public void doTrade(int timeout){
+        if("D70".equals(Build.MODEL)){// add this to avoid the NFC influence the MSR when swipe card
+            pos.setDelayCheckingCardTime(500);
+        }
         pos.doTrade(timeout);
     }
     
@@ -205,12 +209,10 @@ public class POS {
         pos.updateEmvAPPByTlv(QPOSService.EMVDataOperation.AttainList,"");
     }
 
-    public void updateEMVConfig(Context context){
-        pos.updateEMVConfigByXml(new String(LogFileConfig.readAssetsLine("emv_profile_tlv.xml",context)));
-    }
-
     public Hashtable<String,String> getTagValue(){
         Hashtable<String,String> table = pos.getICCTag(3,"844F9F06");
         return table;
     }
+
+
 }

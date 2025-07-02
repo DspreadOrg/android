@@ -21,7 +21,6 @@ import me.goldze.mvvmhabit.utils.ToastUtils;
 
 
 public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewModel> implements TitleProviderListener {
-//    private KeyboardUtil keyboardUtil;
     private boolean canshow = true;
     private CountDownTimer showTimer;
     
@@ -39,6 +38,7 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
     public void initData() {
         getActivity().setTitle(getString(R.string.menu_payment));
         initTimer();
+
     }
     
     private void initTimer() {
@@ -52,27 +52,29 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
             }
         };
     }
+
+    private void navigateToPayment(long inputMoney){
+        if (!canshow) return;
+        if(!POS.getInstance().isPOSReady()){
+            ToastUtils.showShort(getString(R.string.connect_warnning));
+            return;
+        }
+        canshow = false;
+        showTimer.start();
+        Intent intent = new Intent(getActivity(), PaymentActivity.class);
+        intent.putExtra("amount", String.valueOf(inputMoney));
+        startActivity(intent);
+        // Obtain the system standard jump animation time
+        int animTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+        getView().postOnAnimationDelayed(() -> {
+            viewModel.clearAmount();
+            TRACE.i("clear the amount");
+        }, animTime + 500);
+    }
     
     @Override
     public void initViewObservable() {
-        viewModel.paymentStartEvent.observe(this, inputMoney -> {
-            if (!canshow) return;
-            if(!POS.getInstance().isPOSReady()){
-                ToastUtils.showShort(getString(R.string.connect_warnning));
-                return;
-            }
-            canshow = false;
-            showTimer.start();
-            Intent intent = new Intent(getActivity(), PaymentActivity.class);
-            intent.putExtra("amount", String.valueOf(inputMoney));
-            startActivity(intent);
-            // Obtain the system standard jump animation time
-            int animTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
-            getView().postOnAnimationDelayed(() -> {
-                viewModel.clearAmount();
-                TRACE.i("clear the amount");
-            }, animTime + 500);
-        });
+        viewModel.paymentStartEvent.observe(this, this::navigateToPayment);
     }
 
 

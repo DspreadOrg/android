@@ -31,6 +31,7 @@ import com.dspread.pos.utils.TRACE;
 import com.dspread.pos_android_app.BR;
 import com.dspread.pos_android_app.R;
 import com.dspread.pos_android_app.databinding.ActivityMainBinding;
+import com.dspread.xpos.QPOSService;
 import com.google.android.material.navigation.NavigationView;
 import com.tencent.upgrade.core.DefaultUpgradeStrategyRequestCallback;
 import com.tencent.upgrade.core.UpgradeManager;
@@ -187,26 +188,14 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
 
     @Override
     public void onRequestQposConnected() {
+        TRACE.i("child onRequestQposConnected");
         SPUtils.getInstance().put("isConnected",true);
-
         SPUtils.getInstance().put("device_type", POS_TYPE.UART.name());
         if(POS.getInstance().isPOSReady()){
            Hashtable<String, Object> posIdTable = POS.getInstance().getQPOSService().syncGetQposId(5);
             String posId = posIdTable.get("posId") == null ? "" : (String) posIdTable.get("posId");
             SPUtils.getInstance().put("posID",posId);
             TRACE.i("posid :" + SPUtils.getInstance().getString("posID"));
-//            if(!SPUtils.getInstance().getBoolean("updateKEY",false)){
-//                viewModel.updateDukpt();
-//                viewModel.updateMKSK();
-//                SPUtils.getInstance().put("updateKEY",true);
-//            }
-//            if(!SPUtils.getInstance().getBoolean("updateEMV",false)){
-//                ToastUtils.showShort("is updating emv, pls wait");
-//                viewModel.updateDukpt();
-//                viewModel.updateMKSK();
-//                viewModel.updateEMVConfig(MainActivity.this);
-//                SPUtils.getInstance().put("updateEMV",true);
-//            }
         }
     }
 

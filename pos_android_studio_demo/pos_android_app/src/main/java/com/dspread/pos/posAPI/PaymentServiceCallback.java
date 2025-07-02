@@ -66,16 +66,6 @@ public interface PaymentServiceCallback {
      */
     default void onRequestDisplay(QPOSService.Display displayMsg) {}
     
-    /**
-     * Request final confirmation
-     */
-    default void onRequestFinalConfirm() {}
-    
-    /**
-     * Request server connection status
-     */
-    default void onRequestIsServerConnected() {}
-    
     // ==================== PIN Related Callbacks ====================
     
     /**
@@ -134,4 +124,6 @@ public interface PaymentServiceCallback {
      * Error callback
      */
     default void onError(QPOSService.Error errorState){}
+
+
 }

@@ -174,11 +174,11 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
             appListView.setOnItemClickListener((parent, view, position, id) -> {
                 POS.getInstance().selectEmvApp(position);
                 TRACE.d("select emv app position = " + position);
-                dismissDialog();
+                dialog.dismiss();
             });
             dialog.findViewById(R.id.cancelButton).setOnClickListener(v -> {
                 POS.getInstance().cancelSelectEmvApp();
-                dismissDialog();
+                dialog.dismiss();
             });
             dialog.show();
         });
@@ -353,7 +353,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
     @Override
     public void onRequestBatchData(String tlv) {
         runOnUiThread(() -> {
-            TRACE.d("ICC trade finished = "+tlv);
+            TRACE.d("onRequestBatchData = "+tlv);
             String content = getString(R.string.batch_data);
             content += tlv;
             PaymentModel paymentModel = viewModel.setTransactionSuccess(content);
