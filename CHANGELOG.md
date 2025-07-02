@@ -1,3 +1,10 @@
+## [6.1.11](https://github.com/DspreadOrg/android/compare/v6.1.10...v6.1.11) (2025-07-02)
+
+
+### Bug Fixes
+
+* optimize the demo structure ([61b71ac](https://github.com/DspreadOrg/android/commit/61b71acd28673c3bc3c0a25b2d62f8a15ba6663b))
+
 ## [6.1.10](https://github.com/DspreadOrg/android/compare/v6.1.9...v6.1.10) (2025-07-01)
 
 
