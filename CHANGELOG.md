@@ -1,3 +1,10 @@
+## [6.2.2](https://github.com/DspreadOrg/android/compare/v6.2.1...v6.2.2) (2025-07-07)
+
+
+### Bug Fixes
+
+* add the inquary type when amount is 0 ([228d731](https://github.com/DspreadOrg/android/commit/228d731e5531e19aafda0a066adaa799b509164f))
+
 ## [6.2.1](https://github.com/DspreadOrg/android/compare/v6.2.0...v6.2.1) (2025-07-04)
 
 
