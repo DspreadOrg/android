@@ -76,7 +76,7 @@ public class HomeViewModel extends BaseAppViewModel {
         if(amountBuilder.length() == 0){
             if(SPUtils.getInstance().getString("transactionType") != null && !"".equals(SPUtils.getInstance().getString("transactionType"))){
                 String transactionTypeString = SPUtils.getInstance().getString("transactionType");
-                if(transactionTypeString.equals("CHANGE_PIN") || transactionTypeString.equals("BALANCE") ||transactionTypeString.equals("BALANCE_UPDATE") ){
+                if(transactionTypeString.equals("CHANGE_PIN") || transactionTypeString.equals("BALANCE") ||transactionTypeString.equals("BALANCE_UPDATE") ||transactionTypeString.equals("INQUIRY")){
                     paymentStartEvent.postValue(0l);
                 }else {
                     ToastUtils.showShort(R.string.set_amount);
