@@ -1,3 +1,10 @@
+## [6.2.4](https://github.com/DspreadOrg/android/compare/v6.2.3...v6.2.4) (2025-07-25)
+
+
+### Bug Fixes
+
+* modify d70 to exit the trading demo but there is no response issue when entering the physical keyboard again ([718742e](https://github.com/DspreadOrg/android/commit/718742e3dbb7d8da91074d769db3627f568763c4))
+
 ## [6.2.3](https://github.com/DspreadOrg/android/compare/v6.2.2...v6.2.3) (2025-07-25)
 
 
