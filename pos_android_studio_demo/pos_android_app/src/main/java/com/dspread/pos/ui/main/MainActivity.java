@@ -21,6 +21,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.dspread.pos.TerminalApplication;
 import com.dspread.pos.common.enums.POS_TYPE;
+import com.dspread.pos.common.manager.FragmentCacheManager;
 import com.dspread.pos.common.manager.QPOSCallbackManager;
 import com.dspread.pos.posAPI.ConnectionServiceCallback;
 import com.dspread.pos.posAPI.POS;
@@ -142,6 +143,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                 toolbar.setTitle(getString(R.string.menu_payment));
                 drawerLayout.close();
                 viewModel.handleNavigationItemClick(R.id.nav_home);
+                FragmentCacheManager.getInstance().clearCache();
                 exit();
             }
             return true;
