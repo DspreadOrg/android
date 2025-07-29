@@ -1,3 +1,10 @@
+## [6.2.5](https://github.com/DspreadOrg/android/compare/v6.2.4...v6.2.5) (2025-07-29)
+
+
+### Bug Fixes
+
+* fix the error where the last prompt was displayed repeatedly during the transaction ([544934c](https://github.com/DspreadOrg/android/commit/544934ccab2c798cc91018acb44aac425277427d))
+
 ## [6.2.4](https://github.com/DspreadOrg/android/compare/v6.2.3...v6.2.4) (2025-07-25)
 
 
