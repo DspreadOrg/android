@@ -107,7 +107,13 @@ public class PaymentViewModel extends BaseAppViewModel {
         isWaiting.set(false);
         transactionResult.set(message);
     }
-    
+
+    public void clearErrorState() {
+        showResultStatus.set(false);
+//        transactionResult.set("");
+//        isSuccess.set(false);
+    }
+
     public void setAmount(String newAmount) {
         amount.set("¥" + newAmount);
     }

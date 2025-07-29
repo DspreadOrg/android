@@ -190,6 +190,8 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
         runOnUiThread(() -> {
             if (POS.getInstance().isPOSReady()) {
                 viewModel.stopLoading();
+                // Clear previous error state when entering PIN input
+                viewModel.clearErrorState();
                 viewModel.showPinpad.set(true);
                 boolean onlinePin = POS.getInstance().isOnlinePin();
                 if (keyboardUtil != null) {
@@ -233,6 +235,9 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
     public void onRequestSetPin(boolean isOfflinePin, int tryNum) {
         TRACE.d("onRequestSetPin = " + isOfflinePin+"\ntryNum: "+tryNum);
         runOnUiThread(() -> {
+            // Clear previous error state when entering PIN input
+            viewModel.clearErrorState();
+
             if(transactionType == QPOSService.TransactionType.UPDATE_PIN){
                 changePinTimes ++;
                 if(changePinTimes == 1){
@@ -258,6 +263,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
     public void onRequestSetPin() {
         TRACE.i("onRequestSetPin()");
         runOnUiThread(() -> {
+            viewModel.clearErrorState();
             viewModel.titleText.set(getString(R.string.input_pin));
             pinPadDialog = new PinPadDialog(PaymentActivity.this);
             pinPadDialog.getPayViewPass().setRandomNumber(true).setPayClickListener(POS.getInstance().getQPOSService(), new PinPadView.OnPayClickListener() {
