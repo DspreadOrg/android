@@ -1,3 +1,10 @@
+## [6.2.6](https://github.com/DspreadOrg/android/compare/v6.2.5...v6.2.6) (2025-07-30)
+
+
+### Bug Fixes
+
+* solved the issue of device crash after transaction cancellation ([96b1687](https://github.com/DspreadOrg/android/commit/96b168776876e7e24bd51d655abc1751ba5f5a4a))
+
 ## [6.2.5](https://github.com/DspreadOrg/android/compare/v6.2.4...v6.2.5) (2025-07-29)
 
 
