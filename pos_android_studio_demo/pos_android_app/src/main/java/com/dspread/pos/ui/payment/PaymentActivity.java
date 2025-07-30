@@ -463,8 +463,20 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        POS.getInstance().cancelTrade();
+//        super.onBackPressed();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                POS.getInstance().cancelTrade();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        finish();
+                    }
+                });
+            }
+        }).start();
+
     }
 
     @Override
