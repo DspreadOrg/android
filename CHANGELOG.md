@@ -1,3 +1,10 @@
+## [6.2.7](https://github.com/DspreadOrg/android/compare/v6.2.6...v6.2.7) (2025-08-20)
+
+
+### Bug Fixes
+
+* disable the return key when adding d70pin input ([e0d32a5](https://github.com/DspreadOrg/android/commit/e0d32a5dd34c7bd6b7b1ca12f769df10ca11bb87))
+
 ## [6.2.6](https://github.com/DspreadOrg/android/compare/v6.2.5...v6.2.6) (2025-07-30)
 
 
