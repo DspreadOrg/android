@@ -59,7 +59,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
     private boolean isICC;
     private LogFileConfig logFileConfig;
     private int changePinTimes;
-
+    private boolean isPinBack = false;
     @Override
     public int initContentView(Bundle savedInstanceState) {
         return R.layout.activity_payment;
@@ -234,6 +234,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
     @Override
     public void onRequestSetPin(boolean isOfflinePin, int tryNum) {
         TRACE.d("onRequestSetPin = " + isOfflinePin+"\ntryNum: "+tryNum);
+        isPinBack = true;
         runOnUiThread(() -> {
             // Clear previous error state when entering PIN input
             viewModel.clearErrorState();
@@ -412,6 +413,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
         runOnUiThread(() -> {
             StringBuilder s = new StringBuilder();
             if (num == -1) {
+                isPinBack = false;
                 binding.pinpadEditText.setText("");
                 viewModel.showPinpad.set(false);
                 if (keyboardUtil != null) {
@@ -464,19 +466,20 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
     @Override
     public void onBackPressed() {
 //        super.onBackPressed();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                POS.getInstance().cancelTrade();
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        finish();
-                    }
-                });
-            }
-        }).start();
-
+        if(!isPinBack) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    POS.getInstance().cancelTrade();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            finish();
+                        }
+                    });
+                }
+            }).start();
+        }
     }
 
     @Override
