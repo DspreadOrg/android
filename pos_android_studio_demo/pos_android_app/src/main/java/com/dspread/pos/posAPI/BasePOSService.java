@@ -173,11 +173,15 @@ public class BasePOSService extends CQPOSService {
     public void onRequestQposDisconnected() {
         TRACE.d("parent disconnected()");
         ConnectionServiceCallback callback = callbackManager.getConnectionCallback();
+        PaymentServiceCallback paymentCallback = callbackManager.getPaymentCallback();
         SPUtils.getInstance().put("device_type","");
         SPUtils.getInstance().put("isConnected",false);
         SPUtils.getInstance().put("isConnectedAutoed",false);
         if (callback != null) {
             callback.onRequestQposDisconnected();
+        }
+        if(paymentCallback!=null){
+            paymentCallback.onRequestQposDisconnected();
         }
     }
 

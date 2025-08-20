@@ -125,5 +125,9 @@ public interface PaymentServiceCallback {
      */
     default void onError(QPOSService.Error errorState){}
 
+    /**
+     * Request Qpos Disconnected callback
+     */
+    default void onRequestQposDisconnected(){};
 
 }

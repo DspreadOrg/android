@@ -137,15 +137,21 @@ public class POS {
     }
     
     public void cancelSelectEmvApp(){
-        pos.cancelSelectEmvApp();
+        if(pos!=null) {
+            pos.cancelSelectEmvApp();
+        }
     }
     
     public void pinMapSync(String value, int timeout){
-        pos.pinMapSync(value, timeout);
+        if(pos!=null) {
+            pos.pinMapSync(value, timeout);
+        }
     }
     
     public void cancelPin(){
-        pos.cancelPin();
+        if(pos!=null) {
+            pos.cancelPin();
+        }
     }
 
     public boolean isOnlinePin(){
@@ -157,11 +163,15 @@ public class POS {
     }
     
     public void bypassPin(){
-        pos.sendPin("".getBytes());
+        if (pos!=null) {
+            pos.sendPin("".getBytes());
+        }
     }
     
     public void sendCvmPin(String pinBlock, boolean isEncrypted){
-        pos.sendCvmPin(pinBlock, isEncrypted);
+        if(pos!=null) {
+            pos.sendCvmPin(pinBlock, isEncrypted);
+        }
     }
 
     public Hashtable<String,String> getEncryptData(){
@@ -173,15 +183,21 @@ public class POS {
     }
 
     public void doEmvApp(QPOSService.EmvOption option){
-        pos.doEmvApp(option);
+        if(pos!=null) {
+            pos.doEmvApp(option);
+        }
     }
     
     public void sendOnlineProcessResult(String tlv){
-        pos.sendOnlineProcessResult(tlv);
+        if(pos!=null) {
+            pos.sendOnlineProcessResult(tlv);
+        }
     }
     
     public void cancelTrade(){
-        pos.cancelTrade();
+        if(pos!=null){
+            pos.cancelTrade();
+        }
     }
 
     public Hashtable<String, String> anlysEmvIccData(String tlv){

@@ -483,6 +483,13 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
     }
 
     @Override
+    public void onRequestQposDisconnected() {
+        PaymentServiceCallback.super.onRequestQposDisconnected();
+        viewModel.setTransactionFailed(getString(R.string.device_unplugged));
+        POS.getInstance().clearPosService();
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         LogFileConfig.getInstance(this).readLog();
