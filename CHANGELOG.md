@@ -1,3 +1,10 @@
+## [6.2.8](https://github.com/DspreadOrg/android/compare/v6.2.7...v6.2.8) (2025-08-20)
+
+
+### Bug Fixes
+
+* added the ability to check if the usb connection is disconnected during the transaction process ([3ea0640](https://github.com/DspreadOrg/android/commit/3ea0640b34aca1f1834aabc7b94c7eba52f474fe))
+
 ## [6.2.7](https://github.com/DspreadOrg/android/compare/v6.2.6...v6.2.7) (2025-08-20)
 
 
