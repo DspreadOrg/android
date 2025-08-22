@@ -47,7 +47,7 @@ import me.goldze.mvvmhabit.utils.SPUtils;
 import me.goldze.mvvmhabit.utils.ToastUtils;
 
 public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, PaymentViewModel> implements PaymentServiceCallback {
-    
+
     private String amount;
     private String transactionTypeString;
     private String cashbackAmounts;
@@ -60,16 +60,17 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
     private LogFileConfig logFileConfig;
     private int changePinTimes;
     private boolean isPinBack = false;
+
     @Override
     public int initContentView(Bundle savedInstanceState) {
         return R.layout.activity_payment;
     }
-    
+
     @Override
     public int initVariableId() {
         return BR.viewModel;
     }
-    
+
     @Override
     public void initData() {
         logFileConfig = LogFileConfig.getInstance(this);
@@ -82,9 +83,9 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
         if (intent != null) {
             amount = intent.getStringExtra("amount");
             SPUtils.getInstance().getString("transactionType");
-            if(!SPUtils.getInstance().getString("transactionType").isEmpty()){
+            if (!SPUtils.getInstance().getString("transactionType").isEmpty()) {
                 transactionTypeString = SPUtils.getInstance().getString("transactionType");
-            }else {
+            } else {
                 transactionTypeString = "GOODS";
             }
             cashbackAmounts = intent.getStringExtra("cashbackAmounts");
@@ -125,7 +126,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
     private void startTransaction() {
         isICC = false;
         changePinTimes = 0;
-        if(!POS.getInstance().isPOSReady()){
+        if (!POS.getInstance().isPOSReady()) {
             ToastUtils.showShort("Pls connect your devices first!");
             return;
         }
@@ -136,7 +137,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
     @Override
     public void onRequestSetAmount() {
         TRACE.d("onRequestSetAmount()");
-        transactionType =HandleTxnsResultUtils.getTransactionType(transactionTypeString);
+        transactionType = HandleTxnsResultUtils.getTransactionType(transactionTypeString);
 
         // get the currency code, and default value is 156
         int currencyCode = SPUtils.getInstance().getInt("currencyCode");
@@ -154,7 +155,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
     public void onRequestTime() {
 //        dismissDialog();
         String terminalTime = new SimpleDateFormat("yyyyMMddHHmmss").format(Calendar.getInstance().getTime());
-        TRACE.d("onRequestTime: "+terminalTime);
+        TRACE.d("onRequestTime: " + terminalTime);
         POS.getInstance().sendTime(terminalTime);
     }
 
@@ -162,14 +163,14 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
     public void onRequestSelectEmvApp(ArrayList<String> appList) {
         TRACE.d("onRequestSelectEmvApp():" + appList.toString());
         runOnUiThread(() -> {
-         Dialog  dialog = new Dialog(PaymentActivity.this);
+            Dialog dialog = new Dialog(PaymentActivity.this);
             dialog.setContentView(R.layout.emv_app_dialog);
             dialog.setTitle(R.string.please_select_app);
             String[] appNameList = new String[appList.size()];
             for (int i = 0; i < appNameList.length; ++i) {
                 appNameList[i] = appList.get(i);
             }
-            ListView  appListView = dialog.findViewById(R.id.appList);
+            ListView appListView = dialog.findViewById(R.id.appList);
             appListView.setAdapter(new ArrayAdapter<>(PaymentActivity.this, android.R.layout.simple_list_item_1, appNameList));
             appListView.setOnItemClickListener((parent, view, position, id) -> {
                 POS.getInstance().selectEmvApp(position);
@@ -186,7 +187,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
 
     @Override
     public void onQposRequestPinResult(List<String> dataList, int offlineTime) {
-        TRACE.d("onQposRequestPinResult = " + dataList+"\nofflineTime: "+offlineTime);
+        TRACE.d("onQposRequestPinResult = " + dataList + "\nofflineTime: " + offlineTime);
         runOnUiThread(() -> {
             if (POS.getInstance().isPOSReady()) {
                 viewModel.stopLoading();
@@ -233,25 +234,25 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
 
     @Override
     public void onRequestSetPin(boolean isOfflinePin, int tryNum) {
-        TRACE.d("onRequestSetPin = " + isOfflinePin+"\ntryNum: "+tryNum);
+        TRACE.d("onRequestSetPin = " + isOfflinePin + "\ntryNum: " + tryNum);
         isPinBack = true;
         runOnUiThread(() -> {
             // Clear previous error state when entering PIN input
             viewModel.clearErrorState();
 
-            if(transactionType == QPOSService.TransactionType.UPDATE_PIN){
-                changePinTimes ++;
-                if(changePinTimes == 1){
+            if (transactionType == QPOSService.TransactionType.UPDATE_PIN) {
+                changePinTimes++;
+                if (changePinTimes == 1) {
                     viewModel.titleText.set(getString(R.string.input_pin_old));
-                }else if(changePinTimes == 2 || changePinTimes == 4 ){
+                } else if (changePinTimes == 2 || changePinTimes == 4) {
                     viewModel.titleText.set(getString(R.string.input_pin_new));
-                }else if(changePinTimes == 3 ||changePinTimes == 5){
+                } else if (changePinTimes == 3 || changePinTimes == 5) {
                     viewModel.titleText.set(getString(R.string.input_new_pin_confirm));
                 }
-            }else {
-                if(isOfflinePin){
+            } else {
+                if (isOfflinePin) {
                     viewModel.titleText.set(getString(R.string.input_offlinePin));
-                }else {
+                } else {
                     viewModel.titleText.set(getString(R.string.input_onlinePin));
                 }
             }
@@ -309,16 +310,16 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
                     POS.getInstance().doEmvApp(QPOSService.EmvOption.START);
                     return;
                 case MCR:
-                    HandleTxnsResultUtils.handleMCRResult(decodeData,this,binding,viewModel);
+                    HandleTxnsResultUtils.handleMCRResult(decodeData, this, binding, viewModel);
                     return;
                 case NFC_ONLINE:
                 case NFC_OFFLINE:
-                    HandleTxnsResultUtils.handleNFCResult(decodeData, this,binding,viewModel);
+                    HandleTxnsResultUtils.handleNFCResult(decodeData, this, binding, viewModel);
                     return;
                 default:
                     msg = HandleTxnsResultUtils.getTradeResultMessage(result, this);
                     if (!msg.isEmpty()) {
-                        if(result != QPOSService.DoTradeResult.PLS_SEE_PHONE) {
+                        if (result != QPOSService.DoTradeResult.PLS_SEE_PHONE) {
                             viewModel.setTransactionFailed(msg);
                         } else {
                             ToastUtils.showShort(msg);
@@ -336,11 +337,11 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
             public void run() {
                 viewModel.showPinpad.set(false);
                 viewModel.startLoading(getString(R.string.online_process_requested));
-               Hashtable<String, String> decodeData = POS.getInstance().anlysEmvIccData(tlv);
+                Hashtable<String, String> decodeData = POS.getInstance().anlysEmvIccData(tlv);
                 String requestTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
                 String data = "{\"createdAt\": " + requestTime + ", \"deviceInfo\": " + DeviceUtils.getPhoneDetail() + ", \"countryCode\": " + DeviceUtils.getDevieCountry(PaymentActivity.this)
                         + ", \"tlv\": " + tlv + "}";
-                viewModel.sendDingTalkMessage(true,data);
+                viewModel.sendDingTalkMessage(true, data);
             }
         });
     }
@@ -360,14 +361,14 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
     @Override
     public void onRequestBatchData(String tlv) {
         runOnUiThread(() -> {
-            TRACE.d("onRequestBatchData = "+tlv);
+            TRACE.d("onRequestBatchData = " + tlv);
             String content = getString(R.string.batch_data);
             content += tlv;
             PaymentModel paymentModel = viewModel.setTransactionSuccess(content);
             binding.tvReceipt.setMovementMethod(LinkMovementMethod.getInstance());
             Spanned receiptContent = ReceiptGenerator.generateICCReceipt(paymentModel);
             binding.tvReceipt.setText(receiptContent);
-            if(DeviceUtils.isPrinterDevices()){
+            if (DeviceUtils.isPrinterDevices()) {
                 handleSendReceipt();
             }
         });
@@ -390,8 +391,8 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
             } else if (displayMsg == QPOSService.Display.INPUT_NEW_PIN_CHECK_ERROR) {
                 msg = getString(R.string.input_new_pin_check_error);
                 timeOfPinInput = 0;
-            }else {
-                msg = HandleTxnsResultUtils.getDisplayMessage(displayMsg,PaymentActivity.this);
+            } else {
+                msg = HandleTxnsResultUtils.getDisplayMessage(displayMsg, PaymentActivity.this);
             }
             viewModel.startLoading(msg);
         });
@@ -440,7 +441,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
     @Override
     public void onEmvICCExceptionData(String tlv) {
         runOnUiThread(() -> {
-            String msg = "Transaction is reversal :\n"+tlv;
+            String msg = "Transaction is reversal :\n" + tlv;
             viewModel.setTransactionFailed(msg);
         });
     }
@@ -457,7 +458,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
     public void onError(QPOSService.Error error) {
         runOnUiThread(() -> {
             viewModel.setTransactionFailed(error.name());
-            if(keyboardUtil != null){
+            if (keyboardUtil != null) {
                 keyboardUtil.hide();
             }
         });
@@ -466,7 +467,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
     @Override
     public void onBackPressed() {
 //        super.onBackPressed();
-        if(!isPinBack) {
+        if (!isPinBack) {
             new Thread(new Runnable() {
                 @Override
                 public void run() {

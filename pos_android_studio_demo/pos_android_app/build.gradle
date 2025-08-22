@@ -31,8 +31,8 @@ android {
         applicationId "com.dspread.pos_android_app"
         minSdk 24
         targetSdk 34
-        versionCode 89
-        versionName "6.2.8"
+        versionCode 90
+        versionName "6.2.9"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -62,7 +62,7 @@ android {
 }
 
 dependencies {
-
+    implementation fileTree(dir: 'libs', include: ['*.aar', '*.jar'], exclude: [])
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.5.0'
     implementation 'androidx.gridlayout:gridlayout:1.0.0'
@@ -75,7 +75,7 @@ dependencies {
 
 //    implementation 'com.dspread.print:dspread_print_sdk:1.4.9-beta'
 //    implementation 'com.dspread.library:dspread_pos_sdk:7.1.2'
-    implementation fileTree(dir: 'libs', include: ['*.aar', '*.jar'], exclude: [])
+
 //    implementation project(':mvvmhabit')
 //    api files('libs/dspread_pos_sdk_7.2.8.jar')
 //    implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'

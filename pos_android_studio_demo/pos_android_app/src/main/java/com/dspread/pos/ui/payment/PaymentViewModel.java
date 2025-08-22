@@ -1,6 +1,7 @@
 package com.dspread.pos.ui.payment;
 
 import android.app.Application;
+import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -19,9 +20,11 @@ import com.dspread.pos.common.base.BaseAppViewModel;
 import com.dspread.pos.common.http.RetrofitClient;
 import com.dspread.pos.common.http.api.DingTalkApiService;
 import com.dspread.pos.printerAPI.PrinterHelper;
+import com.dspread.pos.utils.DialogUtils;
 import com.dspread.pos.utils.TLV;
 import com.dspread.pos.utils.TLVParser;
 import com.dspread.pos.utils.TRACE;
+import com.dspread.pos_android_app.R;
 import com.dspread.print.device.PrintListener;
 import com.dspread.print.device.PrinterDevice;
 import com.dspread.print.device.PrinterManager;
@@ -45,12 +48,12 @@ import me.goldze.mvvmhabit.utils.ToastUtils;
 public class PaymentViewModel extends BaseAppViewModel {
     private static final String DINGTALK_URL = "https://oapi.dingtalk.com/robot/send?access_token=83e8afc691a1199c70bb471ec46d50099e6dd078ce10223bbcc56c0485cb5cc3";
     private DingTalkApiService apiService;
-    
+
     public PaymentViewModel(@NonNull Application application) {
         super(application);
         apiService = RetrofitClient.getInstance().create(DingTalkApiService.class);
     }
-    
+
     public ObservableField<String> loadingText = new ObservableField<>("");
     public ObservableBoolean isLoading = new ObservableBoolean(false);
     public ObservableField<String> transactionResult = new ObservableField<>("");
@@ -67,37 +70,37 @@ public class PaymentViewModel extends BaseAppViewModel {
     private Bitmap receiptBitmap;
     private Context mContext;
 
-    public void setmContext(Context mContext){
+    public void setmContext(Context mContext) {
         this.mContext = mContext;
     }
-    
+
     public PaymentModel setTransactionSuccess(String message) {
         setTransactionSuccess();
-        message = message.substring(message.indexOf(":")+2);
+        message = message.substring(message.indexOf(":") + 2);
 //        TRACE.i("data 2 = "+message);
         PaymentModel paymentModel = new PaymentModel();
         String transType = SPUtils.getInstance().getString("transactionType");
         paymentModel.setTransType(transType);
         List<TLV> tlvList = TLVParser.parse(message);
-        if(tlvList == null || tlvList.size() == 0){
+        if (tlvList == null || tlvList.size() == 0) {
             return paymentModel;
         }
-        TLV dateTlv = TLVParser.searchTLV(tlvList,"9A");
+        TLV dateTlv = TLVParser.searchTLV(tlvList, "9A");
 //        TLV transTypeTlv = TLVParser.searchTLV(tlvList,"9C");
-        TLV transCurrencyCodeTlv = TLVParser.searchTLV(tlvList,"5F2A");
-        TLV transAmountTlv = TLVParser.searchTLV(tlvList,"9F02");
-        TLV tvrTlv = TLVParser.searchTLV(tlvList,"95");
-        TLV cvmReusltTlv = TLVParser.searchTLV(tlvList,"9F34");
-        TLV cidTlv = TLVParser.searchTLV(tlvList,"9F27");
+        TLV transCurrencyCodeTlv = TLVParser.searchTLV(tlvList, "5F2A");
+        TLV transAmountTlv = TLVParser.searchTLV(tlvList, "9F02");
+        TLV tvrTlv = TLVParser.searchTLV(tlvList, "95");
+        TLV cvmReusltTlv = TLVParser.searchTLV(tlvList, "9F34");
+        TLV cidTlv = TLVParser.searchTLV(tlvList, "9F27");
         paymentModel.setDate(dateTlv.value);
-        paymentModel.setTransCurrencyCode(transCurrencyCodeTlv == null? "":transCurrencyCodeTlv.value);
-        paymentModel.setAmount(transAmountTlv == null? "":transAmountTlv.value);
-        paymentModel.setTvr(tvrTlv == null? "":tvrTlv.value);
-        paymentModel.setCvmResults(cvmReusltTlv == null? "":cvmReusltTlv.value);
-        paymentModel.setCidData(cidTlv == null? "":cidTlv.value);
+        paymentModel.setTransCurrencyCode(transCurrencyCodeTlv == null ? "" : transCurrencyCodeTlv.value);
+        paymentModel.setAmount(transAmountTlv == null ? "" : transAmountTlv.value);
+        paymentModel.setTvr(tvrTlv == null ? "" : tvrTlv.value);
+        paymentModel.setCvmResults(cvmReusltTlv == null ? "" : cvmReusltTlv.value);
+        paymentModel.setCidData(cidTlv == null ? "" : cidTlv.value);
         return paymentModel;
     }
-    
+
     public void setTransactionFailed(String message) {
         titleText.set("Payment finished");
         stopLoading();
@@ -118,10 +121,10 @@ public class PaymentViewModel extends BaseAppViewModel {
         amount.set("¥" + newAmount);
     }
 
-    public void setWaitingStatus(boolean isWaitings){
+    public void setWaitingStatus(boolean isWaitings) {
         isWaiting.set(isWaitings);
     }
-    
+
     public void setTransactionSuccess() {
         titleText.set("Payment finished");
         stopLoading();
@@ -130,13 +133,13 @@ public class PaymentViewModel extends BaseAppViewModel {
         isWaiting.set(false);
         showResultStatus.set(true);
     }
-    
+
     public void startLoading(String text) {
         isWaiting.set(false);
         isLoading.set(true);
         loadingText.set(text);
     }
-    
+
     public void stopLoading() {
         isLoading.set(false);
         isWaiting.set(false);
@@ -156,7 +159,6 @@ public class PaymentViewModel extends BaseAppViewModel {
             finish();
         }
     });
-
     public BindingCommand sendReceiptCommand = new BindingCommand(new BindingAction() {
         @Override
         public void call() {
@@ -165,26 +167,39 @@ public class PaymentViewModel extends BaseAppViewModel {
             PrinterDevice mPrinter = instance.getPrinter();
             PrinterHelper.getInstance().setPrinter(mPrinter);
             PrinterHelper.getInstance().initPrinter(mContext);
-            TRACE.i("bitmap = "+receiptBitmap);
+            TRACE.i("bitmap = " + receiptBitmap);
             new Handler().postDelayed(() -> {
                 try {
-                    PrinterHelper.getInstance().printBitmap(getApplication(),receiptBitmap);
+                    PrinterHelper.getInstance().printBitmap(getApplication(), receiptBitmap);
                 } catch (RemoteException e) {
                     throw new RuntimeException(e);
                 }
                 PrinterHelper.getInstance().getmPrinter().setPrintListener(new PrintListener() {
                     @Override
                     public void printResult(boolean b, String s, PrinterDevice.ResultType resultType) {
-                        if(b){
+                        TRACE.i("resultType = " + resultType.getValue());
+                        if (!b && resultType.getValue() == -9) {
+                            if (mContext != null) {
+                                DialogUtils.showLowBatteryDialog(mContext, R.layout.dialog_low_battery, R.id.okButton, false, new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        isPrinting.set(false);
+                                        finish();
+                                    }
+                                });
+                                return;
+                            }
+                        }
+                        if (b) {
                             ToastUtils.showShort("Print Finished!");
-                        }else {
-                            ToastUtils.showShort("Print Result: "+s);
+                        } else {
+                            ToastUtils.showShort("Print Result: " + s);
                         }
                         isPrinting.set(false);
                         finish();
                     }
                 });
-            },100);
+            }, 100);
         }
     });
 
@@ -213,11 +228,12 @@ public class PaymentViewModel extends BaseAppViewModel {
         receiptBitmap = bitmap;
         return bitmap;
     }
+
     // send msg to dingding
     public void sendDingTalkMessage(boolean isICC, String message) {
         Map<String, Object> textContent = new HashMap<>();
         textContent.put("text", message);
-        textContent.put("title","issues");
+        textContent.put("title", "issues");
 
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("msgtype", "markdown");
@@ -232,7 +248,7 @@ public class PaymentViewModel extends BaseAppViewModel {
                         if (response.isOk()) {
                             ToastUtils.showShort("Send online success");
                             isOnlineSuccess.setValue(true);
-                            if(!isICC){
+                            if (!isICC) {
 //                                transactionResult.set(tlvData);
                             }
                         } else {
@@ -249,7 +265,7 @@ public class PaymentViewModel extends BaseAppViewModel {
                         transactionResult.set("The network is failed：" + throwable.getMessage());
                     }
                 }));
-        }
+    }
 
 
 }

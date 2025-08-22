@@ -1,10 +1,18 @@
 package com.dspread.pos.ui.printer.activities.base;
 
+import android.app.Dialog;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Button;
 
 import androidx.databinding.ViewDataBinding;
 
 import com.dspread.pos.utils.DeviceUtils;
+import com.dspread.pos.utils.DialogUtils;
+import com.dspread.pos.utils.TRACE;
 import com.dspread.pos_android_app.BR;
 import com.dspread.pos_android_app.R;
 import com.dspread.pos_android_app.databinding.ActivityPrinterBaseBinding;
@@ -37,10 +45,10 @@ public abstract class PrinterBaseActivity<V extends ViewDataBinding, VM extends 
             PrinterAlertDialog.showAlertDialog(this);
             return;
         }
-        
+
         // Set printer instance to ViewModel
-        viewModel.setPrinter(mPrinter,this);
-        
+        viewModel.setPrinter(mPrinter, this);
+
         MyPrinterListener myPrinterListener = new MyPrinterListener();
         mPrinter.setPrintListener(myPrinterListener);
 
@@ -49,12 +57,15 @@ public abstract class PrinterBaseActivity<V extends ViewDataBinding, VM extends 
     }
 
 
-
     protected abstract void onReturnPrintResult(boolean isSuccess, String status, PrinterDevice.ResultType resultType);
 
     class MyPrinterListener implements PrintListener {
         @Override
         public void printResult(boolean b, String s, PrinterDevice.ResultType resultType) {
+            TRACE.d("printResult:" + b + "--status--" + s + "--resultType---" + resultType.getValue());
+            if (!b && resultType.getValue() == -9) {
+                showLowBatteryDialog();
+            }
             onReturnPrintResult(b, s, resultType);
         }
     }
@@ -65,5 +76,15 @@ public abstract class PrinterBaseActivity<V extends ViewDataBinding, VM extends 
         if (mPrinter != null) {
             mPrinter.close();
         }
+        if (lowBatteryDialog != null && lowBatteryDialog.isShowing()) {
+            lowBatteryDialog.dismiss();
+        }
     }
+
+    private Dialog lowBatteryDialog;
+
+    private void showLowBatteryDialog() {
+        lowBatteryDialog = DialogUtils.showLowBatteryDialog(this, R.layout.dialog_low_battery, R.id.okButton, false);
+    }
+
 }
