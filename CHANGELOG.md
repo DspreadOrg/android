@@ -1,3 +1,16 @@
+# [6.3.0](https://github.com/DspreadOrg/android/compare/v6.2.8...v6.3.0) (2025-08-25)
+
+
+### Bug Fixes
+
+* add lower battery popup tips with D30M. ([517a886](https://github.com/DspreadOrg/android/commit/517a88698f02a9e2d86867736076022ddfe9bbc3))
+
+
+### Features
+
+* change the name of the print sdk aar package ([622ca8a](https://github.com/DspreadOrg/android/commit/622ca8a50e46601cea16756c6242017ec0e32368))
+* update sdk version ([d9af121](https://github.com/DspreadOrg/android/commit/d9af121cf10668036e1afcf0673322c0f8bf0565))
+
 ## [6.2.8](https://github.com/DspreadOrg/android/compare/v6.2.7...v6.2.8) (2025-08-20)
 
 
