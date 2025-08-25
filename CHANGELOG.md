@@ -1,3 +1,10 @@
+## [6.3.1](https://github.com/DspreadOrg/android/compare/v6.3.0...v6.3.1) (2025-08-25)
+
+
+### Bug Fixes
+
+* update printer SDK 1.7.1 ([0f3a8c9](https://github.com/DspreadOrg/android/commit/0f3a8c9977896e26ea9a66f6422fb53bb44e6491))
+
 # [6.3.0](https://github.com/DspreadOrg/android/compare/v6.2.8...v6.3.0) (2025-08-25)
 
 
