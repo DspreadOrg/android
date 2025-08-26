@@ -1,3 +1,10 @@
+## [6.3.2](https://github.com/DspreadOrg/android/compare/v6.3.1...v6.3.2) (2025-08-26)
+
+
+### Bug Fixes
+
+* modify the issue of automatic bluetooth connection ([d755407](https://github.com/DspreadOrg/android/commit/d75540758c8db6547b30f573dcabb5e0fa72bebc))
+
 <<<<<<< HEAD
 =======
 ## [6.3.1](https://github.com/DspreadOrg/android/compare/v6.3.0...v6.3.1) (2025-08-25)
