@@ -71,12 +71,16 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     public int initVariableId() {
         return BR.viewModel;
     }
-
+    @Override
+    protected void onResume() {
+        super.onResume();
+        QPOSCallbackManager.getInstance().registerConnectionCallback(this);
+    }
     @Override
     public void initData() {
         super.initData();
         viewModel.handleNavigationItemClick(R.id.nav_home);
-        QPOSCallbackManager.getInstance().registerConnectionCallback(this);
+//        QPOSCallbackManager.getInstance().registerConnectionCallback(this);
 //        viewModel = new MainViewModel(getApplication(), this);
 //        binding.setVariable(BR.viewModel, viewModel);
         drawerLayout = binding.drawerLayout;

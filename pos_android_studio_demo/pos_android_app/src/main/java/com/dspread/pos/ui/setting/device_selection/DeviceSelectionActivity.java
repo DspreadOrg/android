@@ -29,6 +29,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.dspread.pos.common.enums.POS_TYPE;
 import com.dspread.pos.common.manager.QPOSCallbackManager;
 import com.dspread.pos.posAPI.ConnectionServiceCallback;
+import com.dspread.pos.posAPI.POS;
 import com.dspread.pos.utils.TRACE;
 import com.dspread.pos.utils.USBClass;
 import com.dspread.pos_android_app.BR;
@@ -320,7 +321,7 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        QPOSCallbackManager.getInstance().unregisterConnectionCallback();
+       // QPOSCallbackManager.getInstance().unregisterConnectionCallback();
     }
 
     @Override
@@ -350,6 +351,7 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
                     viewModel.selectedIndex.setValue(-1);
                     viewModel.connectBtnTitle.set(getString(R.string.str_connect));
                     viewModel.currentPOSType = null;
+                    POS.getInstance().clearPosService();
                     // Now it can be safely called clearCheck()
                 }
             } catch (Exception e) {
