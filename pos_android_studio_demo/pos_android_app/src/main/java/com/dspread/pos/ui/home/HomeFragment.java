@@ -7,16 +7,16 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-import com.dspread.pos.TerminalApplication;
 import com.dspread.pos.common.base.BaseFragment;
 import com.dspread.pos.TitleProviderListener;
-import com.dspread.pos.posAPI.POS;
+import com.dspread.pos.posAPI.POSManager;
 import com.dspread.pos.ui.payment.PaymentActivity;
 import com.dspread.pos.utils.TRACE;
 import com.dspread.pos_android_app.BR;
 import com.dspread.pos_android_app.R;
 import com.dspread.pos_android_app.databinding.FragmentHomeBinding;
 
+import me.goldze.mvvmhabit.utils.SPUtils;
 import me.goldze.mvvmhabit.utils.ToastUtils;
 
 
@@ -52,27 +52,27 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
     }
 
     private void navigateToPayment(long inputMoney){
-        if (!canshow) return;
-        if(!POS.getInstance().isPOSReady()){
-            ToastUtils.showShort(getString(R.string.connect_warnning));
-            return;
-        }
-        canshow = false;
-        showTimer.start();
+        String deviceAddress = SPUtils.getInstance().getString("deviceAddress","");
         Intent intent = new Intent(getActivity(), PaymentActivity.class);
         intent.putExtra("amount", String.valueOf(inputMoney));
+        intent.putExtra("deviceAddress", deviceAddress);
         startActivity(intent);
-        // Obtain the system standard jump animation time
-        int animTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
-        getView().postOnAnimationDelayed(() -> {
-            viewModel.clearAmount();
-            TRACE.i("clear the amount");
-        }, animTime + 500);
     }
     
     @Override
     public void initViewObservable() {
-        viewModel.paymentStartEvent.observe(this, this::navigateToPayment);
+        viewModel.paymentStartEvent.observe(this, inputMoney -> {
+            if (!canshow) return;
+            canshow = false;
+            showTimer.start();
+
+            navigateToPayment(inputMoney);
+            // Obtain the system standard jump animation time
+            int animTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+            getView().postOnAnimationDelayed(() -> {
+                viewModel.clearAmount();
+            }, animTime + 500);
+        });
     }
 
 

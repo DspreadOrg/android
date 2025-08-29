@@ -30,16 +30,4 @@ public interface ConnectionServiceCallback {
      */
     default void onRequestNoQposDetected() {}
 
-    // ==================== Bluetooth Connection Callbacks ====================
-    
-    /**
-     * Device Discovery Callback
-     */
-    default void onDeviceFound(BluetoothDevice device) {}
-
-    /**
-     * Request Device Scan Finished
-     */
-    default void onRequestDeviceScanFinished() {}
-
 }

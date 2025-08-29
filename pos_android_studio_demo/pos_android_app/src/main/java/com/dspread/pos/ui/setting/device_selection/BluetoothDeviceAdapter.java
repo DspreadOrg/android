@@ -19,6 +19,8 @@ import com.dspread.pos_android_app.R;
 import java.util.ArrayList;
 import java.util.List;
 
+import me.goldze.mvvmhabit.utils.SPUtils;
+
 public class BluetoothDeviceAdapter extends RecyclerView.Adapter<BluetoothDeviceAdapter.ViewHolder> {
 
     private List<BluetoothDevice> devices = new ArrayList<>();

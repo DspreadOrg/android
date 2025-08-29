@@ -51,6 +51,7 @@ public abstract class PrinterBaseActivity<V extends ViewDataBinding, VM extends 
 
         MyPrinterListener myPrinterListener = new MyPrinterListener();
         mPrinter.setPrintListener(myPrinterListener);
+        mPrinter.setFooter(50);//unit is px
 
         // Set return button click event
         binding.toolbar.setNavigationOnClickListener(v -> finish());

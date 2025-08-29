@@ -4,10 +4,10 @@ import android.content.Context;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 
-import com.dspread.pos.posAPI.POS;
+import com.dspread.pos.posAPI.POSManager;
+import com.dspread.pos.posAPI.PaymentResult;
 import com.dspread.pos.ui.payment.PaymentViewModel;
 import com.dspread.pos_android_app.R;
-import com.dspread.pos_android_app.databinding.ActivityBitmapBinding;
 import com.dspread.pos_android_app.databinding.ActivityPaymentBinding;
 import com.dspread.xpos.QPOSService;
 
@@ -18,38 +18,29 @@ import java.util.Hashtable;
 public class HandleTxnsResultUtils {
 
     // handle the NFC txns result
-    public static void handleNFCResult(Hashtable<String, String> decodeData, Context context, ActivityPaymentBinding binding, PaymentViewModel viewModel) {
-        Spanned receiptContent = ReceiptGenerator.generateMSRReceipt(decodeData, "000015");
+    public static void handleNFCResult(PaymentResult result, Context context, ActivityPaymentBinding binding, PaymentViewModel viewModel) {
+        Spanned receiptContent = ReceiptGenerator.generateMSRReceipt(result, "000015");
         binding.tvReceipt.setMovementMethod(LinkMovementMethod.getInstance());
         binding.tvReceipt.setText(receiptContent);
 
-        String content = handleNormalFormat(decodeData, context);
-        Hashtable<String, String> batchData = POS.getInstance().getNFCBatchData();
+        Hashtable<String, String> batchData = POSManager.getInstance().getNFCBatchData();
         String tlv = batchData.get("tlv");
         TRACE.i("NFC Batch data: " + tlv);
 
         String requestTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
-        String data = generateTransactionLog(content + tlv, requestTime,context);
-        viewModel.sendDingTalkMessage(false, data);
+        String data = generateTransactionLog(result.getEncTracks() + tlv, requestTime,context);
+        viewModel.requestOnlineAuth(false, data);
     }
 
-    public static void handleMCRResult(Hashtable<String, String> decodeData,Context context, ActivityPaymentBinding binding, PaymentViewModel viewModel) {
-        String formatID = decodeData.get("formatID");
-        Spanned receiptContent = ReceiptGenerator.generateMSRReceipt(decodeData, "000013");
+    public static void handleMCRResult(PaymentResult result,Context context, ActivityPaymentBinding binding, PaymentViewModel viewModel) {
+        Spanned receiptContent = ReceiptGenerator.generateMSRReceipt(result, "000013");
         binding.tvReceipt.setMovementMethod(LinkMovementMethod.getInstance());
         binding.tvReceipt.setText(receiptContent);
 
-        String content;
-        if (formatID.equals("FF")) {
-            content = handleFormatFF(decodeData);
-        } else {
-            content = handleNormalFormat(decodeData, context);
-        }
-
         // send txns result to online
         String requestTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
-        String data = generateTransactionLog(content, requestTime,context);
-        viewModel.sendDingTalkMessage(false, data);
+        String data = generateTransactionLog(result.getEncTracks()+result.getTlv(), requestTime,context);
+        viewModel.requestOnlineAuth(false, data);
     }
 
     public static String handleFormatFF(Hashtable<String, String> decodeData) {
@@ -65,6 +56,30 @@ public class HandleTxnsResultUtils {
         content.append("track_3: ").append(encTrack3).append("\n");
 
         return content.toString();
+    }
+
+    public static PaymentResult handleTransactionResult(PaymentResult paymentResult, Hashtable<String, String> decodeData){
+        paymentResult.setFormatID(decodeData.get("formatID") == null?"":decodeData.get("formatID"));
+        paymentResult.setMaskedPAN(decodeData.get("maskedPAN") == null? "":decodeData.get("maskedPAN"));
+        paymentResult.setExpiryDate(decodeData.get("expiryDate") == null? "":decodeData.get("expiryDate"));
+        paymentResult.setCardHolderName(decodeData.get("cardholderName") == null? "":decodeData.get("cardholderName"));
+        paymentResult.setServiceCode(decodeData.get("serviceCode") == null? "":decodeData.get("serviceCode"));
+        paymentResult.setTrack1Length(decodeData.get("track1Length") == null? "":decodeData.get("track1Length"));
+        paymentResult.setTrack2Length(decodeData.get("track2Length") == null? "":decodeData.get("track2Length"));
+        paymentResult.setTrack3Length(decodeData.get("track3Length") == null? "":decodeData.get("track3Length"));
+        paymentResult.setEncTracks(decodeData.get("encTracks") == null? "":decodeData.get("encTracks"));
+        paymentResult.setEncTrack1(decodeData.get("encTrack1") == null? "":decodeData.get("encTrack1"));
+        paymentResult.setEncTrack2(decodeData.get("encTrack2") == null? "":decodeData.get("encTrack2"));
+        paymentResult.setEncTrack3(decodeData.get("encTrack3") == null? "":decodeData.get("encTrack3"));
+        paymentResult.setPartialTrack(decodeData.get("partialTrack") == null? "":decodeData.get("partialTrack"));
+        paymentResult.setPinKsn(decodeData.get("pinKsn") == null? "":decodeData.get("pinKsn"));
+        paymentResult.setTrackksn(decodeData.get("trackksn") == null? "":decodeData.get("trackksn"));
+        paymentResult.setPinBlock(decodeData.get("pinBlock") == null? "":decodeData.get("pinBlock"));
+        paymentResult.setEncPAN(decodeData.get("encPAN") == null? "":decodeData.get("encPAN"));
+        paymentResult.setTrackRandomNumber(decodeData.get("trackRandomNumber") == null? "":decodeData.get("trackRandomNumber"));
+        paymentResult.setPinRandomNumber(decodeData.get("pinRandomNumber") == null? "":decodeData.get("pinRandomNumber"));
+
+        return paymentResult;
     }
 
     // handle normal txns format

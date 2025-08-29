@@ -3,6 +3,7 @@ package com.dspread.pos.utils;
 import android.text.Html;
 import android.text.Spanned;
 
+import com.dspread.pos.posAPI.PaymentResult;
 import com.dspread.pos.ui.payment.PaymentModel;
 
 import java.util.Hashtable;
@@ -67,6 +68,37 @@ public class ReceiptGenerator {
                 .append(labelValue("Amount", size(result.getAmount()==null?"":result.getAmount(),2)))
                 .append(labelValue("CVM Results", size(result.getCvmResults()==null?"":result.getCvmResults(),2)))
                 .append(labelValue("CID", size(result.getCidData()==null?"":result.getCidData(),2)))
+                .append(line())
+                .append(center(bold(size("Thank you",3))));
+
+        return Html.fromHtml(receiptBuilder.toString(), Html.FROM_HTML_MODE_COMPACT);
+    }
+
+    public static Spanned generateMSRReceipt(PaymentResult paymentResult, String batchNo) {
+        String transType = SPUtils.getInstance().getString("transactionType");
+        StringBuilder receiptBuilder = new StringBuilder()
+                .append(center(bold(size("POS of purchase orders", 5))))
+                .append(center(bold(size("MERCHANT COPY",5))))
+                .append(line())
+                .append("ISSUER Agricultural Bank of China").append(BR)
+                .append(labelValue("TYPE of transaction(TXN TYPE)", size(transType,2)))
+                .append(labelValue("BATCH NO", size(batchNo,2)))
+                .append(center("******* RECEIPT *******"))
+                .append(labelValue("formatID", size(paymentResult.getFormatID(),2)))
+                .append(labelValue("Card number", size(paymentResult.getMaskedPAN(),2)))
+                .append(labelValue("Expiry Date", size(paymentResult.getExpiryDate(),2)))
+                .append(labelValue("CardHolder Name", size(paymentResult.getCardHolderName(),2)))
+                .append(labelValue("Service Code", size(paymentResult.getServiceCode(),2)))
+                .append(labelValue("Pin Ksn", size(paymentResult.getPinKsn(),2)))
+                .append(labelValue("Track Ksn", size(paymentResult.getTrackksn(),2)))
+                .append(labelValue("Pin Block", size(paymentResult.getPinBlock(),2)))
+                .append(labelValue("track1Length", size(paymentResult.getTrack1Length(),2)))
+                .append(labelValue("track2Length", size(paymentResult.getTrack2Length(),2)))
+                .append(labelValue("track3Length", size(paymentResult.getTrack3Length(),2)))
+                .append(labelValue("encTracks", size(paymentResult.getEncTracks(),2)))
+                .append(labelValue("encTrack1", size(paymentResult.getEncTrack1(),2)))
+                .append(labelValue("encTrack2", size(paymentResult.getEncTrack2(),2)))
+                .append(labelValue("encTrack3", size(paymentResult.getEncTrack3(),2)))
                 .append(line())
                 .append(center(bold(size("Thank you",3))));
 

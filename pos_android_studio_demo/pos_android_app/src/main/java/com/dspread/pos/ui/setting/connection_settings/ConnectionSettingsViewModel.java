@@ -8,41 +8,40 @@ import androidx.databinding.ObservableField;
 
 import com.dspread.pos.TerminalApplication;
 import com.dspread.pos.common.enums.POS_TYPE;
-import com.dspread.pos.posAPI.POS;
+import com.dspread.pos.posAPI.POSManager;
 import com.dspread.pos.utils.DeviceUtils;
 
 import me.goldze.mvvmhabit.base.BaseApplication;
 import me.goldze.mvvmhabit.base.BaseViewModel;
 import me.goldze.mvvmhabit.binding.command.BindingCommand;
-import me.goldze.mvvmhabit.binding.command.BindingConsumer;
 import me.goldze.mvvmhabit.bus.event.SingleLiveEvent;
 import me.goldze.mvvmhabit.utils.SPUtils;
 
 public class ConnectionSettingsViewModel extends BaseViewModel {
     // The name of the currently connected device
     public final ObservableField<String> deviceName = new ObservableField<>("No device");
-    
+
     //Device connection status
     public final ObservableBoolean deviceConnected = new ObservableBoolean(false);
-    
+
     // Current transaction type
     public final ObservableField<String> transactionType = new ObservableField<>("");
-    
+
     // Current card mode
     public final ObservableField<String> cardMode = new ObservableField<>("");
-    
+
     // Current currency code
     public final ObservableField<String> currencyCode = new ObservableField<>("");
-    
+
     // Event: Select Device
     public final SingleLiveEvent<Void> selectDeviceEvent = new SingleLiveEvent<>();
-    
+
     // Event: Transaction Type Click
     public final SingleLiveEvent<Void> transactionTypeClickEvent = new SingleLiveEvent<>();
-    
+
     // Event: Card Mode Click
     public final SingleLiveEvent<Void> cardModeClickEvent = new SingleLiveEvent<>();
-    
+
     // Event: Currency Code Click
     public final SingleLiveEvent<Void> currencyCodeClickEvent = new SingleLiveEvent<>();
     private TerminalApplication baseApplication;
@@ -60,9 +59,6 @@ public class ConnectionSettingsViewModel extends BaseViewModel {
      * Load settings from SharedReferences
      */
     public void loadSettings() {
-        // Load device connection status
-        deviceConnected.set(SPUtils.getInstance().getBoolean("isConnected", false));
-        
         // Load device name
         String savedDeviceName = SPUtils.getInstance().getString("device_type", "");
         if(!"".equals(savedDeviceName)){
@@ -74,11 +70,12 @@ public class ConnectionSettingsViewModel extends BaseViewModel {
             }else  if(savedDeviceName.equals(POS_TYPE.BLUETOOTH.name())){
                 currentPOSType = POS_TYPE.BLUETOOTH;
             }
+            deviceConnected.set(true);
         }else {
             savedDeviceName = "No device";
         }
         updateDeviceName(savedDeviceName);
-        
+
         // Load transaction type
         String savedTransType = SPUtils.getInstance().getString("transactionType", "");
         if (savedTransType == null || "".equals(savedTransType)) {
@@ -86,7 +83,7 @@ public class ConnectionSettingsViewModel extends BaseViewModel {
             savedTransType = "GOODS";
         }
         transactionType.set(savedTransType);
-        
+
         // Loading card mode
         String savedCardMode = SPUtils.getInstance().getString("cardMode", "");
         if (savedCardMode == null || "".equals(savedCardMode)) {
@@ -99,7 +96,7 @@ public class ConnectionSettingsViewModel extends BaseViewModel {
             }
         }
         cardMode.set(savedCardMode);
-        
+
         // Load currency code
         String savedCurrencyCode = SPUtils.getInstance().getString("currencyName", "");
         if (savedCurrencyCode == null || "".equals(savedCurrencyCode)) {
@@ -114,7 +111,6 @@ public class ConnectionSettingsViewModel extends BaseViewModel {
      */
     public void saveSettings() {
         // Save device connection status
-        SPUtils.getInstance().put("isConnected", deviceConnected.get());
         if("".equals(deviceName)||"No device".equals(deviceName)) {
             // Save device name
             SPUtils.getInstance().put("device_type", "");
@@ -126,46 +122,20 @@ public class ConnectionSettingsViewModel extends BaseViewModel {
             }
         }
     }
-    public BindingCommand<Boolean> toggleDeviceCommand = new BindingCommand<>(new BindingConsumer<Boolean>() {
-        @Override
-        public void call(Boolean isChecked) {
-            deviceConnected.set(isChecked);
-            String deviceType = SPUtils.getInstance().getString("device_type", "");
-            if (!"".equals(deviceType)) {
-                if (isChecked) {
-                    selectDeviceEvent.call();
-                } else {
-                    POS.getInstance().close(DeviceUtils.getDevicePosType(deviceType));
-                    SPUtils.getInstance().put("isConnectedAutoed",false);
-                    updateDeviceName("No device");
-                    POS.getInstance().clearPosService();
-                }
+    public BindingCommand<Boolean> toggleDeviceCommand = new BindingCommand<>(isChecked -> {
+        deviceConnected.set(isChecked);
+        String deviceType = SPUtils.getInstance().getString("device_type", "");
+        if (!"".equals(deviceType)) {
+            if (isChecked) {
+                selectDeviceEvent.call();
+            } else {
+                POSManager.getInstance().close();
+                SPUtils.getInstance().put("device_type","");
+                updateDeviceName("No device");
             }
-            saveSettings();
         }
+        saveSettings();
     });
-//    /**
-//     * Equipment switch command
-//     */
-//    public BindingCommand toggleDeviceCommand = new BindingCommand(() -> {
-//        TRACE.i("is statrt click switch check == ");
-//        boolean isConnectedAutoed = SPUtils.getInstance().getBoolean("isConnectedAutoed");
-//        deviceConnected.set(!deviceConnected.get());
-//         {
-//
-//            String deviceType = SPUtils.getInstance().getString("device_type", "");
-//            if (deviceConnected.get() && !isConnectedAutoed) {
-//                selectDeviceEvent.call();
-//            } else {
-//                if (!"".equals(deviceType)) {
-//                    POSCommand.getInstance().close(DeviceUtils.getDevicePosType(deviceType));
-//                }
-//                SPUtils.getInstance().put("isConnectedAutoed",false);
-//                updateDeviceName("No device");
-//            }
-//            saveSettings();
-//        }
-//    });
 
     /**
      * Select device command

@@ -4,9 +4,13 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.hardware.usb.UsbDevice;
 import android.location.LocationManager;
 import android.os.Build;
@@ -27,9 +31,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.dspread.pos.common.enums.POS_TYPE;
-import com.dspread.pos.common.manager.QPOSCallbackManager;
-import com.dspread.pos.posAPI.ConnectionServiceCallback;
-import com.dspread.pos.posAPI.POS;
 import com.dspread.pos.utils.TRACE;
 import com.dspread.pos.utils.USBClass;
 import com.dspread.pos_android_app.BR;
@@ -44,17 +45,18 @@ import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.utils.SPUtils;
 import me.goldze.mvvmhabit.utils.ToastUtils;
 
-public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectionBinding, DeviceSelectionViewModel>  implements ConnectionServiceCallback {
+public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectionBinding, DeviceSelectionViewModel>{
 
     // Result constant
     public static final String EXTRA_DEVICE_NAME = "device_name";
     public static final String EXTRA_CONNECTION_TYPE = "connection_type";
     public static final int REQUEST_CODE_SELECT_DEVICE = 10001;
-    private BluetoothDeviceAdapter bluetoothAdapter;
+    private BluetoothDeviceAdapter bluetoothDeviceAdapter;
     private AlertDialog bluetoothDevicesDialog;
     private RecyclerView recyclerView;
     private POS_TYPE currentPOSType;
     private ActivityResultLauncher<Intent> bluetoothEnableLauncher;
+    private BluetoothAdapter bluetoothAdapter;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -71,10 +73,10 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
         return new ViewModelProvider(this).get(DeviceSelectionViewModel.class);
     }
 
+    @SuppressLint("MissingPermission")
     @Override
     public void initData() {
         super.initData();
-        QPOSCallbackManager.getInstance().registerConnectionCallback(this);
         // Set return button click event
         binding.toolbar.setNavigationOnClickListener(v -> finish());
         initBluetoothDevicesDialog();
@@ -85,7 +87,7 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
                 result -> {
                     if (result.getResultCode() == Activity.RESULT_OK) {
                         // Bluetooth is enabled, now check location and request permissions
-                        viewModel.startScanBluetooth();
+                        bluetoothAdapter.startDiscovery();
                     } else {
                         Toast.makeText(this, "Please enable Bluetooth to continue", Toast.LENGTH_LONG).show();
                     }
@@ -100,6 +102,17 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
         });
     }
 
+    // init bluetooth adapter
+    private boolean initBluetooth() {
+        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (bluetoothAdapter == null) {
+            // 设备不支持蓝牙
+            ToastUtils.showLong("The device doesn't support the bluetooth!");
+            return false;
+        }
+        return true;
+    }
+
     /**
      * Set up event monitoring
      */
@@ -111,6 +124,9 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
         viewModel.startScanBluetoothEvent.observe(this, new Observer<POS_TYPE>() {
             @Override
             public void onChanged(POS_TYPE posType) {
+                if(!initBluetooth()){
+                    return;
+                }
                 currentPOSType = posType;
                 checkLocationAndRequestPermissions(posType);
             }
@@ -123,17 +139,21 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // Initialize adapter
-        bluetoothAdapter = new BluetoothDeviceAdapter(this,device -> {
-            viewModel.stopScanBluetooth();
-            viewModel.connectBtnTitle.set("Connect to "+device.getAddress());
+        bluetoothDeviceAdapter = new BluetoothDeviceAdapter(this, device -> {
+            if (bluetoothAdapter != null) {
+                bluetoothAdapter.cancelDiscovery();
+            }
             viewModel.bluetoothAddress.set(device.getAddress());
             viewModel.bluetoothName.set(device.getName());
 //            viewModel.connectBluetooth(currentPOSType,device.getAddress());
             if (bluetoothDevicesDialog != null && bluetoothDevicesDialog.isShowing()) {
                 bluetoothDevicesDialog.dismiss();
             }
+            SPUtils.getInstance().put("device_type",POS_TYPE.BLUETOOTH.name());
+            SPUtils.getInstance().put("deviceAddress",device.getAddress());
+            finish();
         });
-        recyclerView.setAdapter(bluetoothAdapter);
+        recyclerView.setAdapter(bluetoothDeviceAdapter);
 
         Button btnCancel = dialogView.findViewById(R.id.btn_cancel);
         btnCancel.setOnClickListener(v -> bluetoothDevicesDialog.dismiss());
@@ -154,6 +174,7 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
             resultIntent.putExtra(EXTRA_DEVICE_NAME, viewModel.bluetoothName.get());
             SPUtils.getInstance().put("device_name",viewModel.bluetoothAddress.get());
         }
+        SPUtils.getInstance().put("device_type",posType.name());
         resultIntent.putExtra(EXTRA_CONNECTION_TYPE, posType.name());
         // Set the result and close it Activity
         setResult(Activity.RESULT_OK, resultIntent);
@@ -239,6 +260,7 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
         }
     }
 
+    @SuppressLint("MissingPermission")
     public void bluetoothRelaPer(POS_TYPE posType) {
         android.bluetooth.BluetoothAdapter adapter = android.bluetooth.BluetoothAdapter.getDefaultAdapter();
         if (adapter != null && !adapter.isEnabled()) {
@@ -250,7 +272,7 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
                 Toast.makeText(this, "Please open the bluetooth in device Setting", Toast.LENGTH_LONG).show();
             }
         }else {
-            viewModel.startScanBluetooth();
+            bluetoothAdapter.startDiscovery();
         }
     }
 
@@ -281,13 +303,10 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
     }
 
     private void openUsbDeviceDialog(ArrayList<String> deviceList){
-//        USBClass usb = new USBClass();
-//        ArrayList<String> deviceList = usb.GetUSBDevices(getApplication());
         final CharSequence[] items = deviceList.toArray(new CharSequence[deviceList.size()]);
         if (items.length == 1) {
             String selectedDevice = (String) items[0];
-            UsbDevice usbDevice = USBClass.getMdevices().get(selectedDevice);
-            viewModel.openUSBDevice(usbDevice);
+            SPUtils.getInstance().put("deviceAddress",selectedDevice);
         } else {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Select a Reader");
@@ -301,14 +320,12 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
                     }
                 });
             }
-            builder.setSingleChoiceItems(items, -1, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int item) {
-                    if (items.length > item) {
-                        String selectedDevice = items[item].toString();
-                        dialog.dismiss();
-                        UsbDevice usbDevice = USBClass.getMdevices().get(selectedDevice);
-                        viewModel.openUSBDevice(usbDevice);
-                    }
+            builder.setSingleChoiceItems(items, -1, (dialog, item) -> {
+                if (items.length > item) {
+                    String selectedDevice = items[item].toString();
+                    dialog.dismiss();
+                    SPUtils.getInstance().put("deviceAddress",selectedDevice);
+                    finish();
                 }
             });
             AlertDialog alertDialog = builder.create();
@@ -319,75 +336,39 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+        registerReceiver(receiver, filter);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(receiver);
+        // 停止扫描
+        if (bluetoothAdapter != null) {
+            bluetoothAdapter.cancelDiscovery();
+        }
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
-       // QPOSCallbackManager.getInstance().unregisterConnectionCallback();
     }
 
-    @Override
-    public void onRequestQposConnected() {
-        runOnUiThread(() -> {
-            viewModel.isConnecting.set(false);
-            currentPOSType = viewModel.posTypes[viewModel.selectedIndex.getValue()];
-            viewModel.connectionMethodSelectedEvent.setValue(currentPOSType);
-            viewModel.currentPOSType = viewModel.posTypes[viewModel.selectedIndex.getValue()];
-            viewModel.connectedDeviceName = viewModel.currentPOSType.name();
-            SPUtils.getInstance().put("device_type",viewModel.currentPOSType.name());
-            SPUtils.getInstance().put("isConnectedAutoed",true);
-        });
-    }
-
-    @Override
-    public void onRequestQposDisconnected() {
-       TRACE.i("device connection = disconnected");
-        runOnUiThread(() -> {
-            try {
-                viewModel.isConnecting.set(false);
-                SPUtils.getInstance().put("device_name","");
-                if(viewModel.currentPOSType == viewModel.posTypes[viewModel.selectedIndex.getValue()]){
-                    // Set the isClearing of ViewAdapter to true to prevent triggering the oCheckedChanged event
-                    binding.radioGroupConnection.clearCheck();
-                    viewModel.connectedDeviceName = null;
-                    viewModel.selectedIndex.setValue(-1);
-                    viewModel.connectBtnTitle.set(getString(R.string.str_connect));
-                    viewModel.currentPOSType = null;
-                    POS.getInstance().clearPosService();
-                    // Now it can be safely called clearCheck()
-                }
-            } catch (Exception e) {
-                // Capture and record anomalies
-                e.printStackTrace();
-
-            }
-        });
-    }
-
-    @Override
-    public void onRequestNoQposDetected() {
-        runOnUiThread(() -> {
-            SPUtils.getInstance().put("isConnectedAutoed",false);
-            viewModel.isConnecting.set(false);
-            SPUtils.getInstance().put("device_name","");
-        });
-    }
-
-    @Override
-    public void onRequestDeviceScanFinished() {
-        runOnUiThread(() ->{
-            ToastUtils.showShort("Scan finished!");
-        });
-    }
-
-    @SuppressLint("MissingPermission")
-    @Override
-    public void onDeviceFound(BluetoothDevice device) {
-        runOnUiThread(() -> {
-            TRACE.i("onDeviceFound =="+device);
-            if (bluetoothAdapter != null) {
-                if(device.getName() != null && !"".equals(device.getName())) {
-                    bluetoothAdapter.addDevice(device);
+    private final BroadcastReceiver receiver = new BroadcastReceiver() {
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+                // 发现设备
+                if (bluetoothDeviceAdapter != null) {
+                    BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                    if(device.getName() != null && !"".equals(device.getName())) {
+                        bluetoothDeviceAdapter.addDevice(device);
+                    }
                 }
             }
-        });
-    }
+        }
+    };
 }

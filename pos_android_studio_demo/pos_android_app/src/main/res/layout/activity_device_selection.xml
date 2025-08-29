@@ -19,123 +19,113 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            >
-            <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                app:layout_constraintTop_toTopOf="parent"
-                app:navigationIcon="@mipmap/left"
-                >
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="Connection Method"
-                    android:textColor="?attr/colorOnPrimary"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-            </com.google.android.material.appbar.MaterialToolbar>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp"
-            >
-            <!-- 标题 -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginBottom="16dp">
+                android:orientation="vertical"
+                >
+                <com.google.android.material.appbar.MaterialToolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:navigationIcon="@mipmap/left"
+                    >
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="Connection Method"
+                        android:textColor="?attr/colorOnPrimary"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+                </com.google.android.material.appbar.MaterialToolbar>
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Choose connection method"
-                    android:textColor="#333333"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
+                    android:orientation="vertical"
+                    android:padding="16dp"
+                    >
+                    <!-- 标题 -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="16dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Choose connection method"
+                            android:textColor="#333333"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <!-- 分隔线 -->
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#E0E0E0"
+                        android:layout_marginBottom="16dp" />
+
+                    <!-- 连接方式选项组 -->
+                    <RadioGroup
+                        android:id="@+id/radio_group_connection"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        binding:onCheckedChangedCommand="@{viewModel.connectionMethodRadioSelectedCommand}">
+
+                        <!-- Bluetooth 选项 -->
+                        <RadioButton
+                            android:id="@+id/radio_bluetooth"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="BLUETOOTH"
+                            android:textColor="#333333"
+                            android:textSize="16sp"
+                            android:padding="12dp"
+                            android:checked="@{viewModel.selectedIndex == 0}"
+                            />
+
+                        <!--uart-->
+                        <RadioButton
+                            android:id="@+id/radio_uart"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="UART"
+                            android:textColor="#333333"
+                            android:textSize="16sp"
+                            android:padding="12dp"
+                            android:checked="@{viewModel.selectedIndex == 1}"
+                            />
+
+                        <!-- USB 选项 -->
+                        <RadioButton
+                            android:id="@+id/radio_usb"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="USB"
+                            android:textColor="#333333"
+                            android:textSize="16sp"
+                            android:padding="12dp"
+                            android:checked="@{viewModel.selectedIndex == 2}"
+                            />
+
+                    </RadioGroup>
+
+                    <!-- 分隔线 -->
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#E0E0E0"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="16dp" />
+
+                </LinearLayout>
             </LinearLayout>
-
-            <!-- 分隔线 -->
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#E0E0E0"
-                android:layout_marginBottom="16dp" />
-
-            <!-- 连接方式选项组 -->
-            <RadioGroup
-                android:id="@+id/radio_group_connection"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                binding:onCheckedChangedCommand="@{viewModel.connectionMethodRadioSelectedCommand}">
-
-                <!-- Bluetooth 选项 -->
-                <RadioButton
-                    android:id="@+id/radio_bluetooth"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="BLUETOOTH"
-                    android:textColor="#333333"
-                    android:textSize="16sp"
-                    android:padding="12dp"
-                    android:checked="@{viewModel.selectedIndex == 0}"
-                  />
-
-                <!--uart-->
-                <RadioButton
-                    android:id="@+id/radio_uart"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="UART"
-                    android:textColor="#333333"
-                    android:textSize="16sp"
-                    android:padding="12dp"
-                    android:checked="@{viewModel.selectedIndex == 1}"
-                    />
-
-                <!-- USB 选项 -->
-                <RadioButton
-                    android:id="@+id/radio_usb"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="USB"
-                    android:textColor="#333333"
-                    android:textSize="16sp"
-                    android:padding="12dp"
-                    android:checked="@{viewModel.selectedIndex == 2}"
-                     />
-
-            </RadioGroup>
-
-            <!-- 分隔线 -->
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#E0E0E0"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp" />
-
-            <!-- 确认按钮 -->
-            <Button
-                android:id="@+id/btn_confirm"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@{viewModel.connectBtnTitle}"
-                android:textColor="#FFFFFF"
-                android:background="@drawable/button_background"
-                android:padding="12dp"
-                binding:onClickCommand="@{viewModel.confirmSelectionCommand}" />
-        </LinearLayout>
-        </LinearLayout>
             <!-- 添加加载框 -->
             <RelativeLayout
                 android:id="@+id/loading_layout"
@@ -159,7 +149,7 @@
                     android:textColor="#FFFFFF"
                     android:text="@string/connecting_bt_pos"/>
             </RelativeLayout>
-       </RelativeLayout>
+        </RelativeLayout>
 
     </ScrollView>
 </layout>

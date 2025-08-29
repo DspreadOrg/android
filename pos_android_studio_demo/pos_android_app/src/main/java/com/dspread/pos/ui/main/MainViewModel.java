@@ -9,10 +9,9 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.dspread.pos.TerminalApplication;
 import com.dspread.pos.common.manager.FragmentCacheManager;
 import com.dspread.pos.TitleProviderListener;
-import com.dspread.pos.posAPI.POS;
+import com.dspread.pos.posAPI.POSManager;
 import com.dspread.pos.ui.home.HomeFragment;
 import com.dspread.pos.ui.printer.PrinterHelperFragment;
 import com.dspread.pos.ui.scan.ScanFragment;
@@ -25,7 +24,6 @@ import com.dspread.xpos.QPOSService;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
-import me.goldze.mvvmhabit.base.BaseApplication;
 import me.goldze.mvvmhabit.base.BaseViewModel;
 import me.goldze.mvvmhabit.binding.command.BindingCommand;
 import me.goldze.mvvmhabit.binding.command.BindingConsumer;
@@ -49,14 +47,6 @@ public class MainViewModel extends BaseViewModel {
         TRACE.i("main activity init");
         this.activityRef = new WeakReference<>(activity);
         this.activity = activity;
-    }
-
-    public void openDevice(){
-        if(DeviceUtils.isSmartDevices()){
-            POS.getInstance().open(QPOSService.CommunicationMode.UART);
-            POS.getInstance().openUart();
-            SPUtils.getInstance().put("isConnectedAutoed",true);
-        }
     }
 
     public BindingCommand<View> onDrawerOpenedCommand = new BindingCommand<>(new BindingConsumer<View>() {

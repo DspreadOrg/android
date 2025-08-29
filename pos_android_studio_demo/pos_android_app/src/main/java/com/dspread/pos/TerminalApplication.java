@@ -4,16 +4,13 @@ import android.content.Context;
 import android.os.Build;
 
 
-import com.dspread.pos.posAPI.BasePOSService;
 import com.dspread.pos.common.manager.FragmentCacheManager;
-import com.dspread.pos.posAPI.POS;
+import com.dspread.pos.posAPI.POSManager;
 import com.dspread.pos.ui.main.MainActivity;
 import com.dspread.pos.utils.DevUtils;
 import com.dspread.pos.utils.TRACE;
 import com.dspread.pos_android_app.BuildConfig;
 import com.dspread.pos_android_app.R;
-import com.dspread.sdkdevservice.aidl.constant.SDKDevConstant;
-import com.dspread.xpos.QPOSService;
 import com.tencent.bugly.crashreport.BuglyLog;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.tencent.upgrade.bean.UpgradeConfig;
@@ -37,7 +34,7 @@ public class TerminalApplication extends BaseApplication {
         // Initialize Fragment Cache
         FragmentCacheManager.getInstance();
         TRACE.setContext(this);
-        POS.init(this);
+        POSManager.init(this);
     }
 
     private void initCrash() {

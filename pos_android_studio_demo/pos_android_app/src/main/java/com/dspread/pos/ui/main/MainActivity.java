@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.util.Log;
 import android.view.KeyEvent;
 
 import android.view.View;
@@ -19,12 +18,8 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.dspread.pos.TerminalApplication;
-import com.dspread.pos.common.enums.POS_TYPE;
 import com.dspread.pos.common.manager.FragmentCacheManager;
-import com.dspread.pos.common.manager.QPOSCallbackManager;
-import com.dspread.pos.posAPI.ConnectionServiceCallback;
-import com.dspread.pos.posAPI.POS;
+import com.dspread.pos.posAPI.POSManager;
 import com.dspread.pos.ui.home.HomeFragment;
 import com.dspread.pos.utils.DevUtils;
 import com.dspread.pos.utils.Mydialog;
@@ -32,18 +27,14 @@ import com.dspread.pos.utils.TRACE;
 import com.dspread.pos_android_app.BR;
 import com.dspread.pos_android_app.R;
 import com.dspread.pos_android_app.databinding.ActivityMainBinding;
-import com.dspread.xpos.QPOSService;
 import com.google.android.material.navigation.NavigationView;
 import com.tencent.upgrade.core.DefaultUpgradeStrategyRequestCallback;
 import com.tencent.upgrade.core.UpgradeManager;
 
-import java.util.Hashtable;
-
 import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.utils.SPUtils;
-import me.goldze.mvvmhabit.utils.ToastUtils;
 
-public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewModel> implements ConnectionServiceCallback {
+public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewModel> {
     public void setToolbarTitle(String title) {
         if (toolbar != null) {
             toolbar.setTitle(title);
@@ -74,15 +65,11 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     @Override
     protected void onResume() {
         super.onResume();
-        QPOSCallbackManager.getInstance().registerConnectionCallback(this);
     }
     @Override
     public void initData() {
         super.initData();
         viewModel.handleNavigationItemClick(R.id.nav_home);
-//        QPOSCallbackManager.getInstance().registerConnectionCallback(this);
-//        viewModel = new MainViewModel(getApplication(), this);
-//        binding.setVariable(BR.viewModel, viewModel);
         drawerLayout = binding.drawerLayout;
         navigationView = binding.navView;
         toolbar = binding.toolbar;
@@ -93,7 +80,6 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
-        viewModel.openDevice();
 
         //shiply update app
         UpgradeManager.getInstance().checkUpgrade(false, null, new DefaultUpgradeStrategyRequestCallback());
@@ -132,8 +118,8 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        QPOSCallbackManager.getInstance().unregisterConnectionCallback();
         TRACE.i("main is onDestroy");
+        POSManager.getInstance().close();
         SPUtils.getInstance().put("isConnected",false);
         SPUtils.getInstance().put("device_type", "");
     }
@@ -190,31 +176,6 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                 }
             });
         }
-    }
-
-    @Override
-    public void onRequestQposConnected() {
-        TRACE.i("child onRequestQposConnected");
-        SPUtils.getInstance().put("isConnected",true);
-        SPUtils.getInstance().put("device_type", POS_TYPE.UART.name());
-        if(POS.getInstance().isPOSReady()){
-           Hashtable<String, Object> posIdTable = POS.getInstance().getQPOSService().syncGetQposId(5);
-            String posId = posIdTable.get("posId") == null ? "" : (String) posIdTable.get("posId");
-            SPUtils.getInstance().put("posID",posId);
-            TRACE.i("posid :" + SPUtils.getInstance().getString("posID"));
-        }
-    }
-
-    @Override
-    public void onRequestNoQposDetected() {
-        SPUtils.getInstance().put("isConnected",false);
-        POS.getInstance().clearPosService();
-    }
-
-    @Override
-    public void onRequestQposDisconnected() {
-        SPUtils.getInstance().put("isConnected",false);
-        POS.getInstance().clearPosService();
     }
 }
 

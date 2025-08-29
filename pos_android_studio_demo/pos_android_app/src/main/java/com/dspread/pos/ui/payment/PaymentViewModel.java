@@ -1,7 +1,6 @@
 package com.dspread.pos.ui.payment;
 
 import android.app.Application;
-import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -19,6 +18,7 @@ import androidx.databinding.ObservableField;
 import com.dspread.pos.common.base.BaseAppViewModel;
 import com.dspread.pos.common.http.RetrofitClient;
 import com.dspread.pos.common.http.api.DingTalkApiService;
+import com.dspread.pos.posAPI.POSManager;
 import com.dspread.pos.printerAPI.PrinterHelper;
 import com.dspread.pos.utils.DialogUtils;
 import com.dspread.pos.utils.TLV;
@@ -28,25 +28,24 @@ import com.dspread.pos_android_app.R;
 import com.dspread.print.device.PrintListener;
 import com.dspread.print.device.PrinterDevice;
 import com.dspread.print.device.PrinterManager;
-import com.dspread.print.util.ImageProcessor;
 
-import java.util.HashMap;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.List;
-import java.util.Map;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import me.goldze.mvvmhabit.binding.command.BindingAction;
 import me.goldze.mvvmhabit.binding.command.BindingCommand;
 import me.goldze.mvvmhabit.bus.event.SingleLiveEvent;
-import me.goldze.mvvmhabit.http.BaseResponse;
 import me.goldze.mvvmhabit.utils.SPUtils;
 import me.goldze.mvvmhabit.utils.ToastUtils;
 
 
 public class PaymentViewModel extends BaseAppViewModel {
-    private static final String DINGTALK_URL = "https://oapi.dingtalk.com/robot/send?access_token=83e8afc691a1199c70bb471ec46d50099e6dd078ce10223bbcc56c0485cb5cc3";
+//    private static final String DINGTALK_URL = "https://oapi.dingtalk.com/robot/send?access_token=83e8afc691a1199c70bb471ec46d50099e6dd078ce10223bbcc56c0485cb5cc3";
+    private static final String AUTHFROMISSUER_URL = "https://ypparbjfugzgwijijfnb.supabase.co/functions/v1/request-online-result";
     private DingTalkApiService apiService;
 
     public PaymentViewModel(@NonNull Application application) {
@@ -63,7 +62,6 @@ public class PaymentViewModel extends BaseAppViewModel {
     public ObservableBoolean isSuccess = new ObservableBoolean(false);
     public ObservableBoolean isPrinting = new ObservableBoolean(false);
     public SingleLiveEvent<Boolean> isOnlineSuccess = new SingleLiveEvent();
-    public SingleLiveEvent<Boolean> isContinueTrx = new SingleLiveEvent();
     public ObservableBoolean showPinpad = new ObservableBoolean(false);
     public ObservableBoolean showResultStatus = new ObservableBoolean(false);
     public ObservableField<String> receiptContent = new ObservableField<>();
@@ -117,7 +115,7 @@ public class PaymentViewModel extends BaseAppViewModel {
 //        isSuccess.set(false);
     }
 
-    public void setAmount(String newAmount) {
+    public void displayAmount(String newAmount) {
         amount.set("¥" + newAmount);
     }
 
@@ -149,13 +147,6 @@ public class PaymentViewModel extends BaseAppViewModel {
     public BindingCommand continueTxnsCommand = new BindingCommand(new BindingAction() {
         @Override
         public void call() {
-//            titleText.set("Payment");
-//            stopLoading();
-//            showPinpad.set(false);
-//            isSuccess.set(false);
-//            isWaiting.set(false);
-//            showResultStatus.set(false);
-//            isContinueTrx.setValue(true);
             finish();
         }
     });
@@ -229,41 +220,43 @@ public class PaymentViewModel extends BaseAppViewModel {
         return bitmap;
     }
 
-    // send msg to dingding
-    public void sendDingTalkMessage(boolean isICC, String message) {
-        Map<String, Object> textContent = new HashMap<>();
-        textContent.put("text", message);
-        textContent.put("title", "issues");
-
-        Map<String, Object> requestBody = new HashMap<>();
-        requestBody.put("msgtype", "markdown");
-        requestBody.put("markdown", textContent);
-
-        addSubscribe(apiService.sendMessage(DINGTALK_URL, requestBody)
+    public void requestOnlineAuth(boolean isICC, String message) {
+        JSONObject object = new JSONObject();
+        try {
+            object.put("requestData",message);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+        addSubscribe(apiService.sendMessage(AUTHFROMISSUER_URL, object)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<BaseResponse>() {
-                    @Override
-                    public void accept(BaseResponse response) throws Exception {
-                        if (response.isOk()) {
-                            ToastUtils.showShort("Send online success");
+                .subscribe(response -> {
+                    TRACE.i("online auth rsp code= " + response.getResult());
+                    String onlineRspCode = (String) response.getResult();
+                    if (response.isOk()) {
+                        ToastUtils.showShort("Send online success");
+                        if (isICC) {
+                            POSManager.getInstance().sendOnlineProcessResult("8A02" + onlineRspCode);
+                        } else {
                             isOnlineSuccess.setValue(true);
-                            if (!isICC) {
-//                                transactionResult.set(tlvData);
-                            }
+                        }
+                    } else {
+                        if (isICC) {
+                            POSManager.getInstance().sendOnlineProcessResult("8A023035");
                         } else {
                             isOnlineSuccess.setValue(false);
-                            transactionResult.set("Send online failed：" + response.getMessage());
-                            ToastUtils.showShort("Send online failed：" + response.getMessage());
                         }
+                        transactionResult.set("Send online failed：" + response.getMessage());
+                        ToastUtils.showShort("Send online failed：" + response.getMessage());
                     }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
+                }, throwable -> {
+                    if (isICC) {
+                        POSManager.getInstance().sendOnlineProcessResult("8A023035");
+                    } else {
                         isOnlineSuccess.setValue(false);
-                        ToastUtils.showShort("The network is failed：" + throwable.getMessage());
-                        transactionResult.set("The network is failed：" + throwable.getMessage());
                     }
+                    ToastUtils.showShort("The network is failed：" + throwable.getMessage());
+                    transactionResult.set("The network is failed：" + throwable.getMessage());
                 }));
     }
 

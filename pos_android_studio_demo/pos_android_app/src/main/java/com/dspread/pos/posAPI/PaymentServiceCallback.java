@@ -15,28 +15,6 @@ public interface PaymentServiceCallback {
     // ==================== Core Transaction Callbacks ====================
     
     /**
-     * Transaction result callback
-     */
-    default void onDoTradeResult(QPOSService.DoTradeResult result, Hashtable<String, String> decodeData) {}
-    
-    /**
-     * Transaction request result callback
-     */
-    default void onRequestTransactionResult(QPOSService.TransactionResult transactionResult) {}
-    
-    /**
-     * Transaction cancelled callback
-     */
-    default void onTradeCancelled() {}
-    
-    // ==================== Transaction Process Callbacks ====================
-    
-    /**
-     * Request to set amount
-     */
-    default void onRequestSetAmount() {}
-    
-    /**
      * Waiting for user operation (insert/swipe/tap card)
      */
     default void onRequestWaitingUser() {}
@@ -55,11 +33,6 @@ public interface PaymentServiceCallback {
      * Request online processing
      */
     default void onRequestOnlineProcess(String tlv) {}
-    
-    /**
-     * Request batch data
-     */
-    default void onRequestBatchData(String tlv) {}
     
     /**
      * Request to display message
@@ -84,50 +57,16 @@ public interface PaymentServiceCallback {
     default void onRequestSetPin() {}
     
     /**
-     * Return get PIN result
-     */
-    default void onReturnGetPinResult(Hashtable<String, String> result) {}
-    
-    /**
      * Return PIN input result
      */
     default void onReturnGetPinInputResult(int num) {}
     
     /**
-     * Return keyboard input result
-     */
-    default void onReturnGetKeyBoardInputResult(String result) {}
-    
-    /**
-     * Get card number result
-     */
-    default void onGetCardNoResult(String cardNo) {}
-    
-    /**
      * Get card information result
      */
     default void onGetCardInfoResult(Hashtable<String, String> cardInfo) {}
-    
-    /**
-     * EMV ICC exception data
-     */
-    default void onEmvICCExceptionData(String tlv) {}
-    
-    // ==================== Transaction Data Callbacks ====================
-    
-    /**
-     * Return reversal data
-     */
-    default void onReturnReversalData(String tlv) {}
 
-    /**
-     * Error callback
-     */
-    default void onError(QPOSService.Error errorState){}
-
-    /**
-     * Request Qpos Disconnected callback
-     */
-    default void onRequestQposDisconnected(){};
+    default void onTransactionCompleted(PaymentResult result) {}
+    default void onTransactionFailed(String errorMessage,String data) {}
 
 }
