@@ -1,3 +1,10 @@
+## [7.0.1](https://github.com/DspreadOrg/android/compare/v7.0.0...v7.0.1) (2025-08-29)
+
+
+### Bug Fixes
+
+* update demo version to 7.0.1 ([b21d8fd](https://github.com/DspreadOrg/android/commit/b21d8fd793713c4151c8345ba1ddcf051874f7e8))
+
 # [7.0.0](https://github.com/DspreadOrg/android/compare/v6.3.2...v7.0.0) (2025-08-29)
 
 
