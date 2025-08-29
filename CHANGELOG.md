@@ -1,3 +1,15 @@
+# [7.0.0](https://github.com/DspreadOrg/android/compare/v6.3.2...v7.0.0) (2025-08-29)
+
+
+### Features
+
+* update demo version to 7.0.0 ([d887223](https://github.com/DspreadOrg/android/commit/d887223f7bc5965ddddb9f7c3da72a506dfa5948))
+
+
+### BREAKING CHANGES
+
+* improve the demo code logic structure
+
 ## [6.3.2](https://github.com/DspreadOrg/android/compare/v6.3.1...v6.3.2) (2025-08-26)
 
 
