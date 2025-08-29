@@ -221,44 +221,39 @@ public class PaymentViewModel extends BaseAppViewModel {
     }
 
     public void requestOnlineAuth(boolean isICC, String message) {
-        JSONObject object = new JSONObject();
-        try {
-            object.put("requestData",message);
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
-        addSubscribe(apiService.sendMessage(AUTHFROMISSUER_URL, object)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(response -> {
-                    TRACE.i("online auth rsp code= " + response.getResult());
-                    String onlineRspCode = (String) response.getResult();
-                    if (response.isOk()) {
-                        ToastUtils.showShort("Send online success");
-                        if (isICC) {
+        if (!isICC) {
+            isOnlineSuccess.setValue(true);
+        } else {
+            JSONObject object = new JSONObject();
+            try {
+                object.put("requestData", message);
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+            addSubscribe(apiService.sendMessage(AUTHFROMISSUER_URL, object)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(response -> {
+                        TRACE.i("online auth rsp code= " + response.getResult());
+                        String onlineRspCode = (String) response.getResult();
+                        if (response.isOk()) {
+                            ToastUtils.showShort("Send online success");
                             POSManager.getInstance().sendOnlineProcessResult("8A02" + onlineRspCode);
                         } else {
-                            isOnlineSuccess.setValue(true);
-                        }
-                    } else {
-                        if (isICC) {
-                            POSManager.getInstance().sendOnlineProcessResult("8A023035");
-                        } else {
-                            isOnlineSuccess.setValue(false);
-                        }
-                        transactionResult.set("Send online failed：" + response.getMessage());
-                        ToastUtils.showShort("Send online failed：" + response.getMessage());
-                    }
-                }, throwable -> {
-                    if (isICC) {
-                        POSManager.getInstance().sendOnlineProcessResult("8A023035");
-                    } else {
-                        isOnlineSuccess.setValue(false);
-                    }
-                    ToastUtils.showShort("The network is failed：" + throwable.getMessage());
-                    transactionResult.set("The network is failed：" + throwable.getMessage());
-                }));
-    }
 
+                            POSManager.getInstance().sendOnlineProcessResult("8A023035");
+                            transactionResult.set("Send online failed：" + response.getMessage());
+                            ToastUtils.showShort("Send online failed：" + response.getMessage());
+                        }
+                    }, throwable -> {
+
+                        POSManager.getInstance().sendOnlineProcessResult("8A023035");
+
+                        ToastUtils.showShort("The network is failed：" + throwable.getMessage());
+                        transactionResult.set("The network is failed：" + throwable.getMessage());
+                    }));
+        }
+
+    }
 
 }
