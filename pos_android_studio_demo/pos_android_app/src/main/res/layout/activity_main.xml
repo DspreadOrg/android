@@ -56,9 +56,20 @@
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/nav_header_main"
         app:menu="@menu/activity_main_drawer"
-        binding:onNavigationItemSelectedCommand="@{viewModel.switchFragmentCommand}"
-        />
 
+        binding:onNavigationItemSelectedCommand="@{viewModel.switchFragmentCommand}"
+        >
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:scaleType="centerCrop"
+            android:layout_marginBottom="26dp"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:src="@mipmap/menu_logo"
+             android:padding="8dp" />
+
+    </com.google.android.material.navigation.NavigationView>
 
 </androidx.drawerlayout.widget.DrawerLayout>
 </layout>
