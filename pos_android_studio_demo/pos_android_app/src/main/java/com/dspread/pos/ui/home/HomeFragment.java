@@ -134,7 +134,7 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
 
     @Override
     public String getTitle() {
-        return "Payment";
+        return "Sale";
     }
 }
 

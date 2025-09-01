@@ -35,6 +35,8 @@ public class MainViewModel extends BaseViewModel {
     // SingleLiveEvent
     public SingleLiveEvent<Integer> fragmentChangeEvent = new SingleLiveEvent<>();
     public SingleLiveEvent<View> changeDrawerLayout = new SingleLiveEvent<>();
+    public SingleLiveEvent<Void> closeDrawerCommand = new SingleLiveEvent<>();
+
     private MainActivity activity;
     public List<Fragment> fragments;
 
@@ -72,6 +74,9 @@ public class MainViewModel extends BaseViewModel {
         fragmentChangeEvent.setValue(integer); // Here, different fragments can be set according to logic
         handleNavigationItemClick(integer);
     });
+    public void closeDrawer() {
+        closeDrawerCommand.call(); // 调用无参的方法
+    }
 
     public void handleNavigationItemClick(int itemId) {
         MainActivity activity = activityRef.get();
