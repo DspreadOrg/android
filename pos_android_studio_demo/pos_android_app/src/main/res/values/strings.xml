@@ -4,7 +4,7 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
-    <string name="menu_payment">Payment</string>
+    <string name="menu_payment">Sale</string>
     <string name="menu_setting">Setting</string>
     <string name="menu_mifareCards">Mifare Cards</string>
     <string name="device_not_connect">device not connect</string>
@@ -498,6 +498,7 @@
     <string name="density_level">Density Level</string>
     <string name="fill_name"></string>
     <string name="scan">Scan</string>
+    <string name="transaction">Transaction</string>
     <string name="scan_toast">This function has not been activated yet!</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="amount_identification">¥</string>

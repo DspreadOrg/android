@@ -106,10 +106,10 @@ public class MainViewModel extends BaseViewModel {
                 return homeFragment;
             case R.id.nav_setting:
                 return new ConnectionSettingsFragment();
-            case R.id.nav_printer:
-                return new PrinterHelperFragment();
-            case R.id.nav_scan:
-                return new ScanFragment();
+//            case R.id.nav_printer:
+//                return new PrinterHelperFragment();
+//            case R.id.nav_scan:
+//                return new ScanFragment();
         }
 
         return null;
