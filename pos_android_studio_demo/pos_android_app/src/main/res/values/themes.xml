@@ -43,7 +43,7 @@
         <item name="colorOnPrimary">@color/number_button_text</item>
 
         <!-- 次要颜色 -->
-        <item name="colorSecondary">@color/confirm_button_background</item>
+        <item name="colorSecondary">@color/red_color</item>
         <item name="colorSecondaryVariant">@color/clear_button_background</item>
         <item name="colorOnSecondary">@color/confirm_button_text</item>
 

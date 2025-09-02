@@ -185,4 +185,8 @@
 
     <color name="text_primary">#212121</color>
     <color name="text_secondary">#757575</color>
+
+    <color name="connected">#ff4275c3</color>
+    <color name="red_color">#FFCF131B</color>
+    <color name="switch_unselected_color">#EEEEEE</color>
 </resources>
