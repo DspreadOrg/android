@@ -28,17 +28,9 @@ import me.tatarka.bindingcollectionadapter2.ItemBinding;
 public class PrinterViewModel extends BaseAppViewModel {
     public SingleLiveEvent<Intent> startActivityEvent = new SingleLiveEvent<>();
     public List<PrinterItemViewModel> items = new ArrayList<>();
-    
-    // Add ItemBinding configuration
+
     public ItemBinding<Object> itemBinding = ItemBinding.of(BR.item, R.layout.printer_work_item)
             .bindExtra(BR.viewModel, this);
-
-    public BindingCommand<PrinterItemViewModel> itemClickCommand = new BindingCommand<>(item -> {
-        if (item.activityClass != null) {
-            Intent intent = new Intent(getApplication(), item.activityClass);
-            startActivityEvent.setValue(intent);
-        }
-    });
 
     public void onItemClick(PrinterItemViewModel item) {
         // Jump to the corresponding interface based on different printing projects

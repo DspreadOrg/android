@@ -121,4 +121,7 @@ dependencies {
     implementation("com.tencent.shiply:upgrade:2.2.0")
     implementation("com.tencent.shiply:upgrade-ui:2.2.0") // Pop up UI related, if the business side customizes their own pop ups, they can not rely on this library
     implementation 'com.github.midorikocak:currency-picker-android:1.2.1'
+
+    implementation 'com.journeyapps:zxing-android-embedded:4.3.0'
+    implementation 'com.google.zxing:core:3.5.1'
 }

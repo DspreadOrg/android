@@ -49,6 +49,12 @@
              </intent-filter>
         </activity>
         <activity
+            android:name="com.dspread.pos.ui.payment.PaymentMethodActivity"
+            android:exported="false"/>
+        <activity
+            android:name="com.dspread.pos.ui.payment.PaymentGenerateActivity"
+            android:exported="false" />
+        <activity
             android:name="com.dspread.pos.ui.payment.PaymentActivity"
             android:screenOrientation="portrait"
            />
@@ -72,7 +78,7 @@
             android:exported="false" />
         <activity
             android:name="com.dspread.pos.ui.printer.activities.PrintTicketActivity"
-            android:exported="false" />
+            android:exported="false"/>
         <activity
             android:name="com.dspread.pos.ui.printer.activities.PrinterStatusActivity"
             android:exported="false" />

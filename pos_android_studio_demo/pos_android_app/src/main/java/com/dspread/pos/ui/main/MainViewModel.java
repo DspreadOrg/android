@@ -1,6 +1,7 @@
 package com.dspread.pos.ui.main;
 
 import android.app.Application;
+import android.content.Intent;
 import android.view.KeyEvent;
 import android.view.View;
 
@@ -13,6 +14,7 @@ import com.dspread.pos.common.manager.FragmentCacheManager;
 import com.dspread.pos.TitleProviderListener;
 import com.dspread.pos.posAPI.POSManager;
 import com.dspread.pos.ui.home.HomeFragment;
+import com.dspread.pos.ui.payment.PaymentMethodActivity;
 import com.dspread.pos.ui.printer.PrinterHelperFragment;
 import com.dspread.pos.ui.scan.ScanFragment;
 import com.dspread.pos.ui.setting.connection_settings.ConnectionSettingsFragment;
@@ -111,8 +113,11 @@ public class MainViewModel extends BaseViewModel {
                 return homeFragment;
             case R.id.nav_setting:
                 return new ConnectionSettingsFragment();
-//            case R.id.nav_printer:
-//                return new PrinterHelperFragment();
+           case R.id.nav_transaction:
+               Intent intent = new Intent(activity.getBaseContext(), PaymentMethodActivity.class);
+               intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+               activity.getBaseContext().startActivity(intent);
+               return null;
 //            case R.id.nav_scan:
 //                return new ScanFragment();
         }

@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:binding="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="android.view.View" />
+        <variable
+            name="viewModel"
+            type="com.dspread.pos.ui.payment.PaymentGenerateViewModel" />
+    </data>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:background="@color/grey9">
+
+        <!-- 顶部区域：退出按钮 -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp">
+
+            <ImageButton
+                android:id="@+id/closeButton"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_alignParentEnd="true"
+                android:background="@null"
+                android:contentDescription="Close"
+                android:src="@mipmap/ic_close_black"/>
+        </RelativeLayout>
+
+        <!-- Total Amount Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp">
+
+            <TextView
+                android:id="@+id/totalLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Total"
+                android:textSize="18sp"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/amountValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{viewModel.amount}"
+                android:textSize="28sp"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:layout_marginTop="4dp" />
+        </LinearLayout>
+
+        <!-- QR Code and Payment Methods Container -->
+        <LinearLayout
+            android:layout_margin="@dimen/dp_10"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:background="@drawable/rounded_background"
+            android:padding="24dp">
+
+            <!-- QR Code Section with fixed aspect ratio -->
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.6"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_gravity="center"
+                    android:id="@+id/qrCodeImageView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:scaleType="centerInside"
+                    tools:src="@drawable/ic_printer" />
+            </FrameLayout>
+
+            <!-- Open Payment App Text -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Open Payment App"
+                android:textColor="#ff030303"
+                android:textSize="19sp"
+                android:layout_gravity="center"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Payment Icons Section -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="16dp">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="24dp"
+                    android:layout_marginHorizontal="8dp"
+                    android:src="@mipmap/ic_visa" />
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="24dp"
+                    android:layout_marginHorizontal="8dp"
+                    android:src="@mipmap/ic_master" />
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="24dp"
+                    android:layout_marginHorizontal="8dp"
+                    android:src="@mipmap/ic_amex" />
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="24dp"
+                    android:layout_marginHorizontal="8dp"
+                    android:src="@mipmap/ic_discover" />
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="24dp"
+                    android:layout_marginHorizontal="8dp"
+                    android:src="@mipmap/ic_jcb" />
+            </LinearLayout>
+
+            <!-- Check Payment Status Button -->
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/checkStatusButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="check payment status"
+                android:textAllCaps="false"
+                android:background="@drawable/white_red_border_button"
+                android:textColor="@color/red"
+                android:textSize="19sp"
+                binding:onClickCommand="@{viewModel.checkPayStatus}"
+                android:stateListAnimator="@null"
+                android:layout_marginTop="8dp"
+                style="@style/Widget.AppCompat.Button.Borderless" />
+        </LinearLayout>
+    </LinearLayout>
+</layout>
