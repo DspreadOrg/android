@@ -18,6 +18,7 @@ import com.dspread.xpos.QPOSService;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.text.DecimalFormat;
 import java.util.Hashtable;
 import java.util.Locale;
 
@@ -107,6 +108,19 @@ public class DeviceUtils {
          */
         public static String getPhoneDetail() {
             return "Brand:"+DeviceUtils.getPhoneBrand() + " || Name:" + DeviceUtils.getDeviceName() + " || Model:" + DeviceUtils.getPhoneModel() + " || Version:" + DeviceUtils.getVersionRelease();
+        }
+
+        public static String convertAmountToCents(String original){
+            String result ="";
+            try {
+                double number = Double.parseDouble(original);
+                DecimalFormat decimalFormat = new DecimalFormat("#0.00");
+                result = decimalFormat.format(number / 100);
+                System.out.println(result); // 输出: 1.23
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid format");
+            }
+            return result;
         }
 
         /**

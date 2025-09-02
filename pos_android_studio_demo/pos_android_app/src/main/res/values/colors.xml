@@ -196,4 +196,5 @@
 
 <!--    sale detail-->
     <color name="text_color">#ff030303</color>
+    <color name="background_color">#40100d0d</color>
 </resources>

@@ -50,6 +50,7 @@ public class HomeViewModel extends BaseAppViewModel {
     public void clearAmount() {
         amountBuilder.setLength(0);
         amount.set("$0.00");
+        amountValid.set(false);
     }
 
     public void onNumberClick(String number){

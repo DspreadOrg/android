@@ -54,7 +54,7 @@ public class PaymentViewModel extends BaseAppViewModel {
     }
 
     public ObservableField<String> loadingText = new ObservableField<>("");
-    public ObservableBoolean isLoading = new ObservableBoolean(false);
+    public ObservableField<Boolean> isLoading = new ObservableField<>(false);
     public ObservableField<String> transactionResult = new ObservableField<>("");
     public ObservableField<String> amount = new ObservableField<>("");
     public ObservableField<String> titleText = new ObservableField<>("Payment");
@@ -147,6 +147,16 @@ public class PaymentViewModel extends BaseAppViewModel {
     public BindingCommand continueTxnsCommand = new BindingCommand(new BindingAction() {
         @Override
         public void call() {
+            finish();
+        }
+    });
+
+    public BindingCommand cancleTxnsCommand = new BindingCommand(new BindingAction() {
+        @Override
+        public void call() {
+            new Thread(() -> {
+                POSManager.getInstance().cancelTransaction();
+            }).start();
             finish();
         }
     });

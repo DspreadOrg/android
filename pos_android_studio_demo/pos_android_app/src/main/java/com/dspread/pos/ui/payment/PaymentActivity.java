@@ -2,6 +2,7 @@ package com.dspread.pos.ui.payment;
 
 import android.app.Dialog;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
@@ -9,6 +10,9 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
+import androidx.core.content.ContextCompat;
+import androidx.lifecycle.Observer;
 
 import com.dspread.pos.posAPI.ConnectionServiceCallback;
 import com.dspread.pos.posAPI.POSManager;
@@ -79,7 +83,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
         paymentServiceCallback = new PaymentCallback();
         amount = getIntent().getStringExtra("amount");
         deviceAddress = getIntent().getStringExtra("deviceAddress");
-        viewModel.displayAmount(amount);//ui
+        viewModel.displayAmount(DeviceUtils.convertAmountToCents(amount));//ui
         startTransaction();
     }
 

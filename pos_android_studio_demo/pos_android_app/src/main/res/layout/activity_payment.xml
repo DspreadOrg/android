@@ -6,181 +6,157 @@
             name="viewModel"
             type="com.dspread.pos.ui.payment.PaymentViewModel" />
     </data>
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white"
-        android:padding="16dp"
         android:gravity="center_vertical"
-        android:orientation="vertical">
-<!--        <include layout="@layout/activity_title" app:viewModel="@{viewModel}"/>-->
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1">
-
-            <!-- 原有 LinearLayout 内容（总金额、提示文字、设备图片等） -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:padding="20dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/total"
-                    android:textColor="@color/text_color"
-                    android:textSize="19sp"
-                    android:layout_marginTop="25dp"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@{viewModel.amount}"
-                    android:textSize="44sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/text_color"
-                    android:layout_marginTop="10dp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/prompt_user_to_tap_card"
-                    android:textSize="19sp"
-                    android:textColor="@color/red_color"
-                    android:layout_marginTop="20dp" />
-
-                <!-- 其他视图（如设备图片、支付方式图标等） -->
-
-            </LinearLayout>
-
-            <!-- 右上角的“×”图标 -->
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@mipmap/btn_close_black"
-                android:layout_gravity="top|end"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
-                />
-
-        </FrameLayout>
-        <!-- 刷卡动画区域 -->
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="190dp"
-            android:gravity="center"
-            android:layout_weight="2"
-            android:visibility="@{viewModel.isWaiting ? View.VISIBLE : View.GONE}">
-            <pl.droidsonroids.gif.GifImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/checkcard"/>
-        </LinearLayout>
+        android:id="@+id/rel_sale_details">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:layout_marginTop="20dp"> <!-- 增加marginTop，使整体上移 -->
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
 
-            <ImageView
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:src="@mipmap/ic_visa"
-                android:layout_margin="8dp" />
-
-            <ImageView
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:src="@mipmap/ic_master"
-                android:layout_margin="8dp" />
-
-            <ImageView
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:src="@mipmap/ic_amex"
-                android:layout_margin="8dp" />
-
-            <ImageView
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:src="@mipmap/ic_dc"
-                android:layout_margin="8dp" />
-
-            <ImageView
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:src="@mipmap/ic_jcb"
-                android:layout_margin="8dp" />
-
-        </LinearLayout>
-        <!-- 添加加载框布局 -->
-        <androidx.cardview.widget.CardView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="16dp"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="4dp"
-            android:visibility="@{viewModel.isLoading ? View.VISIBLE : View.GONE}">
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:gravity="center"
-                android:padding="16dp">
-                <ProgressBar
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:indeterminateTint="@color/colorPrimary"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="@{viewModel.loadingText}"
-                    android:textSize="16sp"/>
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-        <!-- 原有的卡片布局 -->
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="4dp"
-            android:visibility="@{viewModel.showPinpad ? View.VISIBLE : View.GONE}">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
-                <EditText
-                    android:id="@+id/pinpadEditText"
-                    android:background="@drawable/edittext_no_cursor"
-                    android:textCursorDrawable="@null"
-                    android:focusable="false"
-                    android:focusableInTouchMode="false"
-                    android:cursorVisible="false"
-                    android:clickable="false"
-                    android:longClickable="false"
+                android:layout_weight="1">
+                <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:textSize="20sp"
-                    />
+                   >
+
+                    <!-- 原有 LinearLayout 内容（总金额、提示文字、设备图片等） -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        >
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/total"
+                            android:textColor="@color/text_color"
+                            android:textSize="19sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@{viewModel.amount}"
+                            android:textSize="44sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/text_color" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/prompt_user_to_tap_card"
+                            android:textSize="19sp"
+                            android:textColor="@color/red_color"/>
+
+                        <!-- 其他视图（如设备图片、支付方式图标等） -->
+
+                    </LinearLayout>
+
+                    <!-- 右上角的“×”图标 -->
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="16dp"
+                        android:src="@mipmap/btn_close_black"
+                        android:layout_gravity="top|end"
+                        android:layout_marginTop="16dp"
+                        binding:onClickCommand="@{viewModel.cancleTxnsCommand}"/>
+
+                </FrameLayout>
+                <pl.droidsonroids.gif.GifImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/checkcard"/>
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
-        <FrameLayout
+            <!--卡组织图片-->
+            <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:padding="20dp"
+            android:layout_marginBottom="20dp"> <!-- 增加marginTop，使整体上移 -->
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/ic_visa"
+                    android:layout_margin="8dp" />
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/ic_master"
+                    android:layout_margin="8dp" />
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/ic_amex"
+                    android:layout_margin="8dp" />
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/ic_dc"
+                    android:layout_margin="8dp" />
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/ic_jcb"
+                    android:layout_margin="8dp" />
+
+            </LinearLayout>
+
+
+            <!-- input pin -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="4dp"
+                android:visibility="@{viewModel.showPinpad ? View.VISIBLE : View.GONE}">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+                    <EditText
+                        android:id="@+id/pinpadEditText"
+                        android:background="@drawable/edittext_no_cursor"
+                        android:textCursorDrawable="@null"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
+                        android:cursorVisible="false"
+                        android:clickable="false"
+                        android:longClickable="false"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:textSize="20sp"
+                        />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+            <!--交易结果-->
+            <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1">
@@ -277,5 +253,47 @@
                 </LinearLayout>
             </LinearLayout>
         </FrameLayout>
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/background_color"
+            android:visibility="@{viewModel.isLoading ? View.VISIBLE : View.GONE}" />
+        <!--loading-->
+        <androidx.cardview.widget.CardView
+            android:layout_width="220dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="16dp"
+            app:cardCornerRadius="5dp"
+            app:cardElevation="4dp"
+            android:padding="20dp"
+            android:layout_centerInParent="true"
+            android:visibility="@{viewModel.isLoading ? View.VISIBLE : View.GONE}">
+            <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="@color/white"
+            android:padding="36dp"
+          >
+            <!-- 圆形进度条 -->
+            <ProgressBar
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:indeterminate="true"
+                android:indeterminateTint="@color/red_color" /> <!-- 进度条颜色（红色） -->
+
+            <!-- 提示文字 -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{viewModel.loadingText}"
+                android:textSize="16sp"
+                android:layout_marginTop="10dp" />
+
     </LinearLayout>
+        </androidx.cardview.widget.CardView>
+    </RelativeLayout>
 </layout>
