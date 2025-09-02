@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Keyboard xmlns:android="http://schemas.android.com/apk/res/android"
+    android:horizontalGap="1.5%p"
+    android:keyWidth="23.5%p"
+    android:keyHeight="10%p"
+    android:verticalGap="1%p">
+
+    <!-- 第一行: 1 2 3 X -->
+    <Row>
+        <Key
+            android:codes="49"
+            android:keyLabel="1"
+            android:keyWidth="23.5%p" />
+        <Key
+            android:codes="50"
+            android:keyLabel="2"
+            android:keyWidth="23.5%p" />
+        <Key
+            android:codes="51"
+            android:keyLabel="3"
+            android:keyWidth="23.5%p" />
+        <Key
+            android:codes="-3"
+            android:keyIcon="@mipmap/ic_pin_cancel"
+            android:keyWidth="23.5%p" />
+    </Row>
+
+    <!-- 第二行: 4 5 6 < -->
+    <Row>
+        <Key
+            android:codes="52"
+            android:keyLabel="4"
+            android:keyWidth="23.5%p" />
+        <Key
+            android:codes="53"
+            android:keyLabel="5"
+            android:keyWidth="23.5%p" />
+        <Key
+            android:codes="54"
+            android:keyLabel="6"
+            android:keyWidth="23.5%p" />
+        <Key
+            android:codes="-5"
+            android:keyIcon="@mipmap/ic_pin_clear"
+            android:keyWidth="23.5%p" />
+    </Row>
+
+    <!-- 第三行: 7 8 9 ✓ -->
+    <Row>
+        <Key
+            android:codes="55"
+            android:keyLabel="7"
+            android:keyWidth="23.5%p" />
+        <Key
+            android:codes="56"
+            android:keyLabel="8"
+            android:keyWidth="23.5%p" />
+        <Key
+            android:codes="57"
+            android:keyLabel="9"
+            android:keyWidth="23.5%p" />
+        <Key
+            android:codes="-4"
+            android:keyIcon="@mipmap/ic_pin_enter"
+            android:keyWidth="23.5%p"
+            android:keyHeight="21%p"/>
+    </Row>
+
+    <!-- 第四行: 0 居中显示，两侧留空白 -->
+    <Row android:rowEdgeFlags="bottom">
+
+        <Key
+            android:codes="48"
+            android:keyLabel="0"
+            android:keyWidth="23.5%p"
+            android:horizontalGap="26.5%p"/>
+    </Row>
+
+</Keyboard>
