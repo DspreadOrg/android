@@ -189,4 +189,8 @@
     <color name="keyboard_backend">#fff9f9f9</color>
     <color name="main_theme_backend">#fff9f9f9</color>
     <color name="main_color_on_primary">#ff1b1b1b</color>
+    
+    <color name="connected">#ff4275c3</color>
+    <color name="red_color">#FFCF131B</color>
+    <color name="switch_unselected_color">#EEEEEE</color>
 </resources>

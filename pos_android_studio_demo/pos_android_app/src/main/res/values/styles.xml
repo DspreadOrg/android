@@ -276,4 +276,12 @@
     <style name="ModernConfirmButton" parent="ModernNumberButton">
         <item name="android:background">@drawable/bg_confirm_button_selector</item>
     </style>
+    <style name="MySwitchStyle" parent="Widget.AppCompat.CompoundButton.Switch">
+        <!-- 拇指颜色 -->
+                <item name="android:thumb">@drawable/switch_thumb</item>
+<!--        <item name="android:thumbTint">@color/switch_thumb_selector</item>-->
+        <!-- 轨道颜色 -->
+<!--                <item name="android:trackTint">@drawable/switch_track</item>-->
+        <item name="android:trackTint">@color/switch_track_selector</item>
+    </style>
 </resources>
