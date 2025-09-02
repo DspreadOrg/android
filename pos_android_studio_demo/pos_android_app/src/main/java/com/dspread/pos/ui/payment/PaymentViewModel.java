@@ -116,7 +116,7 @@ public class PaymentViewModel extends BaseAppViewModel {
     }
 
     public void displayAmount(String newAmount) {
-        amount.set("¥" + newAmount);
+        amount.set("$" + newAmount);
     }
 
     public void setWaitingStatus(boolean isWaitings) {

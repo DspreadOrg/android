@@ -539,4 +539,8 @@
     <string name="send_receipt">Print Receipt</string>
     <string name="connect_warnning">Pls connect your devices first!</string>
     <string name="no_device">No device</string>
+
+<!--    sale detail-->
+    <string name="total">Total</string>
+    <string name="prompt_user_to_tap_card">Insert, tap or swipe</string>
 </resources>

@@ -193,4 +193,7 @@
     <color name="connected">#ff4275c3</color>
     <color name="red_color">#FFCF131B</color>
     <color name="switch_unselected_color">#EEEEEE</color>
+
+<!--    sale detail-->
+    <color name="text_color">#ff030303</color>
 </resources>
