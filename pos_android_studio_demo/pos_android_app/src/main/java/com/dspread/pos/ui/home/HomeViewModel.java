@@ -17,6 +17,7 @@ import me.goldze.mvvmhabit.utils.ToastUtils;
 public class HomeViewModel extends BaseAppViewModel {
     public ObservableField<String> amount = new ObservableField<>("¥0.00");
     public SingleLiveEvent<Long> paymentStartEvent = new SingleLiveEvent<>();
+    public ObservableField<Boolean> amountValid = new ObservableField<>(false);
     
     public StringBuilder amountBuilder = new StringBuilder();
     private static final int MAX_DIGITS = 12; // Maximum amount digits
@@ -28,26 +29,27 @@ public class HomeViewModel extends BaseAppViewModel {
     // Update amount display
     private void updateAmountDisplay() {
         if (amountBuilder.length() == 0) {
-            amount.set("¥0.00");
+            amount.set("$0.00");
+            amountValid.set(false);
             return;
         }
-        
+        amountValid.set(true);
         String amountStr = amountBuilder.toString();
         // Convert to display an amount with two decimal places
         if (amountStr.length() == 1) {
-            amount.set(String.format("¥0.0%s", amountStr));
+            amount.set(String.format("$0.0%s", amountStr));
         } else if (amountStr.length() == 2) {
-            amount.set(String.format("¥0.%s", amountStr));
+            amount.set(String.format("$0.%s", amountStr));
         } else {
             String intPart = amountStr.substring(0, amountStr.length() - 2);
             String decimalPart = amountStr.substring(amountStr.length() - 2);
-            amount.set(String.format("¥%s.%s", intPart, decimalPart));
+            amount.set(String.format("$%s.%s", intPart, decimalPart));
         }
     }
 
     public void clearAmount() {
         amountBuilder.setLength(0);
-        amount.set("¥0.00");
+        amount.set("$0.00");
     }
 
     public void onNumberClick(String number){
@@ -55,7 +57,7 @@ public class HomeViewModel extends BaseAppViewModel {
             return;
         }
 
-        if (amountBuilder.length() == 0 && number.equals("0")) {
+        if (amountBuilder.length() == 0 && (number.equals("0") || number.equals("00"))) {
             return;
         }
 

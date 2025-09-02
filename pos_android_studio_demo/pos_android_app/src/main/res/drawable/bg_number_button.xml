@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 按钮按下时的样式 -->
+    <item android:state_pressed="true">
+        <layer-list>
+            <!-- 按钮本身的背景颜色 -->
+            <item>
+                <shape android:shape="rectangle">
+                    <solid android:color="#ffffffff" /> <!-- 浅灰色背景示例 -->
+                    <corners android:radius="5dp"/>
+                </shape>
+            </item>
+            <!-- 仅下方的红杠线，通过绘制一个矩形条来实现 -->
+            <item
+                android:gravity="bottom"
+                android:height="4dp"
+               >
+                <shape android:shape="rectangle">
+                    <solid android:color="#ffcf131b" /> <!-- 红色线条 -->
+                    <corners android:radius="2dp"/>
+                    <padding android:left="3dp" android:right="3dp"/>
+
+                </shape>
+            </item>
+        </layer-list>
+    </item>
+    <!-- 按钮正常状态的样式 -->
+    <item>
+        <layer-list>
+            <item>
+                <shape android:shape="rectangle">
+                    <solid android:color="#ffffffff" /> <!-- 白色背景示例 -->
+                    <corners android:radius="5dp"/>
+                </shape>
+            </item>
+        </layer-list>
+    </item>
+</selector>

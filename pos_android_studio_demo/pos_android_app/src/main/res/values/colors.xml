@@ -176,13 +176,17 @@
     <color name="keyboard_background">#F8F9FA</color>
     <color name="number_button_background">#E8ECF0</color>
     <color name="clear_button_background">#FFE4E6</color>
-    <color name="confirm_button_background">#1890FF</color>
+    <color name="confirm_button_background">#ffcf161c</color>
     <color name="button_stroke">#D9DDE3</color>
     <color name="clear_button_text">#FF4D4F</color>
-    <color name="confirm_button_text">#FFFFFF</color>
+    <color name="confirm_button_text">#ffffffff</color>
     <color name="number_button_text">#333333</color>
     <color name="amount_text_color">#1A1A1A</color>
 
     <color name="text_primary">#212121</color>
     <color name="text_secondary">#757575</color>
+    <color name="confirm_button_text_disabled">#666666</color>
+    <color name="keyboard_backend">#fff9f9f9</color>
+    <color name="main_theme_backend">#fff9f9f9</color>
+    <color name="main_color_on_primary">#ff1b1b1b</color>
 </resources>

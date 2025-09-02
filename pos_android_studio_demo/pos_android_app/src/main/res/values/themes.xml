@@ -38,23 +38,23 @@
 
     <style name="Theme.Despreaddemo1" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- 主要颜色 -->
-        <item name="colorPrimary">@color/number_button_background</item>
-        <item name="colorPrimaryVariant">@color/button_stroke</item>
-        <item name="colorOnPrimary">@color/number_button_text</item>
+        <item name="colorPrimary">@color/main_theme_backend</item>
+        <item name="colorPrimaryVariant">@color/main_theme_backend</item>
+        <item name="colorOnPrimary">@color/main_color_on_primary</item>
 
         <!-- 次要颜色 -->
         <item name="colorSecondary">@color/confirm_button_background</item>
-        <item name="colorSecondaryVariant">@color/clear_button_background</item>
+        <item name="colorSecondaryVariant">@color/confirm_button_text</item>
         <item name="colorOnSecondary">@color/confirm_button_text</item>
 
         <!-- 状态栏颜色 -->
-        <item name="android:statusBarColor">@color/keyboard_background</item>
+        <item name="android:statusBarColor">@color/main_theme_backend</item>
 
         <!-- 按钮默认样式 -->
-        <item name="materialButtonStyle">@style/NumberKeyboardButton</item>
+        <item name="materialButtonStyle">@style/ModernNumberButton</item>
 
         <!-- 背景颜色 -->
-        <item name="android:windowBackground">@color/keyboard_background</item>
+        <item name="android:windowBackground">@color/main_theme_backend</item>
     </style>
 
 
