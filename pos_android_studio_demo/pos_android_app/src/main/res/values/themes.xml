@@ -57,6 +57,12 @@
         <item name="android:windowBackground">@color/main_theme_backend</item>
     </style>
 
+    <style name="Theme.Despreaddemo2" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- 主要颜色 -->
+        <item name="colorPrimary">@color/red</item>
+
+    </style>
+
 
     <style name="popupAnimation" parent="android:Animation">
         <item name="android:windowEnterAnimation">@anim/pop_in</item>

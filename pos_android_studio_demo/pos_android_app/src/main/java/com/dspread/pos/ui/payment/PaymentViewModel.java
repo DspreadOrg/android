@@ -252,7 +252,7 @@ public class PaymentViewModel extends BaseAppViewModel {
                         }
                     } else {
                         if (isICC) {
-                            POSManager.getInstance().sendOnlineProcessResult("8A023035");
+                            POSManager.getInstance().sendOnlineProcessResult("8A023030");
                         } else {
                             isOnlineSuccess.setValue(false);
                         }
@@ -261,7 +261,7 @@ public class PaymentViewModel extends BaseAppViewModel {
                     }
                 }, throwable -> {
                     if (isICC) {
-                        POSManager.getInstance().sendOnlineProcessResult("8A023035");
+                        POSManager.getInstance().sendOnlineProcessResult("8A023030");
                     } else {
                         isOnlineSuccess.setValue(false);
                     }

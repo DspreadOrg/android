@@ -40,7 +40,7 @@ public class HandleTxnsResultUtils {
         // send txns result to online
         String requestTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
         String data = generateTransactionLog(result.getEncTracks()+result.getTlv(), requestTime,context);
-        viewModel.requestOnlineAuth(false, data);
+//        viewModel.requestOnlineAuth(false, data);
     }
 
     public static String handleFormatFF(Hashtable<String, String> decodeData) {

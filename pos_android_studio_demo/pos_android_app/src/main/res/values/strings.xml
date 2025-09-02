@@ -543,4 +543,6 @@
 <!--    sale detail-->
     <string name="total">Total</string>
     <string name="prompt_user_to_tap_card">Insert, tap or swipe</string>
+    <string name="payment_failed">Payment failed</string>
+    <string name="payment_complete">Payment complete</string>
 </resources>
