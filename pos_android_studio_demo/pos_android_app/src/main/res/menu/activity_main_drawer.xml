@@ -12,7 +12,11 @@
             android:icon="@mipmap/menu_sale"
             android:title="@string/menu_payment"
             />
-  
+        <item
+            android:enabled="false"
+            android:checkable="false"
+            app:actionLayout="@layout/item_nav_divider"
+            tools:ignore="MenuTitle" />
 <!--        <item-->
 <!--            android:id="@+id/nav_autotrade"-->
 <!--            android:icon="@drawable/autotrade"-->
@@ -27,7 +31,11 @@
             android:icon="@mipmap/menu_transaction"
             android:title="@string/transaction"
             />
-
+        <item
+            android:enabled="false"
+            android:checkable="false"
+            app:actionLayout="@layout/item_nav_divider"
+            tools:ignore="MenuTitle" />
         <item
             android:id="@+id/nav_setting"
             android:icon="@mipmap/menu_setting"
