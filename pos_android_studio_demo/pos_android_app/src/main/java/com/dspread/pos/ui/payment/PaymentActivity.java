@@ -23,12 +23,15 @@ import com.dspread.pos.ui.payment.pinkeyboard.KeyboardUtil;
 import com.dspread.pos.ui.payment.pinkeyboard.MyKeyboardView;
 import com.dspread.pos.ui.payment.pinkeyboard.PinPadDialog;
 import com.dspread.pos.ui.payment.pinkeyboard.PinPadView;
+import com.dspread.pos.utils.AdvancedBinDetector;
 import com.dspread.pos.utils.BitmapReadyListener;
 import com.dspread.pos.utils.DeviceUtils;
 import com.dspread.pos.utils.HandleTxnsResultUtils;
 import com.dspread.pos.utils.LogFileConfig;
 import com.dspread.pos.utils.QPOSUtil;
 import com.dspread.pos.utils.ReceiptGenerator;
+import com.dspread.pos.utils.TLV;
+import com.dspread.pos.utils.TLVParser;
 import com.dspread.pos.utils.TRACE;
 import com.dspread.pos_android_app.BR;
 import com.dspread.pos_android_app.R;
@@ -299,6 +302,11 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
             viewModel.startLoading(msg);
         }
 
+        @Override
+        public void onReturnCardInserted() {
+
+        }
+
         /**
          * Handle transaction completion
          * Updates UI and processes different transaction types (MCR/NFC/ICC)
@@ -310,6 +318,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
             isChangePin = false;
             String transType = result.getTransactionType();
             if(transType != null){
+                result.setAmount(amount);
                 if(QPOSService.DoTradeResult.MCR.name().equals(transType)){
                     HandleTxnsResultUtils.handleMCRResult(result, PaymentActivity.this, binding, viewModel);
                 }else if(QPOSService.DoTradeResult.NFC_OFFLINE.name().equals(transType)||QPOSService.DoTradeResult.NFC_ONLINE.name().equals(transType)){
@@ -350,11 +359,15 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
             viewModel.showPinpad.set(false);
             viewModel.startLoading(getString(R.string.online_process_requested));
             Hashtable<String, String> decodeData = POSManager.getInstance().anlysEmvIccData(tlv);
-            String requestTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
-            String data = "{\"createdAt\": " + requestTime + ", \"deviceInfo\": " + DeviceUtils.getPhoneDetail() + ", \"countryCode\": " + DeviceUtils.getDevieCountry(PaymentActivity.this)
-                    + ", \"tlv\": " + tlv + "}";
-            viewModel.requestOnlineAuth(true, data);
 
+            PaymentModel paymentModel = new PaymentModel();
+            paymentModel.setAmount(amount);
+            List<TLV> tlvList = TLVParser.parse(tlv);
+            TLV cardNoTlv = TLVParser.searchTLV(tlvList, "C4");
+            String cardNo = cardNoTlv ==null?"":cardNoTlv.value;
+            paymentModel.setCardNo(cardNo);
+            paymentModel.setCardOrg(AdvancedBinDetector.detectCardType(cardNo).getDisplayName());
+            viewModel.requestOnlineAuth(true, paymentModel);
         }
 
         @Override

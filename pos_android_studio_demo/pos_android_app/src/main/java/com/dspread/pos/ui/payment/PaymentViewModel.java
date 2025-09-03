@@ -17,7 +17,8 @@ import androidx.databinding.ObservableField;
 
 import com.dspread.pos.common.base.BaseAppViewModel;
 import com.dspread.pos.common.http.RetrofitClient;
-import com.dspread.pos.common.http.api.DingTalkApiService;
+import com.dspread.pos.common.http.api.RequestOnlineAuthAPI;
+import com.dspread.pos.common.http.model.AuthRequest;
 import com.dspread.pos.posAPI.POSManager;
 import com.dspread.pos.printerAPI.PrinterHelper;
 import com.dspread.pos.utils.DialogUtils;
@@ -28,9 +29,6 @@ import com.dspread.pos_android_app.R;
 import com.dspread.print.device.PrintListener;
 import com.dspread.print.device.PrinterDevice;
 import com.dspread.print.device.PrinterManager;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.List;
 
@@ -44,13 +42,12 @@ import me.goldze.mvvmhabit.utils.ToastUtils;
 
 
 public class PaymentViewModel extends BaseAppViewModel {
-//    private static final String DINGTALK_URL = "https://oapi.dingtalk.com/robot/send?access_token=83e8afc691a1199c70bb471ec46d50099e6dd078ce10223bbcc56c0485cb5cc3";
     private static final String AUTHFROMISSUER_URL = "https://ypparbjfugzgwijijfnb.supabase.co/functions/v1/request-online-result";
-    private DingTalkApiService apiService;
+    private RequestOnlineAuthAPI apiService;
 
     public PaymentViewModel(@NonNull Application application) {
         super(application);
-        apiService = RetrofitClient.getInstance().create(DingTalkApiService.class);
+        apiService = RetrofitClient.getInstance().create(RequestOnlineAuthAPI.class);
     }
 
     public ObservableField<String> loadingText = new ObservableField<>("");
@@ -229,14 +226,9 @@ public class PaymentViewModel extends BaseAppViewModel {
         return bitmap;
     }
 
-    public void requestOnlineAuth(boolean isICC, String message) {
-        JSONObject object = new JSONObject();
-        try {
-            object.put("requestData",message);
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
-        addSubscribe(apiService.sendMessage(AUTHFROMISSUER_URL, object)
+    public void requestOnlineAuth(boolean isICC, PaymentModel paymentModel) {
+        AuthRequest authRequest = createAuthRequest(paymentModel);
+        addSubscribe(apiService.sendMessage(AUTHFROMISSUER_URL, authRequest)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response -> {
@@ -260,7 +252,7 @@ public class PaymentViewModel extends BaseAppViewModel {
                     }
                 }, throwable -> {
                     if (isICC) {
-                        POSManager.getInstance().sendOnlineProcessResult("8A023030");
+                        POSManager.getInstance().sendOnlineProcessResult("8A023035");
                     } else {
                         isOnlineSuccess.setValue(false);
                     }
@@ -269,5 +261,14 @@ public class PaymentViewModel extends BaseAppViewModel {
                 }));
     }
 
-
+    private AuthRequest createAuthRequest(PaymentModel paymentModel) {
+        String deviceSn = SPUtils.getInstance().getString("posID", "");
+        String transactionType = SPUtils.getInstance().getString("transactionType", "");
+        String amount = paymentModel.getAmount();
+        String maskPan = paymentModel.getCardNo();
+        String cardOrg = paymentModel.getCardOrg();
+        String payType = "Card";
+        String transResult = "Paid";
+        return new AuthRequest(deviceSn, amount, maskPan, cardOrg, transactionType, payType,transResult);
+    }
 }

@@ -409,10 +409,12 @@ public class POSManager {
             setICC(false);
             if (result == QPOSService.DoTradeResult.ICC) {
                 setICC(true);
+                notifyTransactionCallbacks(cb -> cb.onReturnCardInserted());
                 paymentResult.setTransactionType(result.name());
                 if (pos != null) {
                     pos.doEmvApp(QPOSService.EmvOption.START);
                 }
+
             }else if(result == QPOSService.DoTradeResult.NFC_OFFLINE || result == QPOSService.DoTradeResult.NFC_ONLINE ||result == QPOSService.DoTradeResult.MCR){
                 paymentResult = HandleTxnsResultUtils.handleTransactionResult(paymentResult,decodeData);
                 paymentResult.setTransactionType(result.name());
