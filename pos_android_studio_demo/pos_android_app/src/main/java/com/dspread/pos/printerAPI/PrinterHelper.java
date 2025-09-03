@@ -211,7 +211,10 @@ public class PrinterHelper {
     }
 
     public Bitmap getTicketBitmap(Context context) throws RemoteException {
-
+        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_dspread_logo);
+        mPrinter.addText("\n");
+        mPrinter.addBitmap(bitmap,PrintLine.CENTER);
+        mPrinter.addText("\n");
         mPrinter.addPrintLintStyle(new PrintLineStyle(PrintStyle.FontStyle.BOLD, PrintLine.CENTER, 16));
         mPrinter.addText("Testing");
         mPrinter.addText("POS Signing of purchase orders");
@@ -236,12 +239,12 @@ public class PrinterHelper {
         mPrinter.addTexts(new String[]{"2014/12/07 16:12:17", ""}, new int[]{5, 5}, new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.CENTER});
         mPrinter.addTexts(new String[]{"AMOUNT:", ""}, new int[]{5, 5}, new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.CENTER});
         mPrinter.addText("RMB:249.00");
-        mPrinter.addPrintLintStyle(new PrintLineStyle(PrintStyle.FontStyle.NORMAL, PrintLine.CENTER, 12));
+       /* mPrinter.addPrintLintStyle(new PrintLineStyle(PrintStyle.FontStyle.NORMAL, PrintLine.CENTER, 12));
         mPrinter.addText("- - - - - - - - - - - - - -");
         mPrinter.addText("Please scan the QRCode for getting more information: ");
         mPrinter.addBarCode(context, Barcode1D.CODE_128.name(), 400, 100, "123456", PrintLine.CENTER);
         mPrinter.addText("Please scan the QRCode for getting more information:");
-        mPrinter.addQRCode(300, Barcode2D.QR_CODE.name(), "123456", PrintLine.CENTER);
+        mPrinter.addQRCode(300, Barcode2D.QR_CODE.name(), "123456", PrintLine.CENTER);*/
         mPrinter.setFooter(100);
         Bitmap receiptBitmap = mPrinter.getReceiptBitmap();
         return receiptBitmap;

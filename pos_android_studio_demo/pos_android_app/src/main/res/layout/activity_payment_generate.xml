@@ -95,8 +95,8 @@
                 android:textColor="#ff030303"
                 android:textSize="19sp"
                 android:layout_gravity="center"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp" />
+                android:layout_marginTop="@dimen/dp_17"
+                android:layout_marginBottom="@dimen/dp_21" />
 
             <!-- Payment Icons Section -->
             <LinearLayout

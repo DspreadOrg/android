@@ -14,25 +14,23 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#F9F9F9"
-        android:orientation="vertical"
-        android:weightSum="10">
+        android:orientation="vertical">
 
         <!-- 中间小票区域 -->
         <FrameLayout
             android:id="@+id/receipt_container"
             android:layout_width="300dp"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="10dp"
-            android:layout_weight="7">
+            android:layout_marginBottom="10dp">
 
             <ImageView
                 android:id="@+id/receipt_image"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
-                android:scaleType="fitCenter"
-                android:background="@drawable/shape_ticket_black_cylinder"
+                android:scaleType="centerInside"
+                android:background="@mipmap/ic_print_preview"
                 android:src="@drawable/ic_printer" />
 
             <TextView
@@ -47,46 +45,5 @@
                 android:textSize="14sp"
                 android:visibility="gone" />
         </FrameLayout>
-
-        <!-- 底部按钮区域 -->
-      <!--  <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="3"
-            android:gravity="center|bottom"
-            android:orientation="vertical"
-            android:paddingBottom="60dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:paddingHorizontal="40dp">
-
-                <Button
-                    android:id="@+id/btn_cancel"
-                    android:layout_width="0dp"
-                    android:layout_height="50dp"
-                    android:layout_marginEnd="5dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/btn_bg_outline"
-                    android:text="Cancel"
-                    android:textColor="#1B1B1B"
-                    android:textSize="19sp" />
-
-                <Button
-                    android:id="@+id/btn_print"
-                    android:layout_width="0dp"
-                    android:layout_height="50dp"
-                    android:layout_marginStart="5dp"
-                    android:layout_weight="2"
-                    android:background="@drawable/btn_bg_primary"
-                    android:text="Print"
-                    android:textColor="#FFF"
-                    android:textSize="19sp" />
-            </LinearLayout>
-        </LinearLayout>-->
-
     </LinearLayout>
 </layout>

@@ -3,8 +3,8 @@
     <!-- 按下状态 - 红色背景，白色边框 -->
     <item android:state_pressed="true">
         <shape android:shape="rectangle">
-            <stroke android:width="1dp" android:color="#FFE9E9" />
-            <solid android:color="#FFE47579" />
+            <stroke android:width="1dp" android:color="#ffe47579" />
+            <solid android:color="#ffffe9e9" />
             <corners android:radius="13dp" />
         </shape>
     </item>

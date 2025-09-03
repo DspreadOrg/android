@@ -488,7 +488,7 @@
     <string name="size_qrcode">QR-Code size</string>
     <string name="print_bitmap">Print Bitmap</string>
     <string name="print_composite">Print Comprehensive</string>
-    <string name="print_ticket">Print Ticket</string>
+    <string name="print_ticket">print preview</string>
     <string name="get_printer_status">Get Printer Status</string>
     <string name="get_printer_density">Get Print Density</string>
     <string name="get_printer_speed">Get Print Speed</string>
