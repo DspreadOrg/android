@@ -299,6 +299,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
             } else {
                 msg = HandleTxnsResultUtils.getDisplayMessage(displayMsg, PaymentActivity.this);
             }
+            binding.animationView.pauseAnimation();
             viewModel.startLoading(msg);
         }
 

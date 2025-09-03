@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:binding="http://schemas.android.com/apk/res-auto">
+<layout xmlns:binding="http://schemas.android.com/apk/res-auto"
+    >
     <data>
         <import type="android.view.View" />
         <variable
@@ -8,6 +9,7 @@
     </data>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@android:color/white"
@@ -71,38 +73,34 @@
             android:textSize="19sp" />
 
         <!-- 支付方式网格 -->
-        <GridLayout
+        <androidx.gridlayout.widget.GridLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:alignmentMode="alignMargins"
-            android:columnCount="2"
-            android:columnOrderPreserved="false"
-            android:padding="8dp"
-            android:rowCount="2">
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            app:columnCount="2"
+            app:rowCount="2"
+            android:padding="8dp">
 
             <!-- 第一行第一列：Card -->
             <LinearLayout
                 android:id="@+id/cardOption"
-                android:layout_width="@dimen/dp_140"
-                android:layout_height="@dimen/dp_170"
-                android:layout_columnWeight="1"
-                android:layout_margin="13dp"
-                android:background="@drawable/bg_rounded_red_border"
+                style="@style/LinPaymentLayout"
                 android:clickable="true"
                 android:focusable="true"
-                android:gravity="center"
+                app:layout_row="0"
+                app:layout_column="0"
+                app:layout_rowWeight="1"
+                app:layout_columnWeight="1"
                 android:onClick="@{() -> viewModel.onPaymentMethodSelected(0)}"
-                android:orientation="vertical"
-                android:padding="16dp">
-
+                >
                 <ImageView
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:src="@mipmap/ic_salemethod_card" />
 
                 <TextView
-                    android:layout_width="36dp"
-                    android:layout_height="22dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:text="Card"
                     android:textColor="#ff030303"
                     android:textSize="16sp" />
@@ -111,26 +109,24 @@
             <!-- 第一行第二列：Scan Code -->
             <LinearLayout
                 android:id="@+id/scanCodeOption"
-                android:layout_width="@dimen/dp_140"
-                android:layout_height="@dimen/dp_170"
-                android:layout_columnWeight="1"
-                android:layout_margin="@dimen/dp_13"
-                android:background="@drawable/bg_rounded_red_border"
+                style="@style/LinPaymentLayout"
                 android:clickable="true"
                 android:focusable="true"
-                android:gravity="center"
+                app:layout_row="0"
+                app:layout_column="1"
+                app:layout_rowWeight="1"
+                app:layout_columnWeight="1"
                 android:onClick="@{() -> viewModel.onPaymentMethodSelected(1)}"
-                android:orientation="vertical"
-                android:padding="16dp">
+                >
 
                 <ImageView
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:src="@mipmap/ic_salemethod_scan" />
 
                 <TextView
-                    android:layout_width="80dp"
-                    android:layout_height="22dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:text="Scan Code"
                     android:textColor="#ff030303"
                     android:textSize="16sp" />
@@ -139,26 +135,24 @@
             <!-- 第二行第一列：Generate -->
             <LinearLayout
                 android:id="@+id/generateOption"
-                android:layout_width="@dimen/dp_140"
-                android:layout_height="@dimen/dp_170"
-                android:layout_columnWeight="1"
-                android:layout_margin="@dimen/dp_13"
-                android:background="@drawable/bg_rounded_red_border"
+                style="@style/LinPaymentLayout"
+                app:layout_row="1"
+                app:layout_column="0"
+                app:layout_rowWeight="1"
+                app:layout_columnWeight="1"
                 android:clickable="true"
                 android:focusable="true"
                 android:gravity="center"
-                android:onClick="@{() -> viewModel.onPaymentMethodSelected(2)}"
-                android:orientation="vertical"
-                android:padding="16dp">
+                android:onClick="@{() -> viewModel.onPaymentMethodSelected(2)}">
 
                 <ImageView
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:src="@mipmap/ic_salemethod_generate" />
 
                 <TextView
-                    android:layout_width="69dp"
-                    android:layout_height="22dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:text="Generate"
                     android:textColor="#ff030303"
                     android:textSize="16sp" />
@@ -167,32 +161,31 @@
             <!-- 第二行第二列：Cash -->
             <LinearLayout
                 android:id="@+id/cashOption"
-                android:layout_width="@dimen/dp_140"
-                android:layout_height="@dimen/dp_170"
-                android:layout_columnWeight="1"
-                android:layout_margin="@dimen/dp_13"
-                android:background="@drawable/bg_rounded_red_border"
+                style="@style/LinPaymentLayout"
+                app:layout_row="1"
+                app:layout_column="1"
+                app:layout_rowWeight="1"
+                app:layout_columnWeight="1"
                 android:clickable="true"
                 android:focusable="true"
                 android:gravity="center"
                 android:onClick="@{() -> viewModel.onPaymentMethodSelected(3)}"
-                android:orientation="vertical"
-                android:padding="16dp">
+                >
 
                 <ImageView
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:src="@mipmap/ic_salemethod_cash" />
 
                 <TextView
-                    android:layout_width="37dp"
-                    android:layout_height="22dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:text="Cash"
                     android:textColor="#ff030303"
                     android:textSize="16sp" />
             </LinearLayout>
 
-        </GridLayout>
+        </androidx.gridlayout.widget.GridLayout>
 
     </LinearLayout>
 </layout>

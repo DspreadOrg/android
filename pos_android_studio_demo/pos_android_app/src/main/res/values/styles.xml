@@ -244,6 +244,16 @@
         <item name="android:padding">16dp</item>
     </style>
 
+    <style name="LinPaymentLayout">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_margin">10dp</item>
+        <item name="android:background">@drawable/bg_rounded_red_border</item>
+        <item name="android:padding">16dp</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:gravity">center</item>
+    </style>
+
     <!-- 数字按钮样式 -->
     <style name="ModernNumberButton" parent="Widget.AppCompat.Button">
         <item name="android:layout_width">0dp</item>

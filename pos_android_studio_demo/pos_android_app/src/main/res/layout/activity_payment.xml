@@ -395,7 +395,7 @@
             android:visibility="@{viewModel.isLoading ? View.VISIBLE : View.GONE}" />
         <!--loading-->
         <androidx.cardview.widget.CardView
-            android:layout_width="220dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_margin="16dp"
@@ -405,13 +405,12 @@
             android:layout_centerInParent="true"
             android:visibility="@{viewModel.isLoading ? View.VISIBLE : View.GONE}">
             <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:background="@color/white"
-            android:padding="36dp"
-          >
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:background="@color/white"
+                android:padding="36dp">
             <!-- 圆形进度条 -->
             <ProgressBar
                 android:layout_width="48dp"
