@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- 可滚动内容区域 -->
+    <ScrollView
+        android:id="@+id/scroll_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/btn_void">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+
+            <!-- 总金额部分 -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:text="Total"
+                android:textSize="17sp"
+                android:textColor="@color/transaction_detail_text_light" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:text="$500.00"
+                    android:textSize="32sp"
+                    android:textStyle="bold"
+                    android:textColor="#ff030303"
+                    />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Paid"
+                    android:textSize="12sp"
+                    android:textColor="@color/white"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="5dp"
+                    android:layout_marginRight="16dp"
+                    android:backgroundTint="#000000"
+                    android:background="@drawable/paid_background" />
+            </LinearLayout>
+
+
+            <!-- 日期和重新打印收据部分 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="16dp"
+                android:gravity="center_vertical"
+                android:background="@color/transaction_detail_back_gray">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="16dp"
+                    android:paddingTop="13dp"
+                    android:paddingBottom="11dp"
+                    android:text="12/10/24-16:07"
+                    android:textSize="16sp"
+                    android:textColor="@color/transaction_detail_black" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+                <TextView
+                    android:id="@+id/tv_reissue_receipt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Reissue receipt"
+                    android:textSize="16sp"
+                    android:textColor="@color/transaction_detail_text_red"
+                    android:layout_marginEnd="17dp"
+                    android:clickable="true"
+                    android:padding="4dp" />
+
+            </LinearLayout>
+
+            <!-- 交易类型 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="12dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:text="Transation Type"
+                    android:textSize="16sp"
+                    android:textColor="@color/transaction_detail_text_light"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="18dp"
+                    android:text="Sale"
+                    android:textSize="16sp"
+                    android:textColor="@color/transaction_detail_text_dark" />
+
+            </LinearLayout>
+
+            <!-- 支付类型 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="24dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:text="Pay Type"
+                    android:textSize="16sp"
+                    android:textColor="@color/transaction_detail_text_light"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="18dp"
+                    android:text="Card"
+                    android:textSize="16sp"
+                    android:textColor="@color/transaction_detail_text_dark" />
+
+            </LinearLayout>
+
+            <!-- 卡详情 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="24dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:text="Card Details"
+                    android:textSize="16sp"
+                    android:textColor="@color/transaction_detail_text_light"
+                    android:layout_weight="1" />
+
+                <ImageView
+                    android:id="@+id/iv_card_organization"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:scaleType="fitCenter"
+                    android:src="@mipmap/ic_master"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="18dp"
+                    android:text="888"
+                    android:textSize="16sp"
+                    android:textColor="@color/transaction_detail_text_dark" />
+
+            </LinearLayout>
+
+            <!-- 批次号 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="24dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:text="Batch Number"
+                    android:textSize="16sp"
+                    android:textColor="@color/transaction_detail_text_light"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="18dp"
+                    android:text="2345678"
+                    android:textSize="16sp"
+                    android:textColor="@color/transaction_detail_text_dark" />
+
+            </LinearLayout>
+
+            <!-- 跟踪号 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="24dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:text="Trace Number"
+                    android:textSize="16sp"
+                    android:textColor="@color/transaction_detail_text_light"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="18dp"
+                    android:text="100002"
+                    android:textSize="16sp"
+                    android:textColor="@color/transaction_detail_text_dark" />
+
+            </LinearLayout>
+
+            <!-- 设备ID -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="24dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:text="Device ID"
+                    android:textSize="16sp"
+                    android:textColor="@color/transaction_detail_text_light"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="18dp"
+                    android:text="CO81UG42431204"
+                    android:textSize="16sp"
+                    android:textColor="@color/transaction_detail_text_dark" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Void按钮 - 固定在底部 -->
+    <Button
+        android:id="@+id/btn_void"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Void"
+        android:textSize="19sp"
+        android:textColor="@color/transaction_detail_button_red"
+        android:background="@drawable/button_white_red_stroke"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="14dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+         />
+
+</RelativeLayout>

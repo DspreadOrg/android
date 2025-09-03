@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+
+    <!-- Transaction Date 部分 -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:layout_marginStart="13dp"
+        android:text="Transaction Date"
+        android:textSize="20sp"
+        android:textColor="@android:color/black"
+        android:layout_marginBottom="10dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="13dp"
+        android:layout_marginEnd="33dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <Button
+            android:id="@+id/btnToday"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Today"
+            android:textSize="16sp"
+            android:textColor="@color/white"
+            android:background="@drawable/filter_selected_button"
+            />
+
+        <Button
+            android:id="@+id/btn3days"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="10dp"
+            android:text="3days"
+            android:textSize="16sp"
+            android:textColor="@android:color/black"
+            android:background="@drawable/filter_unselected_button"
+            />
+
+        <Button
+            android:id="@+id/btnAll"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="10dp"
+            android:background="@drawable/filter_unselected_button"
+            android:text="All"
+            android:textColor="@android:color/black"
+            android:textSize="16sp"/>
+    </LinearLayout>
+
+
+
+    <!-- Transaction Type 部分 -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="13dp"
+        android:layout_marginTop="32dp"
+        android:text="Transaction Type"
+        android:textSize="20sp"
+        android:textColor="@android:color/black"
+        android:layout_marginBottom="10dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="13dp"
+        android:layout_marginEnd="33dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <Button
+            android:id="@+id/btnPaid"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Paid"
+            android:textSize="16sp"
+            android:textColor="@color/white"
+            android:background="@drawable/filter_selected_button"
+            />
+
+        <Button
+            android:id="@+id/btnVoided"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="10dp"
+            android:text="Voided"
+            android:textSize="16sp"
+            android:textColor="@android:color/black"
+            android:background="@drawable/filter_unselected_button"/>
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginStart="10dp"
+            />
+    </LinearLayout>
+
+    <!-- 间隔，将 Done 按钮推到底部 -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+    <!-- Done 按钮 -->
+    <Button
+        android:id="@+id/btnDone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Done"
+        android:textSize="19sp"
+        android:background="@drawable/button_white_red_stroke"
+        android:textColor="@color/red_color"
+        android:layout_marginBottom="14dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="18dp"
+        android:padding="12dp"/>
+
+</LinearLayout>

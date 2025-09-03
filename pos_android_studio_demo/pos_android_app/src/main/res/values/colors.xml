@@ -197,4 +197,13 @@
 <!--    sale detail-->
     <color name="text_color">#ff030303</color>
     <color name="background_color">#40100d0d</color>
+
+    <!--transaction result detail-->
+    <color name="transaction_detail_text_light">#ff686868</color>
+    <color name="transaction_detail_text_dark">#ff1b1b1b</color>
+    <color name="transaction_detail_black">#ff030303</color>
+    <color name="transaction_detail_text_red">#ffff1f00</color>
+    <color name="transaction_detail_button_red">#FFD51822</color>
+    <color name="transaction_detail_back_gray">#ffefefef</color>
+    <color name="transaction_detail_bold_gray">#ffbcbcbc</color>
 </resources>

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <!-- 标题文本 -->
+    <TextView
+        android:id="@+id/receiptTitleText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:text="Reissue receipt"
+        android:textSize="17sp"
+        android:textColor="@color/transaction_detail_text_light"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        />
+
+    <!-- 金额显示 -->
+    <TextView
+        android:id="@+id/amountText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="$500.00"
+        android:textSize="32sp"
+        android:textColor="@color/transaction_detail_black"
+        app:layout_constraintTop_toBottomOf="@id/receiptTitleText"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        />
+
+    <!-- Print按钮 -->
+    <Button
+        android:id="@+id/printButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="18dp"
+        android:layout_marginBottom="11dp"
+        android:text="Print"
+        android:textSize="19sp"
+        android:background="@drawable/print_button"
+        android:textColor="@color/white"
+        android:padding="12dp"
+        app:layout_constraintBottom_toTopOf="@id/moreOptionsButton"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        />
+
+    <!-- More options按钮 -->
+    <Button
+        android:id="@+id/moreOptionsButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="18dp"
+        android:layout_marginBottom="11dp"
+        android:text="More options"
+        android:textSize="19sp"
+        android:background="@drawable/button_white_red_stroke"
+        android:textColor="@color/red_color"
+        android:padding="12dp"
+        app:layout_constraintBottom_toTopOf="@id/doneButton"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        />
+
+    <!-- Done按钮 -->
+    <Button
+        android:id="@+id/doneButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="18dp"
+        android:layout_marginBottom="14dp"
+        android:text="Done"
+        android:textSize="19sp"
+        android:background="@drawable/done_button"
+        android:color="@color/transaction_detail_text_dark"
+        android:padding="12dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
