@@ -353,8 +353,8 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
             String requestTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
             String data = "{\"createdAt\": " + requestTime + ", \"deviceInfo\": " + DeviceUtils.getPhoneDetail() + ", \"countryCode\": " + DeviceUtils.getDevieCountry(PaymentActivity.this)
                     + ", \"tlv\": " + tlv + "}";
-//            viewModel.requestOnlineAuth(true, data);
-            POSManager.getInstance().sendOnlineProcessResult("8A023030");
+            viewModel.requestOnlineAuth(true, data);
+
         }
 
         @Override
