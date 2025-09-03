@@ -64,6 +64,7 @@ public class PaymentViewModel extends BaseAppViewModel {
     public SingleLiveEvent<Boolean> isOnlineSuccess = new SingleLiveEvent();
     public ObservableBoolean showPinpad = new ObservableBoolean(false);
     public ObservableBoolean showResultStatus = new ObservableBoolean(false);
+    public ObservableBoolean TransactionResultStatus = new ObservableBoolean(false);
     public ObservableField<String> receiptContent = new ObservableField<>();
     private Bitmap receiptBitmap;
     private Context mContext;
@@ -107,14 +108,19 @@ public class PaymentViewModel extends BaseAppViewModel {
         showResultStatus.set(true);
         isWaiting.set(false);
         transactionResult.set(message);
+        TransactionResultStatus.set(true);
     }
 
     public void clearErrorState() {
-        showResultStatus.set(false);
+        showResultStatus.set(true);
+        showPinpad.set(true);
 //        transactionResult.set("");
 //        isSuccess.set(false);
     }
-
+    public void pincomPletedState(){
+        showResultStatus.set(false);
+        showPinpad.set(false);
+    }
     public void displayAmount(String newAmount) {
         amount.set("$" + newAmount);
     }
@@ -130,6 +136,7 @@ public class PaymentViewModel extends BaseAppViewModel {
         isSuccess.set(true);
         isWaiting.set(false);
         showResultStatus.set(true);
+        TransactionResultStatus.set(true);
     }
 
     public void startLoading(String text) {

@@ -14,6 +14,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="top|right"
                 android:layout_marginTop="@dimen/dp_16"
+                android:padding="@dimen/dp_8"
                 android:contentDescription="@string/nav_header_desc"
                 app:srcCompat="@mipmap/btn_close_black" />
 

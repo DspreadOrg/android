@@ -306,7 +306,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
          */
         @Override
         public void onTransactionCompleted(PaymentResult result) {
-            viewModel.showPinpad.set(false);
+//            viewModel.showPinpad.set(false);
             isChangePin = false;
             String transType = result.getTransactionType();
             if(transType != null){
@@ -364,7 +364,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
                 if (num == -1) {
                     isPinBack = false;
                     binding.pinpadEditText.setText("");
-                    viewModel.showPinpad.set(false);
+                    viewModel.pincomPletedState();
                     if (keyboardUtil != null) {
                         keyboardUtil.hide();
                     }

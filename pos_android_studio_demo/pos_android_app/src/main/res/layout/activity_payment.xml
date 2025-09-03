@@ -134,34 +134,82 @@
 
 
             <!-- input pin -->
-            <androidx.cardview.widget.CardView
+<!--            <androidx.cardview.widget.CardView-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_margin="16dp"-->
+<!--                app:cardCornerRadius="8dp"-->
+<!--                app:cardElevation="4dp"-->
+<!--                android:visibility="@{viewModel.showPinpad ? View.VISIBLE : View.GONE}">-->
+<!--              -->
+<!--            </androidx.cardview.widget.CardView>-->
+          <LinearLayout
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical"
+              android:layout_marginTop="@dimen/dp_90"
+              android:visibility="@{viewModel.showPinpad ? View.VISIBLE : View.GONE}"
+              >
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="4dp"
-                android:visibility="@{viewModel.showPinpad ? View.VISIBLE : View.GONE}">
-                <LinearLayout
+                android:orientation="horizontal"
+                android:gravity="center"
+              >
+
+                <TextView
+                    android:id="@+id/totalLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Total"
+                    android:textSize="22dp"
+                    android:textStyle="bold"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{viewModel.amount}"
+                    android:textSize="22dp"
+                    android:textStyle="bold"
+                    android:layout_marginLeft="@dimen/dp_8"
+                    android:textColor="@color/black"
+
+                     />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:padding="10dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Enter PIN"
+                    android:textSize="22dp"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"/>
+                <EditText
+                    android:id="@+id/pinpadEditText"
+                    android:background="@drawable/edittext_no_cursor"
+                    android:textCursorDrawable="@null"
+                    android:focusable="false"
+                    android:layout_marginTop="30dp"
+                    android:focusableInTouchMode="false"
+                    android:cursorVisible="false"
+                    android:clickable="false"
+                    android:longClickable="false"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
-                    <EditText
-                        android:id="@+id/pinpadEditText"
-                        android:background="@drawable/edittext_no_cursor"
-                        android:textCursorDrawable="@null"
-                        android:focusable="false"
-                        android:focusableInTouchMode="false"
-                        android:cursorVisible="false"
-                        android:clickable="false"
-                        android:longClickable="false"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:textSize="20sp"
-                        />
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
+                    android:gravity="center"
+                    android:textStyle="bold"
+                    android:textSize="40dp"
+                    />
+            </LinearLayout>
+          </LinearLayout>
+
             <!--交易结果-->
             <FrameLayout
             android:layout_width="match_parent"
@@ -173,7 +221,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:visibility="@{viewModel.showResultStatus ? View.VISIBLE : View.GONE}">
+                android:visibility="@{viewModel.TransactionResultStatus ? View.VISIBLE : View.GONE}">
 
                 <!-- 交易结果状态显示 -->
                 <LinearLayout
@@ -186,6 +234,7 @@
                     <ImageView
                         android:id="@+id/iv_status"
                         android:layout_width="wrap_content"
+                        android:layout_marginTop="@dimen/dp_60"
                         android:layout_height="wrap_content"
                         android:src="@{viewModel.isSuccess ? @drawable/payment_success : @drawable/payment_failed}"
                         android:layout_marginEnd="8dp"/>
@@ -198,18 +247,18 @@
                         android:textStyle="bold"
                         android:text="@{viewModel.isSuccess ? @string/payment_complete : @string/payment_failed}"
 
-                        android:textColor="@color/black "
+                        android:textColor="@color/black"
                         android:textSize="24sp"/>
                     <TextView
-                        android:visibility="gone"
                         android:id="@+id/tv_payment_result_amount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
                         android:textStyle="bold"
-                        android:textColor="@color/black "
+                        android:textColor="@color/black"
+                        android:visibility="@{viewModel.isSuccess ? View.VISIBLE : View.GONE}"
                         android:text="@{viewModel.amount}"
-                        android:textSize="24sp"/>
+                        android:textSize="40dp"/>
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -227,6 +276,7 @@
                             android:textAllCaps="false"
                             android:textColor="@color/black"
                             android:background="@drawable/bg_more_options_selector"
+                            android:layout_marginBottom="10dp"
                             binding:onClickCommand="@{viewModel.continueTxnsCommand}"
                             ></Button>
                     </LinearLayout>
@@ -246,7 +296,7 @@
                         android:text="Done"
                         android:textAllCaps="false"
                         android:textColor="@color/white"
-                        android:background="@drawable/bg_confirm_button_selector"
+                        android:background="@drawable/bg_done_selector"
                         binding:onClickCommand="@{viewModel.continueTxnsCommand}"
                         ></Button>
                     <Button
@@ -267,6 +317,7 @@
                         android:textColor="@color/black"
                         android:text="More options"
                         android:layout_marginTop="@dimen/dp_10"
+                        android:layout_marginBottom="10dp"
                         android:background="@drawable/bg_more_options_selector"></Button>
                     </LinearLayout>
                 </LinearLayout>
