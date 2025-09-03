@@ -3,6 +3,7 @@ package com.dspread.pos.ui.payment;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.dspread.pos.utils.DeviceUtils;
 import com.dspread.pos.utils.TRACE;
 import com.dspread.pos_android_app.BR;
 import com.dspread.pos_android_app.R;
@@ -11,6 +12,8 @@ import com.dspread.pos_android_app.databinding.ActivityPaymentMetholdBinding;
 import me.goldze.mvvmhabit.base.BaseActivity;
 
 public class PaymentMethodActivity extends BaseActivity<ActivityPaymentMetholdBinding, PaymentMethodViewModel> {
+    private String amount;
+    private String deviceAddress;
     @Override
     public int initContentView(Bundle bundle) {
         return R.layout.activity_payment_methold;
@@ -23,19 +26,21 @@ public class PaymentMethodActivity extends BaseActivity<ActivityPaymentMetholdBi
 
     @Override
     public void initData() {
+        amount = getIntent().getStringExtra("amount");
+        deviceAddress = getIntent().getStringExtra("deviceAddress");
         binding.setVariable(BR.viewModel, viewModel);
         viewModel.getSelectedPaymentMethod().observe(this, methodIndex -> {
             if (methodIndex != null) {
                 handlePaymentMethodSelection(methodIndex);
             }
         });
-        viewModel.setTotalAmount("$886.00");
+        viewModel.setTotalAmount("$"+ DeviceUtils.convertAmountToCents(amount));
     }
 
     private void handlePaymentMethodSelection(int methodIndex) {
         switch (methodIndex) {
             case 0:
-                startCardPayment();
+                navigateToCardPayment();
                 break;
             case 1:
                 startScanCodePayment();
@@ -44,16 +49,17 @@ public class PaymentMethodActivity extends BaseActivity<ActivityPaymentMetholdBi
                 startGeneratePayment();
                 break;
             case 3:
-                startCashPayment();
+                navigateCashPayment();
                 break;
         }
     }
 
-    private void startCardPayment() {
-        // 启动银行卡支付
-       /* Intent intent = new Intent(this, CardPaymentActivity.class);
-        startActivity(intent);*/
-        TRACE.d("PayMethodActivity startCardPayment");
+    private void navigateToCardPayment() {
+        Intent intent = new Intent(this, PaymentActivity.class);
+        intent.putExtra("amount", amount);
+        intent.putExtra("deviceAddress", deviceAddress);
+        startActivity(intent);
+        finish();
     }
 
     private void startScanCodePayment() {
@@ -71,10 +77,8 @@ public class PaymentMethodActivity extends BaseActivity<ActivityPaymentMetholdBi
         TRACE.d("PayMethodActivity startGeneratePayment");
     }
 
-    private void startCashPayment() {
-        // 处理现金支付
-      /*  Intent intent = new Intent(this, CashPaymentActivity.class);
-        startActivity(intent);*/
+    private void navigateCashPayment() {
+        navigateToCardPayment();
         TRACE.d("PayMethodActivity startCashPayment");
     }
 

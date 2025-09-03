@@ -71,7 +71,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
     implementation 'androidx.navigation:navigation-fragment:2.4.1'
     implementation 'androidx.navigation:navigation-ui:2.4.1'
-    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.25'
+//    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.25'
 
 //    implementation 'com.dspread.print:dspread_print_sdk:1.4.9-beta'
 //    implementation 'com.dspread.library:dspread_pos_sdk:7.1.2'
@@ -124,4 +124,5 @@ dependencies {
 
     implementation 'com.journeyapps:zxing-android-embedded:4.3.0'
     implementation 'com.google.zxing:core:3.5.1'
+    implementation 'com.airbnb.android:lottie:6.1.0'
 }

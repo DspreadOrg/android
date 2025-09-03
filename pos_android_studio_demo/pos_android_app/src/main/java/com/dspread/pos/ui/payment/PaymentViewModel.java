@@ -144,21 +144,13 @@ public class PaymentViewModel extends BaseAppViewModel {
         loadingText.set("");
     }
 
-    public BindingCommand continueTxnsCommand = new BindingCommand(new BindingAction() {
-        @Override
-        public void call() {
-            finish();
-        }
-    });
+    public BindingCommand continueTxnsCommand = new BindingCommand(() -> finish());
 
-    public BindingCommand cancleTxnsCommand = new BindingCommand(new BindingAction() {
-        @Override
-        public void call() {
-            new Thread(() -> {
-                POSManager.getInstance().cancelTransaction();
-            }).start();
-            finish();
-        }
+    public BindingCommand cancleTxnsCommand = new BindingCommand(() -> {
+        new Thread(() -> {
+            POSManager.getInstance().cancelTransaction();
+        }).start();
+        finish();
     });
     public BindingCommand sendReceiptCommand = new BindingCommand(new BindingAction() {
         @Override

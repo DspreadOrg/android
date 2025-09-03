@@ -76,10 +76,14 @@
                         binding:onClickCommand="@{viewModel.cancleTxnsCommand}"/>
 
                 </FrameLayout>
-                <pl.droidsonroids.gif.GifImageView
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/animation_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/checkcard"/>
+                    app:lottie_fileName="checkCard.json"
+                    app:lottie_imageAssetsFolder="images/"
+                    app:lottie_autoPlay="true"
+                    app:lottie_loop="true" />
             </LinearLayout>
             <!--卡组织图片-->
             <LinearLayout
