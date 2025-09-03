@@ -12,16 +12,11 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.dspread.pos.common.manager.FragmentCacheManager;
 import com.dspread.pos.TitleProviderListener;
-import com.dspread.pos.posAPI.POSManager;
 import com.dspread.pos.ui.home.HomeFragment;
 import com.dspread.pos.ui.payment.PaymentMethodActivity;
-import com.dspread.pos.ui.printer.PrinterHelperFragment;
-import com.dspread.pos.ui.scan.ScanFragment;
 import com.dspread.pos.ui.setting.connection_settings.ConnectionSettingsFragment;
-import com.dspread.pos.utils.DeviceUtils;
 import com.dspread.pos.utils.TRACE;
 import com.dspread.pos_android_app.R;
-import com.dspread.xpos.QPOSService;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -30,7 +25,6 @@ import me.goldze.mvvmhabit.base.BaseViewModel;
 import me.goldze.mvvmhabit.binding.command.BindingCommand;
 import me.goldze.mvvmhabit.binding.command.BindingConsumer;
 import me.goldze.mvvmhabit.bus.event.SingleLiveEvent;
-import me.goldze.mvvmhabit.utils.SPUtils;
 
 
 public class MainViewModel extends BaseViewModel {

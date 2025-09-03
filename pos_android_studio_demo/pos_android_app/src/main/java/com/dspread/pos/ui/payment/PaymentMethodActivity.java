@@ -3,6 +3,7 @@ package com.dspread.pos.ui.payment;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.dspread.pos.ui.scan.ScanCodeActivity;
 import com.dspread.pos.utils.DeviceUtils;
 import com.dspread.pos.utils.TRACE;
 import com.dspread.pos_android_app.BR;
@@ -64,8 +65,8 @@ public class PaymentMethodActivity extends BaseActivity<ActivityPaymentMetholdBi
 
     private void startScanCodePayment() {
         // 启动扫码支付
-       /* Intent intent = new Intent(this, ScanCodeActivity.class);
-        startActivity(intent);*/
+        Intent intent = new Intent(this, ScanCodeActivity.class);
+        startActivity(intent);
         TRACE.d("PayMethodActivity startScanCodePayment");
     }
 

@@ -21,8 +21,9 @@ import com.dspread.print.widget.PrintLine;
 public class PrinterHelper {
     protected PrinterDevice mPrinter;
     public static PrinterHelper printerCommand;
-    public static PrinterHelper getInstance(){
-        if(printerCommand == null){
+
+    public static PrinterHelper getInstance() {
+        if (printerCommand == null) {
             synchronized (PrinterHelper.class) {
                 if (printerCommand == null) {
                     printerCommand = new PrinterHelper();
@@ -36,7 +37,7 @@ public class PrinterHelper {
         this.mPrinter = printer;
     }
 
-    public PrinterDevice getmPrinter(){
+    public PrinterDevice getmPrinter() {
         return this.mPrinter;
     }
 
@@ -49,6 +50,7 @@ public class PrinterHelper {
                     TRACE.i("init printer with callkback success==");
                     mPrinter.setPrinterTerminatedState(PrinterDevice.PrintTerminationState.PRINT_STOP);
                 }
+
                 @Override
                 public void disconnected() {
                 }
@@ -59,7 +61,7 @@ public class PrinterHelper {
         }
     }
 
-    public void printText(String alignText,String fontStyle,String textSize, String printContent) throws RemoteException {
+    public void printText(String alignText, String fontStyle, String textSize, String printContent) throws RemoteException {
         PrintLineStyle style = new PrintLineStyle();
         // Set alignment method
         switch (alignText) {
@@ -97,7 +99,7 @@ public class PrinterHelper {
         mPrinter.printText(printContent);
     }
 
-    public Bitmap printQRcode(Context context,String align, String size, String content, String errorLevel) throws RemoteException {
+    public Bitmap printQRcode(Context context, String align, String size, String content, String errorLevel) throws RemoteException {
         PrintLineStyle style = new PrintLineStyle();
         int printLineAlign = PrintLine.CENTER;
         switch (align) {
@@ -118,7 +120,7 @@ public class PrinterHelper {
         return bitmap;
     }
 
-    public Bitmap printBarCode(Context context,String align, String width,String height, String content, String speedLevel,String densityLevel,String symbology) throws RemoteException {
+    public Bitmap printBarCode(Context context, String align, String width, String height, String content, String speedLevel, String densityLevel, String symbology) throws RemoteException {
         PrintLineStyle style = new PrintLineStyle();
         int printLineAlign = 0;
         switch (align) {
@@ -133,7 +135,7 @@ public class PrinterHelper {
                 break;
         }
 
-        Bitmap bitmap = QRCodeUtil.getBarCodeBM(content,Integer.parseInt(width), Integer.parseInt(height));
+        Bitmap bitmap = QRCodeUtil.getBarCodeBM(content, Integer.parseInt(width), Integer.parseInt(height));
         if ("mp600".equals(Build.MODEL)) {
             mPrinter.setPrinterSpeed(Integer.parseInt(speedLevel));
             mPrinter.setPrinterDensity(Integer.parseInt(densityLevel));
@@ -154,7 +156,8 @@ public class PrinterHelper {
         mPrinter.printBitmap(context, bitmap);
         return bitmap;
     }
-    public Bitmap printBitmap(Context context,Bitmap bitmap) throws RemoteException {
+
+    public Bitmap printBitmap(Context context, Bitmap bitmap) throws RemoteException {
 
         PrintLineStyle printLineStyle = new PrintLineStyle();
         mPrinter.setFooter(50);
@@ -212,9 +215,8 @@ public class PrinterHelper {
 
     public Bitmap getTicketBitmap(Context context) throws RemoteException {
         Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_dspread_logo);
-        mPrinter.addText("\n");
-        mPrinter.addBitmap(bitmap,PrintLine.CENTER);
-        mPrinter.addText("\n");
+        mPrinter.addBitmap(bitmap, PrintLine.CENTER);
+        mPrinter.feedLines(5);
         mPrinter.addPrintLintStyle(new PrintLineStyle(PrintStyle.FontStyle.BOLD, PrintLine.CENTER, 16));
         mPrinter.addText("Testing");
         mPrinter.addText("POS Signing of purchase orders");
@@ -245,7 +247,7 @@ public class PrinterHelper {
         mPrinter.addBarCode(context, Barcode1D.CODE_128.name(), 400, 100, "123456", PrintLine.CENTER);
         mPrinter.addText("Please scan the QRCode for getting more information:");
         mPrinter.addQRCode(300, Barcode2D.QR_CODE.name(), "123456", PrintLine.CENTER);*/
-        mPrinter.setFooter(100);
+        mPrinter.setFooter(20);
         Bitmap receiptBitmap = mPrinter.getReceiptBitmap();
         return receiptBitmap;
     }
@@ -265,11 +267,12 @@ public class PrinterHelper {
     public void getPrinterTemperature() throws RemoteException {
         mPrinter.getPrinterTemperature();
     }
+
     public void getPrinterVoltage() throws RemoteException {
         mPrinter.getPrinterVoltage();
     }
 
-    public void close(){
+    public void close() {
         if (mPrinter != null) {
             mPrinter.close();
         }

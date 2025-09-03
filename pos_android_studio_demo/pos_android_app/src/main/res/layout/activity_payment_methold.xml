@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:binding="http://schemas.android.com/apk/res-auto"
-    >
+<layout xmlns:binding="http://schemas.android.com/apk/res-auto">
+
     <data>
+
         <import type="android.view.View" />
+
         <variable
             name="viewModel"
             type="com.dspread.pos.ui.payment.PaymentMethodViewModel" />
@@ -77,9 +79,9 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
+            android:padding="8dp"
             app:columnCount="2"
-            app:rowCount="2"
-            android:padding="8dp">
+            app:rowCount="2">
 
             <!-- 第一行第一列：Card -->
             <LinearLayout
@@ -87,12 +89,12 @@
                 style="@style/LinPaymentLayout"
                 android:clickable="true"
                 android:focusable="true"
-                app:layout_row="0"
-                app:layout_column="0"
-                app:layout_rowWeight="1"
-                app:layout_columnWeight="1"
                 android:onClick="@{() -> viewModel.onPaymentMethodSelected(0)}"
-                >
+                app:layout_column="0"
+                app:layout_columnWeight="1"
+                app:layout_row="0"
+                app:layout_rowWeight="1">
+
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -112,12 +114,11 @@
                 style="@style/LinPaymentLayout"
                 android:clickable="true"
                 android:focusable="true"
-                app:layout_row="0"
-                app:layout_column="1"
-                app:layout_rowWeight="1"
-                app:layout_columnWeight="1"
                 android:onClick="@{() -> viewModel.onPaymentMethodSelected(1)}"
-                >
+                app:layout_column="1"
+                app:layout_columnWeight="1"
+                app:layout_row="0"
+                app:layout_rowWeight="1">
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -136,14 +137,14 @@
             <LinearLayout
                 android:id="@+id/generateOption"
                 style="@style/LinPaymentLayout"
-                app:layout_row="1"
-                app:layout_column="0"
-                app:layout_rowWeight="1"
-                app:layout_columnWeight="1"
                 android:clickable="true"
                 android:focusable="true"
                 android:gravity="center"
-                android:onClick="@{() -> viewModel.onPaymentMethodSelected(2)}">
+                android:onClick="@{() -> viewModel.onPaymentMethodSelected(2)}"
+                app:layout_column="0"
+                app:layout_columnWeight="1"
+                app:layout_row="1"
+                app:layout_rowWeight="1">
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -162,15 +163,14 @@
             <LinearLayout
                 android:id="@+id/cashOption"
                 style="@style/LinPaymentLayout"
-                app:layout_row="1"
-                app:layout_column="1"
-                app:layout_rowWeight="1"
-                app:layout_columnWeight="1"
                 android:clickable="true"
                 android:focusable="true"
                 android:gravity="center"
                 android:onClick="@{() -> viewModel.onPaymentMethodSelected(3)}"
-                >
+                app:layout_column="1"
+                app:layout_columnWeight="1"
+                app:layout_row="1"
+                app:layout_rowWeight="1">
 
                 <ImageView
                     android:layout_width="wrap_content"

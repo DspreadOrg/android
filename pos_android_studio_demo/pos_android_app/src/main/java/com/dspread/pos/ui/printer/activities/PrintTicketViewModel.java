@@ -15,8 +15,6 @@ import me.goldze.mvvmhabit.binding.command.BindingCommand;
 
 public class PrintTicketViewModel extends BasePrinterViewModel {
 
-    public ObservableField<String> info = new ObservableField<>();
-
     private MutableLiveData<Bitmap> receiptBitmap = new MutableLiveData<>();
 
 
@@ -67,6 +65,5 @@ public class PrintTicketViewModel extends BasePrinterViewModel {
     @Override
     public void onPrintComplete(boolean isSuccess, String status) {
         super.onPrintComplete(isSuccess, status);
-        info.set("Print Result: " + (isSuccess ? "Success" : "Failed") + "\nStatus: " + status);
     }
 }

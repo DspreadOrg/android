@@ -1,6 +1,7 @@
 package com.dspread.pos.ui.scan;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.ObservableBoolean;
@@ -19,22 +20,8 @@ public class ScanViewModel extends BaseAppViewModel {
     // Remove launcher related code
     public SingleLiveEvent<Void> startScanEvent = new SingleLiveEvent<>();
 
-
-    public BindingCommand startScanCommand = new BindingCommand(new BindingAction() {
-        @Override
-        public void call() {
-            startScan();
-        }
-    });
-
     public ScanViewModel(@NonNull Application application) {
         super(application);
-    }
-    
-    private void startScan() {
-        isScanning.set(true);
-        hasResult.set(false);
-        startScanEvent.call();
     }
 
     public void onScanResult(String result) {
@@ -42,4 +29,12 @@ public class ScanViewModel extends BaseAppViewModel {
         hasResult.set(true);
         scanResult.set(result);
     }
+
+    public BindingCommand closeButton = new BindingCommand(new BindingAction() {
+        @Override
+        public void call() {
+            Log.d("Payment", "close button");
+            finish();
+        }
+    });
 }

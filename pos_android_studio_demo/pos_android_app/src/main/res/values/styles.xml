@@ -293,5 +293,6 @@
         <!-- 轨道颜色 -->
 <!--                <item name="android:trackTint">@drawable/switch_track</item>-->
         <item name="android:trackTint">@color/switch_track_selector</item>
+
     </style>
 </resources>

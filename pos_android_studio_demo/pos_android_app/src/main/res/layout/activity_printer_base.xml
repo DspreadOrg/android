@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:binding="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <import type="android.view.View" />
+
         <variable
             name="viewModel"
             type="com.dspread.pos.ui.printer.activities.base.BasePrinterViewModel" />
@@ -17,10 +19,10 @@
         <!-- 工具栏 -->
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
-            android:textColor="#ff1b1b1b"
-            android:textSize="19sp"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
+            android:textColor="#ff1b1b1b"
+            android:textSize="19sp"
             app:layout_constraintTop_toTopOf="parent"
             app:navigationIcon="@mipmap/ic_back">
 
@@ -35,7 +37,6 @@
         </com.google.android.material.appbar.MaterialToolbar>
 
         <!-- 顶部黑色圆柱 -->
-
         <View
             android:id="@+id/black_cylinder"
             android:layout_width="0dp"
@@ -52,8 +53,10 @@
             android:id="@+id/print_scroll_view"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_marginLeft="@dimen/dp_20"
+            android:layout_marginRight="@dimen/dp_20"
             android:fillViewport="true"
-            app:layout_constraintBottom_toTopOf="@+id/button_container"
+            app:layout_constraintBottom_toTopOf="@id/button_container"
             app:layout_constraintTop_toBottomOf="@id/black_cylinder">
 
             <LinearLayout
@@ -71,6 +74,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
             android:gravity="center"
+            android:weightSum="5"
             android:orientation="horizontal"
             android:paddingHorizontal="40dp"
             app:layout_constraintBottom_toBottomOf="parent">
@@ -78,9 +82,10 @@
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_cancel"
                 android:layout_width="0dp"
-                android:layout_height="50dp"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/dp_8"
                 android:layout_marginEnd="5dp"
-                android:layout_weight="1"
+                android:layout_weight="2"
                 android:background="@drawable/btn_bg_outline"
                 android:text="Cancel"
                 android:textColor="#1B1B1B"
@@ -89,9 +94,10 @@
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_printTicket"
                 android:layout_width="0dp"
-                android:layout_height="50dp"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/dp_8"
                 android:layout_marginStart="5dp"
-                android:layout_weight="2"
+                android:layout_weight="3"
                 android:background="@drawable/btn_bg_primary"
                 android:text="Print"
                 android:textColor="#FFF"
@@ -105,12 +111,12 @@
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:background="@drawable/rounded_button"
-            android:enabled="@{viewModel.isLoading ? false:true}"
+            android:enabled="@{!viewModel.isLoading}"
             android:padding="14dp"
             android:text="Print"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
-            binding:onClickCommand="@{viewModel.printCommand}" />
+            tools:ignore="MissingConstraints" />
 
         <!-- 加载进度条 -->
         <ProgressBar
