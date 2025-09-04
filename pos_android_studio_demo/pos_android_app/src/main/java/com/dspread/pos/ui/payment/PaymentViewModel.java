@@ -62,9 +62,11 @@ public class PaymentViewModel extends BaseAppViewModel {
     public ObservableBoolean showPinpad = new ObservableBoolean(false);
     public ObservableBoolean showResultStatus = new ObservableBoolean(false);
     public ObservableBoolean TransactionResultStatus = new ObservableBoolean(false);
+    public ObservableBoolean cardsInsertedStatus = new ObservableBoolean(false);
     public ObservableField<String> receiptContent = new ObservableField<>();
     private Bitmap receiptBitmap;
     private Context mContext;
+    private boolean isIccCard=false;
 
     public void setmContext(Context mContext) {
         this.mContext = mContext;
@@ -106,17 +108,35 @@ public class PaymentViewModel extends BaseAppViewModel {
         isWaiting.set(false);
         transactionResult.set(message);
         TransactionResultStatus.set(true);
+        cardsInsertedStatus.set(false);
     }
 
     public void clearErrorState() {
         showResultStatus.set(true);
         showPinpad.set(true);
+        if(cardsInsertedStatus.get()){
+        cardsInsertedStatus.set(false);
+        }
 //        transactionResult.set("");
 //        isSuccess.set(false);
     }
     public void pincomPletedState(){
-        showResultStatus.set(false);
+
         showPinpad.set(false);
+
+        if(isIccCard&&!cardsInsertedStatus.get()){
+            showResultStatus.set(true);
+            cardsInsertedStatus.set(true);
+        }else{
+            showResultStatus.set(false);
+        }
+
+    }
+    public void cardInsertedState(){
+        isIccCard = true;
+        showResultStatus.set(true);
+        cardsInsertedStatus.set(true);
+
     }
     public void displayAmount(String newAmount) {
         amount.set("$" + newAmount);
@@ -134,6 +154,7 @@ public class PaymentViewModel extends BaseAppViewModel {
         isWaiting.set(false);
         showResultStatus.set(true);
         TransactionResultStatus.set(true);
+        cardsInsertedStatus.set(false);
     }
 
     public void startLoading(String text) {

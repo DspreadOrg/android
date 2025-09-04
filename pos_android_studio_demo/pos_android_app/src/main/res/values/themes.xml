@@ -60,7 +60,7 @@
     <style name="Theme.Despreaddemo2" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- 主要颜色 -->
         <item name="colorPrimary">@color/red</item>
-
+        <item name="android:listDivider">@drawable/navigation_divider</item>
     </style>
 
 

@@ -12,11 +12,11 @@
             android:icon="@mipmap/menu_sale"
             android:title="@string/menu_payment"
             />
-        <item
-            android:enabled="false"
-            android:checkable="false"
-            app:actionLayout="@layout/item_nav_divider"
-            tools:ignore="MenuTitle" />
+<!--        <item-->
+<!--            android:enabled="false"-->
+<!--            android:checkable="false"-->
+<!--            app:actionLayout="@layout/item_nav_divider"-->
+<!--            tools:ignore="MenuTitle" />-->
 <!--        <item-->
 <!--            android:id="@+id/nav_autotrade"-->
 <!--            android:icon="@drawable/autotrade"-->
@@ -26,16 +26,28 @@
 <!--            android:id="@+id/nav_printer"-->
 <!--            android:icon="@drawable/print"-->
 <!--            android:title="@string/printer" />-->
+
+<!--        <item-->
+<!--            android:enabled="false"-->
+<!--            android:checkable="false"-->
+<!--            app:actionLayout="@layout/item_nav_divider"-->
+<!--            tools:ignore="MenuTitle" />-->
+
+    </group>
+
+    <group
+        android:id="@+id/transaction"
+        android:checkableBehavior="single">
         <item
             android:id="@+id/nav_transaction"
             android:icon="@mipmap/menu_transaction"
             android:title="@string/transaction"
             />
-        <item
-            android:enabled="false"
-            android:checkable="false"
-            app:actionLayout="@layout/item_nav_divider"
-            tools:ignore="MenuTitle" />
+    </group>
+
+    <group
+        android:id="@+id/group_setting"
+        android:checkableBehavior="single">
         <item
             android:id="@+id/nav_setting"
             android:icon="@mipmap/menu_setting"
@@ -43,6 +55,15 @@
         </item>
 
     </group>
+<!--    <group-->
+<!--        android:id="@+id/test"-->
+<!--        android:checkableBehavior="single">-->
+<!--        <item-->
 
+<!--            android:icon="@mipmap/menu_setting"-->
+<!--            android:title="@string/menu_setting">-->
+<!--        </item>-->
+
+<!--    </group>-->
 
 </menu>

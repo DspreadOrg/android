@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<inset xmlns:android="http://schemas.android.com/apk/res/android"
+    android:insetLeft="24dp"
+    android:insetRight="130dp">
+    <!-- 分割线本体 -->
+<shape android:shape="rectangle">
+<!-- 分割线高度 -->
+<size android:height="2dp" />
+
+<!-- 分割线颜色 -->
+<solid android:color="#E0E0E0" />
+</shape>
+
+    </inset>

@@ -132,7 +132,70 @@
 
             </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
 
+                android:visibility="@{viewModel.cardsInsertedStatus ? View.VISIBLE : View.GONE}"
+                >
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    >
+
+                    <!-- 原有 LinearLayout 内容（总金额、提示文字、设备图片等） -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginTop="15dp"
+                          android:gravity="center"
+                        >
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/total"
+                            android:textColor="@color/text_color"
+                            android:textSize="19sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@{viewModel.amount}"
+                            android:textSize="44sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/text_color" />
+
+                        <!-- 其他视图（如设备图片、支付方式图标等） -->
+
+                    </LinearLayout>
+
+                    <!-- 右上角的“×”图标 -->
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="16dp"
+                        android:src="@mipmap/btn_close_black"
+                        android:layout_gravity="top|end"
+                        binding:onClickCommand="@{viewModel.cancleTxnsCommand}"/>
+
+                </FrameLayout>
+                <com.airbnb.lottie.LottieAnimationView
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    app:lottie_fileName="insert_icc_card.json"
+                    app:lottie_imageAssetsFolder="iccimages/"
+                    app:lottie_autoPlay="true"
+                    android:layout_marginBottom="5dp"
+                    app:lottie_loop="false" />
+            </LinearLayout>
             <!-- input pin -->
 <!--            <androidx.cardview.widget.CardView-->
 <!--                android:layout_width="match_parent"-->
@@ -236,8 +299,17 @@
                         android:layout_width="wrap_content"
                         android:layout_marginTop="@dimen/dp_60"
                         android:layout_height="wrap_content"
-                        android:src="@{viewModel.isSuccess ? @drawable/payment_success : @drawable/payment_failed}"
+                        android:visibility="@{viewModel.isSuccess ? View.GONE : View.VISIBLE}"
+                        android:src="@mipmap/payment_failed"
                         android:layout_marginEnd="8dp"/>
+                    <com.airbnb.lottie.LottieAnimationView
+
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:lottie_fileName="payment_success.json"
+                        android:visibility="@{viewModel.isSuccess ? View.VISIBLE : View.GONE}"
+                        app:lottie_autoPlay="true"
+                        app:lottie_loop="false" />
 
                     <TextView
                         android:id="@+id/tv_payment_result"
