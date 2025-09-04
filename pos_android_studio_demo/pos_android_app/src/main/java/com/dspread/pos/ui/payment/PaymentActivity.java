@@ -149,6 +149,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
             String terminalTime = new SimpleDateFormat("yyyyMMddHHmmss").format(Calendar.getInstance().getTime());
             TRACE.d("onRequestTime: " + terminalTime);
             POSManager.getInstance().sendTime(terminalTime);
+
         }
 
         @Override
@@ -319,6 +320,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
             isChangePin = false;
             String transType = result.getTransactionType();
             if(transType != null){
+                binding.animationView.pauseAnimation();
                 result.setAmount(amount);
                 if(QPOSService.DoTradeResult.MCR.name().equals(transType)){
                     HandleTxnsResultUtils.handleMCRResult(result, PaymentActivity.this, binding, viewModel);

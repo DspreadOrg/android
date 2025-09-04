@@ -63,6 +63,11 @@
         <item name="android:listDivider">@drawable/navigation_divider</item>
     </style>
 
+    <style name="StatusBarTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="android:statusBarColor">@color/white</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="buttonStyle">@style/Widget.AppCompat.Button</item>
+    </style>
 
     <style name="popupAnimation" parent="android:Animation">
         <item name="android:windowEnterAnimation">@anim/pop_in</item>

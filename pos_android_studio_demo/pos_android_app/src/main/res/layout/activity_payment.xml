@@ -339,18 +339,18 @@
                         android:visibility="@{viewModel.isSuccess ? View.GONE : View.VISIBLE}"
                         android:orientation="vertical"
                         >
-                        <Button
-
+                        <androidx.appcompat.widget.AppCompatButton
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/dp_50"
                             android:text="Back"
                             android:textAllCaps="false"
+                            android:textSize="20dp"
                             android:textColor="@color/black"
                             android:background="@drawable/bg_more_options_selector"
                             android:layout_marginBottom="10dp"
                             binding:onClickCommand="@{viewModel.continueTxnsCommand}"
-                            ></Button>
+                            ></androidx.appcompat.widget.AppCompatButton>
                     </LinearLayout>
 
                     <LinearLayout
@@ -361,36 +361,39 @@
                         android:orientation="vertical"
                         android:visibility="@{viewModel.isSuccess ? View.VISIBLE : View.GONE}"
                         >
-                    <Button
+                    <androidx.appcompat.widget.AppCompatButton
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/dp_50"
                         android:text="Done"
                         android:textAllCaps="false"
+                        android:textSize="20dp"
                         android:textColor="@color/white"
                         android:background="@drawable/bg_done_selector"
                         binding:onClickCommand="@{viewModel.continueTxnsCommand}"
-                        ></Button>
-                    <Button
+                        ></androidx.appcompat.widget.AppCompatButton>
+                    <androidx.appcompat.widget.AppCompatButton
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Print receipt"
                         android:textAllCaps="false"
+                        android:textSize="20dp"
                         android:textColor="@color/red"
                         android:layout_marginTop="@dimen/dp_10"
                         android:background="@drawable/bg_print_receipt_button_selector"
                         android:enabled="@{!viewModel.isPrinting}"
                         binding:onClickCommand="@{viewModel.sendReceiptCommand}"
-                        ></Button>
-                    <Button
+                        ></androidx.appcompat.widget.AppCompatButton>
+                    <androidx.appcompat.widget.AppCompatButton
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textAllCaps="false"
                         android:textColor="@color/black"
+                        android:textSize="20dp"
                         android:text="More options"
                         android:layout_marginTop="@dimen/dp_10"
                         android:layout_marginBottom="10dp"
-                        android:background="@drawable/bg_more_options_selector"></Button>
+                        android:background="@drawable/bg_more_options_selector"></androidx.appcompat.widget.AppCompatButton>
                     </LinearLayout>
                 </LinearLayout>
                 <View

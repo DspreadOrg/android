@@ -59,6 +59,7 @@
         <activity
             android:name="com.dspread.pos.ui.payment.PaymentActivity"
             android:screenOrientation="portrait"
+            android:theme="@style/StatusBarTheme"
            />
         <activity
             android:name="com.dspread.pos.ui.printer.activities.PrintTextActivity"
