@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.dspread.pos.common.base.BaseAppViewModel;
 import com.dspread.pos.ui.printer.activities.PrintTicketActivity;
+import com.dspread.pos.utils.TRACE;
 import com.google.zxing.BarcodeFormat;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
 
@@ -50,16 +51,22 @@ public class PaymentGenerateViewModel extends BaseAppViewModel {
         @Override
         public void call() {
             Log.d("PaymentGenerate", "check pay status");
-           // finish();
-            Intent intent = new Intent(context, PrintTicketActivity.class);
+            // finish();
+           /* Intent intent = new Intent(context, PrintTicketActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);*/
+
+            Intent intent = new Intent(context, PaymentStatusActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            String mAmount = amount.getValue().startsWith("$") ? amount.getValue().substring(1) : amount.getValue();
+            intent.putExtra("amount", mAmount);
             context.startActivity(intent);
         }
     });
 
 
     public void setPaymentAmount(String amountValue) {
-        amount.setValue(formatAmount(amountValue));
+        amount.setValue(amountValue);
         generateQRCode(amountValue);
     }
 

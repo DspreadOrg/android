@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
 
+import com.dspread.pos.ui.payment.PaymentStatusActivity;
 import com.dspread.pos.utils.DeviceUtils;
 import com.dspread.pos_android_app.BR;
 import com.dspread.pos_android_app.R;
@@ -43,13 +44,14 @@ public class ScanCodeActivity extends BaseActivity<ActivityScanBinding, ScanView
                     if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
                         String scanData = result.getData().getStringExtra("data");
                         viewModel.onScanResult(scanData);
+                        Intent intent = new Intent(ScanCodeActivity.this, PaymentStatusActivity.class);
+                        intent.putExtra("amount","20");
+                        startActivity(intent);
                     } else {
                         finish();
                     }
                 }
         );
-
-
     }
 
     @Override

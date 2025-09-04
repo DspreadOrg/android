@@ -1,7 +1,12 @@
 package com.dspread.pos.ui.payment;
 
+import android.app.Activity;
+import android.content.ActivityNotFoundException;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.util.Log;
 
 import com.dspread.pos.ui.scan.ScanCodeActivity;
 import com.dspread.pos.utils.DeviceUtils;
@@ -10,11 +15,20 @@ import com.dspread.pos_android_app.BR;
 import com.dspread.pos_android_app.R;
 import com.dspread.pos_android_app.databinding.ActivityPaymentMetholdBinding;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import me.goldze.mvvmhabit.base.BaseActivity;
+import me.goldze.mvvmhabit.utils.ToastUtils;
 
 public class PaymentMethodActivity extends BaseActivity<ActivityPaymentMetholdBinding, PaymentMethodViewModel> {
     private String amount;
     private String deviceAddress;
+
+    private String pkg;
+    private String cls;
+    private boolean canshow = true;
+    private ActivityResultLauncher<Intent> scanLauncher;
+
     @Override
     public int initContentView(Bundle bundle) {
         return R.layout.activity_payment_methold;
@@ -35,7 +49,26 @@ public class PaymentMethodActivity extends BaseActivity<ActivityPaymentMetholdBi
                 handlePaymentMethodSelection(methodIndex);
             }
         });
-        viewModel.setTotalAmount("$"+ DeviceUtils.convertAmountToCents(amount));
+        viewModel.setTotalAmount("$" + DeviceUtils.convertAmountToCents(amount));
+
+
+        scanLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                        String scanData = result.getData().getStringExtra("data");
+                        scanData = amount;
+                        Intent intent = new Intent(PaymentMethodActivity.this, PaymentStatusActivity.class);
+                        intent.putExtra("amount", scanData);
+                        startActivity(intent);
+                    } else {
+                        Intent intent = new Intent(PaymentMethodActivity.this, PaymentStatusActivity.class);
+                        intent.putExtra("amount", "");
+                        startActivity(intent);
+                    }
+                }
+        );
+
     }
 
     private void handlePaymentMethodSelection(int methodIndex) {
@@ -65,16 +98,19 @@ public class PaymentMethodActivity extends BaseActivity<ActivityPaymentMetholdBi
 
     private void startScanCodePayment() {
         // 启动扫码支付
-        Intent intent = new Intent(this, ScanCodeActivity.class);
-        startActivity(intent);
+       /* Intent intent = new Intent(this, ScanCodeActivity.class);
+        intent.putExtra("amount", amount);
+        startActivity(intent);*/
         TRACE.d("PayMethodActivity startScanCodePayment");
+
+        initScanCode();
     }
 
     private void startGeneratePayment() {
         // 启动生成支付码
         Intent intent = new Intent(this, PaymentGenerateActivity.class);
+        intent.putExtra("amount", amount);
         startActivity(intent);
-        finish();
         TRACE.d("PayMethodActivity startGeneratePayment");
     }
 
@@ -82,5 +118,44 @@ public class PaymentMethodActivity extends BaseActivity<ActivityPaymentMetholdBi
         navigateToCardPayment();
         TRACE.d("PayMethodActivity startCashPayment");
     }
+
+    private void initScanCode() {
+        if (DeviceUtils.isAppInstalled(getApplicationContext(), DeviceUtils.UART_AIDL_SERVICE_APP_PACKAGE_NAME)) {
+            //D30MstartScan();
+            pkg = "com.dspread.sdkservice";
+            cls = "com.dspread.sdkservice.base.scan.ScanActivity";
+        } else {
+            if (!canshow) {
+                return;
+            }
+            canshow = false;
+            showTimer.start();
+            pkg = "com.dspread.components.scan.service";
+            cls = "com.dspread.components.scan.service.ScanActivity";
+        }
+        Intent intentScanCode = new Intent();
+        ComponentName comp = new ComponentName(pkg, cls);
+        try {
+            intentScanCode.putExtra("amount", "CHARGE ￥1");
+            intentScanCode.setComponent(comp);
+            scanLauncher.launch(intentScanCode);
+        } catch (ActivityNotFoundException e) {
+            Log.w("e", "e==" + e);
+            //viewModel.onScanResult(getString(R.string.scan_toast));
+            ToastUtils.showShort(getString(R.string.scan_toast));
+        }
+    }
+
+    private CountDownTimer showTimer = new CountDownTimer(800, 500) {
+        @Override
+        public void onTick(long millisUntilFinished) {
+        }
+
+        @Override
+        public void onFinish() {
+            canshow = true;
+        }
+
+    };
 
 }
