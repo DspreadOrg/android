@@ -57,7 +57,8 @@ public class PaymentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
             // 分组支付记录按月份
             for (Transaction payment : payments) {
-                String month = payment.getMonth();
+                String date = payment.getRequestDate();
+                String month = extractMonthFromDate(date);
                 if (!paymentsByMonth.containsKey(month)) {
                     paymentsByMonth.put(month, new ArrayList<>());
                 }
@@ -103,20 +104,35 @@ public class PaymentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             PaymentViewHolder paymentHolder = (PaymentViewHolder) holder;
             Transaction payment = item.getPayment();
 
-            paymentHolder.dateText.setText(payment.getDate());
-            paymentHolder.amountText.setText(payment.getAmount());
-            paymentHolder.cardInfoText.setText(payment.getCardInfo());
-            paymentHolder.statusText.setText(payment.getStatus());
-
-            // Set amount color based on value
-            if (payment.getAmount().startsWith("-")) {
-                paymentHolder.amountText.setTextColor(ContextCompat.getColor(paymentHolder.itemView.getContext(), R.color.red));
-            } else {
-                paymentHolder.amountText.setTextColor(ContextCompat.getColor(paymentHolder.itemView.getContext(), R.color.green));
+            paymentHolder.dateText.setText(payment.getRequestDate());
+            paymentHolder.amountText.setText(payment.getAmount() + "");
+            paymentHolder.cardInfoText.setText(payment.getMaskPan());
+            paymentHolder.statusText.setText(payment.getTransResult());
+            if (payment.getCardOrg().equalsIgnoreCase("visa")) {
+                paymentHolder.cardIcon.setImageResource(mipmapImageIds.get(0));
+            }
+            if (payment.getCardOrg().equalsIgnoreCase("master")) {
+                paymentHolder.cardIcon.setImageResource(mipmapImageIds.get(1));
+            }
+            if (payment.getCardOrg().equalsIgnoreCase("amex")) {
+                paymentHolder.cardIcon.setImageResource(mipmapImageIds.get(2));
+            }
+            if (payment.getCardOrg().equalsIgnoreCase("discover")) {
+                paymentHolder.cardIcon.setImageResource(mipmapImageIds.get(3));
+            }
+            if (payment.getCardOrg().equalsIgnoreCase("jcb")) {
+                paymentHolder.cardIcon.setImageResource(mipmapImageIds.get(4));
             }
 
+            // Set amount color based on value
+            /*if (payment.getAmount().startsWith("-")) {
+                paymentHolder.amountText.setTextColor(ContextCompat.getColor(paymentHolder.itemView.getContext(), R.color.red));
+            } else {*/
+            paymentHolder.amountText.setTextColor(ContextCompat.getColor(paymentHolder.itemView.getContext(), R.color.green));
+            // }
+
             // Set status color
-            if ("Voided".equals(payment.getStatus())) {
+            if ("Voided".equalsIgnoreCase(payment.getTransResult())) {
                 paymentHolder.statusText.setTextColor(ContextCompat.getColor(paymentHolder.itemView.getContext(), R.color.gray));
             } else {
                 paymentHolder.statusText.setTextColor(ContextCompat.getColor(paymentHolder.itemView.getContext(), R.color.green));
@@ -164,5 +180,22 @@ public class PaymentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             statusText = itemView.findViewById(R.id.status_text);
             cardIcon = itemView.findViewById(R.id.card_icon);
         }
+    }
+
+
+    private String extractMonthFromDate(String date) {
+        try {
+            String[] parts = date.split("-");
+            if (parts.length >= 2) {
+                int monthNum = Integer.parseInt(parts[1]);
+                String[] months = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+                if (monthNum >= 1 && monthNum <= 12) {
+                    return months[monthNum - 1];
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "Unknown";
     }
 }

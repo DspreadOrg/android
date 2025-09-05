@@ -16,6 +16,7 @@ import com.dspread.pos_android_app.BR;
 import com.dspread.pos_android_app.R;
 import com.dspread.pos_android_app.databinding.FragmentTransactionBinding;
 
+import java.io.Serializable;
 import java.util.List;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -56,9 +57,11 @@ public class TransactionFragment extends BaseFragment<FragmentTransactionBinding
         // Setup recycler view
         binding.paymentsRecycler.setLayoutManager(new LinearLayoutManager(getActivity()));
         viewModel.init();
+        binding.transactionPb.setVisibility(View.VISIBLE);
         viewModel.transactionList.observe(this, new Observer<List<Transaction>>() {
             @Override
             public void onChanged(List<Transaction> transactions) {
+                binding.transactionPb.setVisibility(View.INVISIBLE);
                 handleList(transactions);
             }
         });
@@ -69,11 +72,11 @@ public class TransactionFragment extends BaseFragment<FragmentTransactionBinding
                     if (result.getResultCode() == FILTER_RECEIVE && result.getData() != null) {
                         String filter = result.getData().getStringExtra("filter");
                         // 这里拿到 filter 字符串
-                        TRACE.d("filter:"+filter);
+                        TRACE.d("filterxxxxxxx:" + filter);
+                        viewModel.requestTransactionRequest(filter);
                     }
                 }
         );
-
 
         // Set click listener for View All text
         binding.viewAllText.setOnClickListener(new View.OnClickListener() {
@@ -102,16 +105,27 @@ public class TransactionFragment extends BaseFragment<FragmentTransactionBinding
 
     private void handleList(List<Transaction> transactions) {
         this.paymentList = transactions;
-        // Setup adapter
+        // Setup adapter\
+
+        if (transactions != null && transactions.size() > 0) {
+            double amount = 0;
+            for (Transaction transaction : transactions) {
+                amount += transaction.getAmount();
+            }
+            binding.paymentsAmount.setText("$" + amount);
+
+            binding.paymentsCount.setText(transactions.size() + " Payments Today");
+        }
+
         adapter = new PaymentsAdapter(transactions, new PaymentsAdapter.OnItemClickListener() {
             @Override
             public void OnItemClickListener(Transaction transaction) {
-                Toast.makeText(getContext(), "item click:" + transaction.getAmount(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getContext(), "item click:" + transaction.getAmount(), Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(getActivity(), TransactionDetailActivity.class);
+                intent.putExtra("transaction", (Serializable) transaction);
                 getActivity().startActivity(intent);
             }
         });
         binding.paymentsRecycler.setAdapter(adapter);
-
     }
 }

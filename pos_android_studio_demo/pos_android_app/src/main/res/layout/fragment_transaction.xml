@@ -75,7 +75,7 @@
                 android:id="@+id/payments_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="20 Payments Today"
+                android:text="  Payments Today"
                 android:textColor="#ff686868"
                 android:textSize="17sp" />
 
@@ -83,7 +83,7 @@
                 android:id="@+id/payments_amount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="$1888.00"
+                android:text="$0.0"
                 android:textColor="#ff030303"
                 android:textSize="44sp" />
 
@@ -113,10 +113,28 @@
                 android:textSize="16sp" />
         </LinearLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/payments_recycler"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="17dp" />
+            android:layout_height="match_parent">
+
+            <ProgressBar
+                android:id="@+id/transaction_pb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/payments_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="17dp" />
+        </RelativeLayout>
+
+
     </LinearLayout>
 </layout>
