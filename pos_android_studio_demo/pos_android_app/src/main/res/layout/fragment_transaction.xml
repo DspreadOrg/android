@@ -46,6 +46,7 @@
                     android:imeOptions="actionSearch"
                     android:inputType="text"
                     android:padding="12dp"
+                    android:text=" "
                     android:textSize="14sp" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -116,6 +117,14 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/transaction_iv_empty"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:src="@mipmap/ic_transaction_empty"
+                android:visibility="invisible"></ImageView>
 
             <ProgressBar
                 android:id="@+id/transaction_pb"

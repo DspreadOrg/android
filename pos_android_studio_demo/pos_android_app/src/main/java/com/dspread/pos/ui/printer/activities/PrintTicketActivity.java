@@ -35,9 +35,10 @@ import java.util.Map;
 public class PrintTicketActivity extends PrinterBaseActivity<ActivityPrinterBaseBinding, PrintTicketViewModel> {
     private ActivityPrintTicketBinding contentBinding;
     private Bitmap mBitmap;
-    private String amount="";
-    private String maskedPAN="";
-    private String terminalTime="";
+    private String amount = "";
+    private String maskedPAN = "";
+    private String terminalTime = "";
+
     @Override
     public void initData() {
         super.initData();
@@ -67,18 +68,20 @@ public class PrintTicketActivity extends PrinterBaseActivity<ActivityPrinterBase
             mBitmap.recycle();
             mBitmap = null;
         }
-        Map<String,String> map = new HashMap<>();
-        if(amount!=null&&!"".equals(amount)){
-        }else{
-            amount ="";
+        Map<String, String> map = new HashMap<>();
+        if (amount != null && !"".equals(amount)) {
+        } else {
+            amount = "";
         }
         map.put("terAmount", amount);
-        if(maskedPAN!=null&&!"".equals(maskedPAN)){
-        }else{
-            maskedPAN="";
+
+        TRACE.d("XXXXXXXXXXXXX:"+amount);
+        if (maskedPAN != null && !"".equals(maskedPAN)) {
+        } else {
+            maskedPAN = "";
         }
-        map.put("maskedPAN",maskedPAN);
-        if(terminalTime!=null && !"".equals(terminalTime)){
+        map.put("maskedPAN", maskedPAN);
+        if (terminalTime != null && !"".equals(terminalTime)) {
             SimpleDateFormat inputFormat = new SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault());
             SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault());
             try {
@@ -89,10 +92,10 @@ public class PrintTicketActivity extends PrinterBaseActivity<ActivityPrinterBase
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-        }else{
-            terminalTime="";
+        } else {
+            terminalTime = "";
         }
-        map.put("terminalTime",terminalTime);
+        map.put("terminalTime", terminalTime);
         viewModel.generateReceiptBitmap(map);
         viewModel.getReceiptBitmap().observe(this, bitmap -> {
             if (bitmap != null) {

@@ -75,7 +75,6 @@ public class TransactionViewModel extends BaseAppViewModel {
 
     private TransactionRequest createAuthRequest(String  filter) {
         String deviceSn = SPUtils.getInstance().getString("posID", "");
-        deviceSn = "123456";
         return new TransactionRequest(deviceSn,filter);
     }
 
