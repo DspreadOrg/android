@@ -11,12 +11,15 @@ import com.dspread.pos.TitleProviderListener;
 import com.dspread.pos.common.base.BaseFragment;
 import com.dspread.pos.ui.transaction.details.TransactionDetailActivity;
 import com.dspread.pos.ui.transaction.filter.TransactionFilterActivity;
+import com.dspread.pos.utils.TRACE;
 import com.dspread.pos_android_app.BR;
 import com.dspread.pos_android_app.R;
 import com.dspread.pos_android_app.databinding.FragmentTransactionBinding;
 
 import java.util.List;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -43,6 +46,10 @@ public class TransactionFragment extends BaseFragment<FragmentTransactionBinding
     private List<Transaction> paymentList;
     private boolean showCategorized = false;
 
+    private ActivityResultLauncher<Intent> launcher;
+    private static final int FILTER_RECEIVE = 101;
+
+
     @Override
     public void initData() {
         super.initData();
@@ -55,6 +62,18 @@ public class TransactionFragment extends BaseFragment<FragmentTransactionBinding
                 handleList(transactions);
             }
         });
+
+        launcher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == FILTER_RECEIVE && result.getData() != null) {
+                        String filter = result.getData().getStringExtra("filter");
+                        // 这里拿到 filter 字符串
+                        TRACE.d("filter:"+filter);
+                    }
+                }
+        );
+
 
         // Set click listener for View All text
         binding.viewAllText.setOnClickListener(new View.OnClickListener() {
@@ -74,8 +93,9 @@ public class TransactionFragment extends BaseFragment<FragmentTransactionBinding
         binding.filterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 Intent intent = new Intent(getActivity(), TransactionFilterActivity.class);
-                startActivity(intent);
+                launcher.launch(intent);
             }
         });
     }

@@ -1,5 +1,6 @@
 package com.dspread.pos.ui.transaction.filter;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.RadioGroup;
@@ -22,6 +23,9 @@ public class TransactionFilterActivity extends BaseActivity<ActivityTransactionF
         return BR.viewModel;
     }
 
+    String filter = "1";
+    private static final int FILTER_RECEIVE = 101;
+
     @Override
     public void initData() {
         super.initData();
@@ -35,18 +39,29 @@ public class TransactionFilterActivity extends BaseActivity<ActivityTransactionF
         binding.rgDateFilter.setOnCheckedChangeListener((group, checkedId) -> {
             switch (checkedId){
                 case R.id.rbToday:
-                    // 选中了“Today”按钮，执行相关逻辑
+                    filter = "1";
                     break;
                 case R.id.rb3days:
-                    // 选中了“3days”按钮，执行相关逻辑
+                    filter = "3";
                     break;
                 case R.id.rbAll:
-                    // 选中了“All”按钮，执行相关逻辑
+                    filter = "all";
                     break;
                 default:
-                    // 其他情况，可根据需要处理
+                    filter = "all";
                     break;
             }
         });
     }
+
+    @Override
+    public void initViewObservable() {
+        viewModel.doneEvent.observe(this, unused -> {
+            Intent intent = new Intent();
+            intent.putExtra("filter", filter);
+            setResult(FILTER_RECEIVE, intent);
+            finish();
+        });
+    }
+
 }
