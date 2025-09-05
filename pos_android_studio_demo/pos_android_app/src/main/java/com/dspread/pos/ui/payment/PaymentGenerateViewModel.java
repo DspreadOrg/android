@@ -19,9 +19,11 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import me.goldze.mvvmhabit.binding.command.BindingAction;
 import me.goldze.mvvmhabit.binding.command.BindingCommand;
+import me.goldze.mvvmhabit.bus.event.SingleLiveEvent;
 
 public class PaymentGenerateViewModel extends BaseAppViewModel {
     private final MutableLiveData<String> amount = new MutableLiveData<>();
+    public SingleLiveEvent<Boolean> paymentResultEvent = new SingleLiveEvent<>();
     private final MutableLiveData<Bitmap> qrCodeBitmap = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>();
     private final MutableLiveData<String> transactionId = new MutableLiveData<>();
@@ -47,21 +49,9 @@ public class PaymentGenerateViewModel extends BaseAppViewModel {
         return qrCodeBitmap;
     }
 
-    public BindingCommand checkPayStatus = new BindingCommand(new BindingAction() {
-        @Override
-        public void call() {
-            Log.d("PaymentGenerate", "check pay status");
-            // finish();
-           /* Intent intent = new Intent(context, PrintTicketActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            context.startActivity(intent);*/
-
-            Intent intent = new Intent(context, PaymentStatusActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            String mAmount = amount.getValue().startsWith("$") ? amount.getValue().substring(1) : amount.getValue();
-            intent.putExtra("amount", mAmount);
-            context.startActivity(intent);
-        }
+    public BindingCommand checkPayStatus = new BindingCommand(() -> {
+        paymentResultEvent.setValue(true);
+        Log.d("PaymentGenerate", "check pay status");
     });
 
 

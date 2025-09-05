@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import androidx.lifecycle.Observer;
+
 import com.dspread.pos.ui.scan.ScanCodeActivity;
 import com.dspread.pos.utils.DeviceUtils;
 import com.dspread.pos_android_app.BR;
@@ -31,13 +33,26 @@ public class PaymentGenerateActivity extends BaseActivity<ActivityPaymentGenerat
         super.initData();
         binding.setVariable(BR.viewModel, viewModel);
         amount = getIntent().getStringExtra("amount");
-        amount = "$" + DeviceUtils.convertAmountToCents(amount);
-        viewModel.setPaymentAmount(amount);
+        viewModel.setPaymentAmount("$" + DeviceUtils.convertAmountToCents(amount));
         setupObservers();
         binding.closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
+            }
+        });
+    }
+
+
+    @Override
+    public void initViewObservable() {
+        super.initViewObservable();
+        viewModel.paymentResultEvent.observe(this, flag -> {
+            if (flag) {
+                Intent intent = new Intent(PaymentGenerateActivity.this, PaymentStatusActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtra("amount", amount);
+                startActivity(intent);
             }
         });
     }

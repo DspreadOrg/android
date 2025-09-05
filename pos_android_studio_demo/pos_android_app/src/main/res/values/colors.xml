@@ -206,4 +206,7 @@
     <color name="transaction_detail_button_red">#FFD51822</color>
     <color name="transaction_detail_back_gray">#ffefefef</color>
     <color name="transaction_detail_bold_gray">#ffbcbcbc</color>
+
+    <color name="red_color_light">#FFCDD2</color>
+    <color name="gray_light">#E0E0E0</color>
 </resources>
