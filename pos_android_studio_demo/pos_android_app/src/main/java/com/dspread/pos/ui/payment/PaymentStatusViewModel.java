@@ -36,6 +36,7 @@ public class PaymentStatusViewModel extends BaseAppViewModel {
     public ObservableBoolean isSuccess = new ObservableBoolean(false);
     public ObservableField<String> amount = new ObservableField<>("");
     public ObservableBoolean isPrinting = new ObservableBoolean(false);
+    public ObservableBoolean isShouwPrinting = new ObservableBoolean(false);
 
     public PaymentStatusViewModel(@NonNull Application application) {
         super(application);

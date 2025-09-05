@@ -111,6 +111,7 @@
                 android:textColor="@color/red"
                 android:layout_marginTop="@dimen/dp_10"
                 android:background="@drawable/bg_print_receipt_button_selector"
+                android:visibility="@{viewModel.isShouwPrinting ? View.VISIBLE : View.GONE}"
                 android:enabled="@{!viewModel.isPrinting}"
                 binding:onClickCommand="@{viewModel.sendReceiptCommand}"
                 ></androidx.appcompat.widget.AppCompatButton>

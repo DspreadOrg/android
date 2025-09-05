@@ -31,6 +31,8 @@ public class PaymentStatusActivity extends BaseActivity<ActivityPaymentBinding, 
     public void initData() {
         viewModel.setmContext(this);
         amount = getIntent().getStringExtra("amount");
+        maskedPAN = getIntent().getStringExtra("maskedPAN");
+        terminalTime = getIntent().getStringExtra("terminalTime");
 
         if (amount != null && !"".equalsIgnoreCase(amount)) {
             viewModel.displayAmount(DeviceUtils.convertAmountToCents(amount));
@@ -42,6 +44,11 @@ public class PaymentStatusActivity extends BaseActivity<ActivityPaymentBinding, 
             viewModel.sendTranReceipt(map);
         } else {
             viewModel.setTransactionFailed();
+        }
+        if(DeviceUtils.isPrinterDevices()){
+            viewModel.isShouwPrinting.set(true);
+        }else {
+            viewModel.isShouwPrinting.set(false);
         }
     }
 }
