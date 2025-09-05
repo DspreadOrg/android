@@ -1,6 +1,7 @@
 package com.dspread.pos.ui.payment;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -96,11 +97,13 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
         viewModel.isOnlineSuccess.observe(this, aBoolean -> {
             if (aBoolean) {
                 if (DeviceUtils.isPrinterDevices()) {
-                    handleSendReceipt();
+//                    handleSendReceipt();
                 }
                 viewModel.setTransactionSuccess();
+                paymentStatus(amount);
             } else {
                 viewModel.setTransactionFailed("Transaction failed because of the network!");
+                 paymentStatus("");
             }
         });
     }
@@ -334,8 +337,9 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
                     Spanned receiptContent = ReceiptGenerator.generateICCReceipt(paymentModel);
                     binding.tvReceipt.setText(receiptContent);
                     if (DeviceUtils.isPrinterDevices()) {
-                        handleSendReceipt();
+//                        handleSendReceipt();
                     }
+                    paymentStatus(amount);
                 }
             }
         }
@@ -348,7 +352,9 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
             }
             if(errorMessage != null){
                 viewModel.setTransactionFailed(errorMessage);
+                viewModel.setTransactionErr(errorMessage);
             }
+
         }
 
         /**
@@ -415,42 +421,53 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
      * Convert receipt TextView to Bitmap for printing
      * @param listener Callback when bitmap is ready
      */
-    private void convertReceiptToBitmap(final BitmapReadyListener listener) {
-        binding.tvReceipt.post(new Runnable() {
-            @Override
-            public void run() {
-                if (binding.tvReceipt.getWidth() <= 0) {
-                    binding.tvReceipt.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                        @Override
-                        public void onGlobalLayout() {
-                            binding.tvReceipt.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                            Bitmap bitmap = viewModel.convertReceiptToBitmap(binding.tvReceipt);
-                            if (listener != null) {
-                                listener.onBitmapReady(bitmap);
-                            }
-                        }
-                    });
-                } else {
-                    Bitmap bitmap = viewModel.convertReceiptToBitmap(binding.tvReceipt);
-                    if (listener != null) {
-                        listener.onBitmapReady(bitmap);
-                    }
-                }
-            }
-        });
-    }
+//    private void convertReceiptToBitmap(final BitmapReadyListener listener) {
+//        binding.tvReceipt.post(new Runnable() {
+//            @Override
+//            public void run() {
+//                if (binding.tvReceipt.getWidth() <= 0) {
+//                    binding.tvReceipt.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+//                        @Override
+//                        public void onGlobalLayout() {
+//                            binding.tvReceipt.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+//                            Bitmap bitmap = viewModel.convertReceiptToBitmap(binding.tvReceipt);
+//                            if (listener != null) {
+//                                listener.onBitmapReady(bitmap);
+//                            }
+//                        }
+//                    });
+//                } else {
+//                    Bitmap bitmap = viewModel.convertReceiptToBitmap(binding.tvReceipt);
+//                    if (listener != null) {
+//                        listener.onBitmapReady(bitmap);
+//                    }
+//                }
+//            }
+//        });
+//    }
 
     /**
      * Handle receipt printing
      * Converts receipt view to bitmap and shows print button
      */
-    private void handleSendReceipt() {
-        convertReceiptToBitmap(bitmap -> {
-            if (bitmap != null) {
-                binding.btnSendReceipt.setVisibility(View.VISIBLE);
-            } else {
-                binding.btnSendReceipt.setVisibility(View.GONE);
-            }
-        });
+//    private void handleSendReceipt() {
+//        convertReceiptToBitmap(bitmap -> {
+//            if (bitmap != null) {
+//                binding.btnSendReceipt.setVisibility(View.VISIBLE);
+//            } else {
+//                binding.btnSendReceipt.setVisibility(View.GONE);
+//            }
+//        });
+//    }
+    private void paymentStatus(String amount){
+
+        Intent intent = new Intent(PaymentActivity.this, PaymentStatusActivity.class);
+        if(amount!=null &&!"".equals(amount)) {
+            intent.putExtra("amount", amount);
+        }
+        startActivity(intent);
+
+        finish();
     }
+
 }

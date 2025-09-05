@@ -432,7 +432,7 @@ public class POSManager {
             if (!msg.isEmpty()) {
                 notifyTransactionCallbacks(cb -> cb.onTransactionFailed(msg,null));
             }else {
-                notifyTransactionCallbacks(cb -> cb.onTransactionCompleted(paymentResult));
+                notifyTransactionCallbacks(cb -> cb.onTransactionResult(paymentResult));
             }
 
         }

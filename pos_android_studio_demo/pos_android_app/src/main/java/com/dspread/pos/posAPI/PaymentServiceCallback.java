@@ -68,6 +68,6 @@ public interface PaymentServiceCallback {
 
     default void onTransactionCompleted(PaymentResult result) {}
     default void onTransactionFailed(String errorMessage,String data) {}
-
+    default void onTransactionResult(PaymentResult result) {}
     default void onReturnCardInserted(){}
 }

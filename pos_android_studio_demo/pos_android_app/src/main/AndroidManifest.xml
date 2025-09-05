@@ -65,7 +65,9 @@
 
         <activity
             android:name="com.dspread.pos.ui.payment.PaymentStatusActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/StatusBarTheme"
+            />
 
         <activity
             android:name="com.dspread.pos.ui.payment.PaymentMethodActivity"

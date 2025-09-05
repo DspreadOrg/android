@@ -107,10 +107,12 @@ public class PaymentViewModel extends BaseAppViewModel {
         showResultStatus.set(true);
         isWaiting.set(false);
         transactionResult.set(message);
-        TransactionResultStatus.set(true);
+//        TransactionResultStatus.set(true);
         cardsInsertedStatus.set(false);
     }
-
+    public  void setTransactionErr(String message){
+        TransactionResultStatus.set(true);
+    }
     public void clearErrorState() {
         showResultStatus.set(true);
         showPinpad.set(true);
@@ -152,9 +154,14 @@ public class PaymentViewModel extends BaseAppViewModel {
         showPinpad.set(false);
         isSuccess.set(true);
         isWaiting.set(false);
-        showResultStatus.set(true);
-        TransactionResultStatus.set(true);
-        cardsInsertedStatus.set(false);
+//        showResultStatus.set(true);
+//        TransactionResultStatus.set(true);
+//        cardsInsertedStatus.set(true);
+        if(isIccCard){
+            cardsInsertedStatus.set(true);
+        }else{
+            showResultStatus.set(false);
+        }
     }
 
     public void startLoading(String text) {
@@ -221,31 +228,31 @@ public class PaymentViewModel extends BaseAppViewModel {
         }
     });
 
-    public Bitmap convertReceiptToBitmap(TextView receiptView) {
-        float originalTextSize = receiptView.getTextSize();
-        int originalWidth = receiptView.getWidth();
-        int originalHeight = receiptView.getHeight();
-        receiptView.setTextSize(TypedValue.COMPLEX_UNIT_PX, originalTextSize * 1.5f);
-        receiptView.measure(
-                View.MeasureSpec.makeMeasureSpec(receiptView.getWidth(), View.MeasureSpec.EXACTLY),
-                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
-        );
-
-        Bitmap bitmap = Bitmap.createBitmap(
-                receiptView.getWidth(),
-                receiptView.getMeasuredHeight(),
-                Bitmap.Config.ARGB_8888
-        );
-
-        Canvas canvas = new Canvas(bitmap);
-        canvas.drawColor(Color.WHITE);
-        receiptView.layout(0, 0, receiptView.getWidth(), receiptView.getMeasuredHeight());
-        receiptView.draw(canvas);
-        receiptView.setTextSize(TypedValue.COMPLEX_UNIT_PX, originalTextSize);
-        receiptView.layout(0, 0, originalWidth, originalHeight);
-        receiptBitmap = bitmap;
-        return bitmap;
-    }
+//    public Bitmap convertReceiptToBitmap(TextView receiptView) {
+//        float originalTextSize = receiptView.getTextSize();
+//        int originalWidth = receiptView.getWidth();
+//        int originalHeight = receiptView.getHeight();
+//        receiptView.setTextSize(TypedValue.COMPLEX_UNIT_PX, originalTextSize * 1.5f);
+//        receiptView.measure(
+//                View.MeasureSpec.makeMeasureSpec(receiptView.getWidth(), View.MeasureSpec.EXACTLY),
+//                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+//        );
+//
+//        Bitmap bitmap = Bitmap.createBitmap(
+//                receiptView.getWidth(),
+//                receiptView.getMeasuredHeight(),
+//                Bitmap.Config.ARGB_8888
+//        );
+//
+//        Canvas canvas = new Canvas(bitmap);
+//        canvas.drawColor(Color.WHITE);
+//        receiptView.layout(0, 0, receiptView.getWidth(), receiptView.getMeasuredHeight());
+//        receiptView.draw(canvas);
+//        receiptView.setTextSize(TypedValue.COMPLEX_UNIT_PX, originalTextSize);
+//        receiptView.layout(0, 0, originalWidth, originalHeight);
+//        receiptBitmap = bitmap;
+//        return bitmap;
+//    }
 
     public void requestOnlineAuth(boolean isICC, PaymentModel paymentModel) {
         AuthRequest authRequest = createAuthRequest(paymentModel);
