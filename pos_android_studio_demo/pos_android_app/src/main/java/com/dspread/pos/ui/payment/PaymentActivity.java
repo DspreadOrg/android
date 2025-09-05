@@ -60,7 +60,8 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
     private int changePinTimes;
     private boolean isPinBack = false;
     private PaymentServiceCallback paymentServiceCallback;
-
+    private  String terminalTime;
+    private String maskedPAN;
     @Override
     public int initContentView(Bundle savedInstanceState) {
         return R.layout.activity_payment;
@@ -100,10 +101,10 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
 //                    handleSendReceipt();
                 }
                 viewModel.setTransactionSuccess();
-                paymentStatus(amount);
+                paymentStatus(amount,maskedPAN,terminalTime);
             } else {
                 viewModel.setTransactionFailed("Transaction failed because of the network!");
-                 paymentStatus("");
+                paymentStatus("","","");
             }
         });
     }
@@ -149,7 +150,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
 
         @Override
         public void onRequestTime() {
-            String terminalTime = new SimpleDateFormat("yyyyMMddHHmmss").format(Calendar.getInstance().getTime());
+            terminalTime = new SimpleDateFormat("yyyyMMddHHmmss").format(Calendar.getInstance().getTime());
             TRACE.d("onRequestTime: " + terminalTime);
             POSManager.getInstance().sendTime(terminalTime);
 
@@ -327,8 +328,10 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
                 result.setAmount(amount);
                 if(QPOSService.DoTradeResult.MCR.name().equals(transType)){
                     HandleTxnsResultUtils.handleMCRResult(result, PaymentActivity.this, binding, viewModel);
+                    maskedPAN = result.getMaskedPAN();
                 }else if(QPOSService.DoTradeResult.NFC_OFFLINE.name().equals(transType)||QPOSService.DoTradeResult.NFC_ONLINE.name().equals(transType)){
                     HandleTxnsResultUtils.handleNFCResult(result, PaymentActivity.this, binding, viewModel);
+                    maskedPAN = result.getMaskedPAN();
                 }else {//iCC result
                     String content = getString(R.string.batch_data);
                     content += result.getTlv();
@@ -339,7 +342,9 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
                     if (DeviceUtils.isPrinterDevices()) {
 //                        handleSendReceipt();
                     }
-                    paymentStatus(amount);
+                    List<TLV> list = TLVParser.parse(result.getTlv());
+                    TLV tlvpan = TLVParser.searchTLV(list, "C4");
+                    paymentStatus(amount,tlvpan.value,terminalTime);
                 }
             }
         }
@@ -459,14 +464,14 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
 //            }
 //        });
 //    }
-    private void paymentStatus(String amount){
-
+    private void paymentStatus(String amount, String maskedPAN,String terminalTime){
         Intent intent = new Intent(PaymentActivity.this, PaymentStatusActivity.class);
         if(amount!=null &&!"".equals(amount)) {
             intent.putExtra("amount", amount);
+            intent.putExtra("maskedPAN",maskedPAN);
+            intent.putExtra("terminalTime",terminalTime);
         }
         startActivity(intent);
-
         finish();
     }
 

@@ -17,13 +17,18 @@ import com.dspread.pos.utils.TRACE;
 import androidx.annotation.NonNull;
 import androidx.databinding.ObservableBoolean;
 import androidx.databinding.ObservableField;
+
+import java.util.Map;
+
 import me.goldze.mvvmhabit.binding.command.BindingAction;
 import me.goldze.mvvmhabit.binding.command.BindingCommand;
 
 public class PaymentStatusViewModel extends BaseAppViewModel {
     private Context mContext;
     private Bitmap receiptBitmap;
-
+    private String terAmount;
+    private String maskedPAN;
+    private String terminalTime;
     public void setmContext(Context mContext) {
         this.mContext = mContext;
     }
@@ -48,7 +53,11 @@ public class PaymentStatusViewModel extends BaseAppViewModel {
         TRACE.d("displayAmount:"+newAmount);
         amount.set("$" + newAmount);
     }
-
+    public void sendTranReceipt(Map<String,String> map){
+        terAmount=map.get("terAmount");
+        maskedPAN=map.get("maskedPAN");
+        terminalTime=map.get("terminalTime");
+    }
     public BindingCommand continueTxnsCommand = new BindingCommand(() -> finish());
     public BindingCommand sendReceiptCommand = new BindingCommand(new BindingAction() {
         @Override
@@ -94,7 +103,11 @@ public class PaymentStatusViewModel extends BaseAppViewModel {
 
             Intent intent = new Intent(context, PrintTicketActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.putExtra("terAmount", terAmount);
+            intent.putExtra("maskedPAN",maskedPAN);
+            intent.putExtra("terminalTime",terminalTime);
             context.startActivity(intent);
+            finish();
         }
     });
 

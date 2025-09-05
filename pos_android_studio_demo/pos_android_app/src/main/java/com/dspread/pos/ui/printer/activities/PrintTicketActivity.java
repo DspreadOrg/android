@@ -24,14 +24,26 @@ import com.dspread.pos_android_app.databinding.ActivityPrinterBaseBinding;
 import com.dspread.pos_android_app.generated.callback.OnClickListener;
 import com.dspread.print.device.PrinterDevice;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+
 
 public class PrintTicketActivity extends PrinterBaseActivity<ActivityPrinterBaseBinding, PrintTicketViewModel> {
     private ActivityPrintTicketBinding contentBinding;
     private Bitmap mBitmap;
-
+    private String amount="";
+    private String maskedPAN="";
+    private String terminalTime="";
     @Override
     public void initData() {
         super.initData();
+        amount = getIntent().getStringExtra("terAmount");
+        maskedPAN = getIntent().getStringExtra("maskedPAN");
+        terminalTime = getIntent().getStringExtra("terminalTime");
         contentBinding = ActivityPrintTicketBinding.inflate(getLayoutInflater());
         contentBinding.setViewModel(viewModel);
         binding.contentContainer.addView(contentBinding.getRoot());
@@ -55,7 +67,33 @@ public class PrintTicketActivity extends PrinterBaseActivity<ActivityPrinterBase
             mBitmap.recycle();
             mBitmap = null;
         }
-        viewModel.generateReceiptBitmap();
+        Map<String,String> map = new HashMap<>();
+        if(amount!=null&&!"".equals(amount)){
+        }else{
+            amount ="";
+        }
+        map.put("terAmount", amount);
+        if(maskedPAN!=null&&!"".equals(maskedPAN)){
+        }else{
+            maskedPAN="";
+        }
+        map.put("maskedPAN",maskedPAN);
+        if(terminalTime!=null && !"".equals(terminalTime)){
+            SimpleDateFormat inputFormat = new SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault());
+            SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault());
+            try {
+                // 解析输入的日期字符串
+                Date date = inputFormat.parse(terminalTime);
+                // 格式化日期
+                terminalTime = outputFormat.format(date);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }else{
+            terminalTime="";
+        }
+        map.put("terminalTime",terminalTime);
+        viewModel.generateReceiptBitmap(map);
         viewModel.getReceiptBitmap().observe(this, bitmap -> {
             if (bitmap != null) {
                 this.mBitmap = bitmap;
@@ -73,7 +111,7 @@ public class PrintTicketActivity extends PrinterBaseActivity<ActivityPrinterBase
                 } else {
                     Toast.makeText(PrintTicketActivity.this, "Receipt not ready", Toast.LENGTH_SHORT).show();
                     // 重新生成bitmap
-                    viewModel.generateReceiptBitmap();
+                    viewModel.generateReceiptBitmap(map);
                 }
             }
         });

@@ -10,6 +10,9 @@ import com.dspread.pos.ui.printer.activities.base.BasePrinterViewModel;
 import androidx.annotation.NonNull;
 import androidx.databinding.ObservableField;
 import androidx.lifecycle.MutableLiveData;
+
+import java.util.Map;
+
 import me.goldze.mvvmhabit.binding.command.BindingCommand;
 
 
@@ -51,10 +54,9 @@ public class PrintTicketViewModel extends BasePrinterViewModel {
     public MutableLiveData<Bitmap> getReceiptBitmap() {
         return receiptBitmap;
     }
-
-    public void generateReceiptBitmap() {
+    public void generateReceiptBitmap(Map<String,String> map) {
         try {
-            Bitmap ticketBitmap = PrinterHelper.getInstance().getTicketBitmap(getApplication());
+            Bitmap ticketBitmap = PrinterHelper.getInstance().getTicketBitmap(getApplication(),map);
             receiptBitmap.postValue(ticketBitmap);
         } catch (RemoteException e) {
             throw new RuntimeException(e);

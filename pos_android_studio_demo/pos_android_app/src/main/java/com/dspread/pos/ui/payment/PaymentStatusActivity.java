@@ -9,11 +9,15 @@ import com.dspread.pos_android_app.BR;
 import com.dspread.pos_android_app.R;
 import com.dspread.pos_android_app.databinding.ActivityPaymentBinding;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import me.goldze.mvvmhabit.base.BaseActivity;
 
 public class PaymentStatusActivity extends BaseActivity<ActivityPaymentBinding, PaymentStatusViewModel> {
     private String amount;
-
+    private String maskedPAN;
+    private String terminalTime;
     @Override
     public int initContentView(Bundle bundle) {
         return R.layout.activity_paymentstatus;
@@ -27,9 +31,15 @@ public class PaymentStatusActivity extends BaseActivity<ActivityPaymentBinding, 
     public void initData() {
         viewModel.setmContext(this);
         amount = getIntent().getStringExtra("amount");
+
         if (amount != null && !"".equalsIgnoreCase(amount)) {
             viewModel.displayAmount(DeviceUtils.convertAmountToCents(amount));
             viewModel.setTransactionSuccess();
+            Map<String,String > map = new HashMap();
+            map.put("terAmount",DeviceUtils.convertAmountToCents(amount));
+            map.put("maskedPAN",maskedPAN);
+            map.put("terminalTime",terminalTime);
+            viewModel.sendTranReceipt(map);
         } else {
             viewModel.setTransactionFailed();
         }
