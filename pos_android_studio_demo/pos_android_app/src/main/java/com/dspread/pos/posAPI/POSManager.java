@@ -382,7 +382,7 @@ public class POSManager {
         @Override
         public void onRequestQposConnected() {
             connectLatch.countDown();
-
+            SPUtils.getInstance().put("device_type",posType.name());
             SPUtils.getInstance().put("isConnected",true);
             notifyConnectionCallbacks(cb -> cb.onRequestQposConnected());
         }
@@ -390,6 +390,7 @@ public class POSManager {
         @Override
         public void onRequestQposDisconnected() {
             SPUtils.getInstance().put("isConnected",false);
+            SPUtils.getInstance().put("device_type","");
             clearPosService();
             connectLatch.countDown();
             notifyConnectionCallbacks(cb -> cb.onRequestQposDisconnected());
@@ -398,6 +399,7 @@ public class POSManager {
         @Override
         public void onRequestNoQposDetected() {
             SPUtils.getInstance().put("isConnected",false);
+            SPUtils.getInstance().put("device_type","");
             clearPosService();
             connectLatch.countDown();
             notifyConnectionCallbacks(cb -> cb.onRequestNoQposDetected());
