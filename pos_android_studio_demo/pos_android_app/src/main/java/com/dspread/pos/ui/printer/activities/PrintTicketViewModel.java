@@ -67,5 +67,6 @@ public class PrintTicketViewModel extends BasePrinterViewModel {
     @Override
     public void onPrintComplete(boolean isSuccess, String status) {
         super.onPrintComplete(isSuccess, status);
+        PrinterHelper.getInstance().close();
     }
 }
