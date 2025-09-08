@@ -74,8 +74,6 @@ public class PrintTicketActivity extends PrinterBaseActivity<ActivityPrinterBase
             amount = "";
         }
         map.put("terAmount", amount);
-
-        TRACE.d("XXXXXXXXXXXXX:"+amount);
         if (maskedPAN != null && !"".equals(maskedPAN)) {
         } else {
             maskedPAN = "";
@@ -193,15 +191,15 @@ public class PrintTicketActivity extends PrinterBaseActivity<ActivityPrinterBase
     protected void onReturnPrintResult(boolean isSuccess, String status, PrinterDevice.ResultType resultType) {
         viewModel.onPrintComplete(isSuccess, status);
         if (isSuccess) {
-            dialog(PrintTicketActivity.this, "Print Successful", 3000L, true, false);
+            dialog(PrintTicketActivity.this, R.mipmap.ic_print_success, "Print Successful", 3000L, true, false);
         } else {
-            dialog(PrintTicketActivity.this, "Print Fail", 3000L, false, true);
+            dialog(PrintTicketActivity.this, R.mipmap.ic_print_fail, "Print Fail", 3000L, false, true);
 
         }
     }
 
-    private void dialog(Context mContext, String message, Long duration, boolean isShowCountdown, boolean isShowCloseButton) {
-        PrintDialogUtils.showCustomDialog(mContext, android.R.drawable.ic_dialog_info, message, duration, isShowCountdown, isShowCloseButton, false, new PrintDialogUtils.DialogDismissListener() {
+    private void dialog(Context mContext, int icon, String message, Long duration, boolean isShowCountdown, boolean isShowCloseButton) {
+        PrintDialogUtils.showCustomDialog(mContext, icon, message, duration, isShowCountdown, isShowCloseButton, false, new PrintDialogUtils.DialogDismissListener() {
             @Override
             public void onDismiss() {
                 if (isShowCloseButton) {

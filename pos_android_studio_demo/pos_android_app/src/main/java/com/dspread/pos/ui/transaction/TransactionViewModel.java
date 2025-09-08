@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.databinding.ObservableField;
 import androidx.lifecycle.MutableLiveData;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -32,7 +33,11 @@ public class TransactionViewModel extends BaseAppViewModel {
 
     public MutableLiveData<List<Transaction>> transactionList = new MutableLiveData<>();
     private RequestOnlineAuthAPI apiService;
-    private List<Transaction> paymentList;
+
+    public ObservableField<Boolean> isLoading = new ObservableField<>(false);
+    public ObservableField<Boolean> isEmpty = new ObservableField<>(false);
+    public ObservableField<Boolean> isTransactionHeader = new ObservableField<>(true);
+    public ObservableField<Boolean> isTransactionViewAll = new ObservableField<>(true);
 
     public TransactionViewModel(@NonNull Application application) {
         super(application);
@@ -40,16 +45,16 @@ public class TransactionViewModel extends BaseAppViewModel {
     }
 
     public void init() {
+        isLoading.set(true);
         requestTransactionRequest("all");
-        paymentList = new ArrayList<>();
-       /* paymentList.add(new Transaction("12/8/24", "$500.00", "4712******8415-16:07", "Paid"));
-        paymentList.add(new Transaction("15/8/24", "-$43.00", "4712******8415-14:10", "Voided"));
-        paymentList.add(new Transaction("20/8/24", "$500.00", "VISA 4712******8415-11:07", "Paid"));
-        paymentList.add(new Transaction("5/7/24", "$300.00", "4712******8415-10:07", "Paid"));
-        paymentList.add(new Transaction("10/7/24", "-$20.00", "4712******8415-09:07", "Voided"));
-        paymentList.add(new Transaction("3/9/24", "$150.00", "4712******8415-08:07", "Paid"));*/
-
     }
+
+
+    public void refreshWithFilter(String filter) {
+        isLoading.set(true);
+        requestTransactionRequest(filter);
+    }
+
 
 
     public void requestTransactionRequest(String  filter) {
@@ -59,16 +64,13 @@ public class TransactionViewModel extends BaseAppViewModel {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response -> {
+                    isLoading.set(false);
                     TRACE.i("result network rsp code=" + response.getResult());
-
-//                    JSONArray jsonArray = (JSONArray) response.getResult();
-//                    if(jsonArray.length() >0){
-//
-//                    }
                     String jsonString = JsonUtil.toJsonString(response.getResult());
                     List<Transaction> transactions = JsonParser.parseTransactionList(jsonString);
                     transactionList.setValue(transactions);
                 }, throwable -> {
+                    isLoading.set(false);
                     ToastUtils.showShort("The network is failed：" + throwable.getMessage());
                 }));
     }

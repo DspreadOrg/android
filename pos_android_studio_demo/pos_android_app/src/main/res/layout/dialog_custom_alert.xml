@@ -1,53 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="300dp"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="20dp"
     android:background="@drawable/bg_dialog_rounded"
-    android:gravity="center_horizontal">
+    android:padding="20dp">
 
-    <!-- 图标区域 -->
+    <!-- 关闭按钮 - 放在右上角 -->
     <ImageView
-        android:id="@+id/ivIcon"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
-        android:layout_marginBottom="16dp"
-        android:scaleType="centerInside"
-        android:visibility="gone"/>
-
-    <!-- 消息区域 -->
-    <TextView
-        android:id="@+id/tvMessage"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:textColor="#FF333333"
-        android:gravity="center"
-        android:lineSpacingExtra="4dp"
-        android:layout_marginBottom="12dp"/>
-
-    <!-- 倒计时区域 -->
-    <TextView
-        android:id="@+id/tvTimer"
+        android:id="@+id/btnClose"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="14sp"
-        android:textColor="#FF666666"
-        android:gravity="center"
-        android:layout_marginBottom="16dp"
-        android:visibility="gone"/>
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:src="@mipmap/ic_ptint_close"
+        android:padding="@dimen/dp_15"
+        android:visibility="gone" />
 
-    <!-- 关闭按钮 -->
-    <Button
-        android:id="@+id/btnClose"
-        android:layout_width="100dp"
-        android:layout_height="36dp"
-        android:text="关闭"
-        android:textSize="14sp"
-        android:background="@drawable/bg_button_rounded"
-        android:textColor="#FFFFFFFF"
-        android:visibility="gone"/>
+    <!-- 主内容容器 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="8dp">
 
-</LinearLayout>
+        <!-- 图标区域 -->
+        <ImageView
+            android:id="@+id/ivIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:scaleType="centerInside"
+            android:visibility="gone" />
+
+        <!-- 消息区域 -->
+        <TextView
+            android:id="@+id/tvMessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:gravity="center"
+            android:lineSpacingExtra="4dp"
+            android:textColor="#FF333333"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <!-- 倒计时区域 -->
+        <TextView
+            android:id="@+id/tvTimer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:gravity="center"
+            android:textColor="#FF666666"
+            android:textSize="14sp"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+</RelativeLayout>

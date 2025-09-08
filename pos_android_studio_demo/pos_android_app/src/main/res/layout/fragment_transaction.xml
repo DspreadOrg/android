@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
+        <import type="android.view.View" />
         <variable
             name="viewModel"
             type="com.dspread.pos.ui.transaction.TransactionViewModel" />
@@ -66,6 +66,7 @@
 
         <!-- 第二部分: 统计信息 -->
         <LinearLayout
+            android:visibility="@{viewModel.isTransactionHeader?View.VISIBLE:View.GONE}"
             android:id="@+id/ll_transaction_header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -92,6 +93,8 @@
 
 
         <LinearLayout
+            android:visibility="@{viewModel.isTransactionViewAll?View.VISIBLE:View.GONE}"
+            android:id="@+id/ll_transaction_view_all"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -124,24 +127,30 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:src="@mipmap/ic_transaction_empty"
-                android:visibility="invisible"></ImageView>
+                android:visibility="@{viewModel.isEmpty?View.VISIBLE:View.GONE}"/>
 
             <ProgressBar
                 android:id="@+id/transaction_pb"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:visibility="invisible"
+                android:visibility="@{viewModel.isLoading ? View.VISIBLE : View.GONE}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/payments_recycler"
+            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                android:id="@+id/swipe_refresh_layout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="17dp" />
+                android:layout_height="match_parent">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/payments_recycler"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="17dp" />
+
+            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
         </RelativeLayout>
 
 

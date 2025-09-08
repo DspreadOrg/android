@@ -23,9 +23,9 @@ public class PrintDialogUtils {
      * 显示自定义弹窗
      */
     public static Dialog showCustomDialog(Context context, int iconResId, String message,
-                                        long duration, boolean showCountdown,
-                                        boolean showCloseButton, boolean cancelable,
-                                        DialogDismissListener dismissListener) {
+                                          long duration, boolean showCountdown,
+                                          boolean showCloseButton, boolean cancelable,
+                                          DialogDismissListener dismissListener) {
         CustomDialog dialog = new CustomDialog(context, iconResId, message, duration,
                 showCountdown, showCloseButton, cancelable, dismissListener);
         dialog.show();
@@ -35,8 +35,8 @@ public class PrintDialogUtils {
     /**
      * 显示默认的成功弹窗
      */
-    public static Dialog showSuccessDialog(Context context, String message, 
-                                         DialogDismissListener dismissListener) {
+    public static Dialog showSuccessDialog(Context context, String message,
+                                           DialogDismissListener dismissListener) {
         return showCustomDialog(context, android.R.drawable.ic_dialog_info, message,
                 3000, true, true, false, dismissListener);
     }
@@ -59,14 +59,14 @@ public class PrintDialogUtils {
         private final boolean showCountdown;
         private final boolean showCloseButton;
         private final DialogDismissListener dismissListener;
-        
+
         private CountDownTimer countDownTimer;
         private TextView tvTimer;
-        private Button btnClose;
+        private ImageView btnClose;
 
         public CustomDialog(Context context, int iconResId, String message, long duration,
-                          boolean showCountdown, boolean showCloseButton, boolean cancelable,
-                          DialogDismissListener dismissListener) {
+                            boolean showCountdown, boolean showCloseButton, boolean cancelable,
+                            DialogDismissListener dismissListener) {
             super(context);
             this.iconResId = iconResId;
             this.message = message;
@@ -74,7 +74,7 @@ public class PrintDialogUtils {
             this.showCountdown = showCountdown;
             this.showCloseButton = showCloseButton;
             this.dismissListener = dismissListener;
-            
+
             setCancelable(cancelable);
             setCanceledOnTouchOutside(cancelable);
         }
@@ -84,10 +84,10 @@ public class PrintDialogUtils {
             super.onCreate(savedInstanceState);
             requestWindowFeature(Window.FEATURE_NO_TITLE);
             setContentView(R.layout.dialog_custom_alert);
-            
+
             initViews();
             setupWindow();
-            
+
             if (showCountdown) {
                 startCountdown();
             }
@@ -171,9 +171,9 @@ public class PrintDialogUtils {
                     countDownTimer.cancel();
                     countDownTimer = null;
                 }
-                
+
                 super.dismiss();
-                
+
                 // 回调监听器
                 if (dismissListener != null) {
                     dismissListener.onDismiss();

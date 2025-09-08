@@ -23,18 +23,23 @@ import com.dspread.pos_android_app.R;
 import com.dspread.pos_android_app.databinding.FragmentTransactionBinding;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
+import androidx.databinding.ObservableField;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 
 public class TransactionFragment extends BaseFragment<FragmentTransactionBinding, TransactionViewModel> implements TitleProviderListener {
 
+
+    private String filter = "all";
 
     @Override
     public String getTitle() {
@@ -60,21 +65,23 @@ public class TransactionFragment extends BaseFragment<FragmentTransactionBinding
     private ActivityResultLauncher<Intent> launcher;
     private static final int FILTER_RECEIVE = 101;
 
-
     @Override
     public void initData() {
         super.initData();
         // Setup recycler view
         binding.paymentsRecycler.setLayoutManager(new LinearLayoutManager(getActivity()));
         viewModel.init();
-        binding.transactionPb.setVisibility(View.VISIBLE);
         viewModel.transactionList.observe(this, new Observer<List<Transaction>>() {
             @Override
             public void onChanged(List<Transaction> transactions) {
-                binding.transactionPb.setVisibility(View.INVISIBLE);
                 cacheArrayList.clear();
                 cacheArrayList.addAll(transactions);
-                handleList(transactions);
+                if (showCategorized) {
+                    adapter.refreshAdapter(true, transactions);
+                } else {
+                    handleList(transactions);
+                }
+
             }
         });
 
@@ -82,7 +89,7 @@ public class TransactionFragment extends BaseFragment<FragmentTransactionBinding
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == FILTER_RECEIVE && result.getData() != null) {
-                        String filter = result.getData().getStringExtra("filter");
+                        filter = result.getData().getStringExtra("filter");
                         // 这里拿到 filter 字符串
                         viewModel.requestTransactionRequest(filter);
                     }
@@ -95,11 +102,11 @@ public class TransactionFragment extends BaseFragment<FragmentTransactionBinding
             public void onClick(View v) {
                 showCategorized = !showCategorized;
                 if (showCategorized) {
-                    binding.llTransactionHeader.setVisibility(View.GONE);
+                    viewModel.isTransactionHeader.set(false);
                 } else {
-                    binding.llTransactionHeader.setVisibility(View.VISIBLE);
+                    viewModel.isTransactionHeader.set(true);
                 }
-                adapter.setShowCategorized(showCategorized, paymentList);
+                adapter.setShowCategorized(showCategorized, cacheArrayList);
                 binding.viewAllText.setText(showCategorized ? "Show Less" : "View All");
             }
         });
@@ -124,8 +131,31 @@ public class TransactionFragment extends BaseFragment<FragmentTransactionBinding
                 return false;
             }
         });
+        setupSwipeRefresh();
+
     }
 
+    private void setupSwipeRefresh() {
+        // 设置下拉刷新颜色
+        binding.swipeRefreshLayout.setColorSchemeResources(
+               /* android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,*/
+                android.R.color.holo_red_light
+        );
+        // 设置下拉刷新监听器
+        binding.swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (binding.searchEditText.getText().toString().trim().isEmpty()) {
+                    viewModel.refreshWithFilter(filter);
+                } else {
+                    performSearch();
+                }
+                binding.swipeRefreshLayout.setRefreshing(false);
+            }
+        });
+    }
 
     private void performSearch() {
         String query = binding.searchEditText.getText().toString().trim();
@@ -143,11 +173,11 @@ public class TransactionFragment extends BaseFragment<FragmentTransactionBinding
             transactionsList.clear();
             hideKeyboard();
         } else {
-            TRACE.d("搜所:null null ");
             handleList(cacheArrayList);
             hideKeyboard();
         }
     }
+
     // 修复的隐藏键盘方法
     private void hideKeyboard() {
         try {
@@ -163,32 +193,39 @@ public class TransactionFragment extends BaseFragment<FragmentTransactionBinding
     private void handleList(List<Transaction> transactions) {
         this.paymentList = transactions;
         // Setup adapter\
-        if (transactions != null && transactions.size() > 0) {
-            double amount = 0;
-            for (Transaction transaction : transactions) {
-                amount += transaction.getAmount();
-            }
-            binding.paymentsAmount.setText("$" + amount);
-
-            binding.paymentsCount.setText(transactions.size() + " Payments Today");
-        }
-
-
-        if (transactions != null && transactions.size() < 1) {
-            binding.transactionIvEmpty.setVisibility(View.VISIBLE);
-        } else {
-            binding.transactionIvEmpty.setVisibility(View.GONE);
-        }
+        showTransationListUI(transactions);
 
         adapter = new PaymentsAdapter(transactions, new PaymentsAdapter.OnItemClickListener() {
             @Override
             public void OnItemClickListener(Transaction transaction) {
-                //Toast.makeText(getContext(), "item click:" + transaction.getAmount(), Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(getActivity(), TransactionDetailActivity.class);
                 intent.putExtra("transaction", (Serializable) transaction);
                 getActivity().startActivity(intent);
             }
         });
         binding.paymentsRecycler.setAdapter(adapter);
+    }
+
+    private void showTransationListUI(List<Transaction> transactions) {
+        if (transactions != null && transactions.size() > 0) {
+            double amount = 0;
+            for (Transaction transaction : transactions) {
+                amount += transaction.getAmount();
+            }
+
+            binding.paymentsAmount.setText("$" + new BigDecimal(amount).toPlainString());
+
+            binding.paymentsCount.setText(transactions.size() + " Payments Today");
+        }
+
+        if (transactions != null && transactions.size() < 1) {
+            viewModel.isEmpty.set(true);
+            viewModel.isTransactionHeader.set(false);
+            viewModel.isTransactionViewAll.set(false);
+        } else {
+            viewModel.isEmpty.set(false);
+            viewModel.isTransactionHeader.set(true);
+            viewModel.isTransactionViewAll.set(true);
+        }
     }
 }

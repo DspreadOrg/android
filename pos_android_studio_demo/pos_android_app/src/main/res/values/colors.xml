@@ -209,4 +209,8 @@
 
     <color name="red_color_light">#FFCDD2</color>
     <color name="gray_light">#E0E0E0</color>
+
+    <color name="transaction_amount_text_color">#ff030303</color>
+    <color name="positive_amount_color">#FF4CAF50</color>
+    <color name="negative_amount_color">#FFF44336</color>
 </resources>
