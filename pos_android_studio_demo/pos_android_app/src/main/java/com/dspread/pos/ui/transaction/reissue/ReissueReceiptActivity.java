@@ -7,11 +7,14 @@ import android.view.View;
 import com.dspread.pos.ui.printer.activities.PrintTicketActivity;
 import com.dspread.pos.ui.transaction.Transaction;
 import com.dspread.pos.ui.transaction.reissue.TransactionReissueReceipViewModel;
+import com.dspread.pos.utils.DeviceUtils;
 import com.dspread.pos.utils.TRACE;
 import com.dspread.pos_android_app.BR;
 import com.dspread.pos_android_app.R;
 import com.dspread.pos_android_app.databinding.ActivityReissueReceiptBinding;
 import com.dspread.pos_android_app.generated.callback.OnClickListener;
+
+import java.math.BigDecimal;
 
 import me.goldze.mvvmhabit.base.BaseActivity;
 
@@ -35,8 +38,10 @@ public class ReissueReceiptActivity extends BaseActivity<ActivityReissueReceiptB
         transaction = (Transaction) getIntent().getSerializableExtra("transaction");
 
         String amount = getIntent().getStringExtra("amount");
-        TRACE.d("amount:" + amount);
-        binding.amountText.setText("$" + amount);
+
+        String mAmount = DeviceUtils.convertAmountToCents(amount);
+        TRACE.d("mAmount:" + mAmount);
+        binding.amountText.setText("$" + mAmount);
         binding.toolbar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

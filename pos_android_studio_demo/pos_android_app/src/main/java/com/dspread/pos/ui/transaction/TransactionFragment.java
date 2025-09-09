@@ -17,6 +17,7 @@ import com.dspread.pos.TitleProviderListener;
 import com.dspread.pos.common.base.BaseFragment;
 import com.dspread.pos.ui.transaction.details.TransactionDetailActivity;
 import com.dspread.pos.ui.transaction.filter.TransactionFilterActivity;
+import com.dspread.pos.utils.DeviceUtils;
 import com.dspread.pos.utils.TRACE;
 import com.dspread.pos_android_app.BR;
 import com.dspread.pos_android_app.R;
@@ -106,7 +107,9 @@ public class TransactionFragment extends BaseFragment<FragmentTransactionBinding
                 } else {
                     viewModel.isTransactionHeader.set(true);
                 }
-                adapter.setShowCategorized(showCategorized, cacheArrayList);
+                if (adapter != null) {
+                    adapter.setShowCategorized(showCategorized, cacheArrayList);
+                }
                 binding.viewAllText.setText(showCategorized ? "Show Less" : "View All");
             }
         });
@@ -213,7 +216,10 @@ public class TransactionFragment extends BaseFragment<FragmentTransactionBinding
                 amount += transaction.getAmount();
             }
 
-            binding.paymentsAmount.setText("$" + new BigDecimal(amount).toPlainString());
+            String mAmount = DeviceUtils.convertAmountToCents(new BigDecimal(amount).toPlainString());
+
+
+            binding.paymentsAmount.setText("$" + mAmount);
 
             binding.paymentsCount.setText(transactions.size() + " Payments Today");
         }

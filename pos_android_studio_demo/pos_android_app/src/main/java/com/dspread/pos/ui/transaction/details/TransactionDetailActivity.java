@@ -6,11 +6,13 @@ import android.view.View;
 
 import com.dspread.pos.ui.transaction.Transaction;
 import com.dspread.pos.ui.transaction.reissue.ReissueReceiptActivity;
+import com.dspread.pos.utils.DeviceUtils;
 import com.dspread.pos_android_app.BR;
 import com.dspread.pos_android_app.R;
 import com.dspread.pos_android_app.databinding.ActivityTransactionDetailsBinding;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,15 +41,16 @@ public class TransactionDetailActivity extends BaseActivity<ActivityTransactionD
         binding.setVariable(BR.viewModel, viewModel);
         transaction = (Transaction) getIntent().getSerializableExtra("transaction");
         binding.transactionDate.setText(transaction.getRequestDate());
-        binding.tvAmount.setText(transaction.getAmount() + "");
+        String amount = DeviceUtils.convertAmountToCents(new BigDecimal(transaction.getAmount()).toPlainString());
+        binding.tvAmount.setText("$" + amount);
         binding.tvPayType.setText(transaction.getPayType());
         binding.tvDeviceId.setText(SPUtils.getInstance().getString("posID", ""));
-        binding.tvCardNumber.setText(transaction.getMaskPan());
+        binding.tvCardNumber.setText(transaction.getMaskPan().replaceAll("[fFXx]", "*"));
 
         if (transaction.getCardOrg().equalsIgnoreCase("visa")) {
             binding.ivCardOrganization.setImageResource(mipmapImageIds.get(0));
         }
-        if (transaction.getCardOrg().equalsIgnoreCase("master")) {
+        if (transaction.getCardOrg().equalsIgnoreCase("masterCard")) {
             binding.ivCardOrganization.setImageResource(mipmapImageIds.get(1));
         }
         if (transaction.getCardOrg().equalsIgnoreCase("amex")) {
@@ -58,6 +61,9 @@ public class TransactionDetailActivity extends BaseActivity<ActivityTransactionD
         }
         if (transaction.getCardOrg().equalsIgnoreCase("jcb")) {
             binding.ivCardOrganization.setImageResource(mipmapImageIds.get(4));
+        }
+        if (transaction.getCardOrg().equalsIgnoreCase("UnionPay")) {
+            binding.ivCardOrganization.setImageResource(mipmapImageIds.get(5));
         }
 
 
@@ -87,6 +93,6 @@ public class TransactionDetailActivity extends BaseActivity<ActivityTransactionD
         mipmapImageIds.add(R.mipmap.ic_amex);
         mipmapImageIds.add(R.mipmap.ic_discover);
         mipmapImageIds.add(R.mipmap.ic_jcb);
-
+        mipmapImageIds.add(R.mipmap.ic_unionpay);
     }
 }

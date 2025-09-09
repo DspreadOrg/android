@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.dspread.pos.ui.setting.device_config.DeviceConfigItem;
+import com.dspread.pos.utils.DeviceUtils;
 import com.dspread.pos_android_app.R;
 
 import java.math.BigDecimal;
@@ -44,6 +45,7 @@ public class PaymentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         mipmapImageIds.add(R.mipmap.ic_amex);
         mipmapImageIds.add(R.mipmap.ic_discover);
         mipmapImageIds.add(R.mipmap.ic_jcb);
+        mipmapImageIds.add(R.mipmap.ic_unionpay);
     }
 
     public void refreshAdapter(boolean showCategorized, List<Transaction> payments) {
@@ -154,13 +156,14 @@ public class PaymentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             PaymentViewHolder paymentHolder = (PaymentViewHolder) holder;
             Transaction payment = item.getPayment();
             paymentHolder.dateText.setText(payment.getRequestDate());
-            paymentHolder.amountText.setText("$" + new BigDecimal(payment.getAmount()).toPlainString());
-            paymentHolder.cardInfoText.setText(payment.getMaskPan()+" - "+payment.getRequestTime());
+            String amount = DeviceUtils.convertAmountToCents(new BigDecimal(payment.getAmount()).toPlainString());
+            paymentHolder.amountText.setText("$" + amount);
+            paymentHolder.cardInfoText.setText(payment.getMaskPan().replaceAll("[fFXx]", "*") + " - " + payment.getRequestTime());
             paymentHolder.statusText.setText(payment.getTransResult());
             if (payment.getCardOrg().equalsIgnoreCase("visa")) {
                 paymentHolder.cardIcon.setImageResource(mipmapImageIds.get(0));
             }
-            if (payment.getCardOrg().equalsIgnoreCase("master")) {
+            if (payment.getCardOrg().equalsIgnoreCase("masterCard")) {
                 paymentHolder.cardIcon.setImageResource(mipmapImageIds.get(1));
             }
             if (payment.getCardOrg().equalsIgnoreCase("amex")) {
@@ -171,6 +174,9 @@ public class PaymentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }
             if (payment.getCardOrg().equalsIgnoreCase("jcb")) {
                 paymentHolder.cardIcon.setImageResource(mipmapImageIds.get(4));
+            }
+            if (payment.getCardOrg().equalsIgnoreCase("UnionPay")) {
+                paymentHolder.cardIcon.setImageResource(mipmapImageIds.get(5));
             }
 
             // Set amount color based on value
