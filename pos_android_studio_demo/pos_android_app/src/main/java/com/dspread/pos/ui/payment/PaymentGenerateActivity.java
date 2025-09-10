@@ -31,6 +31,7 @@ public class PaymentGenerateActivity extends BaseActivity<ActivityPaymentGenerat
     @Override
     public void initData() {
         super.initData();
+        viewModel.setContext(this);
         binding.setVariable(BR.viewModel, viewModel);
         amount = getIntent().getStringExtra("amount");
         viewModel.setPaymentAmount("$" + DeviceUtils.convertAmountToCents(amount));
