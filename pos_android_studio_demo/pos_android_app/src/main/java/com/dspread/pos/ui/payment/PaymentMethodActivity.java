@@ -44,6 +44,7 @@ public class PaymentMethodActivity extends BaseActivity<ActivityPaymentMetholdBi
         amount = getIntent().getStringExtra("amount");
         deviceAddress = getIntent().getStringExtra("deviceAddress");
         binding.setVariable(BR.viewModel, viewModel);
+        binding.paymentMethodsLayout.setViewModel(viewModel);
         viewModel.getSelectedPaymentMethod().observe(this, methodIndex -> {
             if (methodIndex != null) {
                 handlePaymentMethodSelection(methodIndex);
