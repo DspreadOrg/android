@@ -1,3 +1,10 @@
+## [7.0.2](https://github.com/DspreadOrg/android/compare/v7.0.1...v7.0.2) (2025-09-11)
+
+
+### Bug Fixes
+
+* update printerSDK version and update version is 7.0.2 ([b8ee722](https://github.com/DspreadOrg/android/commit/b8ee722a6feda95b9ca4edd0d132b48219eed1fc))
+
 ## [7.0.1](https://github.com/DspreadOrg/android/compare/v7.0.0...v7.0.1) (2025-08-29)
 
 
