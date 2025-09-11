@@ -30,125 +30,134 @@ import java.util.Locale;
  */
 public class DeviceUtils {
 
-        /**
-         * Get the current mobile system language。
-         *
-         * @return Return the current system language. For example, if the current setting is "Chinese-China", return "zh-CN"
-         */
-        public static String getSystemLanguage() {
-            return Locale.getDefault().getLanguage();
-        }
+    /**
+     * Get the current mobile system language。
+     *
+     * @return Return the current system language. For example, if the current setting is "Chinese-China", return "zh-CN"
+     */
+    public static String getSystemLanguage() {
+        return Locale.getDefault().getLanguage();
+    }
 
-        /**
-         * Retrieve the list of languages (Locale list) on the current system
-         *
-         * @return  Lists of languages
-         */
-        public static Locale[] getSystemLanguageList() {
-            return Locale.getAvailableLocales();
-        }
+    /**
+     * Retrieve the list of languages (Locale list) on the current system
+     *
+     * @return Lists of languages
+     */
+    public static Locale[] getSystemLanguageList() {
+        return Locale.getAvailableLocales();
+    }
 
-        /**
-         * obtain androidId
-         * @return
-         */
-        public static String getAndroidId(Context context) {
-            return Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
-        }
+    /**
+     * obtain androidId
+     *
+     * @return
+     */
+    public static String getAndroidId(Context context) {
+        return Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+    }
 
-        /**
-         * Is the camera available
-         *
-         * @return
-         */
-        public static boolean isSupportCamera(Context context) {
-            PackageManager packageManager = context.getPackageManager();
-            return packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY);
-        }
+    /**
+     * Is the camera available
+     *
+     * @return
+     */
+    public static boolean isSupportCamera(Context context) {
+        PackageManager packageManager = context.getPackageManager();
+        return packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY);
+    }
 
-        /**
-         * Obtain mobile phone manufacturers
-         *  HuaWei
-         * @return Mobile phone manufacturers
-         */
-        public static String getPhoneBrand() {
-            return Build.BRAND;
-        }
+    /**
+     * Obtain mobile phone manufacturers
+     * HuaWei
+     *
+     * @return Mobile phone manufacturers
+     */
+    public static String getPhoneBrand() {
+        return Build.BRAND;
+    }
 
-        /**
-         * Get phone model
-         * @return Mobile phone model
-         */
-        public static String getPhoneModel() {
-            return Build.MODEL;
-        }
+    /**
+     * Get phone model
+     *
+     * @return Mobile phone model
+     */
+    public static String getPhoneModel() {
+        return Build.MODEL;
+    }
 
-        /**
-         * Get the current mobile system version number
-         * Android     10
-         * @return System Version Number
-         */
-        public static String getVersionRelease() {
-            return Build.VERSION.RELEASE;
-        }
+    /**
+     * Get the current mobile system version number
+     * Android     10
+     *
+     * @return System Version Number
+     */
+    public static String getVersionRelease() {
+        return Build.VERSION.RELEASE;
+    }
 
-        /**
-         * Get the current mobile device name
-         * Unified device model, not the device name in 'About Mobile'
-         * @return device name
-         */
-        public static String getDeviceName() {
-            return Build.DEVICE;
-        }
+    /**
+     * Get the current mobile device name
+     * Unified device model, not the device name in 'About Mobile'
+     *
+     * @return device name
+     */
+    public static String getDeviceName() {
+        return Build.DEVICE;
+    }
 
-        /**
-         * HUAWEI HWELE ELE-AL00 10
-         * @return
-         */
-        public static String getPhoneDetail() {
-            return "Brand:"+DeviceUtils.getPhoneBrand() + " || Name:" + DeviceUtils.getDeviceName() + " || Model:" + DeviceUtils.getPhoneModel() + " || Version:" + DeviceUtils.getVersionRelease();
-        }
+    /**
+     * HUAWEI HWELE ELE-AL00 10
+     *
+     * @return
+     */
+    public static String getPhoneDetail() {
+        return "Brand:" + DeviceUtils.getPhoneBrand() + " || Name:" + DeviceUtils.getDeviceName() + " || Model:" + DeviceUtils.getPhoneModel() + " || Version:" + DeviceUtils.getVersionRelease();
+    }
 
-        /**
-         * Get the name of the phone motherboard
-         *
-         * @return  Motherboard name
-         */
-        public static String getDeviceBoard() {
-            return Build.BOARD;
-        }
+    /**
+     * Get the name of the phone motherboard
+     *
+     * @return Motherboard name
+     */
+    public static String getDeviceBoard() {
+        return Build.BOARD;
+    }
 
 
-        public static boolean isSmartDevices(){
-            if("D20".equals(Build.MODEL)||"D30".equals(Build.MODEL)||"D50".equals(Build.MODEL) ||"D60".equals(Build.MODEL)
-                    ||"D70".equals(Build.MODEL)||"D30M".equals(Build.MODEL)||"S10".equals(Build.MODEL)
-            ||"D80".equals(Build.MODEL)||"D80K".equals(Build.MODEL)){
-                return true;
-            }
-            return false;
-        }
+    public static boolean isSmartDevices() {
 
-    public static boolean isPrinterDevices(){
-        if("D30".equals(Build.MODEL)||"D60".equals(Build.MODEL)
-                ||"D70".equals(Build.MODEL)||"D30M".equals(Build.MODEL) || "D80".equals(Build.MODEL)||"D80K".equals(Build.MODEL)){
+        if ("D20".equals(Build.MODEL) || "D30".equals(Build.MODEL) || "D50".equals(Build.MODEL) || "D60".equals(Build.MODEL)
+                || "D70".equals(Build.MODEL) || "D30M".equals(Build.MODEL) || "S10".equals(Build.MODEL)
+                || "D80".equals(Build.MODEL) || "D80K".equals(Build.MODEL) || "M60".equals(Build.MODEL) || "M20".equals(Build.MODEL) || "M70".equals(Build.MODEL)) {
             return true;
         }
         return false;
     }
-        /**
-         * Obtain the name of the mobile phone manufacturer
-         * HuaWei
-         * @return  Mobile phone manufacturer name
-         */
-        public static String getDeviceManufacturer() {
-            return Build.MANUFACTURER;
-        }
 
-        public static String getDevieCountry(Context context){
-            TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-            String code = telephonyManager.getNetworkCountryIso();
-            return code;
+    public static boolean isPrinterDevices() {
+        if ("D30".equals(Build.MODEL) || "D60".equals(Build.MODEL)
+                || "D70".equals(Build.MODEL) || "D30M".equals(Build.MODEL) || "D80".equals(Build.MODEL) || "D80K".equals(Build.MODEL) || "M60".equals(Build.MODEL) || "M20".equals(Build.MODEL) || "M70".equals(Build.MODEL)) {
+            return true;
         }
+        return false;
+    }
+
+    /**
+     * Obtain the name of the mobile phone manufacturer
+     * HuaWei
+     *
+     * @return Mobile phone manufacturer name
+     */
+    public static String getDeviceManufacturer() {
+        return Build.MANUFACTURER;
+    }
+
+    public static String getDevieCountry(Context context) {
+        TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+        String code = telephonyManager.getNetworkCountryIso();
+        return code;
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public static Context getGlobalApplicationContext() {
@@ -180,8 +189,8 @@ public class DeviceUtils {
         }
     }
 
-    public static POS_TYPE getDevicePosType(String deviceTypeName){
-        if(deviceTypeName.equals(POS_TYPE.UART.name())){
+    public static POS_TYPE getDevicePosType(String deviceTypeName) {
+        if (deviceTypeName.equals(POS_TYPE.UART.name())) {
             return POS_TYPE.UART;
         } else if (deviceTypeName.equals(POS_TYPE.USB.name())) {
             return POS_TYPE.USB;
