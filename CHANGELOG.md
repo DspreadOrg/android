@@ -1,3 +1,10 @@
+## [7.0.3](https://github.com/DspreadOrg/android/compare/v7.0.2...v7.0.3) (2025-09-12)
+
+
+### Bug Fixes
+
+* update transaction SDK 7.6.7, fix pin block issue, update demo version 7.0.3 ([7b5249c](https://github.com/DspreadOrg/android/commit/7b5249cec3f699fdb11bdad62689433045306f67))
+
 ## [7.0.2](https://github.com/DspreadOrg/android/compare/v7.0.1...v7.0.2) (2025-09-11)
 
 
