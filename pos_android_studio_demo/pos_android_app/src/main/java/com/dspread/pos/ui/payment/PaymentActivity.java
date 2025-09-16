@@ -89,7 +89,27 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
         amount = getIntent().getStringExtra("amount");
         deviceAddress = getIntent().getStringExtra("deviceAddress");
         viewModel.displayAmount(DeviceUtils.convertAmountToCents(amount));//ui
+        
+        setupAnimationBasedOnDeviceModel();
+        
         startTransaction();
+    }
+    
+    /**
+     * Dynamically set Lottie animations according to the device model
+     */
+    private void setupAnimationBasedOnDeviceModel() {
+        String deviceModel = DeviceUtils.getPhoneModel();
+        TRACE.d("model:"+deviceModel);
+        if ("D80".equals(deviceModel)) {
+            binding.animationView.setAnimation("D80_checkCard.json");
+            binding.animationView.setImageAssetsFolder("D80_images/");
+        } else {
+            binding.animationView.setAnimation("D30_checkCard.json");
+            binding.animationView.setImageAssetsFolder("D30_images/");
+        }
+        binding.animationView.loop(true);
+        binding.animationView.playAnimation();
     }
 
     @Override
