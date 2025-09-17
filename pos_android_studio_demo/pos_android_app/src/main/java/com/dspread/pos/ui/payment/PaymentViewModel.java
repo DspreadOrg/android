@@ -21,6 +21,7 @@ import com.dspread.pos.common.http.api.RequestOnlineAuthAPI;
 import com.dspread.pos.common.http.model.AuthRequest;
 import com.dspread.pos.posAPI.POSManager;
 import com.dspread.pos.printerAPI.PrinterHelper;
+import com.dspread.pos.utils.DeviceUtils;
 import com.dspread.pos.utils.DialogUtils;
 import com.dspread.pos.utils.TLV;
 import com.dspread.pos.utils.TLVParser;
@@ -297,6 +298,6 @@ public class PaymentViewModel extends BaseAppViewModel {
         String cardOrg = paymentModel.getCardOrg();
         String payType = "Card";
         String transResult = "Paid";
-        return new AuthRequest(deviceSn, amount, maskPan, cardOrg, transactionType, payType,transResult);
+        return new AuthRequest(deviceSn, amount, maskPan, cardOrg, transactionType, payType,transResult, DeviceUtils.getDeviceDate(),DeviceUtils.getDeviceTime());
     }
 }

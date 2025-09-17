@@ -19,6 +19,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.Locale;
 
@@ -31,6 +33,7 @@ import java.util.Locale;
  */
 public class DeviceUtils {
 
+    private static Date currentDate;
         /**
          * Get the current mobile system language。
          *
@@ -207,4 +210,20 @@ public class DeviceUtils {
 
     public static final String UART_AIDL_SERVICE_APP_PACKAGE_NAME = "com.dspread.sdkservice";//新架构的service包名
 
+    public static String getDeviceDate(){
+        currentDate = new Date();
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+
+        // 2023-11-07
+        return dateFormat.format(currentDate);
+    }
+
+    public static String getDeviceTime(){
+        if(currentDate == null){
+            currentDate = new Date();
+        }
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
+        return timeFormat.format(currentDate);
+    }
 }

@@ -24,8 +24,14 @@ public class AuthRequest {
 
     @SerializedName("transResult")
     private String transResult;
+
+    @SerializedName("transactionDate")
+    private String transactionDate;
+    @SerializedName("transactionTime")
+    private String transactionTime;
+
     public AuthRequest(String deviceSn, String amount, String maskPan,
-                       String cardOrg, String transactionType, String payType,String transResult) {
+                       String cardOrg, String transactionType, String payType,String transResult,String transactionDate, String transactionTime) {
         this.deviceSn = deviceSn;
         this.amount = amount;
         this.maskPan = maskPan;
@@ -33,6 +39,8 @@ public class AuthRequest {
         this.transactionType = transactionType;
         this.payType = payType;
         this.transResult = transResult;
+        this.transactionDate = transactionDate;
+        this.transactionTime = transactionTime;
     }
 
     // Getter方法
@@ -45,5 +53,13 @@ public class AuthRequest {
 
     public String getTransResult() {
         return transResult;
+    }
+
+    public String getTransactionDate() {
+        return transactionDate;
+    }
+
+    public String getTransactionTime() {
+        return transactionTime;
     }
 }
