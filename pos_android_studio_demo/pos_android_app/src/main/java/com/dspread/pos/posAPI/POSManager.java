@@ -94,7 +94,7 @@ public class POSManager {
         // start connect
         connect(deviceAddress);
         try {
-            boolean waitSuccess = connectLatch.await(5, TimeUnit.SECONDS);
+            boolean waitSuccess = connectLatch.await(30, TimeUnit.SECONDS);
             if (!waitSuccess) {
                 TRACE.i("Connection timeout");
             }
@@ -200,20 +200,16 @@ public class POSManager {
         }
 
         int currencyCode = SPUtils.getInstance().getInt("currencyCode",156);
-        if(pos !=null) {
             pos.setCardTradeMode(getCardTradeMode());
             pos.setAmount(amount, "", String.valueOf(currencyCode), getTransType());
             pos.doTrade(60);
-        }
     }
 
     public void getDeviceId(){
-        if(pos !=null) {
             Hashtable<String, Object> posIdTable = pos.syncGetQposId(5);
             String posId = posIdTable.get("posId") == null ? "" : (String) posIdTable.get("posId");
             SPUtils.getInstance().put("posID", posId);
             TRACE.i("posid :" + SPUtils.getInstance().getString("posID"));
-        }
     }
 
     /**
