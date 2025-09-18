@@ -200,16 +200,20 @@ public class POSManager {
         }
 
         int currencyCode = SPUtils.getInstance().getInt("currencyCode",156);
-        pos.setCardTradeMode(getCardTradeMode());
-        pos.setAmount(amount,"",String.valueOf(currencyCode),getTransType());
-        pos.doTrade(60);
+        if(pos !=null) {
+            pos.setCardTradeMode(getCardTradeMode());
+            pos.setAmount(amount, "", String.valueOf(currencyCode), getTransType());
+            pos.doTrade(60);
+        }
     }
 
     public void getDeviceId(){
-        Hashtable<String, Object> posIdTable = pos.syncGetQposId(5);
-        String posId = posIdTable.get("posId") == null ? "" : (String) posIdTable.get("posId");
-        SPUtils.getInstance().put("posID",posId);
-        TRACE.i("posid :" + SPUtils.getInstance().getString("posID"));
+        if(pos !=null) {
+            Hashtable<String, Object> posIdTable = pos.syncGetQposId(5);
+            String posId = posIdTable.get("posId") == null ? "" : (String) posIdTable.get("posId");
+            SPUtils.getInstance().put("posID", posId);
+            TRACE.i("posid :" + SPUtils.getInstance().getString("posID"));
+        }
     }
 
     /**
