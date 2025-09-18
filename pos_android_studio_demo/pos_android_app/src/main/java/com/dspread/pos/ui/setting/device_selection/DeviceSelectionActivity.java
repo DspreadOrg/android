@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.hardware.usb.UsbDevice;
 import android.location.LocationManager;
 import android.os.Build;
@@ -25,6 +26,7 @@ import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -45,7 +47,7 @@ import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.utils.SPUtils;
 import me.goldze.mvvmhabit.utils.ToastUtils;
 
-public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectionBinding, DeviceSelectionViewModel>{
+public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectionBinding, DeviceSelectionViewModel> {
 
     // Result constant
     public static final String EXTRA_DEVICE_NAME = "device_name";
@@ -124,7 +126,7 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
         viewModel.startScanBluetoothEvent.observe(this, new Observer<POS_TYPE>() {
             @Override
             public void onChanged(POS_TYPE posType) {
-                if(!initBluetooth()){
+                if (!initBluetooth()) {
                     return;
                 }
                 currentPOSType = posType;
@@ -149,8 +151,8 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
             if (bluetoothDevicesDialog != null && bluetoothDevicesDialog.isShowing()) {
                 bluetoothDevicesDialog.dismiss();
             }
-            SPUtils.getInstance().put("device_type",POS_TYPE.BLUETOOTH.name());
-            SPUtils.getInstance().put("deviceAddress",device.getAddress());
+            SPUtils.getInstance().put("device_type", POS_TYPE.BLUETOOTH.name());
+            SPUtils.getInstance().put("deviceAddress", device.getAddress());
             finish();
         });
         recyclerView.setAdapter(bluetoothDeviceAdapter);
@@ -172,9 +174,9 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
         // If it's not a Bluetooth connection, return the result directly
         if (posType == POS_TYPE.BLUETOOTH) {
             resultIntent.putExtra(EXTRA_DEVICE_NAME, viewModel.bluetoothName.get());
-            SPUtils.getInstance().put("device_name",viewModel.bluetoothAddress.get());
+            SPUtils.getInstance().put("device_name", viewModel.bluetoothAddress.get());
         }
-        SPUtils.getInstance().put("device_type",posType.name());
+        SPUtils.getInstance().put("device_type", posType.name());
         resultIntent.putExtra(EXTRA_CONNECTION_TYPE, posType.name());
         // Set the result and close it Activity
         setResult(Activity.RESULT_OK, resultIntent);
@@ -271,7 +273,7 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
             } catch (SecurityException e) {
                 Toast.makeText(this, "Please open the bluetooth in device Setting", Toast.LENGTH_LONG).show();
             }
-        }else {
+        } else {
             bluetoothAdapter.startDiscovery();
         }
     }
@@ -282,7 +284,7 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
         }
         USBClass usb = new USBClass();
         ArrayList<String> deviceList = usb.GetUSBDevices(getApplication());
-        if(deviceList != null){
+        if (deviceList != null) {
             openUsbDeviceDialog(deviceList);
         }
         usb.setUsbPermissionListener(new USBClass.UsbPermissionListener() {
@@ -302,11 +304,11 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
 
     }
 
-    private void openUsbDeviceDialog(ArrayList<String> deviceList){
+    private void openUsbDeviceDialog(ArrayList<String> deviceList) {
         final CharSequence[] items = deviceList.toArray(new CharSequence[deviceList.size()]);
         if (items.length == 1) {
             String selectedDevice = (String) items[0];
-            SPUtils.getInstance().put("deviceAddress",selectedDevice);
+            SPUtils.getInstance().put("deviceAddress", selectedDevice);
         } else {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Select a Reader");
@@ -324,7 +326,7 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
                 if (items.length > item) {
                     String selectedDevice = items[item].toString();
                     dialog.dismiss();
-                    SPUtils.getInstance().put("deviceAddress",selectedDevice);
+                    SPUtils.getInstance().put("deviceAddress", selectedDevice);
                     finish();
                 }
             });
@@ -348,6 +350,10 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
         unregisterReceiver(receiver);
         // 停止扫描
         if (bluetoothAdapter != null) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
+
+                return;
+            }
             bluetoothAdapter.cancelDiscovery();
         }
     }
