@@ -68,6 +68,8 @@ public class TransactionViewModel extends BaseAppViewModel {
                     TRACE.i("result network rsp code=" + response.getResult());
                     String jsonString = JsonUtil.toJsonString(response.getResult());
                     List<Transaction> transactions = JsonParser.parseTransactionList(jsonString);
+
+
                     transactionList.setValue(transactions);
                 }, throwable -> {
                     isLoading.set(false);

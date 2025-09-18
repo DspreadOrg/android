@@ -38,8 +38,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 
 public class TransactionFragment extends BaseFragment<FragmentTransactionBinding, TransactionViewModel> implements TitleProviderListener {
-
-
     private String filter = "all";
 
     @Override
@@ -75,6 +73,7 @@ public class TransactionFragment extends BaseFragment<FragmentTransactionBinding
         viewModel.transactionList.observe(this, new Observer<List<Transaction>>() {
             @Override
             public void onChanged(List<Transaction> transactions) {
+                TransactionSorter.sortTransactions(transactions);
                 cacheArrayList.clear();
                 cacheArrayList.addAll(transactions);
                 if (showCategorized) {

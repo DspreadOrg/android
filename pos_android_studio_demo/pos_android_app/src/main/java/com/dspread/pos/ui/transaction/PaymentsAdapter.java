@@ -65,7 +65,7 @@ public class PaymentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
             // 分组支付记录按月份并计算总金额
             for (Transaction payment : payments) {
-                String date = payment.getRequestDate();
+                String date = payment.getTransactionDate();
                 String month = extractMonthFromDate(date);
 
                 if (!paymentsByMonth.containsKey(month)) {
@@ -155,10 +155,10 @@ public class PaymentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         } else if (holder instanceof PaymentViewHolder) {
             PaymentViewHolder paymentHolder = (PaymentViewHolder) holder;
             Transaction payment = item.getPayment();
-            paymentHolder.dateText.setText(payment.getRequestDate());
+            paymentHolder.dateText.setText(payment.getTransactionDate());
             String amount = DeviceUtils.convertAmountToCents(new BigDecimal(payment.getAmount()).toPlainString());
             paymentHolder.amountText.setText("$" + amount);
-            paymentHolder.cardInfoText.setText(payment.getMaskPan().replaceAll("[fFXx]", "*") + " - " + payment.getRequestTime());
+            paymentHolder.cardInfoText.setText(payment.getMaskPan().replaceAll("[fFXx]", "*") + " - " + payment.getTransactionTime());
             paymentHolder.statusText.setText(payment.getTransResult());
             if (payment.getCardOrg().equalsIgnoreCase("visa")) {
                 paymentHolder.cardIcon.setImageResource(mipmapImageIds.get(0));

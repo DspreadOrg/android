@@ -42,6 +42,12 @@ public class ReissueReceiptActivity extends BaseActivity<ActivityReissueReceiptB
         String mAmount = DeviceUtils.convertAmountToCents(amount);
         TRACE.d("mAmount:" + mAmount);
         binding.amountText.setText("$" + mAmount);
+
+        if(DeviceUtils.isPrinterDevices()){
+            binding.printButton.setVisibility(View.VISIBLE);
+        }else {
+            binding.printButton.setVisibility(View.GONE);
+        }
         binding.toolbar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -56,7 +62,7 @@ public class ReissueReceiptActivity extends BaseActivity<ActivityReissueReceiptB
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.putExtra("terAmount", transaction.getAmount()+"");
                 intent.putExtra("maskedPAN", transaction.getMaskPan());
-                intent.putExtra("terminalTime", transaction.getRequestDate());
+                intent.putExtra("terminalTime", transaction.getTransactionDate());
                 ReissueReceiptActivity.this.startActivity(intent);
 
             }
