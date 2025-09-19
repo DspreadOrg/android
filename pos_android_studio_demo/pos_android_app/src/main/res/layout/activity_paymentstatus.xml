@@ -60,6 +60,8 @@
             android:textColor="@color/black"
             android:visibility="@{viewModel.isSuccess ? View.VISIBLE : View.GONE}"
             android:text="@{viewModel.amount}"
+            android:autoSizeTextType="uniform"
+            android:maxLines="1"
             android:textSize="40dp"/>
         <LinearLayout
             android:layout_width="match_parent"

@@ -26,7 +26,7 @@
                 android:layout_weight="1"
                 android:visibility="@{viewModel.showResultStatus ? View.GONE : View.VISIBLE}">
 
-                <FrameLayout
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                    >
@@ -34,9 +34,10 @@
                     <!-- 原有 LinearLayout 内容（总金额、提示文字、设备图片等） -->
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:orientation="vertical"
                         android:gravity="center"
+                        android:layout_below="@+id/iv_close_black"
                         >
 
                         <TextView
@@ -52,6 +53,8 @@
                             android:text="@{viewModel.amount}"
                             android:textSize="44sp"
                             android:textStyle="bold"
+                            android:autoSizeTextType="uniform"
+                            android:maxLines="1"
                             android:textColor="@color/text_color" />
 
                         <TextView
@@ -67,15 +70,17 @@
 
                     <!-- 右上角的“×”图标 -->
                     <ImageView
+                        android:id="@+id/iv_close_black"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:padding="16dp"
                         android:src="@mipmap/btn_close_black"
-                        android:layout_gravity="top|end"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentRight="true"
                         android:layout_marginTop="16dp"
                         binding:onClickCommand="@{viewModel.cancleTxnsCommand}"/>
 
-                </FrameLayout>
+                </RelativeLayout>
                 <com.airbnb.lottie.LottieAnimationView
                     android:id="@+id/animation_view"
                     android:layout_width="wrap_content"
@@ -140,7 +145,7 @@
                 android:visibility="@{viewModel.cardsInsertedStatus ? View.VISIBLE : View.GONE}"
                 >
 
-                <FrameLayout
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
@@ -148,11 +153,11 @@
 
                     <!-- 原有 LinearLayout 内容（总金额、提示文字、设备图片等） -->
                     <LinearLayout
+                        android:layout_below="@+id/iv_btn_close_black"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:layout_marginTop="15dp"
-                          android:gravity="center"
+                        android:gravity="center"
                         >
 
                         <TextView
@@ -168,6 +173,8 @@
                             android:text="@{viewModel.amount}"
                             android:textSize="44sp"
                             android:textStyle="bold"
+                            android:autoSizeTextType="uniform"
+                            android:maxLines="1"
                             android:textColor="@color/text_color" />
 
                         <!-- 其他视图（如设备图片、支付方式图标等） -->
@@ -176,14 +183,16 @@
 
                     <!-- 右上角的“×”图标 -->
                     <ImageView
+                        android:id="@+id/iv_btn_close_black"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:padding="16dp"
                         android:src="@mipmap/btn_close_black"
-                        android:layout_gravity="top|end"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentRight="true"
                         binding:onClickCommand="@{viewModel.cancleTxnsCommand}"/>
 
-                </FrameLayout>
+                </RelativeLayout>
                 <com.airbnb.lottie.LottieAnimationView
 
                     android:layout_width="wrap_content"

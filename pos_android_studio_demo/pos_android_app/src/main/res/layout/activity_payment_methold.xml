@@ -59,6 +59,8 @@
                 android:text="@{viewModel.totalAmount}"
                 android:textColor="#ff030303"
                 android:textSize="44sp"
+                android:autoSizeTextType="uniform"
+                android:maxLines="1"
                 android:textStyle="bold" />
 
         </LinearLayout>
