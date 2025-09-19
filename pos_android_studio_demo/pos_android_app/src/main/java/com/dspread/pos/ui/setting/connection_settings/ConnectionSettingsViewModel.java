@@ -126,15 +126,16 @@ public class ConnectionSettingsViewModel extends BaseViewModel {
     public BindingCommand<Boolean> toggleDeviceCommand = new BindingCommand<>(isChecked -> {
         deviceConnected.set(isChecked);
         String deviceType = SPUtils.getInstance().getString("device_type", "");
-        if (!"".equals(deviceType)) {
-            if (isChecked) {
-                selectDeviceEvent.call();
-            } else {
+        if (isChecked) {
+            selectDeviceEvent.call();
+        } else {
+            if (!"".equals(deviceType)) {
                 POSManager.getInstance().close();
-                SPUtils.getInstance().put("device_type","");
-                updateDeviceName(getApplication().getString(R.string.no_device));
             }
+            SPUtils.getInstance().put("device_type","");
+            updateDeviceName(getApplication().getString(R.string.no_device));
         }
+
         saveSettings();
     });
 

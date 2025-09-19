@@ -115,7 +115,7 @@ public class POSManager {
                 }else {
                     posType = POS_TYPE.USB;
                     UsbDevice usbDevice = USBClass.getMdevices().get(deviceAddress);
-                    initMode(QPOSService.CommunicationMode.USB);
+                    initMode(QPOSService.CommunicationMode.USB_OTG_CDC_ACM);
                     pos.openUsb(usbDevice);
                 }
             }else {

@@ -88,8 +88,9 @@ public class DeviceSelectionViewModel extends BaseViewModel {
                 selectedIndex.setValue(1);
                 SPUtils.getInstance().put("device_type","UART");
                 finish();
-            }else  if(connectionMethods[2].equals(radioText)){
+            }else if(connectionMethods[2].equals(radioText)){
                 selectedIndex.setValue(2);
+                showUsbDeviceDialogEvent.call();
                 SPUtils.getInstance().put("device_type","USB");
             }else {
                 selectedIndex.setValue(-1);
