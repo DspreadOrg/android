@@ -398,7 +398,8 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
             paymentModel.setAmount(amount);
             List<TLV> tlvList = TLVParser.parse(tlv);
             TLV cardNoTlv = TLVParser.searchTLV(tlvList, "C4");
-            String cardNo = cardNoTlv ==null?"":cardNoTlv.value;
+            String cardNo = cardNoTlv == null?"":cardNoTlv.value;
+            cardNo = cardNo.substring(0,cardNo.length()-1);
             paymentModel.setCardNo(cardNo);
             paymentModel.setCardOrg(AdvancedBinDetector.detectCardType(cardNo).getDisplayName());
             viewModel.requestOnlineAuth(true, paymentModel);
