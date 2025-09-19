@@ -26,7 +26,7 @@
                 android:layout_height="?attr/actionBarSize"
                 android:background="@color/white"
                 app:navigationIcon="@mipmap/ic_back"
-                app:title="Transaction Details"
+                app:title="Filter"
                 app:titleTextColor="@color/black" />
         </com.google.android.material.appbar.AppBarLayout>
 
