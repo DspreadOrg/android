@@ -6,6 +6,7 @@ import android.text.method.LinkMovementMethod;
 
 import com.dspread.pos.posAPI.POSManager;
 import com.dspread.pos.posAPI.PaymentResult;
+import com.dspread.pos.ui.payment.PaymentModel;
 import com.dspread.pos.ui.payment.PaymentViewModel;
 import com.dspread.pos_android_app.R;
 import com.dspread.pos_android_app.databinding.ActivityPaymentBinding;
@@ -27,9 +28,12 @@ public class HandleTxnsResultUtils {
         String tlv = batchData.get("tlv");
         TRACE.i("NFC Batch data: " + tlv);
 
-        String requestTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
-        String data = generateTransactionLog(result.getEncTracks() + tlv, requestTime,context);
-        viewModel.requestOnlineAuth(false, data);
+        PaymentModel model = new PaymentModel();
+        model.setAmount(result.getAmount());
+        model.setCardNo(result.getMaskedPAN());
+        model.setCardOrg(AdvancedBinDetector.detectCardType(result.getMaskedPAN()).getDisplayName());
+        viewModel.startLoading("processing...");
+        viewModel.requestOnlineAuth(false, model);
     }
 
     public static void handleMCRResult(PaymentResult result,Context context, ActivityPaymentBinding binding, PaymentViewModel viewModel) {
@@ -38,24 +42,11 @@ public class HandleTxnsResultUtils {
         binding.tvReceipt.setText(receiptContent);
 
         // send txns result to online
-        String requestTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
-        String data = generateTransactionLog(result.getEncTracks()+result.getTlv(), requestTime,context);
-        viewModel.requestOnlineAuth(false, data);
-    }
-
-    public static String handleFormatFF(Hashtable<String, String> decodeData) {
-        String type = decodeData.get("type");
-        String encTrack1 = decodeData.get("encTrack1");
-        String encTrack2 = decodeData.get("encTrack2");
-        String encTrack3 = decodeData.get("encTrack3");
-
-        StringBuilder content = new StringBuilder();
-        content.append("cardType: ").append(type).append("\n");
-        content.append("track_1: ").append(encTrack1).append("\n");
-        content.append("track_2: ").append(encTrack2).append("\n");
-        content.append("track_3: ").append(encTrack3).append("\n");
-
-        return content.toString();
+        PaymentModel model = new PaymentModel();
+        model.setAmount(result.getAmount());
+        model.setCardNo(result.getMaskedPAN());
+        model.setCardOrg(AdvancedBinDetector.detectCardType(result.getMaskedPAN()).getDisplayName());
+        viewModel.requestOnlineAuth(false, model);
     }
 
     public static PaymentResult handleTransactionResult(PaymentResult paymentResult, Hashtable<String, String> decodeData){

@@ -10,6 +10,7 @@ import com.dspread.pos.TerminalApplication;
 import com.dspread.pos.common.enums.POS_TYPE;
 import com.dspread.pos.posAPI.POSManager;
 import com.dspread.pos.utils.DeviceUtils;
+import com.dspread.pos_android_app.R;
 
 import me.goldze.mvvmhabit.base.BaseApplication;
 import me.goldze.mvvmhabit.base.BaseViewModel;
@@ -19,7 +20,7 @@ import me.goldze.mvvmhabit.utils.SPUtils;
 
 public class ConnectionSettingsViewModel extends BaseViewModel {
     // The name of the currently connected device
-    public final ObservableField<String> deviceName = new ObservableField<>("No device");
+    public final ObservableField<String> deviceName = new ObservableField<>(getApplication().getString(R.string.no_device));
 
     //Device connection status
     public final ObservableBoolean deviceConnected = new ObservableBoolean(false);
@@ -72,7 +73,7 @@ public class ConnectionSettingsViewModel extends BaseViewModel {
             }
             deviceConnected.set(true);
         }else {
-            savedDeviceName = "No device";
+            savedDeviceName = getApplication().getString(R.string.no_device);
         }
         updateDeviceName(savedDeviceName);
 
@@ -111,7 +112,7 @@ public class ConnectionSettingsViewModel extends BaseViewModel {
      */
     public void saveSettings() {
         // Save device connection status
-        if("".equals(deviceName)||"No device".equals(deviceName)) {
+        if("".equals(deviceName.get())||getApplication().getString(R.string.no_device).equals(deviceName.get())) {
             // Save device name
             SPUtils.getInstance().put("device_type", "");
         }else {
@@ -125,15 +126,16 @@ public class ConnectionSettingsViewModel extends BaseViewModel {
     public BindingCommand<Boolean> toggleDeviceCommand = new BindingCommand<>(isChecked -> {
         deviceConnected.set(isChecked);
         String deviceType = SPUtils.getInstance().getString("device_type", "");
-        if (!"".equals(deviceType)) {
-            if (isChecked) {
-                selectDeviceEvent.call();
-            } else {
+        if (isChecked) {
+            selectDeviceEvent.call();
+        } else {
+            if (!"".equals(deviceType)) {
                 POSManager.getInstance().close();
-                SPUtils.getInstance().put("device_type","");
-                updateDeviceName("No device");
             }
+            SPUtils.getInstance().put("device_type","");
+            updateDeviceName(getApplication().getString(R.string.no_device));
         }
+
         saveSettings();
     });
 

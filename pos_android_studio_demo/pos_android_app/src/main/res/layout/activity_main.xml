@@ -49,18 +49,30 @@
     </LinearLayout>
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view"
+        android:theme="@style/Theme.Despreaddemo2"
+
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:background="@color/white"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/nav_header_main"
+        app:itemIconTint="@null"
         app:menu="@menu/activity_main_drawer"
-        app:itemIconTint="@color/nav_item_color"
-        app:itemTextColor="@color/nav_item_color"
-        binding:onNavigationItemSelectedCommand="@{viewModel.switchFragmentCommand}"
-        />
 
+        binding:onNavigationItemSelectedCommand="@{viewModel.switchFragmentCommand}"
+        >
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:scaleType="centerCrop"
+            android:layout_marginBottom="26dp"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:src="@mipmap/menu_logo"
+             android:padding="8dp" />
+
+    </com.google.android.material.navigation.NavigationView>
 
 </androidx.drawerlayout.widget.DrawerLayout>
 </layout>

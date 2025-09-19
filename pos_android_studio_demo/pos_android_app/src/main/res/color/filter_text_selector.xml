@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 文本颜色选择器：根据RadioButton的选中状态切换文字颜色 -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 状态1：选中时的文字颜色（示例为白色，与图片匹配） -->
+    <item android:color="@color/white" android:state_checked="true" />
+    <!-- 状态2：未选中时的文字颜色（示例为黑色，与图片匹配） -->
+    <item android:color="@android:color/black" android:state_checked="false" />
+    <!-- 默认状态（可选，防止异常） -->
+    <item android:color="@android:color/black" />
+</selector>

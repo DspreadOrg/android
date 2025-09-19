@@ -17,9 +17,11 @@ import androidx.databinding.ObservableField;
 
 import com.dspread.pos.common.base.BaseAppViewModel;
 import com.dspread.pos.common.http.RetrofitClient;
-import com.dspread.pos.common.http.api.DingTalkApiService;
+import com.dspread.pos.common.http.api.RequestOnlineAuthAPI;
+import com.dspread.pos.common.http.model.AuthRequest;
 import com.dspread.pos.posAPI.POSManager;
 import com.dspread.pos.printerAPI.PrinterHelper;
+import com.dspread.pos.utils.DeviceUtils;
 import com.dspread.pos.utils.DialogUtils;
 import com.dspread.pos.utils.TLV;
 import com.dspread.pos.utils.TLVParser;
@@ -28,9 +30,6 @@ import com.dspread.pos_android_app.R;
 import com.dspread.print.device.PrintListener;
 import com.dspread.print.device.PrinterDevice;
 import com.dspread.print.device.PrinterManager;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.List;
 
@@ -44,17 +43,16 @@ import me.goldze.mvvmhabit.utils.ToastUtils;
 
 
 public class PaymentViewModel extends BaseAppViewModel {
-//    private static final String DINGTALK_URL = "https://oapi.dingtalk.com/robot/send?access_token=83e8afc691a1199c70bb471ec46d50099e6dd078ce10223bbcc56c0485cb5cc3";
     private static final String AUTHFROMISSUER_URL = "https://ypparbjfugzgwijijfnb.supabase.co/functions/v1/request-online-result";
-    private DingTalkApiService apiService;
+    private RequestOnlineAuthAPI apiService;
 
     public PaymentViewModel(@NonNull Application application) {
         super(application);
-        apiService = RetrofitClient.getInstance().create(DingTalkApiService.class);
+        apiService = RetrofitClient.getInstance().create(RequestOnlineAuthAPI.class);
     }
 
     public ObservableField<String> loadingText = new ObservableField<>("");
-    public ObservableBoolean isLoading = new ObservableBoolean(false);
+    public ObservableField<Boolean> isLoading = new ObservableField<>(false);
     public ObservableField<String> transactionResult = new ObservableField<>("");
     public ObservableField<String> amount = new ObservableField<>("");
     public ObservableField<String> titleText = new ObservableField<>("Payment");
@@ -64,9 +62,12 @@ public class PaymentViewModel extends BaseAppViewModel {
     public SingleLiveEvent<Boolean> isOnlineSuccess = new SingleLiveEvent();
     public ObservableBoolean showPinpad = new ObservableBoolean(false);
     public ObservableBoolean showResultStatus = new ObservableBoolean(false);
+    public ObservableBoolean TransactionResultStatus = new ObservableBoolean(false);
+    public ObservableBoolean cardsInsertedStatus = new ObservableBoolean(false);
     public ObservableField<String> receiptContent = new ObservableField<>();
     private Bitmap receiptBitmap;
     private Context mContext;
+    private boolean isIccCard=false;
 
     public void setmContext(Context mContext) {
         this.mContext = mContext;
@@ -107,16 +108,41 @@ public class PaymentViewModel extends BaseAppViewModel {
         showResultStatus.set(true);
         isWaiting.set(false);
         transactionResult.set(message);
+//        TransactionResultStatus.set(true);
+        cardsInsertedStatus.set(false);
     }
-
+    public  void setTransactionErr(String message){
+        TransactionResultStatus.set(true);
+    }
     public void clearErrorState() {
-        showResultStatus.set(false);
+        showResultStatus.set(true);
+        showPinpad.set(true);
+        if(cardsInsertedStatus.get()){
+        cardsInsertedStatus.set(false);
+        }
 //        transactionResult.set("");
 //        isSuccess.set(false);
     }
+    public void pincomPletedState(){
 
+        showPinpad.set(false);
+
+        if(isIccCard&&!cardsInsertedStatus.get()){
+            showResultStatus.set(true);
+            cardsInsertedStatus.set(true);
+        }else{
+            showResultStatus.set(false);
+        }
+
+    }
+    public void cardInsertedState(){
+        isIccCard = true;
+        showResultStatus.set(true);
+        cardsInsertedStatus.set(true);
+
+    }
     public void displayAmount(String newAmount) {
-        amount.set("¥" + newAmount);
+        amount.set("$" + newAmount);
     }
 
     public void setWaitingStatus(boolean isWaitings) {
@@ -129,7 +155,14 @@ public class PaymentViewModel extends BaseAppViewModel {
         showPinpad.set(false);
         isSuccess.set(true);
         isWaiting.set(false);
-        showResultStatus.set(true);
+//        showResultStatus.set(true);
+//        TransactionResultStatus.set(true);
+//        cardsInsertedStatus.set(true);
+        if(isIccCard){
+            cardsInsertedStatus.set(true);
+        }else{
+            showResultStatus.set(false);
+        }
     }
 
     public void startLoading(String text) {
@@ -144,11 +177,13 @@ public class PaymentViewModel extends BaseAppViewModel {
         loadingText.set("");
     }
 
-    public BindingCommand continueTxnsCommand = new BindingCommand(new BindingAction() {
-        @Override
-        public void call() {
-            finish();
-        }
+    public BindingCommand continueTxnsCommand = new BindingCommand(() -> finish());
+
+    public BindingCommand cancleTxnsCommand = new BindingCommand(() -> {
+        new Thread(() -> {
+            POSManager.getInstance().cancelTransaction();
+        }).start();
+        finish();
     });
     public BindingCommand sendReceiptCommand = new BindingCommand(new BindingAction() {
         @Override
@@ -194,66 +229,75 @@ public class PaymentViewModel extends BaseAppViewModel {
         }
     });
 
-    public Bitmap convertReceiptToBitmap(TextView receiptView) {
-        float originalTextSize = receiptView.getTextSize();
-        int originalWidth = receiptView.getWidth();
-        int originalHeight = receiptView.getHeight();
-        receiptView.setTextSize(TypedValue.COMPLEX_UNIT_PX, originalTextSize * 1.5f);
-        receiptView.measure(
-                View.MeasureSpec.makeMeasureSpec(receiptView.getWidth(), View.MeasureSpec.EXACTLY),
-                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
-        );
+//    public Bitmap convertReceiptToBitmap(TextView receiptView) {
+//        float originalTextSize = receiptView.getTextSize();
+//        int originalWidth = receiptView.getWidth();
+//        int originalHeight = receiptView.getHeight();
+//        receiptView.setTextSize(TypedValue.COMPLEX_UNIT_PX, originalTextSize * 1.5f);
+//        receiptView.measure(
+//                View.MeasureSpec.makeMeasureSpec(receiptView.getWidth(), View.MeasureSpec.EXACTLY),
+//                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+//        );
+//
+//        Bitmap bitmap = Bitmap.createBitmap(
+//                receiptView.getWidth(),
+//                receiptView.getMeasuredHeight(),
+//                Bitmap.Config.ARGB_8888
+//        );
+//
+//        Canvas canvas = new Canvas(bitmap);
+//        canvas.drawColor(Color.WHITE);
+//        receiptView.layout(0, 0, receiptView.getWidth(), receiptView.getMeasuredHeight());
+//        receiptView.draw(canvas);
+//        receiptView.setTextSize(TypedValue.COMPLEX_UNIT_PX, originalTextSize);
+//        receiptView.layout(0, 0, originalWidth, originalHeight);
+//        receiptBitmap = bitmap;
+//        return bitmap;
+//    }
 
-        Bitmap bitmap = Bitmap.createBitmap(
-                receiptView.getWidth(),
-                receiptView.getMeasuredHeight(),
-                Bitmap.Config.ARGB_8888
-        );
-
-        Canvas canvas = new Canvas(bitmap);
-        canvas.drawColor(Color.WHITE);
-        receiptView.layout(0, 0, receiptView.getWidth(), receiptView.getMeasuredHeight());
-        receiptView.draw(canvas);
-        receiptView.setTextSize(TypedValue.COMPLEX_UNIT_PX, originalTextSize);
-        receiptView.layout(0, 0, originalWidth, originalHeight);
-        receiptBitmap = bitmap;
-        return bitmap;
-    }
-
-    public void requestOnlineAuth(boolean isICC, String message) {
-        if (!isICC) {
-            isOnlineSuccess.setValue(true);
-        } else {
-            JSONObject object = new JSONObject();
-            try {
-                object.put("requestData", message);
-            } catch (JSONException e) {
-                throw new RuntimeException(e);
-            }
-            addSubscribe(apiService.sendMessage(AUTHFROMISSUER_URL, object)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(response -> {
-                        TRACE.i("online auth rsp code= " + response.getResult());
-                        String onlineRspCode = (String) response.getResult();
-                        if (response.isOk()) {
-                            ToastUtils.showShort("Send online success");
+    public void requestOnlineAuth(boolean isICC, PaymentModel paymentModel) {
+        AuthRequest authRequest = createAuthRequest(paymentModel);
+        addSubscribe(apiService.sendMessage(AUTHFROMISSUER_URL, authRequest)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(response -> {
+                    TRACE.i("online auth rsp code= " + response.getResult());
+                    String onlineRspCode = (String) response.getResult();
+                    if (response.isOk()) {
+                        ToastUtils.showShort("Send online success");
+                        if (isICC) {
                             POSManager.getInstance().sendOnlineProcessResult("8A02" + onlineRspCode);
                         } else {
-
-                            POSManager.getInstance().sendOnlineProcessResult("8A023035");
-                            transactionResult.set("Send online failed：" + response.getMessage());
-                            ToastUtils.showShort("Send online failed：" + response.getMessage());
+                            isOnlineSuccess.setValue(true);
                         }
-                    }, throwable -> {
-
+                    } else {
+                        if (isICC) {
+                            POSManager.getInstance().sendOnlineProcessResult("8A023030");
+                        } else {
+                            isOnlineSuccess.setValue(false);
+                        }
+                        transactionResult.set("Send online failed：" + response.getMessage());
+                        ToastUtils.showShort("Send online failed：" + response.getMessage());
+                    }
+                }, throwable -> {
+                    if (isICC) {
                         POSManager.getInstance().sendOnlineProcessResult("8A023035");
-
-                        ToastUtils.showShort("The network is failed：" + throwable.getMessage());
-                        transactionResult.set("The network is failed：" + throwable.getMessage());
-                    }));
-        }
-
+                    } else {
+                        isOnlineSuccess.setValue(false);
+                    }
+                    ToastUtils.showShort("The network is failed：" + throwable.getMessage());
+                    transactionResult.set("The network is failed：" + throwable.getMessage());
+                }));
     }
 
+    private AuthRequest createAuthRequest(PaymentModel paymentModel) {
+        String deviceSn = SPUtils.getInstance().getString("posID", "");
+        String transactionType = SPUtils.getInstance().getString("transactionType", "");
+        String amount = paymentModel.getAmount();
+        String maskPan = paymentModel.getCardNo();
+        String cardOrg = paymentModel.getCardOrg();
+        String payType = "Card";
+        String transResult = "Paid";
+        return new AuthRequest(deviceSn, amount, maskPan, cardOrg, transactionType, payType,transResult, DeviceUtils.getDeviceDate(),DeviceUtils.getDeviceTime());
+    }
 }

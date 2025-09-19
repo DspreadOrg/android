@@ -10,6 +10,15 @@ public class PaymentModel {
     private String cardNo;
     private String cvmResults;
     private String cidData;
+    private String cardOrg;
+
+    public String getCardOrg() {
+        return cardOrg;
+    }
+
+    public void setCardOrg(String cardOrg) {
+        this.cardOrg = cardOrg;
+    }
 
     public String getAmount() {
         return amount;

@@ -243,4 +243,71 @@
         <item name="android:layout_marginBottom">10dp</item>
         <item name="android:padding">16dp</item>
     </style>
+
+    <style name="LinPaymentLayout">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_margin">10dp</item>
+        <item name="android:background">@drawable/bg_rounded_red_border</item>
+        <item name="android:padding">16dp</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <!-- 数字按钮样式 -->
+    <style name="ModernNumberButton" parent="Widget.AppCompat.Button">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_rowWeight">1</item>
+        <item name="android:layout_columnWeight">1</item>
+        <item name="android:layout_margin">2dp</item>
+        <item name="android:background">@drawable/bg_number_button</item>
+        <item name="android:textColor">#ff1b1b1b</item>
+        <item name="android:textSize">27sp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="android:elevation">0dp</item>
+        <item name="android:padding">2dp</item>
+    </style>
+    <!-- 图标按钮样式 -->
+    <style name="ModernIconButton" parent="Widget.AppCompat.ImageButton">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_margin">3dp</item>
+        <item name="android:scaleType">centerInside</item>
+        <item name="android:background">@drawable/bg_number_button</item>
+        <item name="android:padding">16dp</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="tint">#666666</item>
+    </style>
+
+    <!-- 确认按钮样式 -->
+    <style name="ModernConfirmButton" parent="ModernNumberButton">
+        <item name="android:background">@drawable/bg_confirm_button_selector</item>
+    </style>
+
+    <style name="MySwitchStyle" parent="Widget.AppCompat.CompoundButton.Switch">
+        <!-- 拇指颜色 -->
+                <item name="android:thumb">@drawable/switch_thumb</item>
+<!--        <item name="android:thumbTint">@color/switch_thumb_selector</item>-->
+        <!-- 轨道颜色 -->
+<!--                <item name="android:trackTint">@drawable/switch_track</item>-->
+        <item name="android:trackTint">@color/switch_track_selector</item>
+
+    </style>
+
+    <!-- 筛选按钮样式 -->
+    <style name="FilterButton">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/filter_text_selector</item>
+        <item name="android:background">@drawable/date_filter_selector</item>
+        <item name="android:button">@null</item>
+        <item name="android:gravity">center</item>
+        <item name="android:padding">8dp</item>
+    </style>
+
 </resources>

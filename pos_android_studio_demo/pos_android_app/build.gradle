@@ -31,14 +31,14 @@ android {
         applicationId "com.dspread.pos_android_app"
         minSdk 24
         targetSdk 34
-        versionCode 96
-        versionName "7.0.3"
+        versionCode 102
+        versionName "8.0.2"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         ndk {
             // Set up supported SO library architecture
-            abiFilters 'armeabi-v7a' //, 'x86', 'armeabi-v7a', 'x86_64', 'arm64-v8a'
+            abiFilters 'armeabi-v7a' , 'arm64-v8a' //'x86', 'x86_64'
         }
     }
 
@@ -71,7 +71,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
     implementation 'androidx.navigation:navigation-fragment:2.4.1'
     implementation 'androidx.navigation:navigation-ui:2.4.1'
-    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.25'
+//    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.25'
 
 //    implementation 'com.dspread.print:dspread_print_sdk:1.4.9-beta'
 //    implementation 'com.dspread.library:dspread_pos_sdk:7.1.2'
@@ -121,4 +121,9 @@ dependencies {
     implementation("com.tencent.shiply:upgrade:2.2.0")
     implementation("com.tencent.shiply:upgrade-ui:2.2.0") // Pop up UI related, if the business side customizes their own pop ups, they can not rely on this library
     implementation 'com.github.midorikocak:currency-picker-android:1.2.1'
+
+    implementation 'com.journeyapps:zxing-android-embedded:4.3.0'
+    implementation 'com.google.zxing:core:3.5.1'
+    implementation 'com.airbnb.android:lottie:6.1.0'
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
 }

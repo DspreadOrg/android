@@ -1,74 +1,265 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:binding="http://schemas.android.com/tools">
     <data>
-
         <import type="android.view.View" />
-
         <variable
             name="viewModel"
             type="com.dspread.pos.ui.payment.PaymentViewModel" />
     </data>
-
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white"
-        android:orientation="vertical">
-
-        <include layout="@layout/activity_title" app:viewModel="@{viewModel}"/>
-
-        <!-- 添加加载框布局 -->
-        <androidx.cardview.widget.CardView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="16dp"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="4dp"
-            android:visibility="@{viewModel.isLoading ? View.VISIBLE : View.GONE}">
+        android:gravity="center_vertical"
+        android:id="@+id/rel_sale_details">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:gravity="center"
-                android:padding="16dp">
+                android:layout_weight="1"
+                android:visibility="@{viewModel.showResultStatus ? View.GONE : View.VISIBLE}">
 
-                <ProgressBar
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:indeterminateTint="@color/colorPrimary"/>
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                   >
+
+                    <!-- 原有 LinearLayout 内容（总金额、提示文字、设备图片等） -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        >
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/total"
+                            android:textColor="@color/text_color"
+                            android:textSize="19sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@{viewModel.amount}"
+                            android:textSize="44sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/text_color" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/prompt_user_to_tap_card"
+                            android:textSize="19sp"
+                            android:textColor="@color/red_color"/>
+
+                        <!-- 其他视图（如设备图片、支付方式图标等） -->
+
+                    </LinearLayout>
+
+                    <!-- 右上角的“×”图标 -->
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="16dp"
+                        android:src="@mipmap/btn_close_black"
+                        android:layout_gravity="top|end"
+                        android:layout_marginTop="16dp"
+                        binding:onClickCommand="@{viewModel.cancleTxnsCommand}"/>
+
+                </FrameLayout>
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/animation_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:lottie_fileName="D30_checkCard.json"
+                    app:lottie_imageAssetsFolder="D30_images/"
+                    app:lottie_autoPlay="true"
+                    app:lottie_loop="true" />
+            </LinearLayout>
+            <!--卡组织图片-->
+            <LinearLayout
+            android:visibility="@{viewModel.showResultStatus ? View.GONE : View.VISIBLE}"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:padding="20dp"
+            android:layout_marginBottom="20dp"> <!-- 增加marginTop，使整体上移 -->
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/ic_visa"
+                    android:layout_margin="8dp" />
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/ic_master"
+                    android:layout_margin="8dp" />
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/ic_amex"
+                    android:layout_margin="8dp" />
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/ic_dc"
+                    android:layout_margin="8dp" />
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/ic_jcb"
+                    android:layout_margin="8dp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+
+                android:visibility="@{viewModel.cardsInsertedStatus ? View.VISIBLE : View.GONE}"
+                >
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    >
+
+                    <!-- 原有 LinearLayout 内容（总金额、提示文字、设备图片等） -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginTop="15dp"
+                          android:gravity="center"
+                        >
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/total"
+                            android:textColor="@color/text_color"
+                            android:textSize="19sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@{viewModel.amount}"
+                            android:textSize="44sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/text_color" />
+
+                        <!-- 其他视图（如设备图片、支付方式图标等） -->
+
+                    </LinearLayout>
+
+                    <!-- 右上角的“×”图标 -->
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="16dp"
+                        android:src="@mipmap/btn_close_black"
+                        android:layout_gravity="top|end"
+                        binding:onClickCommand="@{viewModel.cancleTxnsCommand}"/>
+
+                </FrameLayout>
+                <com.airbnb.lottie.LottieAnimationView
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    app:lottie_fileName="insert_icc_card.json"
+                    app:lottie_imageAssetsFolder="iccimages/"
+                    app:lottie_autoPlay="true"
+                    android:layout_marginBottom="5dp"
+                    app:lottie_loop="false" />
+            </LinearLayout>
+            <!-- input pin -->
+<!--            <androidx.cardview.widget.CardView-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_margin="16dp"-->
+<!--                app:cardCornerRadius="8dp"-->
+<!--                app:cardElevation="4dp"-->
+<!--                android:visibility="@{viewModel.showPinpad ? View.VISIBLE : View.GONE}">-->
+<!--              -->
+<!--            </androidx.cardview.widget.CardView>-->
+          <LinearLayout
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical"
+              android:layout_marginTop="@dimen/dp_90"
+              android:visibility="@{viewModel.showPinpad ? View.VISIBLE : View.GONE}"
+              >
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+              >
+
+                <TextView
+                    android:id="@+id/totalLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Total"
+                    android:textSize="22dp"
+                    android:textStyle="bold"
+                    android:textColor="@color/black" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="@{viewModel.loadingText}"
-                    android:textSize="16sp"/>
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
+                    android:text="@{viewModel.amount}"
+                    android:textSize="22dp"
+                    android:textStyle="bold"
+                    android:layout_marginLeft="@dimen/dp_8"
+                    android:textColor="@color/black"
 
-        <!-- 原有的卡片布局 -->
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="4dp"
-            android:visibility="@{viewModel.showPinpad ? View.VISIBLE : View.GONE}">
+                     />
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp">
-
+                android:gravity="center"
+                android:padding="10dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Enter PIN"
+                    android:textSize="22dp"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"/>
                 <EditText
                     android:id="@+id/pinpadEditText"
                     android:background="@drawable/edittext_no_cursor"
                     android:textCursorDrawable="@null"
                     android:focusable="false"
+                    android:layout_marginTop="30dp"
                     android:focusableInTouchMode="false"
                     android:cursorVisible="false"
                     android:clickable="false"
@@ -76,62 +267,139 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textSize="40dp"
                     />
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
+          </LinearLayout>
 
-        <FrameLayout
+            <!--交易结果-->
+            <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1">
-
-            <!-- 刷卡动画区域 -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:visibility="@{viewModel.isWaiting ? View.VISIBLE : View.GONE}">
-
-                <pl.droidsonroids.gif.GifImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/checkcard"/>
-            </LinearLayout>
 
             <!-- 交易信息区域 -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:visibility="@{viewModel.showResultStatus ? View.VISIBLE : View.GONE}">
+                android:visibility="@{viewModel.TransactionResultStatus ? View.VISIBLE : View.GONE}">
 
+                <!-- 交易结果状态显示 -->
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:gravity="center"
+                    android:orientation="vertical"
                     android:padding="16dp">
 
                     <ImageView
                         android:id="@+id/iv_status"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:src="@{viewModel.isSuccess ? @drawable/ic_check_circle : @drawable/ic_error_circle}"
+                        android:layout_width="wrap_content"
+                        android:layout_marginTop="@dimen/dp_60"
+                        android:layout_height="wrap_content"
+                        android:visibility="@{viewModel.isSuccess ? View.GONE : View.VISIBLE}"
+                        android:src="@mipmap/payment_failed"
                         android:layout_marginEnd="8dp"/>
+                    <com.airbnb.lottie.LottieAnimationView
 
-                    <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/transaction_result"
-                        android:textColor="@{viewModel.isSuccess ? @color/green : @color/red}"
-                        android:textSize="24sp"/>
-                </LinearLayout>
+                        app:lottie_fileName="payment_success.json"
+                        android:visibility="@{viewModel.isSuccess ? View.VISIBLE : View.GONE}"
+                        app:lottie_autoPlay="true"
+                        app:lottie_loop="false" />
 
+                    <TextView
+                        android:id="@+id/tv_payment_result"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="30dp"
+                        android:textStyle="bold"
+                        android:text="@{viewModel.isSuccess ? @string/payment_complete : @string/payment_failed}"
+
+                        android:textColor="@color/black"
+                        android:textSize="24sp"/>
+                    <TextView
+                        android:id="@+id/tv_payment_result_amount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:textStyle="bold"
+                        android:textColor="@color/black"
+                        android:visibility="@{viewModel.isSuccess ? View.VISIBLE : View.GONE}"
+                        android:text="@{viewModel.amount}"
+                        android:textSize="40dp"/>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="bottom"
+                        android:visibility="@{viewModel.isSuccess ? View.GONE : View.VISIBLE}"
+                        android:orientation="vertical"
+                        >
+                        <androidx.appcompat.widget.AppCompatButton
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/dp_50"
+                            android:text="Back"
+                            android:textAllCaps="false"
+                            android:textSize="20dp"
+                            android:textColor="@color/black"
+                            android:background="@drawable/bg_more_options_selector"
+                            android:layout_marginBottom="10dp"
+                            binding:onClickCommand="@{viewModel.continueTxnsCommand}"
+                            ></androidx.appcompat.widget.AppCompatButton>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="bottom"
+                        android:orientation="vertical"
+                        android:visibility="@{viewModel.isSuccess ? View.VISIBLE : View.GONE}"
+                        >
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_50"
+                        android:text="Done"
+                        android:textAllCaps="false"
+                        android:textSize="20dp"
+                        android:textColor="@color/white"
+                        android:background="@drawable/bg_done_selector"
+                        binding:onClickCommand="@{viewModel.continueTxnsCommand}"
+                        ></androidx.appcompat.widget.AppCompatButton>
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Print receipt"
+                        android:textAllCaps="false"
+                        android:textSize="20dp"
+                        android:textColor="@color/red"
+                        android:layout_marginTop="@dimen/dp_10"
+                        android:background="@drawable/bg_print_receipt_button_selector"
+                        android:enabled="@{!viewModel.isPrinting}"
+                        binding:onClickCommand="@{viewModel.sendReceiptCommand}"
+                        ></androidx.appcompat.widget.AppCompatButton>
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAllCaps="false"
+                        android:textColor="@color/black"
+                        android:textSize="20dp"
+                        android:text="More options"
+                        android:layout_marginTop="@dimen/dp_10"
+                        android:layout_marginBottom="10dp"
+                        android:background="@drawable/bg_more_options_selector"></androidx.appcompat.widget.AppCompatButton>
+                    </LinearLayout>
+                </LinearLayout>
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/gainsboro"/>
-
                 <ScrollView
                     android:id="@+id/scv_text"
                     android:layout_width="match_parent"
@@ -139,7 +407,6 @@
                     android:layout_weight="1"
                     android:layout_margin="16dp"
                     android:layout_gravity="center">
-
                     <TextView
                         android:id="@+id/tv_receipt"
                         android:layout_width="match_parent"
@@ -155,45 +422,86 @@
                         android:text="@{viewModel.transactionResult}"
                         />
                 </ScrollView>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp"
+                    android:orientation="horizontal">
+                    <com.google.android.material.button.MaterialButton
+                        android:layout_width="0dp"
+                        android:layout_height="48dp"
+                        android:layout_weight="1"
+                        android:text="@string/continue_trading"
+                        android:textColor="@color/white"
+                        android:background="@drawable/bg_primary_button"
+                        android:layout_marginEnd="8dp"
+                        app:cornerRadius="8dp"
+                        android:textSize="14sp"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:gravity="center"
+                        android:enabled="@{!viewModel.isPrinting}"
+                        binding:onClickCommand="@{viewModel.continueTxnsCommand}"/>
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_send_receipt"
+                        android:visibility="gone"
+                        android:layout_width="0dp"
+                        android:layout_height="48dp"
+                        android:layout_weight="1"
+                        android:layout_marginStart="8dp"
+                        android:background="@drawable/bg_primary_button"
+                        android:text="@string/send_receipt"
+                        android:textColor="@color/white"
+                        android:textSize="14sp"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:gravity="center"
+                        app:cornerRadius="8dp"
+                        android:enabled="@{!viewModel.isPrinting}"
+                        binding:onClickCommand="@{viewModel.sendReceiptCommand}"/>
+                </LinearLayout>
+            </LinearLayout>
+        </FrameLayout>
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/background_color"
+            android:visibility="@{viewModel.isLoading ? View.VISIBLE : View.GONE}" />
+        <!--loading-->
+        <androidx.cardview.widget.CardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="16dp"
+            app:cardCornerRadius="5dp"
+            app:cardElevation="4dp"
+            android:padding="20dp"
+            android:layout_centerInParent="true"
+            android:visibility="@{viewModel.isLoading ? View.VISIBLE : View.GONE}">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:orientation="horizontal">
-                <com.google.android.material.button.MaterialButton
-                    android:layout_width="0dp"
-                    android:layout_height="48dp"
-                    android:layout_weight="1"
-                    android:text="@string/continue_trading"
-                    android:textColor="@color/white"
-                    android:background="@drawable/bg_primary_button"
-                    android:layout_marginEnd="8dp"
-                    app:cornerRadius="8dp"
-                    android:textSize="14sp"
-                    android:maxLines="1"
-                    android:ellipsize="end"
-                    android:gravity="center"
-                    android:enabled="@{!viewModel.isPrinting}"
-                    binding:onClickCommand="@{viewModel.continueTxnsCommand}"/>
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_send_receipt"
-                    android:visibility="gone"
-                    android:layout_width="0dp"
-                    android:layout_height="48dp"
-                    android:layout_weight="1"
-                    android:layout_marginStart="8dp"
-                    android:background="@drawable/bg_primary_button"
-                    android:text="@string/send_receipt"
-                    android:textColor="@color/white"
-                    android:textSize="14sp"
-                    android:maxLines="1"
-                    android:ellipsize="end"
-                    android:gravity="center"
-                    app:cornerRadius="8dp"
-                    android:enabled="@{!viewModel.isPrinting}"
-                    binding:onClickCommand="@{viewModel.sendReceiptCommand}"/>
-            </LinearLayout>
-            </LinearLayout>
-        </FrameLayout>
+                android:orientation="vertical"
+                android:gravity="center"
+                android:background="@color/white"
+                android:padding="36dp">
+            <!-- 圆形进度条 -->
+            <ProgressBar
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:indeterminate="true"
+                android:indeterminateTint="@color/red_color" /> <!-- 进度条颜色（红色） -->
+
+            <!-- 提示文字 -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{viewModel.loadingText}"
+                android:textSize="16sp"
+                android:layout_marginTop="10dp" />
+
     </LinearLayout>
+        </androidx.cardview.widget.CardView>
+    </RelativeLayout>
 </layout>

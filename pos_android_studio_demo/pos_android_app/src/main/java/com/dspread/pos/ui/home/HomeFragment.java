@@ -9,15 +9,13 @@ import android.view.ViewGroup;
 
 import com.dspread.pos.common.base.BaseFragment;
 import com.dspread.pos.TitleProviderListener;
-import com.dspread.pos.posAPI.POSManager;
-import com.dspread.pos.ui.payment.PaymentActivity;
+import com.dspread.pos.ui.payment.PaymentMethodActivity;
 import com.dspread.pos.utils.TRACE;
 import com.dspread.pos_android_app.BR;
 import com.dspread.pos_android_app.R;
 import com.dspread.pos_android_app.databinding.FragmentHomeBinding;
 
 import me.goldze.mvvmhabit.utils.SPUtils;
-import me.goldze.mvvmhabit.utils.ToastUtils;
 
 
 public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewModel> implements TitleProviderListener {
@@ -51,9 +49,9 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
         };
     }
 
-    private void navigateToPayment(long inputMoney){
+    private void navigateToPaymentMethod(long inputMoney){
         String deviceAddress = SPUtils.getInstance().getString("deviceAddress","");
-        Intent intent = new Intent(getActivity(), PaymentActivity.class);
+        Intent intent = new Intent(getActivity(), PaymentMethodActivity.class);
         intent.putExtra("amount", String.valueOf(inputMoney));
         intent.putExtra("deviceAddress", deviceAddress);
         startActivity(intent);
@@ -66,7 +64,7 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
             canshow = false;
             showTimer.start();
 
-            navigateToPayment(inputMoney);
+            navigateToPaymentMethod(inputMoney);
             // Obtain the system standard jump animation time
             int animTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
             getView().postOnAnimationDelayed(() -> {
@@ -134,7 +132,7 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
 
     @Override
     public String getTitle() {
-        return "Payment";
+        return "Sale";
     }
 }
 

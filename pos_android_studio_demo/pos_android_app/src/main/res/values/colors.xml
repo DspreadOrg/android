@@ -6,6 +6,7 @@
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
+    <color name="exit_app">#ffcf131b</color>
 
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimarys">#0336ff</color>
@@ -156,6 +157,7 @@
     <color name="mediumblue">#0000cd</color> <!-- 中兰色 -->
     <color name="darkblue">#00008b</color> <!-- 暗蓝色 -->
     <color name="navy">#000080</color> <!-- 海军色 -->
+    <color name="search_hint">#ff686868</color>
 
 
     <!--自定义键盘颜色-->
@@ -176,13 +178,41 @@
     <color name="keyboard_background">#F8F9FA</color>
     <color name="number_button_background">#E8ECF0</color>
     <color name="clear_button_background">#FFE4E6</color>
-    <color name="confirm_button_background">#1890FF</color>
+    <color name="confirm_button_background">#ffcf161c</color>
     <color name="button_stroke">#D9DDE3</color>
     <color name="clear_button_text">#FF4D4F</color>
-    <color name="confirm_button_text">#FFFFFF</color>
+    <color name="confirm_button_text">#ffffffff</color>
     <color name="number_button_text">#333333</color>
     <color name="amount_text_color">#1A1A1A</color>
 
     <color name="text_primary">#212121</color>
     <color name="text_secondary">#757575</color>
+    <color name="confirm_button_text_disabled">#666666</color>
+    <color name="keyboard_backend">#fff9f9f9</color>
+    <color name="main_theme_backend">#fff9f9f9</color>
+    <color name="main_color_on_primary">#ff1b1b1b</color>
+    
+    <color name="connected">#ff4275c3</color>
+    <color name="red_color">#FFCF131B</color>
+    <color name="switch_unselected_color">#EEEEEE</color>
+
+<!--    sale detail-->
+    <color name="text_color">#ff030303</color>
+    <color name="background_color">#40100d0d</color>
+
+    <!--transaction result detail-->
+    <color name="transaction_detail_text_light">#ff686868</color>
+    <color name="transaction_detail_text_dark">#ff1b1b1b</color>
+    <color name="transaction_detail_black">#ff030303</color>
+    <color name="transaction_detail_text_red">#ffff1f00</color>
+    <color name="transaction_detail_button_red">#FFD51822</color>
+    <color name="transaction_detail_back_gray">#ffefefef</color>
+    <color name="transaction_detail_bold_gray">#ffbcbcbc</color>
+
+    <color name="red_color_light">#FFCDD2</color>
+    <color name="gray_light">#E0E0E0</color>
+
+    <color name="transaction_amount_text_color">#ff030303</color>
+    <color name="positive_amount_color">#FF4CAF50</color>
+    <color name="negative_amount_color">#FFF44336</color>
 </resources>

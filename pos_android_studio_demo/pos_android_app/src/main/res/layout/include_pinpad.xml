@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="#e5e5e5"
+    android:padding="8dp"
     android:orientation="vertical">
 
     <RelativeLayout
@@ -10,14 +11,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:text="SECURE PIN PAD"
-            android:textColor="#666666"
-            android:textSize="18dp"
-            android:textStyle="bold" />
+<!--        <TextView-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_centerInParent="true"-->
+<!--            android:text="SECURE PIN PAD"-->
+<!--            android:textColor="#666666"-->
+<!--            android:textSize="18dp"-->
+<!--            android:textStyle="bold" />-->
 
 <!--        <TextView-->
 <!--            android:layout_width="wrap_content"-->
@@ -38,7 +39,7 @@
         android:gravity="center"
         android:textSize="20sp"
         />
-    <com.dspread.demoui.widget.pinpad.keyboard.MyKeyboardView
+    <com.dspread.pos.ui.payment.pinkeyboard.MyKeyboardView
         android:id="@+id/keyboard_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

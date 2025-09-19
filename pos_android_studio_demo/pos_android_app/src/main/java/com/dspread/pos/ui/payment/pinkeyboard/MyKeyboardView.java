@@ -116,7 +116,7 @@ public class MyKeyboardView extends KeyboardView {
                 break;
             case KEYBOARDTYPE_Only_Num_Pwd:
                 if (keyboardOnlyNumPwd == null) {
-                    keyboardOnlyNumPwd = new Keyboard(getContext(), R.xml.keyboard_only_number);
+                    keyboardOnlyNumPwd = new Keyboard(getContext(), R.xml.keyboard_number_ui);
                 }
                 randomKey(keyboardOnlyNumPwd);
                 setKeyboard(keyboardOnlyNumPwd);
@@ -314,7 +314,7 @@ public class MyKeyboardView extends KeyboardView {
             for (Keyboard.Key key : keys) {
                 if (key.codes[0] == -5) {//delete button
                     Drawable dr = getContext().getResources().getDrawable(R.drawable
-                            .keyboard_white);
+                            .bg_keyboard_clear_button);
                     dr.setBounds(key.x, key.y, key.x + key.width, key.y + key.height);
                     dr.draw(canvas);
                     int drawableX = key.x + (key.width - key.icon.getIntrinsicWidth()) / 2;
@@ -323,8 +323,39 @@ public class MyKeyboardView extends KeyboardView {
                             .getIntrinsicWidth(), drawableY + key.icon.getIntrinsicHeight());
                     key.icon.draw(canvas);
                     Log.i("test", "drawableX: " + drawableX + " drawableY: " + drawableY);
+                }else if (key.codes[0] == -3) {//cancel button
+                    Drawable dr = getContext().getResources().getDrawable(R.drawable
+                            .bg_keyboard_cancel_btn);
+                    dr.setBounds(key.x, key.y, key.x + key.width, key.y + key.height);
+                    dr.draw(canvas);
+                    int drawableX = key.x + (key.width - key.icon.getIntrinsicWidth()) / 2;
+                    int drawableY = key.y + (key.height - key.icon.getIntrinsicHeight()) / 2;
+                    key.icon.setBounds(drawableX, drawableY, drawableX + key.icon
+                            .getIntrinsicWidth(), drawableY + key.icon.getIntrinsicHeight());
+                    key.icon.draw(canvas);
+                    Log.i("test", "drawableX: " + drawableX + " drawableY: " + drawableY);
+                }else if (key.codes[0] == -4) {//confirm button
+                    Drawable dr = getContext().getResources().getDrawable(R.drawable
+                            .bg_keyboard_confirm_button);
+                    dr.setBounds(key.x, key.y, key.x + key.width, key.y + key.height);
+                    dr.draw(canvas);
+                    int drawableX = key.x + (key.width - key.icon.getIntrinsicWidth()) / 2;
+                    int drawableY = key.y + (key.height - key.icon.getIntrinsicHeight()) / 2;
+                    key.icon.setBounds(drawableX, drawableY, drawableX + key.icon
+                            .getIntrinsicWidth(), drawableY + key.icon.getIntrinsicHeight());
+                    key.icon.draw(canvas);
+                    Log.i("test", "drawableX: " + drawableX + " drawableY: " + drawableY);
+                }else if (key.codes[0] == -1){
+//                    Drawable dr = getContext().getResources().getDrawable(R.drawable
+//                            .keyboard_num_key_bg);
+//                    dr.setBounds(key.x, key.y, key.x + key.width, key.y + key.height);
+//                    dr.draw(canvas);
+//                    int drawableX = key.x + (key.width - key.icon.getIntrinsicWidth()) / 2;
+//                    int drawableY = key.y + (key.height - key.icon.getIntrinsicHeight()) / 2;
+//                    key.icon.setBounds(drawableX, drawableY, drawableX + key.icon
+//                            .getIntrinsicWidth(), drawableY + key.icon.getIntrinsicHeight());
+//                    key.icon.draw(canvas);
                 }
-//                Log.i("test","x: " +key.x+" y: "+key.y+" wi:"+key.width+" he:"+key.height);
 
             }
         }

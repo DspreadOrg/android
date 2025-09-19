@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:binding="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <import type="android.view.View" />
+        <variable
+            name="viewModel"
+            type="com.dspread.pos.ui.payment.PaymentStatusViewModel" />
+    </data>
+
+    <!-- 交易信息区域 -->
+<!--    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:orientation="vertical"-->
+<!--        android:visibility="@{viewModel.TransactionResultStatus ? View.VISIBLE : View.GONE}">-->
+
+    <!-- 交易结果状态显示 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <ImageView
+            android:id="@+id/iv_status"
+            android:layout_width="wrap_content"
+            android:layout_marginTop="@dimen/dp_60"
+            android:layout_height="wrap_content"
+            android:visibility="@{viewModel.isSuccess ? View.GONE : View.VISIBLE}"
+            android:src="@mipmap/payment_failed"
+            android:layout_marginEnd="8dp"/>
+        <com.airbnb.lottie.LottieAnimationView
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:lottie_fileName="payment_success.json"
+            android:visibility="@{viewModel.isSuccess ? View.VISIBLE : View.GONE}"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="false" />
+
+        <TextView
+            android:id="@+id/tv_payment_result"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:textStyle="bold"
+            android:text="@{viewModel.isSuccess ? @string/payment_complete : @string/payment_failed}"
+
+            android:textColor="@color/black"
+            android:textSize="24sp"/>
+        <TextView
+            android:id="@+id/tv_payment_result_amount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:visibility="@{viewModel.isSuccess ? View.VISIBLE : View.GONE}"
+            android:text="@{viewModel.amount}"
+            android:textSize="40dp"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="bottom"
+            android:visibility="@{viewModel.isSuccess ? View.GONE : View.VISIBLE}"
+            android:orientation="vertical"
+            >
+            <androidx.appcompat.widget.AppCompatButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_50"
+                android:text="Back"
+                android:textAllCaps="false"
+                android:textSize="20dp"
+                android:textColor="@color/black"
+                android:background="@drawable/bg_more_options_selector"
+                android:layout_marginBottom="10dp"
+                binding:onClickCommand="@{viewModel.continueTxnsCommand}"
+                ></androidx.appcompat.widget.AppCompatButton>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="bottom"
+            android:orientation="vertical"
+            android:visibility="@{viewModel.isSuccess ? View.VISIBLE : View.GONE}"
+            >
+            <androidx.appcompat.widget.AppCompatButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_50"
+                android:text="Done"
+                android:textAllCaps="false"
+                android:textSize="20dp"
+                android:textColor="@color/white"
+                android:background="@drawable/bg_done_selector"
+                binding:onClickCommand="@{viewModel.continueTxnsCommand}"
+                ></androidx.appcompat.widget.AppCompatButton>
+            <androidx.appcompat.widget.AppCompatButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Print receipt"
+                android:textAllCaps="false"
+                android:textSize="20dp"
+                android:textColor="@color/red"
+                android:layout_marginTop="@dimen/dp_10"
+                android:background="@drawable/bg_print_receipt_button_selector"
+                android:visibility="@{viewModel.isShouwPrinting ? View.VISIBLE : View.GONE}"
+                android:enabled="@{!viewModel.isPrinting}"
+                binding:onClickCommand="@{viewModel.sendReceiptCommand}"
+                ></androidx.appcompat.widget.AppCompatButton>
+            <androidx.appcompat.widget.AppCompatButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAllCaps="false"
+                android:textColor="@color/black"
+                android:textSize="20dp"
+                android:text="More options"
+                android:layout_marginTop="@dimen/dp_10"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/bg_more_options_selector"></androidx.appcompat.widget.AppCompatButton>
+        </LinearLayout>
+    </LinearLayout>
+</layout>

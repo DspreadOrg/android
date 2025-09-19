@@ -9,6 +9,7 @@ import android.os.Message;
 import android.view.KeyEvent;
 
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -72,9 +73,13 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         viewModel.handleNavigationItemClick(R.id.nav_home);
         drawerLayout = binding.drawerLayout;
         navigationView = binding.navView;
+        navigationView.setItemIconTintList(null);
         toolbar = binding.toolbar;
         View headerView = navigationView.getHeaderView(0);
-        tvAppVersion = headerView.findViewById(R.id.tv_appversion);
+//        tvAppVersion = headerView.findViewById(R.id.tv_appversion);
+
+        ImageView closeImage = headerView.findViewById(R.id.image_black);
+        closeImage.setOnClickListener(v -> viewModel.closeDrawer());
         setSupportActionBar(toolbar);
         navigationView.bringToFront();
         toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -104,11 +109,16 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         viewModel.changeDrawerLayout.observe(this, new Observer<View>() {
             @Override
             public void onChanged(View drawerView) {
-                String packageVersionName = DevUtils.getPackageVersionName(MainActivity.this, "com.dspread.pos_android_app");
-                tvAppVersion.setText(getString(R.string.app_version) + packageVersionName);
+//                String packageVersionName = DevUtils.getPackageVersionName(MainActivity.this, "com.dspread.pos_android_app");
+//                tvAppVersion.setText(getString(R.string.app_version) + packageVersionName);
                 checkUpdate();
             }
         });
+
+        viewModel.closeDrawerCommand.observe(this, unused -> {
+            drawerLayout.close();
+        });
+
     }
 
     private void checkUpdate(){

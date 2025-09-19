@@ -1,7 +1,9 @@
 package com.dspread.pos.ui.payment;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
@@ -9,6 +11,9 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
+import androidx.core.content.ContextCompat;
+import androidx.lifecycle.Observer;
 
 import com.dspread.pos.posAPI.ConnectionServiceCallback;
 import com.dspread.pos.posAPI.POSManager;
@@ -19,12 +24,15 @@ import com.dspread.pos.ui.payment.pinkeyboard.KeyboardUtil;
 import com.dspread.pos.ui.payment.pinkeyboard.MyKeyboardView;
 import com.dspread.pos.ui.payment.pinkeyboard.PinPadDialog;
 import com.dspread.pos.ui.payment.pinkeyboard.PinPadView;
+import com.dspread.pos.utils.AdvancedBinDetector;
 import com.dspread.pos.utils.BitmapReadyListener;
 import com.dspread.pos.utils.DeviceUtils;
 import com.dspread.pos.utils.HandleTxnsResultUtils;
 import com.dspread.pos.utils.LogFileConfig;
 import com.dspread.pos.utils.QPOSUtil;
 import com.dspread.pos.utils.ReceiptGenerator;
+import com.dspread.pos.utils.TLV;
+import com.dspread.pos.utils.TLVParser;
 import com.dspread.pos.utils.TRACE;
 import com.dspread.pos_android_app.BR;
 import com.dspread.pos_android_app.R;
@@ -52,7 +60,8 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
     private int changePinTimes;
     private boolean isPinBack = false;
     private PaymentServiceCallback paymentServiceCallback;
-
+    private  String terminalTime;
+    private String maskedPAN;
     @Override
     public int initContentView(Bundle savedInstanceState) {
         return R.layout.activity_payment;
@@ -79,8 +88,28 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
         paymentServiceCallback = new PaymentCallback();
         amount = getIntent().getStringExtra("amount");
         deviceAddress = getIntent().getStringExtra("deviceAddress");
-        viewModel.displayAmount(amount);//ui
+        viewModel.displayAmount(DeviceUtils.convertAmountToCents(amount));//ui
+        
+        setupAnimationBasedOnDeviceModel();
+        
         startTransaction();
+    }
+    
+    /**
+     * Dynamically set Lottie animations according to the device model
+     */
+    private void setupAnimationBasedOnDeviceModel() {
+        String deviceModel = DeviceUtils.getPhoneModel();
+        TRACE.d("model:"+deviceModel);
+        if ("D80".equals(deviceModel)) {
+            binding.animationView.setAnimation("D80_checkCard.json");
+            binding.animationView.setImageAssetsFolder("D80_images/");
+        } else {
+            binding.animationView.setAnimation("D30_checkCard.json");
+            binding.animationView.setImageAssetsFolder("D30_images/");
+        }
+        binding.animationView.loop(true);
+        binding.animationView.playAnimation();
     }
 
     @Override
@@ -89,11 +118,13 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
         viewModel.isOnlineSuccess.observe(this, aBoolean -> {
             if (aBoolean) {
                 if (DeviceUtils.isPrinterDevices()) {
-                    handleSendReceipt();
+//                    handleSendReceipt();
                 }
                 viewModel.setTransactionSuccess();
+                paymentStatus(amount,maskedPAN,terminalTime);
             } else {
                 viewModel.setTransactionFailed("Transaction failed because of the network!");
+                paymentStatus("","","");
             }
         });
     }
@@ -139,9 +170,10 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
 
         @Override
         public void onRequestTime() {
-            String terminalTime = new SimpleDateFormat("yyyyMMddHHmmss").format(Calendar.getInstance().getTime());
+            terminalTime = new SimpleDateFormat("yyyyMMddHHmmss").format(Calendar.getInstance().getTime());
             TRACE.d("onRequestTime: " + terminalTime);
             POSManager.getInstance().sendTime(terminalTime);
+
         }
 
         @Override
@@ -292,7 +324,13 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
             } else {
                 msg = HandleTxnsResultUtils.getDisplayMessage(displayMsg, PaymentActivity.this);
             }
+            binding.animationView.pauseAnimation();
             viewModel.startLoading(msg);
+        }
+
+        @Override
+        public void onReturnCardInserted() {
+            viewModel.cardInsertedState();
         }
 
         /**
@@ -302,14 +340,18 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
          */
         @Override
         public void onTransactionCompleted(PaymentResult result) {
-            viewModel.showPinpad.set(false);
+//            viewModel.showPinpad.set(false);
             isChangePin = false;
             String transType = result.getTransactionType();
             if(transType != null){
+                binding.animationView.pauseAnimation();
+                result.setAmount(amount);
                 if(QPOSService.DoTradeResult.MCR.name().equals(transType)){
                     HandleTxnsResultUtils.handleMCRResult(result, PaymentActivity.this, binding, viewModel);
+                    maskedPAN = result.getMaskedPAN();
                 }else if(QPOSService.DoTradeResult.NFC_OFFLINE.name().equals(transType)||QPOSService.DoTradeResult.NFC_ONLINE.name().equals(transType)){
                     HandleTxnsResultUtils.handleNFCResult(result, PaymentActivity.this, binding, viewModel);
+                    maskedPAN = result.getMaskedPAN();
                 }else {//iCC result
                     String content = getString(R.string.batch_data);
                     content += result.getTlv();
@@ -318,8 +360,11 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
                     Spanned receiptContent = ReceiptGenerator.generateICCReceipt(paymentModel);
                     binding.tvReceipt.setText(receiptContent);
                     if (DeviceUtils.isPrinterDevices()) {
-                        handleSendReceipt();
+//                        handleSendReceipt();
                     }
+                    List<TLV> list = TLVParser.parse(result.getTlv());
+                    TLV tlvpan = TLVParser.searchTLV(list, "C4");
+                    paymentStatus(amount,tlvpan.value,terminalTime);
                 }
             }
         }
@@ -332,7 +377,9 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
             }
             if(errorMessage != null){
                 viewModel.setTransactionFailed(errorMessage);
+                viewModel.setTransactionErr(errorMessage);
             }
+
         }
 
         /**
@@ -346,10 +393,16 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
             viewModel.showPinpad.set(false);
             viewModel.startLoading(getString(R.string.online_process_requested));
             Hashtable<String, String> decodeData = POSManager.getInstance().anlysEmvIccData(tlv);
-            String requestTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
-            String data = "{\"createdAt\": " + requestTime + ", \"deviceInfo\": " + DeviceUtils.getPhoneDetail() + ", \"countryCode\": " + DeviceUtils.getDevieCountry(PaymentActivity.this)
-                    + ", \"tlv\": " + tlv + "}";
-            viewModel.requestOnlineAuth(true, data);
+
+            PaymentModel paymentModel = new PaymentModel();
+            paymentModel.setAmount(amount);
+            List<TLV> tlvList = TLVParser.parse(tlv);
+            TLV cardNoTlv = TLVParser.searchTLV(tlvList, "C4");
+            String cardNo = cardNoTlv == null?"":cardNoTlv.value;
+            cardNo = cardNo.substring(0,cardNo.length()-1);
+            paymentModel.setCardNo(cardNo);
+            paymentModel.setCardOrg(AdvancedBinDetector.detectCardType(cardNo).getDisplayName());
+            viewModel.requestOnlineAuth(true, paymentModel);
         }
 
         @Override
@@ -359,7 +412,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
                 if (num == -1) {
                     isPinBack = false;
                     binding.pinpadEditText.setText("");
-                    viewModel.showPinpad.set(false);
+                    viewModel.pincomPletedState();
                     if (keyboardUtil != null) {
                         keyboardUtil.hide();
                     }
@@ -394,42 +447,53 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
      * Convert receipt TextView to Bitmap for printing
      * @param listener Callback when bitmap is ready
      */
-    private void convertReceiptToBitmap(final BitmapReadyListener listener) {
-        binding.tvReceipt.post(new Runnable() {
-            @Override
-            public void run() {
-                if (binding.tvReceipt.getWidth() <= 0) {
-                    binding.tvReceipt.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                        @Override
-                        public void onGlobalLayout() {
-                            binding.tvReceipt.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                            Bitmap bitmap = viewModel.convertReceiptToBitmap(binding.tvReceipt);
-                            if (listener != null) {
-                                listener.onBitmapReady(bitmap);
-                            }
-                        }
-                    });
-                } else {
-                    Bitmap bitmap = viewModel.convertReceiptToBitmap(binding.tvReceipt);
-                    if (listener != null) {
-                        listener.onBitmapReady(bitmap);
-                    }
-                }
-            }
-        });
-    }
+//    private void convertReceiptToBitmap(final BitmapReadyListener listener) {
+//        binding.tvReceipt.post(new Runnable() {
+//            @Override
+//            public void run() {
+//                if (binding.tvReceipt.getWidth() <= 0) {
+//                    binding.tvReceipt.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+//                        @Override
+//                        public void onGlobalLayout() {
+//                            binding.tvReceipt.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+//                            Bitmap bitmap = viewModel.convertReceiptToBitmap(binding.tvReceipt);
+//                            if (listener != null) {
+//                                listener.onBitmapReady(bitmap);
+//                            }
+//                        }
+//                    });
+//                } else {
+//                    Bitmap bitmap = viewModel.convertReceiptToBitmap(binding.tvReceipt);
+//                    if (listener != null) {
+//                        listener.onBitmapReady(bitmap);
+//                    }
+//                }
+//            }
+//        });
+//    }
 
     /**
      * Handle receipt printing
      * Converts receipt view to bitmap and shows print button
      */
-    private void handleSendReceipt() {
-        convertReceiptToBitmap(bitmap -> {
-            if (bitmap != null) {
-                binding.btnSendReceipt.setVisibility(View.VISIBLE);
-            } else {
-                binding.btnSendReceipt.setVisibility(View.GONE);
-            }
-        });
+//    private void handleSendReceipt() {
+//        convertReceiptToBitmap(bitmap -> {
+//            if (bitmap != null) {
+//                binding.btnSendReceipt.setVisibility(View.VISIBLE);
+//            } else {
+//                binding.btnSendReceipt.setVisibility(View.GONE);
+//            }
+//        });
+//    }
+    private void paymentStatus(String amount, String maskedPAN,String terminalTime){
+        Intent intent = new Intent(PaymentActivity.this, PaymentStatusActivity.class);
+        if(amount!=null &&!"".equals(amount)) {
+            intent.putExtra("amount", amount);
+            intent.putExtra("maskedPAN",maskedPAN);
+            intent.putExtra("terminalTime",terminalTime);
+        }
+        startActivity(intent);
+        finish();
     }
+
 }
