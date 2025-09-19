@@ -155,7 +155,7 @@ public class PaymentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         } else if (holder instanceof PaymentViewHolder) {
             PaymentViewHolder paymentHolder = (PaymentViewHolder) holder;
             Transaction payment = item.getPayment();
-            paymentHolder.dateText.setText(payment.getTransactionDate());
+            paymentHolder.dateText.setText(payment.getTransactionDate() != null ? payment.getTransactionDate().replace("-", "/") : payment.getTransactionDate());
             String amount = DeviceUtils.convertAmountToCents(new BigDecimal(payment.getAmount()).toPlainString());
             paymentHolder.amountText.setText("$" + amount);
             paymentHolder.cardInfoText.setText(payment.getMaskPan().replaceAll("[fFXx]", "*") + " - " + payment.getTransactionTime());
@@ -241,13 +241,17 @@ public class PaymentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private String extractMonthFromDate(String date) {
         try {
-            String[] parts = date.split("-");
-            if (parts.length >= 2) {
-                int monthNum = Integer.parseInt(parts[1]);
-                String[] months = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
-                if (monthNum >= 1 && monthNum <= 12) {
-                    return months[monthNum - 1];
+            if (date != null) {
+                String[] parts = date.split("-");
+                if (parts.length >= 2) {
+                    int monthNum = Integer.parseInt(parts[1]);
+                    String[] months = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+                    if (monthNum >= 1 && monthNum <= 12) {
+                        return months[monthNum - 1];
+                    }
                 }
+            } else {
+                return "Unknown";
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -46,8 +46,8 @@
                     android:imeOptions="actionSearch"
                     android:inputType="text"
                     android:padding="12dp"
-                    android:text=" "
-                    android:textSize="14sp" />
+                    android:textColor="@color/search_hint"
+                    android:textSize="16sp" />
 
             </com.google.android.material.textfield.TextInputLayout>
 

@@ -40,7 +40,7 @@ public class TransactionDetailActivity extends BaseActivity<ActivityTransactionD
         initCardImage();
         binding.setVariable(BR.viewModel, viewModel);
         transaction = (Transaction) getIntent().getSerializableExtra("transaction");
-        binding.transactionDate.setText(transaction.getTransactionDate());
+        binding.transactionDate.setText(transaction.getTransactionDate().replace("-","/"));
         String amount = DeviceUtils.convertAmountToCents(new BigDecimal(transaction.getAmount()).toPlainString());
         binding.tvAmount.setText("$" + amount);
         binding.tvPayType.setText(transaction.getPayType());
