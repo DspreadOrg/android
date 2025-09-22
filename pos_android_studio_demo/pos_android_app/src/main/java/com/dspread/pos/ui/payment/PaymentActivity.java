@@ -1,20 +1,19 @@
 package com.dspread.pos.ui.payment;
 
 import android.app.Dialog;
+import android.app.KeyguardManager;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Color;
+import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
-import android.view.View;
-import android.view.ViewTreeObserver;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-
-import androidx.core.content.ContextCompat;
-import androidx.lifecycle.Observer;
-
 import com.dspread.pos.posAPI.ConnectionServiceCallback;
 import com.dspread.pos.posAPI.POSManager;
 import com.dspread.pos.posAPI.PaymentResult;
@@ -25,12 +24,12 @@ import com.dspread.pos.ui.payment.pinkeyboard.MyKeyboardView;
 import com.dspread.pos.ui.payment.pinkeyboard.PinPadDialog;
 import com.dspread.pos.ui.payment.pinkeyboard.PinPadView;
 import com.dspread.pos.utils.AdvancedBinDetector;
-import com.dspread.pos.utils.BitmapReadyListener;
 import com.dspread.pos.utils.DeviceUtils;
 import com.dspread.pos.utils.HandleTxnsResultUtils;
 import com.dspread.pos.utils.LogFileConfig;
 import com.dspread.pos.utils.QPOSUtil;
 import com.dspread.pos.utils.ReceiptGenerator;
+import com.dspread.pos.utils.SystemKeyListener;
 import com.dspread.pos.utils.TLV;
 import com.dspread.pos.utils.TLVParser;
 import com.dspread.pos.utils.TRACE;
@@ -62,8 +61,12 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
     private PaymentServiceCallback paymentServiceCallback;
     private  String terminalTime;
     private String maskedPAN;
+    private SystemKeyListener systemKeyListener;
+    private PowerManager.WakeLock wakeLock;
+    private ScreenStateReceiver screenStateReceiver;
     @Override
     public int initContentView(Bundle savedInstanceState) {
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         return R.layout.activity_payment;
     }
 
@@ -93,6 +96,9 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
         setupAnimationBasedOnDeviceModel();
         
         startTransaction();
+        systemKeyListener = new SystemKeyListener(this);
+        systemKeyStart();
+        systemKeyListener.startSystemKeyListener();
     }
     
     /**
@@ -441,6 +447,15 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
         LogFileConfig.getInstance(this).readLog();
         PrinterHelper.getInstance().close();
         POSManager.getInstance().unregisterCallbacks();
+        if (systemKeyListener != null) {
+            systemKeyListener.stopSystemKeyListener();
+        }
+        if (wakeLock != null && wakeLock.isHeld()) {
+            wakeLock.release();
+        }
+        if (screenStateReceiver != null) {
+            unregisterReceiver(screenStateReceiver);
+        }
     }
 
     /**
@@ -494,6 +509,75 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
         }
         startActivity(intent);
         finish();
+    }
+
+    private void systemKeyStart() {
+        systemKeyListener.setOnSystemKeyListener(new SystemKeyListener.OnSystemKeyListener() {
+            @Override
+            public void onHomePressed() {
+            }
+
+            @Override
+            public void onMenuPressed() {
+            }
+
+            @Override
+            public void onScreenOff() {
+                registerScreenReceiver();
+                PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
+                wakeLock = powerManager.newWakeLock(
+                        PowerManager.SCREEN_BRIGHT_WAKE_LOCK |
+                                PowerManager.ACQUIRE_CAUSES_WAKEUP,
+                        "ui.payment.PaymentActivity:PaymentScreenOn");
+                wakeLock.acquire();
+
+            }
+            @Override
+            public void onScreenOn() {
+            }
+        });
+    }
+    private void setupScreenBehavior() {
+        getWindow().addFlags(
+                WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
+                        WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
+                        WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON |
+                        WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
+        );
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+            setShowWhenLocked(true);
+            setTurnScreenOn(true);
+        }
+        dismissKeyguard();
+    }
+
+    private void dismissKeyguard() {
+        KeyguardManager keyguardManager = (KeyguardManager) getSystemService(KEYGUARD_SERVICE);
+        if (keyguardManager != null && keyguardManager.isKeyguardLocked()) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                keyguardManager.requestDismissKeyguard(this, null);
+            }
+        }
+    }
+
+    private void registerScreenReceiver() {
+        screenStateReceiver = new ScreenStateReceiver();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Intent.ACTION_SCREEN_ON);
+        filter.addAction(Intent.ACTION_USER_PRESENT);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            registerReceiver(screenStateReceiver, filter, RECEIVER_NOT_EXPORTED);
+        }
+    }
+
+    private class ScreenStateReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (Intent.ACTION_SCREEN_ON.equals(intent.getAction()) ||
+                    Intent.ACTION_USER_PRESENT.equals(intent.getAction())) {
+                setupScreenBehavior();
+            }
+        }
     }
 
 }
