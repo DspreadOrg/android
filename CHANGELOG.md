@@ -1,3 +1,21 @@
+# [8.0.0](https://github.com/DspreadOrg/android/compare/v7.0.4...v8.0.0) (2025-09-23)
+
+
+### Bug Fixes
+
+* automatically turn on the monitor screen after clicking the power button to turn off the screen ([434c202](https://github.com/DspreadOrg/android/commit/434c2020c034fe89d45c096b12b96fa065e4cfaf))
+* modify the display of large amounts ([e842c79](https://github.com/DspreadOrg/android/commit/e842c79375815e3fea56e5f7cc6d9836df8060d6))
+
+
+### Features
+
+* add the different model images ([6a4b2ed](https://github.com/DspreadOrg/android/commit/6a4b2ed24adb3f856a44a621b16cc2b7690e81cf))
+
+
+### BREAKING CHANGES
+
+* update the demo UI
+
 ## [7.0.4](https://github.com/DspreadOrg/android/compare/v7.0.3...v7.0.4) (2025-09-19)
 
 
