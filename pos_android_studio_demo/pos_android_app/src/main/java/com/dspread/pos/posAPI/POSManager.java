@@ -54,6 +54,7 @@ public class POSManager {
 
     /**
      * Initialize POSManager with application context
+     *
      * @param context Application context
      */
     public static void init(Context context) {
@@ -73,6 +74,7 @@ public class POSManager {
 
     /**
      * Get singleton instance of POSManager
+     *
      * @return POSManager instance
      */
     public static POSManager getInstance() {
@@ -84,8 +86,9 @@ public class POSManager {
 
     /**
      * Connect to POS device
+     *
      * @param deviceAddress Device address (Bluetooth address or USB port)
-     * @param callback Callback to handle connection events
+     * @param callback      Callback to handle connection events
      */
     public void connect(String deviceAddress, ConnectionServiceCallback callback) {
         connectLatch = new CountDownLatch(1);
@@ -106,23 +109,23 @@ public class POSManager {
     }
 
     public void connect(String deviceAddress){
-            if(!deviceAddress.isEmpty()){
-                if(deviceAddress.contains(":")){
-                    posType = POS_TYPE.BLUETOOTH;
-                    initMode(QPOSService.CommunicationMode.BLUETOOTH);
-                    pos.setDeviceAddress(deviceAddress);
-                    pos.connectBluetoothDevice(true, 25, deviceAddress);
-                }else {
-                    posType = POS_TYPE.USB;
-                    UsbDevice usbDevice = USBClass.getMdevices().get(deviceAddress);
-                    initMode(QPOSService.CommunicationMode.USB_OTG_CDC_ACM);
-                    pos.openUsb(usbDevice);
-                }
+        if(!deviceAddress.isEmpty()){
+            if(deviceAddress.contains(":")){
+                posType = POS_TYPE.BLUETOOTH;
+                initMode(QPOSService.CommunicationMode.BLUETOOTH);
+                pos.setDeviceAddress(deviceAddress);
+                pos.connectBluetoothDevice(true, 25, deviceAddress);
             }else {
-                posType = POS_TYPE.UART;
-                initMode(QPOSService.CommunicationMode.UART);
-                pos.openUart();
+                posType = POS_TYPE.USB;
+                UsbDevice usbDevice = USBClass.getMdevices().get(deviceAddress);
+                initMode(QPOSService.CommunicationMode.USB_OTG_CDC_ACM);
+                pos.openUsb(usbDevice);
             }
+        }else {
+            posType = POS_TYPE.UART;
+            initMode(QPOSService.CommunicationMode.UART);
+            pos.openUart();
+        }
     }
 
     public void initMode(QPOSService.CommunicationMode mode) {
@@ -141,7 +144,7 @@ public class POSManager {
         return pos;
     }
 
-    public void clearPosService(){
+    public void clearPosService() {
         pos = null;
     }
 
@@ -152,34 +155,37 @@ public class POSManager {
 
     /**
      * Check if device is ready for transaction
+     *
      * @return true if device is connected and ready
      */
     public boolean isDeviceReady() {
         return pos != null;
     }
 
-    public void setDeviceAddress(String address){
+    public void setDeviceAddress(String address) {
         pos.setDeviceAddress(address);
     }
 
-    public QPOSService.TransactionType getTransType(){
-        String transactionTypeString = SPUtils.getInstance().getString("transactionType","");
+    public QPOSService.TransactionType getTransType() {
+        String transactionTypeString = SPUtils.getInstance().getString("transactionType", "");
         if (transactionTypeString.isEmpty()) {
             transactionTypeString = "GOODS";
         }
         return HandleTxnsResultUtils.getTransactionType(transactionTypeString);
     }
-    public QPOSService.CardTradeMode getCardTradeMode(){
-        String modeName = SPUtils.getInstance().getString("cardMode","");
+
+    public QPOSService.CardTradeMode getCardTradeMode() {
+        String modeName = SPUtils.getInstance().getString("cardMode", "");
+
         QPOSService.CardTradeMode cardTradeMode;
-        if(modeName.isEmpty()){
-            if(DeviceUtils.isSmartDevices()){
+        if (modeName.isEmpty()) {
+            if (DeviceUtils.isSmartDevices()) {
 //                pos.setCardTradeMode(QPOSService.CardTradeMode.SWIPE_TAP_INSERT_CARD_NOTUP);
                 cardTradeMode = QPOSService.CardTradeMode.SWIPE_TAP_INSERT_CARD_NOTUP;
-            }else {
+            } else {
                 cardTradeMode = QPOSService.CardTradeMode.SWIPE_TAP_INSERT_CARD;
             }
-        }else {
+        } else {
             cardTradeMode = TransCardMode.valueOf(modeName).getCardTradeModeValue();
         }
         return cardTradeMode;
@@ -187,119 +193,120 @@ public class POSManager {
 
     /**
      * Start a payment transaction
-     * @param amount Transaction amount
+     *
+     * @param amount   Transaction amount
      * @param callback Callback to handle payment events
      */
-    public void startTransaction(String amount,PaymentServiceCallback callback){
-        if(!isDeviceReady()){
+    public void startTransaction(String amount, PaymentServiceCallback callback) {
+        if (!isDeviceReady()) {
             return;
         }
         getDeviceId();
-        if(callback != null) {
+        if (callback != null) {
             registerPaymentCallback(callback);
         }
 
         int currencyCode = SPUtils.getInstance().getInt("currencyCode",156);
-            pos.setCardTradeMode(getCardTradeMode());
-            pos.setAmount(amount, "", String.valueOf(currencyCode), getTransType());
-            pos.doTrade(60);
+        pos.setCardTradeMode(getCardTradeMode());
+        pos.setAmount(amount, "", String.valueOf(currencyCode), getTransType());
+        pos.doTrade(60);
     }
 
     public void getDeviceId(){
-            Hashtable<String, Object> posIdTable = pos.syncGetQposId(5);
-            String posId = posIdTable.get("posId") == null ? "" : (String) posIdTable.get("posId");
-            SPUtils.getInstance().put("posID", posId);
-            TRACE.i("posid :" + SPUtils.getInstance().getString("posID"));
+        Hashtable<String, Object> posIdTable = pos.syncGetQposId(5);
+        String posId = posIdTable.get("posId") == null ? "" : (String) posIdTable.get("posId");
+        SPUtils.getInstance().put("posID", posId);
+        TRACE.i("posid :" + SPUtils.getInstance().getString("posID"));
     }
 
     /**
      * Cancel ongoing transaction
      */
-    public void cancelTransaction(){
-        if(pos != null){
+    public void cancelTransaction() {
+        if (pos != null) {
             pos.cancelTrade();
         }
     }
-    
-    public void sendTime(String terminalTime){
+
+    public void sendTime(String terminalTime) {
         pos.sendTime(terminalTime);
     }
-    
-    public void selectEmvApp(int position){
+
+    public void selectEmvApp(int position) {
         pos.selectEmvApp(position);
     }
-    
-    public void cancelSelectEmvApp(){
-        if(pos!=null) {
+
+    public void cancelSelectEmvApp() {
+        if (pos != null) {
             pos.cancelSelectEmvApp();
         }
     }
-    
-    public void pinMapSync(String value, int timeout){
-        if(pos!=null) {
+
+    public void pinMapSync(String value, int timeout) {
+        if (pos != null) {
             pos.pinMapSync(value, timeout);
         }
     }
-    
-    public void cancelPin(){
-        if(pos!=null) {
+
+    public void cancelPin() {
+        if (pos != null) {
             pos.cancelPin();
         }
     }
 
-    public boolean isOnlinePin(){
+    public boolean isOnlinePin() {
         return pos.isOnlinePin();
     }
 
-    public int getCvmPinTryLimit(){
+    public int getCvmPinTryLimit() {
         return pos.getCvmPinTryLimit();
     }
-    
-    public void bypassPin(){
-        if (pos!=null) {
+
+    public void bypassPin() {
+        if (pos != null) {
             pos.sendPin("".getBytes());
         }
     }
-    
-    public void sendCvmPin(String pinBlock, boolean isEncrypted){
-        if(pos!=null) {
+
+    public void sendCvmPin(String pinBlock, boolean isEncrypted) {
+        if (pos != null) {
             pos.sendCvmPin(pinBlock, isEncrypted);
         }
     }
 
-    public Hashtable<String,String> getEncryptData(){
+    public Hashtable<String, String> getEncryptData() {
         return pos.getEncryptData();
     }
 
-    public Hashtable<String, String> getNFCBatchData(){
+    public Hashtable<String, String> getNFCBatchData() {
         return pos.getNFCBatchData();
     }
-    
-    public void sendOnlineProcessResult(String tlv){
-        if(pos!=null) {
+
+    public void sendOnlineProcessResult(String tlv) {
+        if (pos != null) {
             pos.sendOnlineProcessResult(tlv);
         }
     }
 
-    public Hashtable<String, String> anlysEmvIccData(String tlv){
+    public Hashtable<String, String> anlysEmvIccData(String tlv) {
         return pos.anlysEmvIccData(tlv);
     }
 
-    public void updateEMVConfig(String fileName){
+    public void updateEMVConfig(String fileName) {
         //ex: emv_profile_tlv.xml
-        pos.updateEMVConfigByXml(new String(FileUtils.readAssetsLine(fileName,context)));
+        pos.updateEMVConfigByXml(new String(FileUtils.readAssetsLine(fileName, context)));
     }
 
-    public void updateDeviceFirmware(Activity activity, String blueTootchAddress){
+    public void updateDeviceFirmware(Activity activity, String blueTootchAddress) {
         if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
             //request permission
             ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1001);
         } else {
             byte[] data = FileUtils.readAssetsLine("CR100_master.asc", activity);
-            if(data != null){
+            if (data != null) {
                 int updateResult = pos.updatePosFirmware(data, blueTootchAddress);
-                if(updateResult== -1){
+                if (updateResult == -1) {
                     Toast.makeText(activity, "please keep the device charging", Toast.LENGTH_LONG).show();
                 }
             }
@@ -318,10 +325,10 @@ public class POSManager {
             pos.closeUart();
         } else if (posType == POS_TYPE.USB) {
             pos.closeUsb();
-        }else {
+        } else {
             pos.disconnectBT();
         }
-        SPUtils.getInstance().put("deviceAddress","");
+        SPUtils.getInstance().put("deviceAddress", "");
         clearPosService();
     }
 
@@ -350,7 +357,7 @@ public class POSManager {
 
     private void notifyConnectionCallbacks(CallbackAction<ConnectionServiceCallback> action) {
         mainHandler.post(() -> {
-            for (ConnectionServiceCallback  callback : connectionCallbacks) {
+            for (ConnectionServiceCallback callback : connectionCallbacks) {
                 try {
                     action.execute(callback);
                 } catch (Exception e) {
@@ -422,7 +429,7 @@ public class POSManager {
                 paymentResult.setTransactionType(result.name());
                 notifyTransactionCallbacks(cb -> cb.onTransactionCompleted(paymentResult));
             } else {
-                String msg = HandleTxnsResultUtils.getTradeResultMessage(result,context);
+                String msg = HandleTxnsResultUtils.getTradeResultMessage(result, context);
                 notifyTransactionCallbacks(cb -> cb.onTransactionFailed(msg, null));
             }
         }
@@ -478,7 +485,7 @@ public class POSManager {
 
         @Override
         public void onError(QPOSService.Error errorState) {
-            notifyTransactionCallbacks(cb -> cb.onTransactionFailed(errorState.name(),null));
+            notifyTransactionCallbacks(cb -> cb.onTransactionFailed(errorState.name(), null));
         }
 
         @Override
@@ -489,7 +496,7 @@ public class POSManager {
 
         @Override
         public void onEmvICCExceptionData(String tlv) {
-            notifyTransactionCallbacks(cb -> cb.onTransactionFailed("Decline",tlv));
+            notifyTransactionCallbacks(cb -> cb.onTransactionFailed("Decline", tlv));
         }
 
         @Override
@@ -509,12 +516,12 @@ public class POSManager {
 
         @Override
         public void onQposRequestPinResult(List<String> dataList, int offlineTime) {
-            notifyTransactionCallbacks(cb -> cb.onQposRequestPinResult(dataList,offlineTime));
+            notifyTransactionCallbacks(cb -> cb.onQposRequestPinResult(dataList, offlineTime));
         }
 
         @Override
         public void onTradeCancelled() {
-            notifyTransactionCallbacks(cb -> cb.onTransactionFailed("Cancel",null));
+            notifyTransactionCallbacks(cb -> cb.onTransactionFailed("Cancel", null));
         }
     }
 

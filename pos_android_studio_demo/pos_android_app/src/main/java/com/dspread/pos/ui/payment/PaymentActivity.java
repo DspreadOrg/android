@@ -110,7 +110,13 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
         if ("D80".equals(deviceModel)) {
             binding.animationView.setAnimation("D80_checkCard.json");
             binding.animationView.setImageAssetsFolder("D80_images/");
-        } else {
+        } else if("D50".equals(deviceModel)){
+            binding.animationView.setAnimation("D50_checkCard.json");
+            binding.animationView.setImageAssetsFolder("D50_images/");
+        }else if("D60".equals(deviceModel)){
+            binding.animationView.setAnimation("D60_checkCard.json");
+            binding.animationView.setImageAssetsFolder("D60_images/");
+        }else {//D30
             binding.animationView.setAnimation("D30_checkCard.json");
             binding.animationView.setImageAssetsFolder("D30_images/");
         }
