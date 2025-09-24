@@ -1,3 +1,10 @@
+## [8.0.1](https://github.com/DspreadOrg/android/compare/v8.0.0...v8.0.1) (2025-09-24)
+
+
+### Bug Fixes
+
+* make it compatible with MKSK mode ([906160d](https://github.com/DspreadOrg/android/commit/906160dd58ce61106e420a1739f7e3db4e5a9471))
+
 # [8.0.0](https://github.com/DspreadOrg/android/compare/v7.0.4...v8.0.0) (2025-09-23)
 
 
