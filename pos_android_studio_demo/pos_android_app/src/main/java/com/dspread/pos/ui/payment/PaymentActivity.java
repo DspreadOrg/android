@@ -376,7 +376,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
                     }
                     List<TLV> list = TLVParser.parse(result.getTlv());
                     TLV tlvpan = TLVParser.searchTLV(list, "C4");
-                    paymentStatus(amount,tlvpan.value,terminalTime);
+                    paymentStatus(amount,tlvpan == null? paymentModel.getCardNo() : tlvpan.value,terminalTime);
                 }
             }
         }
@@ -405,15 +405,22 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
             viewModel.showPinpad.set(false);
             viewModel.startLoading(getString(R.string.online_process_requested));
             Hashtable<String, String> decodeData = POSManager.getInstance().anlysEmvIccData(tlv);
-
             PaymentModel paymentModel = new PaymentModel();
             paymentModel.setAmount(amount);
-            List<TLV> tlvList = TLVParser.parse(tlv);
-            TLV cardNoTlv = TLVParser.searchTLV(tlvList, "C4");
-            String cardNo = cardNoTlv == null?"":cardNoTlv.value;
-            cardNo = cardNo.substring(0,cardNo.length()-1);
+            String cardNo = "";
+            String cardOrg = "";
+            if("32".equals(decodeData.get("formatID"))){
+                cardNo = decodeData.get("maskedPAN");
+            } else {
+                List<TLV> tlvList = TLVParser.parse(tlv);
+                TLV cardNoTlv = TLVParser.searchTLV(tlvList, "C4");
+                cardNo = cardNoTlv == null?"":cardNoTlv.value;
+                cardNo = cardNo.substring(0,cardNo.length()-1);
+
+            }
+            cardOrg = AdvancedBinDetector.detectCardType(cardNo).getDisplayName();
             paymentModel.setCardNo(cardNo);
-            paymentModel.setCardOrg(AdvancedBinDetector.detectCardType(cardNo).getDisplayName());
+            paymentModel.setCardOrg(cardOrg);
             viewModel.requestOnlineAuth(true, paymentModel);
         }
 
