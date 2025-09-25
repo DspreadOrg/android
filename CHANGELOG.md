@@ -1,3 +1,10 @@
+## [8.0.2](https://github.com/DspreadOrg/android/compare/v8.0.1...v8.0.2) (2025-09-25)
+
+
+### Bug Fixes
+
+* update the sdk version to 7.7.1 ([a916879](https://github.com/DspreadOrg/android/commit/a9168792d02badf4c51423541f0b3e9e65eac077))
+
 ## [8.0.1](https://github.com/DspreadOrg/android/compare/v8.0.0...v8.0.1) (2025-09-24)
 
 
