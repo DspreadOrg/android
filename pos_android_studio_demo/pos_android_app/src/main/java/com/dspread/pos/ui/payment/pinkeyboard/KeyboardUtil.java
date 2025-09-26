@@ -137,7 +137,7 @@ public class KeyboardUtil {
             mKeyboardView.init(editText, mWindow, keyBoardType, dataList);
         }
         //display custom keyboard
-        if (mWindow != null && !mWindow.isShowing()) {
+        if (mWindow != null && !mWindow.isShowing() && !mActivity.isFinishing()) {
             mWindow.showAtLocation(mParent, Gravity.BOTTOM, 0, 0);
         } else {
 //            mWindow = null;
