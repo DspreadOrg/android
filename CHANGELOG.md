@@ -1,3 +1,10 @@
+## [8.0.4](https://github.com/DspreadOrg/android/compare/v8.0.3...v8.0.4) (2025-09-26)
+
+
+### Bug Fixes
+
+* fix the mutiple toast of usb permission ([d2de1ba](https://github.com/DspreadOrg/android/commit/d2de1ba6c86ba86727029f2a9f69ec0177465a94))
+
 ## [8.0.3](https://github.com/DspreadOrg/android/compare/v8.0.2...v8.0.3) (2025-09-26)
 
 
