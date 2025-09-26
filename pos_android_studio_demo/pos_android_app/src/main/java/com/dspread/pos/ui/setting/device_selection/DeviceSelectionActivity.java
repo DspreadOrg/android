@@ -283,15 +283,9 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
             return;
         }
         USBClass usb = new USBClass();
-        ArrayList<String> deviceList = usb.GetUSBDevices(getApplication());
-        if (deviceList != null) {
-            openUsbDeviceDialog(deviceList);
-        }
         usb.setUsbPermissionListener(new USBClass.UsbPermissionListener() {
             @Override
             public void onPermissionGranted(UsbDevice device) {
-                // Permission obtained successfully, handle your business logic here
-                USBClass usb = new USBClass();
                 ArrayList<String> deviceList = usb.GetUSBDevices(getApplication());
                 openUsbDeviceDialog(deviceList);
             }
@@ -301,7 +295,11 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
                 Toast.makeText(getApplication(), "No Permission", Toast.LENGTH_SHORT).show();
             }
         });
-
+        
+        ArrayList<String> deviceList = usb.GetUSBDevices(getApplication());
+        if (deviceList != null) {
+            openUsbDeviceDialog(deviceList);
+        }
     }
 
     private void openUsbDeviceDialog(ArrayList<String> deviceList) {
