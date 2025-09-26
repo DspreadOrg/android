@@ -1,3 +1,10 @@
+## [8.0.3](https://github.com/DspreadOrg/android/compare/v8.0.2...v8.0.3) (2025-09-26)
+
+
+### Bug Fixes
+
+* check if the activity is ending if it is popupwindow will no longer be displayed ([5d96738](https://github.com/DspreadOrg/android/commit/5d96738823f9a6dc161ca94143a89bd14a040700))
+
 ## [8.0.2](https://github.com/DspreadOrg/android/compare/v8.0.1...v8.0.2) (2025-09-25)
 
 
