@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Handler;
 import android.os.RemoteException;
 import android.util.TypedValue;
@@ -21,6 +22,7 @@ import com.dspread.pos.common.http.api.RequestOnlineAuthAPI;
 import com.dspread.pos.common.http.model.AuthRequest;
 import com.dspread.pos.posAPI.POSManager;
 import com.dspread.pos.printerAPI.PrinterHelper;
+import com.dspread.pos.utils.DevUtils;
 import com.dspread.pos.utils.DeviceUtils;
 import com.dspread.pos.utils.DialogUtils;
 import com.dspread.pos.utils.TLV;
@@ -256,7 +258,7 @@ public class PaymentViewModel extends BaseAppViewModel {
 //    }
 
     public void requestOnlineAuth(boolean isICC, PaymentModel paymentModel) {
-        AuthRequest authRequest = createAuthRequest(paymentModel);
+        AuthRequest authRequest = createAuthRequest(isICC,paymentModel);
         addSubscribe(apiService.sendMessage(AUTHFROMISSUER_URL, authRequest)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -290,8 +292,8 @@ public class PaymentViewModel extends BaseAppViewModel {
                 }));
     }
 
-    private AuthRequest createAuthRequest(PaymentModel paymentModel) {
-        String deviceSn = SPUtils.getInstance().getString("posID", "");
+    private AuthRequest createAuthRequest(boolean isICC,PaymentModel paymentModel) {
+        /*String deviceSn = SPUtils.getInstance().getString("posID", "");
         String transactionType = SPUtils.getInstance().getString("transactionType", "");
         String amount = paymentModel.getAmount();
         String maskPan = paymentModel.getCardNo();
@@ -299,5 +301,35 @@ public class PaymentViewModel extends BaseAppViewModel {
         String payType = "Card";
         String transResult = "Paid";
         return new AuthRequest(deviceSn, amount, maskPan, cardOrg, transactionType, payType,transResult, DeviceUtils.getDeviceDate(),DeviceUtils.getDeviceTime());
+   */
+        String deviceSn = SPUtils.getInstance().getString("posID", "");
+        String transactionType = SPUtils.getInstance().getString("transactionType", "");
+        String amount = paymentModel.getAmount();
+        String maskPan = paymentModel.getCardNo();
+        String cardOrg = paymentModel.getCardOrg();
+        String payType = "Card";
+        String transResult = "Paid";
+
+        //Upload the app version, OS version, and card reading time for the purpose of tracking and analyzing card reading performance.
+        String appVersion = DevUtils.getPackageVersionName(context, context.getPackageName());
+        String osVersion = Build.DISPLAY;
+        String model = DeviceUtils.getPhoneModel();
+        String tradeMode = "";
+        int pollToEntryPinTime = 0;
+        int pinEntryToFinishTime = 0;
+        int txnTotalTime = 0;
+        if (isICC){
+            tradeMode = "ICC";
+        }else{
+            tradeMode = "NFC";
+        }
+        if (POSManager.getInstance().isInputPin){
+            pollToEntryPinTime = (int) (POSManager.getInstance().startInputPinTime - POSManager.getInstance().startPollCardTime);
+            pinEntryToFinishTime = (int) (POSManager.getInstance().startRequestOnlineTime - POSManager.getInstance().finishInputPinTime);
+            txnTotalTime = pollToEntryPinTime + pinEntryToFinishTime;
+        }else {
+            txnTotalTime = (int) (POSManager.getInstance().startRequestOnlineTime - POSManager.getInstance().startPollCardTime);
+        }
+        return new AuthRequest(deviceSn, amount, maskPan, cardOrg, transactionType, payType,transResult, DeviceUtils.getDeviceDate(),DeviceUtils.getDeviceTime(),pollToEntryPinTime,pinEntryToFinishTime,txnTotalTime,tradeMode,appVersion,osVersion,model);
     }
 }
