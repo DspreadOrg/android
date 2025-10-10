@@ -521,7 +521,7 @@ public class POSManager {
 
         @Override
         public void onTradeCancelled() {
-            notifyTransactionCallbacks(cb -> cb.onTransactionFailed("Cancel", null));
+//            notifyTransactionCallbacks(cb -> cb.onTransactionFailed("Cancel", null));
         }
     }
 
