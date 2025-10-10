@@ -1,3 +1,10 @@
+## [8.0.6](https://github.com/DspreadOrg/android/compare/v8.0.5...v8.0.6) (2025-10-10)
+
+
+### Bug Fixes
+
+* update the MSR txns logic ([3a3e21e](https://github.com/DspreadOrg/android/commit/3a3e21e1368f031011c6557d1f1d1f195fa660ae))
+
 ## [8.0.5](https://github.com/DspreadOrg/android/compare/v8.0.4...v8.0.5) (2025-10-10)
 
 
