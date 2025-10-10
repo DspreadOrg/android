@@ -471,48 +471,6 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
         }
     }
 
-    /**
-     * Convert receipt TextView to Bitmap for printing
-     * @param listener Callback when bitmap is ready
-     */
-//    private void convertReceiptToBitmap(final BitmapReadyListener listener) {
-//        binding.tvReceipt.post(new Runnable() {
-//            @Override
-//            public void run() {
-//                if (binding.tvReceipt.getWidth() <= 0) {
-//                    binding.tvReceipt.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-//                        @Override
-//                        public void onGlobalLayout() {
-//                            binding.tvReceipt.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-//                            Bitmap bitmap = viewModel.convertReceiptToBitmap(binding.tvReceipt);
-//                            if (listener != null) {
-//                                listener.onBitmapReady(bitmap);
-//                            }
-//                        }
-//                    });
-//                } else {
-//                    Bitmap bitmap = viewModel.convertReceiptToBitmap(binding.tvReceipt);
-//                    if (listener != null) {
-//                        listener.onBitmapReady(bitmap);
-//                    }
-//                }
-//            }
-//        });
-//    }
-
-    /**
-     * Handle receipt printing
-     * Converts receipt view to bitmap and shows print button
-     */
-//    private void handleSendReceipt() {
-//        convertReceiptToBitmap(bitmap -> {
-//            if (bitmap != null) {
-//                binding.btnSendReceipt.setVisibility(View.VISIBLE);
-//            } else {
-//                binding.btnSendReceipt.setVisibility(View.GONE);
-//            }
-//        });
-//    }
     private void paymentStatus(String amount, String maskedPAN,String terminalTime){
         Intent intent = new Intent(PaymentActivity.this, PaymentStatusActivity.class);
         if(amount!=null &&!"".equals(amount)) {

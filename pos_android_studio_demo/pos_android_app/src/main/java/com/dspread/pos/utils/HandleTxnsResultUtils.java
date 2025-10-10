@@ -46,6 +46,7 @@ public class HandleTxnsResultUtils {
         model.setAmount(result.getAmount());
         model.setCardNo(result.getMaskedPAN());
         model.setCardOrg(AdvancedBinDetector.detectCardType(result.getMaskedPAN()).getDisplayName());
+        viewModel.startLoading("processing...");
         viewModel.requestOnlineAuth(false, model);
     }
 

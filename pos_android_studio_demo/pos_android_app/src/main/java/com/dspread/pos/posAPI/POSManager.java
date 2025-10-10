@@ -418,7 +418,7 @@ public class POSManager {
             setICC(false);
             if (result == QPOSService.DoTradeResult.ICC) {
                 setICC(true);
-                notifyTransactionCallbacks(cb -> cb.onReturnCardInserted());
+                notifyTransactionCallbacks(PaymentServiceCallback::onReturnCardInserted);
                 paymentResult.setTransactionType(result.name());
                 if (pos != null) {
                     pos.doEmvApp(QPOSService.EmvOption.START);
@@ -428,7 +428,9 @@ public class POSManager {
                 paymentResult = HandleTxnsResultUtils.handleTransactionResult(paymentResult,decodeData);
                 paymentResult.setTransactionType(result.name());
                 notifyTransactionCallbacks(cb -> cb.onTransactionCompleted(paymentResult));
-            } else {
+            } else if(result == QPOSService.DoTradeResult.BAD_SWIPE){
+                paymentResult.setTransactionType(result.name());
+            }else {
                 String msg = HandleTxnsResultUtils.getTradeResultMessage(result, context);
                 notifyTransactionCallbacks(cb -> cb.onTransactionFailed(msg, null));
             }
