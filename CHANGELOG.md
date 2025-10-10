@@ -1,3 +1,10 @@
+## [8.0.5](https://github.com/DspreadOrg/android/compare/v8.0.4...v8.0.5) (2025-10-10)
+
+
+### Bug Fixes
+
+* update the cancle trade ui ([4a47a35](https://github.com/DspreadOrg/android/commit/4a47a35cfbbf0d9abbed06b5c8de5aba8bca8532))
+
 ## [8.0.4](https://github.com/DspreadOrg/android/compare/v8.0.3...v8.0.4) (2025-09-26)
 
 
