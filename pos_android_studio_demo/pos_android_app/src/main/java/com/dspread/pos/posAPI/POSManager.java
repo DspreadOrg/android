@@ -45,12 +45,6 @@ public class POSManager {
     private POS_TYPE posType;
     private boolean isICC;
 
-    public long startPollCardTime = 0;
-    public long startInputPinTime = 0;
-    public long finishInputPinTime = 0;
-    public long startRequestOnlineTime = 0;
-    public boolean isInputPin = false;
-
     private POSManager(Context context) {
         this.context = context.getApplicationContext();
         this.listener = new QPOSServiceListener();
@@ -99,6 +93,7 @@ public class POSManager {
     public void connect(String deviceAddress, ConnectionServiceCallback callback) {
         connectLatch = new CountDownLatch(1);
         registerConnectionCallback(callback);
+
         // start connect
         connect(deviceAddress);
         try {
@@ -110,22 +105,23 @@ public class POSManager {
             Thread.currentThread().interrupt();
             throw new IllegalStateException("Connection interrupted", e);
         }
+
     }
 
-    public void connect(String deviceAddress) {
-        if (!deviceAddress.isEmpty()) {
-            if (deviceAddress.contains(":")) {
+    public void connect(String deviceAddress){
+        if(!deviceAddress.isEmpty()){
+            if(deviceAddress.contains(":")){
                 posType = POS_TYPE.BLUETOOTH;
                 initMode(QPOSService.CommunicationMode.BLUETOOTH);
                 pos.setDeviceAddress(deviceAddress);
                 pos.connectBluetoothDevice(true, 25, deviceAddress);
-            } else {
+            }else {
                 posType = POS_TYPE.USB;
                 UsbDevice usbDevice = USBClass.getMdevices().get(deviceAddress);
                 initMode(QPOSService.CommunicationMode.USB_OTG_CDC_ACM);
                 pos.openUsb(usbDevice);
             }
-        } else {
+        }else {
             posType = POS_TYPE.UART;
             initMode(QPOSService.CommunicationMode.UART);
             pos.openUart();
@@ -209,15 +205,14 @@ public class POSManager {
         if (callback != null) {
             registerPaymentCallback(callback);
         }
-        startPollCardTime = System.currentTimeMillis();
-        isInputPin = false;
-        int currencyCode = SPUtils.getInstance().getInt("currencyCode", 156);
+
+        int currencyCode = SPUtils.getInstance().getInt("currencyCode",156);
         pos.setCardTradeMode(getCardTradeMode());
         pos.setAmount(amount, "", String.valueOf(currencyCode), getTransType());
         pos.doTrade(60);
     }
 
-    public void getDeviceId() {
+    public void getDeviceId(){
         Hashtable<String, Object> posIdTable = pos.syncGetQposId(5);
         String posId = posIdTable.get("posId") == null ? "" : (String) posIdTable.get("posId");
         SPUtils.getInstance().put("posID", posId);
@@ -394,15 +389,15 @@ public class POSManager {
         @Override
         public void onRequestQposConnected() {
             connectLatch.countDown();
-            SPUtils.getInstance().put("device_type", posType.name());
-            SPUtils.getInstance().put("isConnected", true);
+            SPUtils.getInstance().put("device_type",posType.name());
+            SPUtils.getInstance().put("isConnected",true);
             notifyConnectionCallbacks(cb -> cb.onRequestQposConnected());
         }
 
         @Override
         public void onRequestQposDisconnected() {
-            SPUtils.getInstance().put("isConnected", false);
-            SPUtils.getInstance().put("device_type", "");
+            SPUtils.getInstance().put("isConnected",false);
+            SPUtils.getInstance().put("device_type","");
             clearPosService();
             connectLatch.countDown();
             notifyConnectionCallbacks(cb -> cb.onRequestQposDisconnected());
@@ -410,8 +405,8 @@ public class POSManager {
 
         @Override
         public void onRequestNoQposDetected() {
-            SPUtils.getInstance().put("isConnected", false);
-            SPUtils.getInstance().put("device_type", "");
+            SPUtils.getInstance().put("isConnected",false);
+            SPUtils.getInstance().put("device_type","");
             clearPosService();
             connectLatch.countDown();
             notifyConnectionCallbacks(cb -> cb.onRequestNoQposDetected());
@@ -429,14 +424,13 @@ public class POSManager {
                     pos.doEmvApp(QPOSService.EmvOption.START);
                 }
 
-            } else if (result == QPOSService.DoTradeResult.NFC_OFFLINE || result == QPOSService.DoTradeResult.NFC_ONLINE || result == QPOSService.DoTradeResult.MCR) {
-                startRequestOnlineTime = System.currentTimeMillis();
-                paymentResult = HandleTxnsResultUtils.handleTransactionResult(paymentResult, decodeData);
+            }else if(result == QPOSService.DoTradeResult.NFC_OFFLINE || result == QPOSService.DoTradeResult.NFC_ONLINE ||result == QPOSService.DoTradeResult.MCR){
+                paymentResult = HandleTxnsResultUtils.handleTransactionResult(paymentResult,decodeData);
                 paymentResult.setTransactionType(result.name());
                 notifyTransactionCallbacks(cb -> cb.onTransactionCompleted(paymentResult));
-            } else if (result == QPOSService.DoTradeResult.BAD_SWIPE) {
+            } else if(result == QPOSService.DoTradeResult.BAD_SWIPE){
                 paymentResult.setTransactionType(result.name());
-            } else {
+            }else {
                 String msg = HandleTxnsResultUtils.getTradeResultMessage(result, context);
                 notifyTransactionCallbacks(cb -> cb.onTransactionFailed(msg, null));
             }
@@ -447,8 +441,8 @@ public class POSManager {
             String msg = HandleTxnsResultUtils.getTransactionResultMessage(transactionResult, context);
             paymentResult.setStatus(msg);
             if (!msg.isEmpty()) {
-                notifyTransactionCallbacks(cb -> cb.onTransactionFailed(msg, null));
-            } else {
+                notifyTransactionCallbacks(cb -> cb.onTransactionFailed(msg,null));
+            }else {
                 notifyTransactionCallbacks(cb -> cb.onTransactionResult(paymentResult));
             }
 
@@ -471,7 +465,6 @@ public class POSManager {
 
         @Override
         public void onRequestOnlineProcess(String tlv) {
-            startRequestOnlineTime = System.currentTimeMillis();
             notifyTransactionCallbacks(cb -> cb.onRequestOnlineProcess(tlv));
         }
 
@@ -483,8 +476,6 @@ public class POSManager {
 
         @Override
         public void onRequestSetPin(boolean isOfflinePin, int tryNum) {
-            isInputPin = true;
-            startInputPinTime = System.currentTimeMillis();
             notifyTransactionCallbacks(cb -> cb.onRequestSetPin(isOfflinePin, tryNum));
         }
 
@@ -522,16 +513,11 @@ public class POSManager {
 
         @Override
         public void onReturnGetPinInputResult(int num) {
-            if (num == -1) {
-                finishInputPinTime = System.currentTimeMillis();
-            }
             notifyTransactionCallbacks(cb -> cb.onReturnGetPinInputResult(num));
         }
 
         @Override
         public void onQposRequestPinResult(List<String> dataList, int offlineTime) {
-            isInputPin = true;
-            startInputPinTime = System.currentTimeMillis();
             notifyTransactionCallbacks(cb -> cb.onQposRequestPinResult(dataList, offlineTime));
         }
 
