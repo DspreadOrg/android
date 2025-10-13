@@ -15,14 +15,15 @@ import me.goldze.mvvmhabit.binding.command.BindingCommand;
 public class PaymentMethodViewModel extends BaseAppViewModel {
 
     public final ObservableField<String> totalAmount = new ObservableField<>("$88.00");
-
     // 选中的支付方式
     private final MutableLiveData<Integer> selectedPaymentMethod = new MutableLiveData<>();
+
+    public ObservableField<Boolean> isNormalScreen = new ObservableField<>(true);
+    public ObservableField<Boolean> isSmallScreen = new ObservableField<>(false);
 
     public PaymentMethodViewModel(@NonNull Application application) {
         super(application);
     }
-
 
     public BindingCommand closeButton = new BindingCommand(new BindingAction() {
         @Override
@@ -31,7 +32,6 @@ public class PaymentMethodViewModel extends BaseAppViewModel {
             finish();
         }
     });
-
 
 
     // 支付方式点击事件
@@ -53,7 +53,6 @@ public class PaymentMethodViewModel extends BaseAppViewModel {
                 break;
         }
     }
-
 
     private void processCardPayment() {
         // 处理银行卡支付逻辑

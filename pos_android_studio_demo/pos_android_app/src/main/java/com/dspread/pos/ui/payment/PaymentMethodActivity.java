@@ -6,9 +6,9 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.util.DisplayMetrics;
 import android.util.Log;
 
-import com.dspread.pos.ui.scan.ScanCodeActivity;
 import com.dspread.pos.utils.DeviceUtils;
 import com.dspread.pos.utils.TRACE;
 import com.dspread.pos_android_app.BR;
@@ -50,9 +50,19 @@ public class PaymentMethodActivity extends BaseActivity<ActivityPaymentMetholdBi
                 handlePaymentMethodSelection(methodIndex);
             }
         });
+
+        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+        int widthPx = displayMetrics.widthPixels;
+        int heightPx = displayMetrics.heightPixels;
+
+        if (widthPx <= 320 && heightPx <= 240) {
+            viewModel.isSmallScreen.set(true);
+            viewModel.isNormalScreen.set(false);
+        } else {
+            viewModel.isNormalScreen.set(true);
+            viewModel.isSmallScreen.set(false);
+        }
         viewModel.setTotalAmount("$" + DeviceUtils.convertAmountToCents(amount));
-
-
         scanLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
@@ -69,7 +79,6 @@ public class PaymentMethodActivity extends BaseActivity<ActivityPaymentMetholdBi
                     }
                 }
         );
-
     }
 
     private void handlePaymentMethodSelection(int methodIndex) {
@@ -103,7 +112,6 @@ public class PaymentMethodActivity extends BaseActivity<ActivityPaymentMetholdBi
         intent.putExtra("amount", amount);
         startActivity(intent);*/
         TRACE.d("PayMethodActivity startScanCodePayment");
-
         initScanCode();
     }
 
