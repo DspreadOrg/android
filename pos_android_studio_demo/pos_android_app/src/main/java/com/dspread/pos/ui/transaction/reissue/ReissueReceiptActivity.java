@@ -35,6 +35,13 @@ public class ReissueReceiptActivity extends BaseActivity<ActivityReissueReceiptB
     public void initData() {
         super.initData();
         binding.setVariable(BR.viewModel, viewModel);
+        String deviceModel = DeviceUtils.getPhoneModel();
+        if("D70".equals(deviceModel)){
+            viewModel.isD70.set(true);
+        }else{
+            viewModel.isD70.set(false);
+        }
+
         transaction = (Transaction) getIntent().getSerializableExtra("transaction");
 
         String amount = getIntent().getStringExtra("amount");

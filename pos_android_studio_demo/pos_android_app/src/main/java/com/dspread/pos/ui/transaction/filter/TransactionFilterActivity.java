@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.RadioGroup;
 
+import com.dspread.pos.utils.DeviceUtils;
 import com.dspread.pos_android_app.BR;
 import com.dspread.pos_android_app.R;
 import com.dspread.pos_android_app.databinding.ActivityTransactionFilterBinding;
@@ -30,6 +31,12 @@ public class TransactionFilterActivity extends BaseActivity<ActivityTransactionF
     public void initData() {
         super.initData();
         binding.setVariable(BR.viewModel, viewModel);
+        String deviceModel = DeviceUtils.getPhoneModel();
+        if("D70".equals(deviceModel)){
+            viewModel.isD70.set(true);
+        }else{
+            viewModel.isD70.set(false);
+        }
         binding.toolbar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
