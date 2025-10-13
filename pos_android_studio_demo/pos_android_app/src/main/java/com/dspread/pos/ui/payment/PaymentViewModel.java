@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Handler;
 import android.os.RemoteException;
 import android.util.TypedValue;
@@ -64,6 +65,7 @@ public class PaymentViewModel extends BaseAppViewModel {
     public ObservableBoolean showResultStatus = new ObservableBoolean(false);
     public ObservableBoolean TransactionResultStatus = new ObservableBoolean(false);
     public ObservableBoolean cardsInsertedStatus = new ObservableBoolean(false);
+    public ObservableBoolean isD70DisplayScreen = new ObservableBoolean(false);
     public ObservableField<String> receiptContent = new ObservableField<>();
     private Bitmap receiptBitmap;
     private Context mContext;
@@ -110,6 +112,11 @@ public class PaymentViewModel extends BaseAppViewModel {
         transactionResult.set(message);
 //        TransactionResultStatus.set(true);
         cardsInsertedStatus.set(false);
+        if("D70".equals(Build.MODEL)){
+            isD70DisplayScreen.set(true);
+        }else{
+            isD70DisplayScreen.set(false);
+        }
     }
     public  void setTransactionErr(String message){
         TransactionResultStatus.set(true);

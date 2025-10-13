@@ -302,6 +302,7 @@
                     android:layout_height="match_parent"
                     android:gravity="center"
                     android:orientation="vertical"
+                    android:visibility="@{viewModel.isD70DisplayScreen ? View.GONE : View.VISIBLE}"
                     android:padding="16dp">
 
                     <ImageView
@@ -405,6 +406,55 @@
                         android:layout_marginBottom="10dp"
                         android:background="@drawable/bg_more_options_selector"></androidx.appcompat.widget.AppCompatButton>
                     </LinearLayout>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:visibility="@{viewModel.isD70DisplayScreen ? View.VISIBLE : View.GONE}"
+                    android:padding="16dp">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="@{viewModel.isSuccess ? View.GONE : View.VISIBLE}"
+                        android:src="@mipmap/icon_fail"
+                        android:layout_marginEnd="8dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:textStyle="bold"
+                        android:text="@{viewModel.isSuccess ? @string/payment_complete : @string/payment_failed}"
+
+                        android:textColor="@color/black"
+                        android:textSize="24sp"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="bottom"
+                        android:visibility="@{viewModel.isSuccess ? View.GONE : View.VISIBLE}"
+                        android:orientation="vertical"
+                        >
+                        <androidx.appcompat.widget.AppCompatButton
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+
+                            android:text="Back"
+                            android:textAllCaps="false"
+                            android:textSize="25dp"
+                            android:textColor="@color/black"
+                            android:background="@drawable/bg_more_options_selectors"
+                            android:layout_marginBottom="10dp"
+                            binding:onClickCommand="@{viewModel.continueTxnsCommand}"
+                            ></androidx.appcompat.widget.AppCompatButton>
+                    </LinearLayout>
+
+
                 </LinearLayout>
                 <View
                     android:layout_width="match_parent"
