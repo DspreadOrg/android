@@ -13,172 +13,241 @@
             type="com.dspread.pos.ui.payment.PaymentGenerateViewModel" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/grey9"
-        android:padding="16dp">
+        android:orientation="vertical">
 
-        <!-- 顶部区域：退出按钮 -->
-        <ImageButton
-            android:id="@+id/closeButton"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:background="@null"
-            android:contentDescription="Close"
-            android:src="@mipmap/ic_close_black"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
-        <!-- Total Amount Section -->
-        <TextView
-            android:id="@+id/totalLabel"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="Total"
-            android:textColor="@color/black"
-            android:textSize="18sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/closeButton" />
+            android:orientation="vertical"
+            android:visibility="@{viewModel.isSmallScreen?View.VISIBLE:View.GONE}">
 
-        <TextView
-            android:id="@+id/amountValue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:text="@{viewModel.amount}"
-            android:textColor="@color/black"
-            android:textSize="28sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/totalLabel" />
 
-        <!-- QR Code and Payment Methods Container -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <!-- 左侧文本容器 -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_centerVertical="true"
+                    android:orientation="horizontal">
+
+                    <!-- 总金额标题 -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Total"
+                        android:textColor="#ff191e3b"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <!-- 总金额 -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dp_8"
+                        android:autoSizeTextType="uniform"
+                        android:maxLines="1"
+                        android:text="@{viewModel.amount}"
+                        android:textColor="#ff191e3b"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <!-- 关闭按钮 -->
+                <ImageButton
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:background="@null"
+                    android:contentDescription="Close"
+                    android:src="@mipmap/ic_close_black"
+                    binding:onClickCommand="@{viewModel.closeButton}" />
+
+            </RelativeLayout>
+        </LinearLayout>
+
+
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/container"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:background="@drawable/rounded_background"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/amountValue"
-            app:layout_constraintVertical_bias="0">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/grey9"
+            android:padding="16dp">
 
-            <!-- QR Code Section -->
-            <ImageView
-                android:id="@+id/qrCodeImageView"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:adjustViewBounds="true"
-                android:scaleType="centerInside"
-                app:layout_constraintDimensionRatio="1:1"
+            <!-- 顶部区域：退出按钮 -->
+            <ImageButton
+                android:id="@+id/closeButton"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@null"
+                android:contentDescription="Close"
+                android:src="@mipmap/ic_close_black"
+                android:visibility="@{viewModel.isNormalScreen?View.VISIBLE:View.GONE}"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintHeight_percent="0.5"
-                tools:src="@drawable/ic_printer" />
+                app:layout_constraintTop_toTopOf="parent" />
 
-            <!-- Open Payment App Text -->
+            <!-- Total Amount Section -->
             <TextView
-                android:id="@+id/openAppText"
+                android:id="@+id/totalLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:text="Open Payment App"
-                android:textColor="#ff030303"
-                android:textSize="19sp"
+                android:layout_marginTop="24dp"
+                android:text="Total"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:visibility="@{viewModel.isNormalScreen?View.VISIBLE:View.GONE}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/qrCodeImageView" />
+                app:layout_constraintTop_toBottomOf="@id/closeButton" />
 
-            <!-- Payment Icons Section -->
+            <TextView
+                android:id="@+id/amountValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@{viewModel.amount}"
+                android:textColor="@color/black"
+                android:textSize="28sp"
+                android:textStyle="bold"
+                android:visibility="@{viewModel.isNormalScreen?View.VISIBLE:View.GONE}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/totalLabel" />
+
+            <!-- QR Code and Payment Methods Container -->
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/paymentIconsLayout"
+                android:id="@+id/container"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_20"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/openAppText">
-
-                <ImageView
-                    android:id="@+id/visaIcon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@mipmap/ic_visa"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/mastercardIcon"
-                    app:layout_constraintHorizontal_chainStyle="spread"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <ImageView
-                    android:id="@+id/mastercardIcon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@mipmap/ic_master"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/amexIcon"
-                    app:layout_constraintStart_toEndOf="@id/visaIcon"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <ImageView
-                    android:id="@+id/amexIcon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@mipmap/ic_amex"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/discoverIcon"
-                    app:layout_constraintStart_toEndOf="@id/mastercardIcon"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <ImageView
-                    android:id="@+id/discoverIcon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@mipmap/ic_discover"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/jcbIcon"
-                    app:layout_constraintStart_toEndOf="@id/amexIcon"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <ImageView
-                    android:id="@+id/jcbIcon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@mipmap/ic_jcb"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/discoverIcon"
-                    app:layout_constraintTop_toTopOf="parent" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <!-- Check Payment Status Button -->
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/checkStatusButton"
-                style="@style/Widget.AppCompat.Button.Borderless"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="18dp"
-                android:background="@drawable/white_red_border_button"
-                android:stateListAnimator="@null"
-                android:text="check payment status"
-                android:textAllCaps="false"
-                android:textColor="@color/red"
-                android:textSize="19sp"
+                android:layout_height="0dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/rounded_background"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/paymentIconsLayout"
-                binding:onClickCommand="@{viewModel.checkPayStatus}" />
+                app:layout_constraintTop_toBottomOf="@id/amountValue"
+                app:layout_constraintVertical_bias="0">
+
+                <!-- QR Code Section -->
+                <ImageView
+                    android:id="@+id/qrCodeImageView"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:adjustViewBounds="true"
+                    android:scaleType="centerInside"
+                    app:layout_constraintDimensionRatio="1:1"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHeight_percent="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:src="@drawable/ic_printer" />
+
+                <!-- Open Payment App Text -->
+                <TextView
+                    android:id="@+id/openAppText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text="Open Payment App"
+                    android:textColor="#ff030303"
+                    android:textSize="19sp"
+                    android:visibility="@{viewModel.isNormalScreen?View.VISIBLE:View.GONE}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/qrCodeImageView" />
+
+                <!-- Payment Icons Section -->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/paymentIconsLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_20"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/openAppText">
+
+                    <ImageView
+                        android:id="@+id/visaIcon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@mipmap/ic_visa"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/mastercardIcon"
+                        app:layout_constraintHorizontal_chainStyle="spread"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageView
+                        android:id="@+id/mastercardIcon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@mipmap/ic_master"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/amexIcon"
+                        app:layout_constraintStart_toEndOf="@id/visaIcon"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageView
+                        android:id="@+id/amexIcon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@mipmap/ic_amex"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/discoverIcon"
+                        app:layout_constraintStart_toEndOf="@id/mastercardIcon"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageView
+                        android:id="@+id/discoverIcon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@mipmap/ic_discover"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/jcbIcon"
+                        app:layout_constraintStart_toEndOf="@id/amexIcon"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageView
+                        android:id="@+id/jcbIcon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@mipmap/ic_jcb"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/discoverIcon"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <!-- Check Payment Status Button -->
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/checkStatusButton"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="18dp"
+                    android:background="@drawable/white_red_border_button"
+                    android:stateListAnimator="@null"
+                    android:text="check payment status"
+                    android:textAllCaps="false"
+                    android:textColor="@color/red"
+                    android:textSize="19sp"
+                    android:visibility="@{viewModel.isNormalScreen?View.VISIBLE:View.GONE}"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/paymentIconsLayout"
+                    binding:onClickCommand="@{viewModel.checkPayStatus}" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 </layout>

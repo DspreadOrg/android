@@ -14,13 +14,19 @@ import com.journeyapps.barcodescanner.BarcodeEncoder;
 import java.util.UUID;
 
 import androidx.annotation.NonNull;
+import androidx.databinding.ObservableField;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import me.goldze.mvvmhabit.binding.command.BindingAction;
 import me.goldze.mvvmhabit.binding.command.BindingCommand;
 import me.goldze.mvvmhabit.bus.event.SingleLiveEvent;
 
 public class PaymentGenerateViewModel extends BaseAppViewModel {
     private final MutableLiveData<String> amount = new MutableLiveData<>();
+
+    public ObservableField<Boolean> isSmallScreen = new ObservableField<>(true);
+
+    public ObservableField<Boolean> isNormalScreen = new ObservableField<>(true);
     public SingleLiveEvent<Boolean> paymentResultEvent = new SingleLiveEvent<>();
     private final MutableLiveData<Bitmap> qrCodeBitmap = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>();
@@ -112,6 +118,14 @@ public class PaymentGenerateViewModel extends BaseAppViewModel {
             return "$0.00";
         }
     }
+
+
+    public BindingCommand closeButton = new BindingCommand(new BindingAction() {
+        @Override
+        public void call() {
+            finish();
+        }
+    });
 
 
 
