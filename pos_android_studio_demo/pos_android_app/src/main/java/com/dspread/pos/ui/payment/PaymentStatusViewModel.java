@@ -42,9 +42,7 @@ public class PaymentStatusViewModel extends BaseAppViewModel {
     public PaymentStatusViewModel(@NonNull Application application) {
         super(application);
     }
-    public void setD70DisplayScreen(Boolean flag){
-        isD70DisplayScreen.set(flag);
-    }
+
     public void setTransactionFailed() {
         isSuccess.set(false);
     }
