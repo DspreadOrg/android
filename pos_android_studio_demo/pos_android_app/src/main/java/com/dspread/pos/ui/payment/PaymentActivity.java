@@ -162,10 +162,10 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
         String deviceModel = DeviceUtils.getPhoneModel();
         TRACE.d("model:"+deviceModel);
         if ("D20".equals(deviceModel)) {
-            binding.animationView.setAnimation("D20_checkCard.json");
+            binding.animationView.setAnimation("D20_checkCardImg.json");
             binding.animationView.setImageAssetsFolder("D20_images/");
         }else if ("D35".equals(deviceModel)) {
-            binding.animationView.setAnimation("D35_checkCard.json");
+            binding.animationView.setAnimation("D35_checkCardImg.json");
             binding.animationView.setImageAssetsFolder("D35_images/");
         }else if ("D80".equals(deviceModel)) {
             binding.animationView.setAnimation("D80_checkCard.json");
