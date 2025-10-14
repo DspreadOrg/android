@@ -1,3 +1,10 @@
+## [8.0.7](https://github.com/DspreadOrg/android/compare/v8.0.6...v8.0.7) (2025-10-14)
+
+
+### Bug Fixes
+
+* update the D70 UI demo ([8b92b48](https://github.com/DspreadOrg/android/commit/8b92b48b09b62994d9f67f299c7225a6de23a12d))
+
 ## [8.0.6](https://github.com/DspreadOrg/android/compare/v8.0.5...v8.0.6) (2025-10-10)
 
 
