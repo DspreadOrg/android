@@ -2,15 +2,7 @@ package com.dspread.pos.ui.printer.activities.base;
 
 import android.app.Dialog;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
-import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.Button;
 
-import androidx.databinding.ViewDataBinding;
-
-import com.dspread.pos.utils.DeviceUtils;
 import com.dspread.pos.utils.DialogUtils;
 import com.dspread.pos.utils.TRACE;
 import com.dspread.pos_android_app.BR;
@@ -18,9 +10,9 @@ import com.dspread.pos_android_app.R;
 import com.dspread.pos_android_app.databinding.ActivityPrinterBaseBinding;
 import com.dspread.print.device.PrintListener;
 import com.dspread.print.device.PrinterDevice;
-import com.dspread.print.device.PrinterInitListener;
 import com.dspread.print.device.PrinterManager;
 
+import androidx.databinding.ViewDataBinding;
 import me.goldze.mvvmhabit.base.BaseActivity;
 
 public abstract class PrinterBaseActivity<V extends ViewDataBinding, VM extends BasePrinterViewModel> extends BaseActivity<ActivityPrinterBaseBinding, VM> {
@@ -87,5 +79,4 @@ public abstract class PrinterBaseActivity<V extends ViewDataBinding, VM extends 
     private void showLowBatteryDialog() {
         lowBatteryDialog = DialogUtils.showLowBatteryDialog(this, R.layout.dialog_low_battery, R.id.okButton, false);
     }
-
 }

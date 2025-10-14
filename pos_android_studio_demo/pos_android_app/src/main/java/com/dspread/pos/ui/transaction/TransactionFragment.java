@@ -3,6 +3,7 @@ package com.dspread.pos.ui.transaction;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -31,6 +32,7 @@ import java.util.List;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatEditText;
 import androidx.databinding.ObservableField;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -39,6 +41,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 public class TransactionFragment extends BaseFragment<FragmentTransactionBinding, TransactionViewModel> implements TitleProviderListener {
     private String filter = "all";
+    private boolean isSmallScreenDevice = false;
 
     @Override
     public String getTitle() {
@@ -70,6 +73,16 @@ public class TransactionFragment extends BaseFragment<FragmentTransactionBinding
         // Setup recycler view
         binding.paymentsRecycler.setLayoutManager(new LinearLayoutManager(getActivity()));
         viewModel.init();
+
+        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+        int widthPx = displayMetrics.widthPixels;
+        int heightPx = displayMetrics.heightPixels;
+
+        if (widthPx <= 320 && heightPx <= 240) {
+            isSmallScreenDevice = true;
+            viewModel.isTransactionHeader.set(false);
+            viewModel.isTransactionViewAll.set(false);
+        }
         viewModel.transactionList.observe(this, new Observer<List<Transaction>>() {
             @Override
             public void onChanged(List<Transaction> transactions) {
@@ -229,8 +242,11 @@ public class TransactionFragment extends BaseFragment<FragmentTransactionBinding
             viewModel.isTransactionViewAll.set(false);
         } else {
             viewModel.isEmpty.set(false);
-            viewModel.isTransactionHeader.set(true);
-            viewModel.isTransactionViewAll.set(true);
+            if (!isSmallScreenDevice) {
+                viewModel.isTransactionHeader.set(true);
+                viewModel.isTransactionViewAll.set(true);
+            }
+
         }
     }
 }

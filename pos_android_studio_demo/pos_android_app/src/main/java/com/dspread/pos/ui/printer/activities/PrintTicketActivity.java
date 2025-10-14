@@ -8,6 +8,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.Toast;
@@ -38,6 +40,7 @@ public class PrintTicketActivity extends PrinterBaseActivity<ActivityPrinterBase
     private String amount = "";
     private String maskedPAN = "";
     private String terminalTime = "";
+    private boolean isSmallDevices = false;
 
     @Override
     public void initData() {
@@ -45,12 +48,29 @@ public class PrintTicketActivity extends PrinterBaseActivity<ActivityPrinterBase
         amount = getIntent().getStringExtra("terAmount");
         maskedPAN = getIntent().getStringExtra("maskedPAN");
         terminalTime = getIntent().getStringExtra("terminalTime");
+
         contentBinding = ActivityPrintTicketBinding.inflate(getLayoutInflater());
         contentBinding.setViewModel(viewModel);
         binding.contentContainer.addView(contentBinding.getRoot());
         viewModel.title.set(getString(R.string.print_ticket));
         binding.btnPrint.setVisibility(View.GONE);
         setupViews();
+
+        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+        int widthPx = displayMetrics.widthPixels;
+        int heightPx = displayMetrics.heightPixels;
+
+        if (widthPx <= 320 && heightPx <= 240) {
+            isSmallDevices = true;
+            viewModel.isSmallScreen.set(true);
+            viewModel.isNormalScreen.set(false);
+            viewModel.isSmallScreenButton.set(false);
+            binding.tvTitle.setText("Please Wait...");
+        } else {
+            isSmallDevices = false;
+            viewModel.isSmallScreen.set(false);
+            viewModel.isNormalScreen.set(true);
+        }
     }
 
     @Override
@@ -98,10 +118,20 @@ public class PrintTicketActivity extends PrinterBaseActivity<ActivityPrinterBase
         viewModel.getReceiptBitmap().observe(this, bitmap -> {
             if (bitmap != null) {
                 this.mBitmap = bitmap;
-                contentBinding.receiptImage.setImageBitmap(bitmap);
+                if (isSmallDevices) {
+                    if (mBitmap != null && !mBitmap.isRecycled()) {
+                        viewModel.printTicket(mBitmap);
+                    }
+                } else {
+                    contentBinding.receiptImage.setImageBitmap(bitmap);
+                }
             }
         });
 
+        initViewOnlick(map);
+    }
+
+    private void initViewOnlick(Map<String, String> map) {
         binding.btnPrintTicket.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -118,6 +148,27 @@ public class PrintTicketActivity extends PrinterBaseActivity<ActivityPrinterBase
         });
 
         binding.btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
+
+        binding.btnSmallPrint.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mBitmap != null && !mBitmap.isRecycled()) {
+                    viewModel.printTicket(mBitmap);
+                } else {
+                    Toast.makeText(PrintTicketActivity.this, "Receipt not ready", Toast.LENGTH_SHORT).show();
+                    // 重新生成bitmap
+                    viewModel.generateReceiptBitmap(map);
+                }
+            }
+        });
+
+        binding.btnSmallCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
@@ -189,12 +240,17 @@ public class PrintTicketActivity extends PrinterBaseActivity<ActivityPrinterBase
 
     @Override
     protected void onReturnPrintResult(boolean isSuccess, String status, PrinterDevice.ResultType resultType) {
-        viewModel.onPrintComplete(isSuccess, status);
         if (isSuccess) {
+            viewModel.onPrintComplete(isSuccess, status);
             dialog(PrintTicketActivity.this, R.mipmap.ic_print_success, "Print Successful", 3000L, true, false);
         } else {
-            dialog(PrintTicketActivity.this, R.mipmap.ic_print_fail, "Print Fail", 3000L, false, true);
-
+            if (isSmallDevices) {
+                binding.tvTitle.setText("Print Fail");
+                binding.ivIcon.setImageResource(R.mipmap.ic_printer_small_fail);
+                viewModel.isSmallScreenButton.set(true);
+            } else {
+                dialog(PrintTicketActivity.this, R.mipmap.ic_print_fail, "Print Fail", 3000L, false, true);
+            }
         }
     }
 
@@ -206,7 +262,9 @@ public class PrintTicketActivity extends PrinterBaseActivity<ActivityPrinterBase
                     regenerateReceipt();
                 } else {
                     Intent intent = new Intent(PrintTicketActivity.this, MainActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     startActivity(intent);
+                    PrintTicketActivity.this.finish();
                 }
             }
         });
@@ -219,7 +277,7 @@ public class PrintTicketActivity extends PrinterBaseActivity<ActivityPrinterBase
             // 显示加载状态
             // 延迟一下再重新生成，避免立即重试可能的问题
             contentBinding.receiptImage.postDelayed(() -> {
-                finish();
+                PrintTicketActivity.this.finish();
             }, 100);
         });
     }

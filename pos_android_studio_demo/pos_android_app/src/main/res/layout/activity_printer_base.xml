@@ -12,121 +12,199 @@
             type="com.dspread.pos.ui.printer.activities.base.BasePrinterViewModel" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <!-- 工具栏 -->
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/toolbar"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:textColor="#ff1b1b1b"
-            android:textSize="19sp"
-            app:layout_constraintTop_toTopOf="parent"
-            app:navigationIcon="@mipmap/ic_back">
+            android:layout_height="match_parent"
+            android:visibility="@{viewModel.isNormalScreen?View.VISIBLE:View.GONE}">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="left"
-                android:text="@{viewModel.title}"
-                android:textColor="?attr/colorOnPrimary"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-        </com.google.android.material.appbar.MaterialToolbar>
+            <!-- 工具栏 -->
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:textColor="#ff1b1b1b"
+                android:textSize="19sp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:navigationIcon="@mipmap/ic_back">
 
-        <!-- 顶部黑色圆柱 -->
-        <View
-            android:id="@+id/black_cylinder"
-            android:layout_width="0dp"
-            android:layout_height="20dp"
-            android:layout_marginStart="19dp"
-            android:layout_marginEnd="19dp"
-            android:background="@drawable/shape_black_cylinder"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/toolbar" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:text="@{viewModel.title}"
+                    android:textColor="?attr/colorOnPrimary"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+            </com.google.android.material.appbar.MaterialToolbar>
 
-        <!-- 主要内容区域 -->
-        <androidx.core.widget.NestedScrollView
-            android:id="@+id/print_scroll_view"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginLeft="@dimen/dp_20"
-            android:layout_marginRight="@dimen/dp_20"
-            android:fillViewport="true"
-            app:layout_constraintBottom_toTopOf="@id/button_container"
-            app:layout_constraintTop_toBottomOf="@id/black_cylinder">
+            <!-- 顶部黑色圆柱 -->
+            <View
+                android:id="@+id/black_cylinder"
+                android:layout_width="0dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="19dp"
+                android:layout_marginEnd="19dp"
+                android:background="@drawable/shape_black_cylinder"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
+            <!-- 主要内容区域 -->
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/print_scroll_view"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginLeft="@dimen/dp_20"
+                android:layout_marginRight="@dimen/dp_20"
+                android:fillViewport="true"
+                app:layout_constraintBottom_toTopOf="@id/button_container"
+                app:layout_constraintTop_toBottomOf="@id/black_cylinder">
+
+                <LinearLayout
+                    android:id="@+id/content_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" />
+
+            </androidx.core.widget.NestedScrollView>
+
+            <!-- 底部按钮容器 -->
             <LinearLayout
-                android:id="@+id/content_container"
+                android:id="@+id/button_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical" />
+                android:layout_marginBottom="10dp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingHorizontal="40dp"
+                android:weightSum="5"
+                app:layout_constraintBottom_toBottomOf="parent">
 
-        </androidx.core.widget.NestedScrollView>
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_cancel"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="5dp"
+                    android:layout_weight="2"
+                    android:background="@drawable/btn_bg_outline"
+                    android:padding="@dimen/dp_8"
+                    android:text="Cancel"
+                    android:textColor="#1B1B1B"
+                    android:textSize="19sp" />
 
-        <!-- 底部按钮容器 -->
-        <LinearLayout
-            android:id="@+id/button_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:gravity="center"
-            android:weightSum="5"
-            android:orientation="horizontal"
-            android:paddingHorizontal="40dp"
-            app:layout_constraintBottom_toBottomOf="parent">
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_printTicket"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_weight="3"
+                    android:background="@drawable/btn_bg_primary"
+                    android:padding="@dimen/dp_8"
+                    android:text="Print"
+                    android:textColor="#FFF"
+                    android:textSize="19sp" />
+            </LinearLayout>
 
+            <!-- 隐藏的打印按钮（可能用于某些状态） -->
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_cancel"
-                android:layout_width="0dp"
+                android:id="@+id/btn_print"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/dp_8"
-                android:layout_marginEnd="5dp"
-                android:layout_weight="2"
-                android:background="@drawable/btn_bg_outline"
-                android:text="Cancel"
-                android:textColor="#1B1B1B"
-                android:textSize="19sp" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_printTicket"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:padding="@dimen/dp_8"
-                android:layout_marginStart="5dp"
-                android:layout_weight="3"
-                android:background="@drawable/btn_bg_primary"
+                android:layout_margin="16dp"
+                android:background="@drawable/rounded_button"
+                android:enabled="@{!viewModel.isLoading}"
+                android:padding="14dp"
                 android:text="Print"
-                android:textColor="#FFF"
-                android:textSize="19sp" />
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                tools:ignore="MissingConstraints" />
+
+            <!-- 加载进度条 -->
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="@{viewModel.isLoading ? View.VISIBLE : View.GONE}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <!-- 以下是小屏设备的UI 布局 -->
+
+        <LinearLayout
+
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/dialog_background"
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            android:padding="24dp"
+            android:visibility="@{viewModel.isSmallScreen?View.VISIBLE:View.GONE}">
+
+            <!-- 上面部分：ImageView -->
+            <ImageView
+                android:id="@+id/iv_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="16dp"
+                android:src="@mipmap/ic_print_success" />
+
+            <!-- 中间部分：TextView -->
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:gravity="center"
+                android:text="Print Fails"
+                android:textColor="#FF000000"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <!-- 下面部分：按钮布局 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_30"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:visibility="@{viewModel.isSmallScreenButton?View.VISIBLE:View.GONE}">
+
+                <Button
+                    android:id="@+id/btn_small_cancel"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/btn_bg_outline"
+                    android:text="Cancel"
+                    android:textColor="#FF666666"
+                    android:textSize="14sp" />
+
+                <Button
+                    android:id="@+id/btn_small_print"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/btn_bg_primary"
+                    android:text="Print"
+                    android:textColor="#FFFFFFFF"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
         </LinearLayout>
 
-        <!-- 隐藏的打印按钮（可能用于某些状态） -->
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_print"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:background="@drawable/rounded_button"
-            android:enabled="@{!viewModel.isLoading}"
-            android:padding="14dp"
-            android:text="Print"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            tools:ignore="MissingConstraints" />
 
-        <!-- 加载进度条 -->
-        <ProgressBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="@{viewModel.isLoading ? View.VISIBLE : View.GONE}"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 </layout>

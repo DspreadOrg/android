@@ -30,6 +30,14 @@ public abstract class BasePrinterViewModel extends BaseAppViewModel {
     public ObservableBoolean isLoading = new ObservableBoolean(false);
     public ObservableField<String> resultText = new ObservableField<>();
 
+
+    public ObservableField<Boolean> isSmallScreen = new ObservableField<>(true);
+
+    public ObservableField<Boolean> isNormalScreen = new ObservableField<>(true);
+
+    //isSmallScreenButton
+    public ObservableField<Boolean> isSmallScreenButton = new ObservableField<>(true);
+
     public BasePrinterViewModel(@NonNull Application application) {
         super(application);
     }
