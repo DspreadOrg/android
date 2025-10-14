@@ -1,6 +1,7 @@
 package com.dspread.pos.ui.payment;
 
 
+import android.os.Build;
 import android.os.Bundle;
 
 import com.dspread.pos.utils.DeviceUtils;
@@ -33,7 +34,11 @@ public class PaymentStatusActivity extends BaseActivity<ActivityPaymentBinding, 
         amount = getIntent().getStringExtra("amount");
         maskedPAN = getIntent().getStringExtra("maskedPAN");
         terminalTime = getIntent().getStringExtra("terminalTime");
-
+        if("D70".equals(Build.MODEL)){
+           viewModel.isD70DisplayScreen.set(true);
+        }else{
+            viewModel.isD70DisplayScreen.set(false);
+        }
         if (amount != null && !"".equalsIgnoreCase(amount)) {
             viewModel.displayAmount(DeviceUtils.convertAmountToCents(amount));
             viewModel.setTransactionSuccess();

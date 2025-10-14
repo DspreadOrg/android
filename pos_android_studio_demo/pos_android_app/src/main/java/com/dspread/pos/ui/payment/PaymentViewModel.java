@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Handler;
 import android.os.RemoteException;
 import android.util.TypedValue;
@@ -49,6 +50,11 @@ public class PaymentViewModel extends BaseAppViewModel {
     public PaymentViewModel(@NonNull Application application) {
         super(application);
         apiService = RetrofitClient.getInstance().create(RequestOnlineAuthAPI.class);
+        if("D70".equals(DeviceUtils.getPhoneModel())){
+            isD70.set(true);
+        }else {
+            isD70.set(false);
+        }
     }
 
     public ObservableField<String> loadingText = new ObservableField<>("");
@@ -59,11 +65,13 @@ public class PaymentViewModel extends BaseAppViewModel {
     public ObservableBoolean isWaiting = new ObservableBoolean(true);
     public ObservableBoolean isSuccess = new ObservableBoolean(false);
     public ObservableBoolean isPrinting = new ObservableBoolean(false);
+    public ObservableBoolean isD70 = new ObservableBoolean(false);
     public SingleLiveEvent<Boolean> isOnlineSuccess = new SingleLiveEvent();
     public ObservableBoolean showPinpad = new ObservableBoolean(false);
     public ObservableBoolean showResultStatus = new ObservableBoolean(false);
     public ObservableBoolean TransactionResultStatus = new ObservableBoolean(false);
     public ObservableBoolean cardsInsertedStatus = new ObservableBoolean(false);
+    public ObservableBoolean isD70DisplayScreen = new ObservableBoolean(false);
     public ObservableField<String> receiptContent = new ObservableField<>();
     private Bitmap receiptBitmap;
     private Context mContext;
@@ -110,6 +118,11 @@ public class PaymentViewModel extends BaseAppViewModel {
         transactionResult.set(message);
 //        TransactionResultStatus.set(true);
         cardsInsertedStatus.set(false);
+        if("D70".equals(Build.MODEL)){
+            isD70DisplayScreen.set(true);
+        }else{
+            isD70DisplayScreen.set(false);
+        }
     }
     public  void setTransactionErr(String message){
         TransactionResultStatus.set(true);

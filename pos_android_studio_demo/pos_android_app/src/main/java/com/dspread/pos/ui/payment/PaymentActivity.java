@@ -1,5 +1,6 @@
 package com.dspread.pos.ui.payment;
 
+import android.animation.ValueAnimator;
 import android.app.Dialog;
 import android.app.KeyguardManager;
 import android.content.BroadcastReceiver;
@@ -8,12 +9,19 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.PowerManager;
+import android.text.Html;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.view.WindowManager;
+import android.view.animation.LinearInterpolator;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
+import androidx.viewpager2.widget.ViewPager2;
+
 import com.dspread.pos.posAPI.ConnectionServiceCallback;
 import com.dspread.pos.posAPI.POSManager;
 import com.dspread.pos.posAPI.PaymentResult;
@@ -24,6 +32,7 @@ import com.dspread.pos.ui.payment.pinkeyboard.MyKeyboardView;
 import com.dspread.pos.ui.payment.pinkeyboard.PinPadDialog;
 import com.dspread.pos.ui.payment.pinkeyboard.PinPadView;
 import com.dspread.pos.utils.AdvancedBinDetector;
+import com.dspread.pos.utils.BannerItem;
 import com.dspread.pos.utils.DeviceUtils;
 import com.dspread.pos.utils.HandleTxnsResultUtils;
 import com.dspread.pos.utils.LogFileConfig;
@@ -33,6 +42,7 @@ import com.dspread.pos.utils.SystemKeyListener;
 import com.dspread.pos.utils.TLV;
 import com.dspread.pos.utils.TLVParser;
 import com.dspread.pos.utils.TRACE;
+import com.dspread.pos.view.BannerAdapter;
 import com.dspread.pos_android_app.BR;
 import com.dspread.pos_android_app.R;
 import com.dspread.pos_android_app.databinding.ActivityPaymentBinding;
@@ -64,6 +74,19 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
     private SystemKeyListener systemKeyListener;
     private PowerManager.WakeLock wakeLock;
     private ScreenStateReceiver screenStateReceiver;
+    private Handler handler;
+    private Runnable runnable;
+    private int currentIndex = 0;
+    private int[] imageResources = {
+            R.mipmap.ic_insert_d70,
+            R.mipmap.ic_tap_d70,
+            R.mipmap.ic_swipe_d70
+    };
+    private String[] textResources = {
+            "<span style='color:red'>Insert</span><span style='color:black'>, tap or swipe</span>",
+            "<span style='color:black'>Insert, </span><span style='color:red'>tap</span> <span style='color:black'>or swipe</span>",
+            "<span style='color:black'>Insert, tap or </span><span style='color:red'>swipe</span>"
+    };
     @Override
     public int initContentView(Bundle savedInstanceState) {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -92,13 +115,44 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
         amount = getIntent().getStringExtra("amount");
         deviceAddress = getIntent().getStringExtra("deviceAddress");
         viewModel.displayAmount(DeviceUtils.convertAmountToCents(amount));//ui
-        
-        setupAnimationBasedOnDeviceModel();
-        
+        handler = new Handler();
+
+        if("D70".equals(DeviceUtils.getPhoneModel())){
+            TRACE.i("is d70 device");
+            setupImageSwitcher();
+        }else {
+            setupAnimationBasedOnDeviceModel();
+        }
         startTransaction();
         systemKeyListener = new SystemKeyListener(this);
         systemKeyStart();
         systemKeyListener.startSystemKeyListener();
+    }
+
+    private void setupImageSwitcher() {
+        // 创建轮播任务
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                // 切换到下一张图片和文本
+                currentIndex = (currentIndex + 1) % imageResources.length;
+                updateContent();
+
+                // 2秒后再次执行
+                handler.postDelayed(this, 2000);
+            }
+        };
+
+        // 显示第一组内容
+        updateContent();
+
+        // 2秒后开始轮播
+        handler.postDelayed(runnable, 2000);
+    }
+
+    private void updateContent() {
+        binding.d70ImageView.setImageResource(imageResources[currentIndex]);
+        binding.txtWaitInsertTapCard.setText(Html.fromHtml(textResources[currentIndex], Html.FROM_HTML_MODE_COMPACT));
     }
     
     /**
@@ -107,7 +161,13 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
     private void setupAnimationBasedOnDeviceModel() {
         String deviceModel = DeviceUtils.getPhoneModel();
         TRACE.d("model:"+deviceModel);
-        if ("D80".equals(deviceModel)) {
+        if ("D20".equals(deviceModel)) {
+            binding.animationView.setAnimation("D20_checkCard.json");
+            binding.animationView.setImageAssetsFolder("D20_images/");
+        }else if ("D35".equals(deviceModel)) {
+            binding.animationView.setAnimation("D35_checkCard.json");
+            binding.animationView.setImageAssetsFolder("D35_images/");
+        }else if ("D80".equals(deviceModel)) {
             binding.animationView.setAnimation("D80_checkCard.json");
             binding.animationView.setImageAssetsFolder("D80_images/");
         } else if("D50".equals(deviceModel)){
@@ -335,6 +395,9 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
                 timeOfPinInput = 0;
             } else {
                 msg = HandleTxnsResultUtils.getDisplayMessage(displayMsg, PaymentActivity.this);
+            }
+            if (handler != null && runnable != null) {
+                handler.removeCallbacks(runnable);
             }
             binding.animationView.pauseAnimation();
             viewModel.startLoading(msg);

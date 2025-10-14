@@ -545,7 +545,11 @@
     <string name="prompt_user_to_tap_card">Insert, tap or swipe</string>
     <string name="payment_failed">Payment failed</string>
     <string name="payment_complete">Payment complete</string>
+    <string name="payment_total">total</string>
 
 <!--    transaction-->
     <string name="filter">Filter</string>
+
+<!--    pin input-->
+    <string name="enter_pin_text">Enter Your PIN Code</string>
 </resources>

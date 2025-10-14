@@ -37,6 +37,7 @@ public class PaymentStatusViewModel extends BaseAppViewModel {
     public ObservableField<String> amount = new ObservableField<>("");
     public ObservableBoolean isPrinting = new ObservableBoolean(false);
     public ObservableBoolean isShouwPrinting = new ObservableBoolean(false);
+    public ObservableBoolean isD70DisplayScreen = new ObservableBoolean(false);
 
     public PaymentStatusViewModel(@NonNull Application application) {
         super(application);
@@ -50,9 +51,10 @@ public class PaymentStatusViewModel extends BaseAppViewModel {
         isSuccess.set(true);
     }
 
+
     public void displayAmount(String newAmount) {
         TRACE.d("displayAmount:"+newAmount);
-        amount.set("$" + newAmount);
+        amount.set("$ " + newAmount);
     }
     public void sendTranReceipt(Map<String,String> map){
         terAmount=map.get("terAmount");
