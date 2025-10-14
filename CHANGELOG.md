@@ -1,3 +1,10 @@
+# [8.1.0](https://github.com/DspreadOrg/android/compare/v8.0.9...v8.1.0) (2025-10-14)
+
+
+### Features
+
+* update the D20/35 UI ([e09bf72](https://github.com/DspreadOrg/android/commit/e09bf721ae71779918db23370bd01cc95c47c956))
+
 ## [8.0.9](https://github.com/DspreadOrg/android/compare/v8.0.8...v8.0.9) (2025-10-14)
 
 
