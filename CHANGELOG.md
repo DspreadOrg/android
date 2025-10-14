@@ -1,3 +1,10 @@
+## [8.0.8](https://github.com/DspreadOrg/android/compare/v8.0.7...v8.0.8) (2025-10-14)
+
+
+### Bug Fixes
+
+* modify the qpos document ([9a086bf](https://github.com/DspreadOrg/android/commit/9a086bfa9831070c5ff8b24e71f9c5a6442392d9))
+
 ## [8.0.7](https://github.com/DspreadOrg/android/compare/v8.0.6...v8.0.7) (2025-10-14)
 
 
