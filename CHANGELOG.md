@@ -1,3 +1,12 @@
+## [8.0.9](https://github.com/DspreadOrg/android/compare/v8.0.8...v8.0.9) (2025-10-14)
+
+
+### Bug Fixes
+
+* add the PaymentGenerateActivity layout  ui for D70 ([0c94766](https://github.com/DspreadOrg/android/commit/0c9476623ce6e20d5090815a981c36cefe098a31))
+* adjust the reissue layout for D70 ([793e68b](https://github.com/DspreadOrg/android/commit/793e68b2ddb19f278715c669545eb9da4e87ae51))
+* fix adapt to D70 device payment method UI ([9b416ce](https://github.com/DspreadOrg/android/commit/9b416ce07d4581b47c019c49d5cfe9eb83bb6d71))
+
 ## [8.0.8](https://github.com/DspreadOrg/android/compare/v8.0.7...v8.0.8) (2025-10-14)
 
 
