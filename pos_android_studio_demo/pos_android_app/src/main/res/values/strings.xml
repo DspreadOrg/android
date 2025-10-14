@@ -549,4 +549,7 @@
 
 <!--    transaction-->
     <string name="filter">Filter</string>
+
+<!--    pin input-->
+    <string name="enter_pin_text">Enter Your PIN Code</string>
 </resources>

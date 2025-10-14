@@ -20,7 +20,7 @@
             android:orientation="vertical">
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:layout_weight="1"
@@ -37,15 +37,16 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
                         android:gravity="center"
-                        android:layout_below="@+id/iv_close_black"
-                        >
+                        app:layoutBelowIf="@{viewModel.isD70 ? 0 : @id/iv_close_black}">
 
                         <TextView
+                            android:id="@+id/txt_total"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/total"
+                            app:marginTopConditional="@{viewModel.isD70}"
                             android:textColor="@color/text_color"
-                            android:textSize="19sp" />
+                            android:textSize="19sp"/>
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -56,13 +57,23 @@
                             android:autoSizeTextType="uniform"
                             android:maxLines="1"
                             android:textColor="@color/text_color" />
-
+                        <ImageView
+                            android:layout_marginTop="15dp"
+                            android:id="@+id/d70_imageView"
+                            android:layout_width="80dp"
+                            android:layout_height="80dp"
+                            android:layout_marginBottom="15dp"
+                            android:scaleType="centerCrop"
+                            android:layout_gravity="center"
+                            android:visibility="@{viewModel.isD70?View.VISIBLE : View.GONE }"/>
                         <TextView
+                            android:id="@+id/txt_wait_insert_tap_card"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/prompt_user_to_tap_card"
                             android:textSize="19sp"
-                            android:textColor="@color/red_color"/>
+                            android:textColor="@color/red_color"
+                           />
 
                         <!-- 其他视图（如设备图片、支付方式图标等） -->
 
@@ -77,7 +88,6 @@
                         android:src="@mipmap/btn_close_black"
                         android:layout_alignParentTop="true"
                         android:layout_alignParentRight="true"
-                        android:layout_marginTop="16dp"
                         binding:onClickCommand="@{viewModel.cancleTxnsCommand}"/>
 
                 </RelativeLayout>
@@ -88,11 +98,14 @@
                     app:lottie_fileName="D30_checkCard.json"
                     app:lottie_imageAssetsFolder="D30_images/"
                     app:lottie_autoPlay="true"
-                    app:lottie_loop="true" />
+                    app:lottie_loop="true"
+                    android:visibility="@{viewModel.isD70?View.GONE : View.VISIBLE }"/>
+
+
             </LinearLayout>
             <!--卡组织图片-->
             <LinearLayout
-            android:visibility="@{viewModel.showResultStatus ? View.GONE : View.VISIBLE}"
+            android:visibility="@{viewModel.showResultStatus||viewModel.isD70 ? View.GONE : View.VISIBLE}"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -136,12 +149,10 @@
                     android:layout_margin="8dp" />
 
             </LinearLayout>
-
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-
                 android:visibility="@{viewModel.cardsInsertedStatus ? View.VISIBLE : View.GONE}"
                 >
 
@@ -194,7 +205,6 @@
 
                 </RelativeLayout>
                 <com.airbnb.lottie.LottieAnimationView
-
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
@@ -260,7 +270,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Enter PIN"
+                    android:text="@string/enter_pin_text"
                     android:textSize="22dp"
                     android:textStyle="bold"
                     android:textColor="@color/black"/>
