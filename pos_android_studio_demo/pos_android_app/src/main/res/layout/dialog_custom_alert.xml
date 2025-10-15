@@ -10,20 +10,20 @@
         android:id="@+id/btnClose"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
-        android:src="@mipmap/ic_ptint_close"
+        android:layout_alignParentEnd="true"
         android:padding="@dimen/dp_15"
+        android:src="@mipmap/ic_ptint_close"
         android:visibility="gone" />
 
     <!-- 主内容容器 -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:orientation="vertical"
         android:layout_centerInParent="true"
-        android:layout_marginTop="8dp">
+        android:layout_marginTop="8dp"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
 
         <!-- 图标区域 -->
         <ImageView
@@ -39,12 +39,22 @@
             android:id="@+id/tvMessage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
+            android:layout_marginBottom="2dp"
             android:gravity="center"
             android:lineSpacingExtra="4dp"
             android:textColor="#FF333333"
             android:textSize="16sp"
             android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvFailMessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:lineSpacingExtra="4dp"
+            android:textColor="#FF333333"
+            android:textSize="12sp"
+            android:visibility="gone" />
 
         <!-- 倒计时区域 -->
         <TextView

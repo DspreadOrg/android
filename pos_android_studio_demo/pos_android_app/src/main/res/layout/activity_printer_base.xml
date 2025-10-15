@@ -16,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-
+        <!-- 以下是大屏设备的UI 布局 @{viewModel.isNormalScreen?View.VISIBLE:View.GONE}-->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -118,7 +118,7 @@
                 android:layout_margin="16dp"
                 android:background="@drawable/rounded_button"
                 android:enabled="@{!viewModel.isLoading}"
-                android:padding="14dp"
+                android:padding="@dimen/dp_14"
                 android:text="Print"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -140,13 +140,12 @@
         <!-- 以下是小屏设备的UI 布局 -->
 
         <LinearLayout
-
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/dialog_background"
-            android:gravity="center_vertical"
+            android:gravity="bottom"
             android:orientation="vertical"
-            android:padding="24dp"
+            android:padding="@dimen/dp_24"
             android:visibility="@{viewModel.isSmallScreen?View.VISIBLE:View.GONE}">
 
             <!-- 上面部分：ImageView -->
@@ -155,7 +154,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="16dp"
+                android:layout_marginBottom="@dimen/dp_6"
                 android:src="@mipmap/ic_print_success" />
 
             <!-- 中间部分：TextView -->
@@ -163,21 +162,31 @@
                 android:id="@+id/tv_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
                 android:gravity="center"
                 android:text="Print Fails"
                 android:textColor="#FF000000"
-                android:textSize="18sp"
+                android:textSize="@dimen/sp_18"
                 android:textStyle="bold" />
+
+
+            <TextView
+                android:id="@+id/tv_fail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp_30"
+                android:gravity="center"
+                android:text=""
+                android:textColor="#ff6b6b6b"
+                android:textSize="@dimen/sp_18"
+                android:visibility="@{viewModel.isSmallScreenButton?View.VISIBLE:View.INVISIBLE}" />
 
             <!-- 下面部分：按钮布局 -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_30"
                 android:gravity="center"
                 android:orientation="horizontal"
-                android:visibility="@{viewModel.isSmallScreenButton?View.VISIBLE:View.GONE}">
+                android:visibility="@{viewModel.isSmallScreenButton?View.VISIBLE:View.INVISIBLE}">
 
                 <Button
                     android:id="@+id/btn_small_cancel"
@@ -185,21 +194,24 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
                     android:layout_weight="1"
-                    android:background="@drawable/btn_bg_outline"
+                    android:background="@drawable/btn_bg_outline_small"
                     android:text="Cancel"
-                    android:textColor="#FF666666"
-                    android:textSize="14sp" />
+                    android:textAllCaps="false"
+                    android:textColor="#ff1b1b1b"
+                    android:textSize="@dimen/sp_18"
+                    android:textStyle="bold" />
 
                 <Button
                     android:id="@+id/btn_small_print"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
+                    android:layout_marginStart="@dimen/dp_8"
                     android:layout_weight="1"
-                    android:background="@drawable/btn_bg_primary"
+                    android:background="@drawable/btn_bg_primary_small"
                     android:text="Print"
+                    android:textAllCaps="false"
                     android:textColor="#FFFFFFFF"
-                    android:textSize="14sp" />
+                    android:textSize="@dimen/sp_18" />
 
             </LinearLayout>
 

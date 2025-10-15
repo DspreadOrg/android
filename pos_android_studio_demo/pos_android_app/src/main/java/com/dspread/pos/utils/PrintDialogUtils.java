@@ -22,11 +22,11 @@ public class PrintDialogUtils {
     /**
      * 显示自定义弹窗
      */
-    public static Dialog showCustomDialog(Context context, int iconResId, String message,
+    public static Dialog showCustomDialog(Context context, int iconResId, String message,String failMeaasge,
                                           long duration, boolean showCountdown,
                                           boolean showCloseButton, boolean cancelable,
                                           DialogDismissListener dismissListener) {
-        CustomDialog dialog = new CustomDialog(context, iconResId, message, duration,
+        CustomDialog dialog = new CustomDialog(context, iconResId, message,failMeaasge, duration,
                 showCountdown, showCloseButton, cancelable, dismissListener);
         dialog.show();
         return dialog;
@@ -35,14 +35,14 @@ public class PrintDialogUtils {
     /**
      * 显示默认的成功弹窗
      */
-    public static Dialog showSuccessDialog(Context context, String message,
+    public static Dialog showSuccessDialog(Context context, String message,String failMessage,
                                            DialogDismissListener dismissListener) {
-        return showCustomDialog(context, android.R.drawable.ic_dialog_info, message,
+        return showCustomDialog(context, android.R.drawable.ic_dialog_info, message,failMessage,
                 3000, true, true, false, dismissListener);
     }
 
-    public static Dialog showSuccessDialog(Context context, String message) {
-        return showSuccessDialog(context, message, null);
+    public static Dialog showSuccessDialog(Context context, String message,String failMessage) {
+        return showSuccessDialog(context, message,failMessage, null);
     }
 
     public static Dialog showSuccessDialog(Context context) {
@@ -55,6 +55,7 @@ public class PrintDialogUtils {
     private static class CustomDialog extends Dialog {
         private final int iconResId;
         private final String message;
+        private final String failMessage;
         private final long duration;
         private final boolean showCountdown;
         private final boolean showCloseButton;
@@ -64,12 +65,13 @@ public class PrintDialogUtils {
         private TextView tvTimer;
         private ImageView btnClose;
 
-        public CustomDialog(Context context, int iconResId, String message, long duration,
+        public CustomDialog(Context context, int iconResId, String message, String failMessage, long duration,
                             boolean showCountdown, boolean showCloseButton, boolean cancelable,
                             DialogDismissListener dismissListener) {
             super(context);
             this.iconResId = iconResId;
             this.message = message;
+            this.failMessage = failMessage;
             this.duration = duration;
             this.showCountdown = showCountdown;
             this.showCloseButton = showCloseButton;
@@ -96,6 +98,7 @@ public class PrintDialogUtils {
         private void initViews() {
             ImageView ivIcon = findViewById(R.id.ivIcon);
             TextView tvMessage = findViewById(R.id.tvMessage);
+            TextView tvFailMessage = findViewById(R.id.tvFailMessage);
             tvTimer = findViewById(R.id.tvTimer);
             btnClose = findViewById(R.id.btnClose);
 
@@ -118,6 +121,8 @@ public class PrintDialogUtils {
             // 设置关闭按钮
             if (showCloseButton) {
                 btnClose.setVisibility(View.VISIBLE);
+                tvFailMessage.setVisibility(View.VISIBLE);
+                tvFailMessage.setText(failMessage);
                 btnClose.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

@@ -159,6 +159,8 @@ public class PrintTicketActivity extends PrinterBaseActivity<ActivityPrinterBase
             @Override
             public void onClick(View view) {
                 if (mBitmap != null && !mBitmap.isRecycled()) {
+                    viewModel.isSmallScreenButton.set(false);
+                    binding.tvTitle.setText("Please Wait...");
                     viewModel.printTicket(mBitmap);
                 } else {
                     Toast.makeText(PrintTicketActivity.this, "Receipt not ready", Toast.LENGTH_SHORT).show();
@@ -242,20 +244,29 @@ public class PrintTicketActivity extends PrinterBaseActivity<ActivityPrinterBase
     protected void onReturnPrintResult(boolean isSuccess, String status, PrinterDevice.ResultType resultType) {
         if (isSuccess) {
             viewModel.onPrintComplete(isSuccess, status);
-            dialog(PrintTicketActivity.this, R.mipmap.ic_print_success, "Print Successful", 3000L, true, false);
+            dialog(PrintTicketActivity.this, R.mipmap.ic_print_success, "Print Successful",status,3000L, true, false);
         } else {
             if (isSmallDevices) {
                 binding.tvTitle.setText("Print Fail");
                 binding.ivIcon.setImageResource(R.mipmap.ic_printer_small_fail);
+                if (resultType == PrinterDevice.ResultType.NOPAPER) {
+                    binding.tvFail.setText("No Paper");
+                } else if (resultType == PrinterDevice.ResultType.LOWERBATTERY) {
+                    binding.tvFail.setText("Lower Battery");
+                } else if (resultType == PrinterDevice.ResultType.OVERHEATING) {
+                    binding.tvFail.setText("Over Heating");
+                } else {
+                    binding.tvFail.setText("Unknown error");
+                }
                 viewModel.isSmallScreenButton.set(true);
             } else {
-                dialog(PrintTicketActivity.this, R.mipmap.ic_print_fail, "Print Fail", 3000L, false, true);
+                dialog(PrintTicketActivity.this, R.mipmap.ic_print_fail, "Print Fail",status, 3000L, false, true);
             }
         }
     }
 
-    private void dialog(Context mContext, int icon, String message, Long duration, boolean isShowCountdown, boolean isShowCloseButton) {
-        PrintDialogUtils.showCustomDialog(mContext, icon, message, duration, isShowCountdown, isShowCloseButton, false, new PrintDialogUtils.DialogDismissListener() {
+    private void dialog(Context mContext, int icon, String message, String failMessage,Long duration, boolean isShowCountdown, boolean isShowCloseButton) {
+        PrintDialogUtils.showCustomDialog(mContext, icon, message,failMessage, duration, isShowCountdown, isShowCloseButton, false, new PrintDialogUtils.DialogDismissListener() {
             @Override
             public void onDismiss() {
                 if (isShowCloseButton) {
