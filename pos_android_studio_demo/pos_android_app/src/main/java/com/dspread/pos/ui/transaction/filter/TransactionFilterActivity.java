@@ -37,12 +37,15 @@ public class TransactionFilterActivity extends BaseActivity<ActivityTransactionF
         }else{
             viewModel.isD70.set(false);
         }
-        binding.toolbar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+        // 只给返回按钮添加点击事件，而不是整个toolbar
+        if (binding.toolbar.getNavigationIcon() != null) {
+            binding.toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finish();
+                }
+            });
+        }
         binding.rgDateFilter.setOnCheckedChangeListener((group, checkedId) -> {
             switch (checkedId){
                 case R.id.rbToday:

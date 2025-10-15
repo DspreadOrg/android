@@ -75,12 +75,12 @@ public class ReissueReceiptActivity extends BaseActivity<ActivityReissueReceiptB
             }
         });
 
+    }
 
-        binding.doneButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
+    @Override
+    public void initViewObservable() {
+        viewModel.doneEvent.observe(this, unused -> {
+            finish();
         });
     }
 }
