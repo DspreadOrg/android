@@ -2,12 +2,14 @@ package com.dspread.pos.ui.main;
 
 import android.app.Application;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.databinding.ObservableBoolean;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -35,7 +37,7 @@ public class MainViewModel extends BaseViewModel {
     public SingleLiveEvent<Integer> fragmentChangeEvent = new SingleLiveEvent<>();
     public SingleLiveEvent<View> changeDrawerLayout = new SingleLiveEvent<>();
     public SingleLiveEvent<Void> closeDrawerCommand = new SingleLiveEvent<>();
-
+    public ObservableBoolean isD70DisplayScreen = new ObservableBoolean(false);
     private MainActivity activity;
     public List<Fragment> fragments;
 
@@ -48,6 +50,11 @@ public class MainViewModel extends BaseViewModel {
         TRACE.i("main activity init");
         this.activityRef = new WeakReference<>(activity);
         this.activity = activity;
+        if("D70".equals(Build.MODEL)){
+            isD70DisplayScreen.set(true);
+        }else{
+            isD70DisplayScreen.set(false);
+        }
     }
 
     public BindingCommand<View> onDrawerOpenedCommand = new BindingCommand<>(new BindingConsumer<View>() {

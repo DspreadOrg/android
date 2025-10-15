@@ -63,7 +63,7 @@ public class PaymentViewModel extends BaseAppViewModel {
     public ObservableField<String> amount = new ObservableField<>("");
     public ObservableField<String> titleText = new ObservableField<>("Payment");
     public ObservableBoolean isWaiting = new ObservableBoolean(true);
-    public ObservableBoolean isSuccess = new ObservableBoolean(false);
+//    public ObservableBoolean isSuccess = new ObservableBoolean(false);
     public ObservableBoolean isPrinting = new ObservableBoolean(false);
     public ObservableBoolean isD70 = new ObservableBoolean(false);
     public SingleLiveEvent<Boolean> isOnlineSuccess = new SingleLiveEvent();
@@ -71,7 +71,6 @@ public class PaymentViewModel extends BaseAppViewModel {
     public ObservableBoolean showResultStatus = new ObservableBoolean(false);
     public ObservableBoolean TransactionResultStatus = new ObservableBoolean(false);
     public ObservableBoolean cardsInsertedStatus = new ObservableBoolean(false);
-    public ObservableBoolean isD70DisplayScreen = new ObservableBoolean(false);
     public ObservableField<String> receiptContent = new ObservableField<>();
     private Bitmap receiptBitmap;
     private Context mContext;
@@ -112,20 +111,15 @@ public class PaymentViewModel extends BaseAppViewModel {
         titleText.set("Payment finished");
         stopLoading();
         showPinpad.set(false);
-        isSuccess.set(false);
+//        isSuccess.set(false);
         showResultStatus.set(true);
         isWaiting.set(false);
         transactionResult.set(message);
-//        TransactionResultStatus.set(true);
+        TransactionResultStatus.set(false);
         cardsInsertedStatus.set(false);
-        if("D70".equals(Build.MODEL)){
-            isD70DisplayScreen.set(true);
-        }else{
-            isD70DisplayScreen.set(false);
-        }
-    }
+         }
     public  void setTransactionErr(String message){
-        TransactionResultStatus.set(true);
+        TransactionResultStatus.set(false);
     }
     public void clearErrorState() {
         showResultStatus.set(true);
@@ -166,7 +160,7 @@ public class PaymentViewModel extends BaseAppViewModel {
         titleText.set("Payment finished");
         stopLoading();
         showPinpad.set(false);
-        isSuccess.set(true);
+//        isSuccess.set(true);
         isWaiting.set(false);
 //        showResultStatus.set(true);
 //        TransactionResultStatus.set(true);

@@ -2,7 +2,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:binding="http://schemas.android.com/apk/res-auto">
     <data>
-
+        <import type="android.view.View"></import>
         <variable
             name="viewModel"
             type="com.dspread.pos.ui.main.MainViewModel" />
@@ -70,7 +70,9 @@
             android:layout_marginBottom="26dp"
             android:layout_marginLeft="@dimen/dp_16"
             android:src="@mipmap/menu_logo"
-             android:padding="8dp" />
+            android:padding="8dp"
+            android:visibility="@{viewModel.isD70DisplayScreen ? View.GONE : View.VISIBLE}"
+        />
 
     </com.google.android.material.navigation.NavigationView>
 

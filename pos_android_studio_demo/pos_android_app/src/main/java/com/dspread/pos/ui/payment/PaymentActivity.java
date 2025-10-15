@@ -53,6 +53,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.utils.ToastUtils;
@@ -451,6 +452,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
                 keyboardUtil.hide();
             }
             if(errorMessage != null){
+                paymentStatus("","","");
                 viewModel.setTransactionFailed(errorMessage);
                 viewModel.setTransactionErr(errorMessage);
             }
@@ -533,16 +535,23 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
             unregisterReceiver(screenStateReceiver);
         }
     }
-
+    private AtomicBoolean isStarting = new AtomicBoolean(false);
     private void paymentStatus(String amount, String maskedPAN,String terminalTime){
-        Intent intent = new Intent(PaymentActivity.this, PaymentStatusActivity.class);
-        if(amount!=null &&!"".equals(amount)) {
-            intent.putExtra("amount", amount);
-            intent.putExtra("maskedPAN",maskedPAN);
-            intent.putExtra("terminalTime",terminalTime);
-        }
-        startActivity(intent);
-        finish();
+        if (isStarting.compareAndSet(false, true)) {
+            try {
+                Intent intent = new Intent(PaymentActivity.this, PaymentStatusActivity.class);
+                if(amount!=null &&!"".equals(amount)) {
+                    intent.putExtra("amount", amount);
+                    intent.putExtra("maskedPAN",maskedPAN);
+                    intent.putExtra("terminalTime",terminalTime);
+
+                }
+                startActivity(intent);
+                finish();
+            } finally {
+                // 延迟重置，确保在Activity创建完成前不会被再次调用
+                new Handler().postDelayed(() -> isStarting.set(false), 500);
+            }}
     }
 
     private void systemKeyStart() {
