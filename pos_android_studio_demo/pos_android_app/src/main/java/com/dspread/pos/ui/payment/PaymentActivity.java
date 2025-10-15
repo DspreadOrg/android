@@ -42,7 +42,6 @@ import com.dspread.pos.utils.SystemKeyListener;
 import com.dspread.pos.utils.TLV;
 import com.dspread.pos.utils.TLVParser;
 import com.dspread.pos.utils.TRACE;
-import com.dspread.pos.view.BannerAdapter;
 import com.dspread.pos_android_app.BR;
 import com.dspread.pos_android_app.R;
 import com.dspread.pos_android_app.databinding.ActivityPaymentBinding;

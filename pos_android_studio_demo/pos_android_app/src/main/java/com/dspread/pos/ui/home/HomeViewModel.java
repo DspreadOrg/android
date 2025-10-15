@@ -1,6 +1,7 @@
 package com.dspread.pos.ui.home;
 
 import android.app.Application;
+import android.os.Build;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.ObservableField;
@@ -18,12 +19,18 @@ public class HomeViewModel extends BaseAppViewModel {
     public ObservableField<String> amount = new ObservableField<>("¥0.00");
     public SingleLiveEvent<Long> paymentStartEvent = new SingleLiveEvent<>();
     public ObservableField<Boolean> amountValid = new ObservableField<>(false);
-    
+    public ObservableField<Boolean> isD70 = new ObservableField<>(false);
+
     public StringBuilder amountBuilder = new StringBuilder();
     private static final int MAX_DIGITS = 12; // Maximum amount digits
     
     public HomeViewModel(@NonNull Application application) {
         super(application);
+        if("D70".equals(Build.MODEL)){
+            isD70.set(true);
+        }else {
+            isD70.set(false);
+        }
     }
     
     // Update amount display

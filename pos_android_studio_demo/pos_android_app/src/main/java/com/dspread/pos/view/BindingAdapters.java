@@ -2,9 +2,12 @@ package com.dspread.pos.view;
 
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 
 import androidx.databinding.BindingAdapter;
+
+import com.dspread.pos_android_app.R;
 
 public class BindingAdapters {
     // 自定义绑定适配器：根据条件设置layout_below
@@ -41,5 +44,16 @@ public class BindingAdapters {
             layoutParams.topMargin = marginTop;
             view.setLayoutParams(layoutParams);
         }
+    }
+
+    @BindingAdapter("dynamicBackground")
+    public static void setDynamicBackground(Button view, Boolean isD70) {
+        if (isD70 == null) return;
+
+        int backgroundRes = isD70 ?
+                R.drawable.bg_next_button_d70 : // D70 状态下的背景
+                R.drawable.bg_confirm_button_selector; // 默认背景
+
+        view.setBackgroundResource(backgroundRes);
     }
 }
