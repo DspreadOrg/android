@@ -1,3 +1,17 @@
+## [8.1.1](https://github.com/DspreadOrg/android/compare/v8.1.0...v8.1.1) (2025-10-20)
+
+
+### Bug Fixes
+
+* add details for printing network requests ([70492f9](https://github.com/DspreadOrg/android/commit/70492f99ec320bc61ce4378d0800043223411f6e))
+* add print and transaction UI for D70 ([789b5b4](https://github.com/DspreadOrg/android/commit/789b5b428ea041fa7cdba8fbc0549ed53c8b1f9d))
+* fix the text stype of transaction reissue receipt ([e2b09fd](https://github.com/DspreadOrg/android/commit/e2b09fd28cf2d42d3523c82e4a60f26c7d8bd9cc))
+* fix the toolbar bug and done button of transaction reissue ([42f5b9a](https://github.com/DspreadOrg/android/commit/42f5b9ac699ed0a7d8825e09da382398c18abdc6))
+* menu ui adaptation and optimized successful interface ([56879bb](https://github.com/DspreadOrg/android/commit/56879bbc43190b87970c94f9c27156ed025b460a))
+* update the app version to 8.1.1 ([8225d96](https://github.com/DspreadOrg/android/commit/8225d9633220489b0d604f918bef60633815bd2c))
+* update the CI CD file ([ba09d56](https://github.com/DspreadOrg/android/commit/ba09d56a67a4fcfcfd29e9daeeefbabebd19f20f))
+* update the home amount button UI ([ee199c9](https://github.com/DspreadOrg/android/commit/ee199c9cf9112f51853d1b2c084f79b4bbe8595c))
+
 # [8.1.0](https://github.com/DspreadOrg/android/compare/v8.0.9...v8.1.0) (2025-10-14)
 
 
