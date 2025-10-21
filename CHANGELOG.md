@@ -1,3 +1,10 @@
+## [8.1.2](https://github.com/DspreadOrg/android/compare/v8.1.1...v8.1.2) (2025-10-21)
+
+
+### Bug Fixes
+
+* restrictions on adding a dropdown menu bar in the paymentActivity interface ([87b10aa](https://github.com/DspreadOrg/android/commit/87b10aa8a0d0acdff95699c6f35e317b869315fa))
+
 ## [8.1.1](https://github.com/DspreadOrg/android/compare/v8.1.0...v8.1.1) (2025-10-20)
 
 
