@@ -112,7 +112,7 @@ jobs:
           name: dspread-sdks
           path: |
             pos_android_studio_demo/pos_android_app/libs/dspread_pos_sdk_*.aar
-            pos_android_studio_demo/pos_android_app/libs/dspread_print_sdk-*-beta.aar  
+            pos_android_studio_demo/pos_android_app/libs/dspread_print_sdk-*.aar  
       
       # - name: Generate short SHA for tag
       #   id: generate_tag
@@ -177,7 +177,7 @@ jobs:
         id: verify-sdk
         run: |
             POS_SDK=$(ls pos_android_studio_demo/pos_android_app/libs/dspread_pos_sdk_*.aar)
-            PRINT_SDK=$(ls pos_android_studio_demo/pos_android_app/libs/dspread_print_sdk-*-beta.aar)
+            PRINT_SDK=$(ls pos_android_studio_demo/pos_android_app/libs/dspread_print_sdk-*.aar)
             echo "POS_SDK=$POS_SDK" >> $GITHUB_OUTPUT
             echo "PRINT_SDK=$PRINT_SDK" >> $GITHUB_OUTPUT
 
@@ -215,7 +215,7 @@ jobs:
           tag_name: ${{ steps.get-latest-tag.outputs.LATEST_TAG }}
           files: |
             pos_android_studio_demo/pos_android_app/libs/dspread_pos_sdk_*.aar
-            pos_android_studio_demo/pos_android_app/libs/dspread_print_sdk-*-beta.aar
+            pos_android_studio_demo/pos_android_app/libs/dspread_print_sdk-*.aar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # 使用 GitHub Token 进行认证  
 

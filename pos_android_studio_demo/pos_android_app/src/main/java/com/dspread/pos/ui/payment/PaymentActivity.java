@@ -15,6 +15,8 @@ import android.os.PowerManager;
 import android.text.Html;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
+import android.view.KeyEvent;
+import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.LinearInterpolator;
 import android.widget.ArrayAdapter;
@@ -90,6 +92,12 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
     @Override
     public int initContentView(Bundle savedInstanceState) {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().getDecorView().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+        );
         return R.layout.activity_payment;
     }
 
@@ -104,6 +112,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
      */
     @Override
     public void initData() {
+        disallowKey(true);
         logFileConfig = LogFileConfig.getInstance(this);
         binding.setVariable(BR.viewModel, viewModel);
         viewModel.setmContext(this);
@@ -533,6 +542,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
         if (screenStateReceiver != null) {
             unregisterReceiver(screenStateReceiver);
         }
+        disallowKey(false);
     }
     private AtomicBoolean isStarting = new AtomicBoolean(false);
     private void paymentStatus(String amount, String maskedPAN,String terminalTime){
@@ -622,4 +632,23 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
         }
     }
 
+    private static final String ACTION_DSPREAD_INTERCEPT_KEY = "com.dspread.action.INTERCEPT_KEY";
+
+    private void disallowKey(boolean disable) {
+        try {
+            Intent intent = new Intent();
+            if (disable) {
+                String keyCode = KeyEvent.KEYCODE_HOME + "," + KeyEvent.KEYCODE_APP_SWITCH + "," + KeyEvent.KEYCODE_POWER;
+                intent.putExtra("keys", keyCode);
+                intent.setAction(ACTION_DSPREAD_INTERCEPT_KEY);
+                sendBroadcast(intent);
+            } else {
+                intent.putExtra("keys", "");
+                intent.setAction(ACTION_DSPREAD_INTERCEPT_KEY);
+                sendBroadcast(intent);
+            }
+        } catch (Exception e) {
+
+        }
+    }
 }
