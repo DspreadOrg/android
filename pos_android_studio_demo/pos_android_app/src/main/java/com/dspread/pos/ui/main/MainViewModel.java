@@ -19,6 +19,7 @@ import com.dspread.pos.TitleProviderListener;
 import com.dspread.pos.ui.home.HomeFragment;
 import com.dspread.pos.ui.payment.PaymentMethodActivity;
 import com.dspread.pos.ui.setting.connection_settings.ConnectionSettingsFragment;
+import com.dspread.pos.ui.transaction.SerachKeyboardUtils;
 import com.dspread.pos.ui.transaction.TransactionFragment;
 import com.dspread.pos.utils.TRACE;
 import com.dspread.pos_android_app.R;
@@ -86,8 +87,8 @@ public class MainViewModel extends BaseViewModel {
 
     public void handleNavigationItemClick(int itemId) {
         MainActivity activity = activityRef.get();
+        SerachKeyboardUtils.hideKeyboard(activity);
         if (activity == null) return;
-
         Fragment targetFragment;
         // get Fragment from cache
         if (FragmentCacheManager.getInstance().hasFragment(itemId)) {

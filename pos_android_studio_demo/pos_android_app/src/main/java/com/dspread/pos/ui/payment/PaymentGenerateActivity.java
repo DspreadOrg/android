@@ -70,6 +70,7 @@ public class PaymentGenerateActivity extends BaseActivity<ActivityPaymentGenerat
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.putExtra("amount", amount);
                 startActivity(intent);
+                finish();
             }
         });
     }

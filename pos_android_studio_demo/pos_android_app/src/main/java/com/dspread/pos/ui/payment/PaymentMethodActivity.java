@@ -120,6 +120,7 @@ public class PaymentMethodActivity extends BaseActivity<ActivityPaymentMetholdBi
         Intent intent = new Intent(this, PaymentGenerateActivity.class);
         intent.putExtra("amount", amount);
         startActivity(intent);
+        finish();
         TRACE.d("PayMethodActivity startGeneratePayment");
     }
 

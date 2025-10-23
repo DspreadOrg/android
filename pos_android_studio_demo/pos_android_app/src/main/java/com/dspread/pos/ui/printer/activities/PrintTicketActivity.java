@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
@@ -40,6 +41,7 @@ public class PrintTicketActivity extends PrinterBaseActivity<ActivityPrinterBase
     private String amount = "";
     private String maskedPAN = "";
     private String terminalTime = "";
+    private String transactionTime;
     private boolean isSmallDevices = false;
 
     @Override
@@ -48,6 +50,7 @@ public class PrintTicketActivity extends PrinterBaseActivity<ActivityPrinterBase
         amount = getIntent().getStringExtra("terAmount");
         maskedPAN = getIntent().getStringExtra("maskedPAN");
         terminalTime = getIntent().getStringExtra("terminalTime");
+        transactionTime = getIntent().getStringExtra("transactionTime");
 
         contentBinding = ActivityPrintTicketBinding.inflate(getLayoutInflater());
         contentBinding.setViewModel(viewModel);
@@ -112,6 +115,10 @@ public class PrintTicketActivity extends PrinterBaseActivity<ActivityPrinterBase
             }
         } else {
             terminalTime = "";
+        }
+
+        if (!TextUtils.isEmpty(transactionTime)) {
+            terminalTime = terminalTime + " " + transactionTime;
         }
         map.put("terminalTime", terminalTime);
         viewModel.generateReceiptBitmap(map);
@@ -244,7 +251,7 @@ public class PrintTicketActivity extends PrinterBaseActivity<ActivityPrinterBase
     protected void onReturnPrintResult(boolean isSuccess, String status, PrinterDevice.ResultType resultType) {
         if (isSuccess) {
             viewModel.onPrintComplete(isSuccess, status);
-            dialog(PrintTicketActivity.this, R.mipmap.ic_print_success, "Print Successful",status,3000L, true, false);
+            dialog(PrintTicketActivity.this, R.mipmap.ic_print_success, "Print Successful", status, 3000L, true, false);
         } else {
             if (isSmallDevices) {
                 binding.tvTitle.setText("Print Fail");
@@ -260,13 +267,13 @@ public class PrintTicketActivity extends PrinterBaseActivity<ActivityPrinterBase
                 }
                 viewModel.isSmallScreenButton.set(true);
             } else {
-                dialog(PrintTicketActivity.this, R.mipmap.ic_print_fail, "Print Fail",status, 3000L, false, true);
+                dialog(PrintTicketActivity.this, R.mipmap.ic_print_fail, "Print Fail", status, 3000L, false, true);
             }
         }
     }
 
-    private void dialog(Context mContext, int icon, String message, String failMessage,Long duration, boolean isShowCountdown, boolean isShowCloseButton) {
-        PrintDialogUtils.showCustomDialog(mContext, icon, message,failMessage, duration, isShowCountdown, isShowCloseButton, false, new PrintDialogUtils.DialogDismissListener() {
+    private void dialog(Context mContext, int icon, String message, String failMessage, Long duration, boolean isShowCountdown, boolean isShowCloseButton) {
+        PrintDialogUtils.showCustomDialog(mContext, icon, message, failMessage, duration, isShowCountdown, isShowCloseButton, false, new PrintDialogUtils.DialogDismissListener() {
             @Override
             public void onDismiss() {
                 if (isShowCloseButton) {

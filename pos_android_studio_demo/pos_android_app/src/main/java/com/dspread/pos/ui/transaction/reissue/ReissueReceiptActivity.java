@@ -67,9 +67,10 @@ public class ReissueReceiptActivity extends BaseActivity<ActivityReissueReceiptB
             public void onClick(View view) {
                 Intent intent = new Intent(ReissueReceiptActivity.this, PrintTicketActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.putExtra("terAmount", transaction.getAmount()+"");
+                intent.putExtra("terAmount", DeviceUtils.convertAmountToCents(transaction.getAmount()+""));
                 intent.putExtra("maskedPAN", transaction.getMaskPan());
                 intent.putExtra("terminalTime", transaction.getTransactionDate());
+                intent.putExtra("transactionTime",transaction.getTransactionTime());
                 ReissueReceiptActivity.this.startActivity(intent);
 
             }

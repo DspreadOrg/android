@@ -22,11 +22,11 @@ public class PrintDialogUtils {
     /**
      * 显示自定义弹窗
      */
-    public static Dialog showCustomDialog(Context context, int iconResId, String message,String failMeaasge,
+    public static Dialog showCustomDialog(Context context, int iconResId, String message, String failMeaasge,
                                           long duration, boolean showCountdown,
                                           boolean showCloseButton, boolean cancelable,
                                           DialogDismissListener dismissListener) {
-        CustomDialog dialog = new CustomDialog(context, iconResId, message,failMeaasge, duration,
+        CustomDialog dialog = new CustomDialog(context, iconResId, message, failMeaasge, duration,
                 showCountdown, showCloseButton, cancelable, dismissListener);
         dialog.show();
         return dialog;
@@ -35,14 +35,14 @@ public class PrintDialogUtils {
     /**
      * 显示默认的成功弹窗
      */
-    public static Dialog showSuccessDialog(Context context, String message,String failMessage,
+    public static Dialog showSuccessDialog(Context context, String message, String failMessage,
                                            DialogDismissListener dismissListener) {
-        return showCustomDialog(context, android.R.drawable.ic_dialog_info, message,failMessage,
+        return showCustomDialog(context, android.R.drawable.ic_dialog_info, message, failMessage,
                 3000, true, true, false, dismissListener);
     }
 
-    public static Dialog showSuccessDialog(Context context, String message,String failMessage) {
-        return showSuccessDialog(context, message,failMessage, null);
+    public static Dialog showSuccessDialog(Context context, String message, String failMessage) {
+        return showSuccessDialog(context, message, failMessage, null);
     }
 
     public static Dialog showSuccessDialog(Context context) {

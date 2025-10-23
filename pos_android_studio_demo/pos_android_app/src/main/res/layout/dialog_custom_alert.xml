@@ -5,7 +5,6 @@
     android:background="@drawable/bg_dialog_rounded"
     android:padding="20dp">
 
-    <!-- 关闭按钮 - 放在右上角 -->
     <ImageView
         android:id="@+id/btnClose"
         android:layout_width="wrap_content"
@@ -16,7 +15,7 @@
         android:src="@mipmap/ic_ptint_close"
         android:visibility="gone" />
 
-    <!-- 主内容容器 -->
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -25,7 +24,6 @@
         android:gravity="center_horizontal"
         android:orientation="vertical">
 
-        <!-- 图标区域 -->
         <ImageView
             android:id="@+id/ivIcon"
             android:layout_width="wrap_content"
@@ -34,7 +32,6 @@
             android:scaleType="centerInside"
             android:visibility="gone" />
 
-        <!-- 消息区域 -->
         <TextView
             android:id="@+id/tvMessage"
             android:layout_width="match_parent"
@@ -56,7 +53,6 @@
             android:textSize="12sp"
             android:visibility="gone" />
 
-        <!-- 倒计时区域 -->
         <TextView
             android:id="@+id/tvTimer"
             android:layout_width="wrap_content"
