@@ -1,3 +1,10 @@
+## [8.1.3](https://github.com/DspreadOrg/android/compare/v8.1.2...v8.1.3) (2025-10-24)
+
+
+### Bug Fixes
+
+* add error message display ([dc4dbdd](https://github.com/DspreadOrg/android/commit/dc4dbddeb8a3003d357f125a23a95c4f5b81f6d2))
+
 ## [8.1.2](https://github.com/DspreadOrg/android/compare/v8.1.1...v8.1.2) (2025-10-21)
 
 
