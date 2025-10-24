@@ -58,6 +58,7 @@
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/nav_header_main"
         app:itemIconTint="@null"
+        app:itemTextAppearance="@null"
         app:menu="@menu/activity_main_drawer"
 
         binding:onNavigationItemSelectedCommand="@{viewModel.switchFragmentCommand}"

@@ -97,6 +97,12 @@
 
                 android:textSize="24sp"
                 android:textStyle="bold" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{viewModel.sendError}"
+                android:textColor="@color/black"
+                android:visibility="@{viewModel.isSuccess ? View.GONE : View.VISIBLE}"/>
 
             <TextView
                 android:id="@+id/tv_payment_result_amount"
@@ -116,9 +122,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:visibility="@{viewModel.isD70DisplayScreen ? View.VISIBLE : View.GONE}">
-
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
             <TextView
 
                 android:layout_width="wrap_content"
@@ -140,6 +150,13 @@
                 android:textSize="30dp"
                 android:textStyle="bold"
                 android:visibility="@{viewModel.isSuccess ? View.VISIBLE : View.GONE}" />
+            </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{viewModel.sendError}"
+                android:textColor="@color/black"
+                android:visibility="@{viewModel.isSuccess ? View.GONE : View.VISIBLE}"/>
 
         </LinearLayout>
 
