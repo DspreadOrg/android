@@ -92,10 +92,8 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
     @Override
     public int initContentView(Bundle savedInstanceState) {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().getDecorView().setSystemUiVisibility(
-                View.SYSTEM_UI_FLAG_FULLSCREEN
-                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
         );
         return R.layout.activity_payment;
@@ -464,7 +462,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
                 viewModel.setTransactionFailed(errorMessage);
                 viewModel.setTransactionErr(errorMessage);
             }
-
+            finish();
         }
 
         /**
