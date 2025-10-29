@@ -496,7 +496,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
         }
 
         @Override
-        public void onReturnGetPinInputResult(int num) {
+        public void onReturnGetPinInputResult(int num, QPOSService.PinError error, int minLen, int maxLen) {
             TRACE.i("onReturnGetPinInputResult  ===" + num);
                 StringBuilder s = new StringBuilder();
                 if (num == -1) {
