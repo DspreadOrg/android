@@ -12,12 +12,6 @@
             type="com.dspread.pos.ui.payment.PaymentStatusViewModel" />
     </data>
 
-    <!-- 交易信息区域 -->
-    <!--    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="match_parent"-->
-    <!--        android:orientation="vertical"-->
-    <!--        android:visibility="@{viewModel.TransactionResultStatus ? View.VISIBLE : View.GONE}">-->
 
     <!-- 交易结果状态显示 -->
     <LinearLayout
@@ -46,6 +40,7 @@
 
             <com.airbnb.lottie.LottieAnimationView
                 android:layout_width="wrap_content"
+                android:layout_marginTop="30dp"
                 android:layout_height="wrap_content"
                 android:visibility="@{viewModel.isSuccess ? View.VISIBLE : View.GONE}"
                 app:lottie_autoPlay="true"
@@ -58,12 +53,12 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:orientation="vertical"
+            android:layout_marginTop="20dp"
             android:visibility="@{viewModel.isD70DisplayScreen ? View.VISIBLE : View.GONE}">
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
                 android:layout_weight="5"
                 android:src="@mipmap/icon_fail"
                 android:visibility="@{viewModel.isSuccess ? View.GONE : View.VISIBLE}" />
@@ -72,7 +67,6 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
                 android:layout_weight="5"
                 android:src="@mipmap/icon_success"
                 android:visibility="@{viewModel.isSuccess ? View.VISIBLE : View.GONE}" />
@@ -91,10 +85,9 @@
                 android:id="@+id/tv_payment_result"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="20dp"
                 android:text="@{viewModel.isSuccess ? @string/payment_complete : @string/payment_failed}"
                 android:textColor="@color/black"
-
                 android:textSize="24sp"
                 android:textStyle="bold" />
             <TextView
@@ -108,7 +101,6 @@
                 android:id="@+id/tv_payment_result_amount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
                 android:autoSizeTextType="uniform"
                 android:maxLines="1"
                 android:text="@{viewModel.amount}"
@@ -129,27 +121,26 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:orientation="horizontal">
-            <TextView
+                <TextView
 
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
-                android:text="@{viewModel.isSuccess ? @string/payment_total : @string/payment_failed}"
-                android:textColor="@color/black"
-                android:textSize="30dp"
-                android:textStyle="bold" />
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:text="@{viewModel.isSuccess ? @string/payment_total : @string/payment_failed}"
+                    android:textColor="@color/black"
+                    android:textSize="30dp"
+                    android:textStyle="bold" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:autoSizeTextType="uniform"
-                android:maxLines="1"
-                android:paddingRight="50dp"
-                android:text="@{viewModel.amount}"
-                android:textColor="@color/black"
-                android:textSize="30dp"
-                android:textStyle="bold"
-                android:visibility="@{viewModel.isSuccess ? View.VISIBLE : View.GONE}" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:autoSizeTextType="uniform"
+                    android:maxLines="1"
+                    android:text="@{viewModel.amount}"
+                    android:textColor="@color/black"
+                    android:textSize="30dp"
+                    android:textStyle="bold"
+                    android:visibility="@{viewModel.isSuccess ? View.VISIBLE : View.GONE}" />
             </LinearLayout>
             <TextView
                 android:layout_width="wrap_content"
