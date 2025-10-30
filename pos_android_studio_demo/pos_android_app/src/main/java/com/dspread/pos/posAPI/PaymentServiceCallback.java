@@ -59,7 +59,7 @@ public interface PaymentServiceCallback {
     /**
      * Return PIN input result
      */
-    default void onReturnGetPinInputResult(int num) {}
+    default void onReturnGetPinInputResult(int num, QPOSService.PinError error, int minLen, int maxLen) {}
     
     /**
      * Get card information result

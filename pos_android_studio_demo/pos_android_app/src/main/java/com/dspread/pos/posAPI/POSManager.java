@@ -512,8 +512,9 @@ public class POSManager {
         }
 
         @Override
-        public void onReturnGetPinInputResult(int num) {
-            notifyTransactionCallbacks(cb -> cb.onReturnGetPinInputResult(num));
+        public void onReturnGetPinInputResult(int num, QPOSService.PinError error, int minLen, int maxLen) {
+            super.onReturnGetPinInputResult(num, error, minLen, maxLen);
+            notifyTransactionCallbacks(cb -> cb.onReturnGetPinInputResult(num,error,minLen,maxLen));
         }
 
         @Override

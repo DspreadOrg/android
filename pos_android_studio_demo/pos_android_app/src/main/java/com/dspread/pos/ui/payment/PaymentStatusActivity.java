@@ -19,6 +19,7 @@ public class PaymentStatusActivity extends BaseActivity<ActivityPaymentBinding, 
     private String amount;
     private String maskedPAN;
     private String terminalTime;
+    private String errorMsg;
     @Override
     public int initContentView(Bundle bundle) {
         return R.layout.activity_paymentstatus;
@@ -34,6 +35,7 @@ public class PaymentStatusActivity extends BaseActivity<ActivityPaymentBinding, 
         amount = getIntent().getStringExtra("amount");
         maskedPAN = getIntent().getStringExtra("maskedPAN");
         terminalTime = getIntent().getStringExtra("terminalTime");
+        errorMsg = getIntent().getStringExtra("errorMsg");
         if("D70".equals(Build.MODEL)){
            viewModel.isD70DisplayScreen.set(true);
         }else{
@@ -48,7 +50,11 @@ public class PaymentStatusActivity extends BaseActivity<ActivityPaymentBinding, 
             map.put("terminalTime",terminalTime);
             viewModel.sendTranReceipt(map);
         } else {
-            viewModel.setTransactionFailed();
+            String errorMsgs="";
+            if (errorMsg != null && !"".equalsIgnoreCase(errorMsg)){
+                errorMsgs=errorMsg;
+            }
+            viewModel.setTransactionFailed(errorMsgs);
         }
         if(DeviceUtils.isPrinterDevices()){
             viewModel.isShouwPrinting.set(true);

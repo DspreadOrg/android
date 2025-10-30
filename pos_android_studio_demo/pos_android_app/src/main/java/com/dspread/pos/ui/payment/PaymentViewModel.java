@@ -190,7 +190,7 @@ public class PaymentViewModel extends BaseAppViewModel {
         new Thread(() -> {
             POSManager.getInstance().cancelTransaction();
         }).start();
-        finish();
+//        finish();
     });
     public BindingCommand sendReceiptCommand = new BindingCommand(new BindingAction() {
         @Override

@@ -38,13 +38,17 @@ public class PaymentStatusViewModel extends BaseAppViewModel {
     public ObservableBoolean isPrinting = new ObservableBoolean(false);
     public ObservableBoolean isShouwPrinting = new ObservableBoolean(false);
     public ObservableBoolean isD70DisplayScreen = new ObservableBoolean(false);
+    public ObservableField<String> sendError = new ObservableField<>("");
 
     public PaymentStatusViewModel(@NonNull Application application) {
         super(application);
     }
 
-    public void setTransactionFailed() {
+    public void setTransactionFailed(String errorMsg) {
         isSuccess.set(false);
+        if (errorMsg != null && !"".equalsIgnoreCase(errorMsg)){
+            sendError.set(errorMsg);
+        }
     }
 
     public void setTransactionSuccess() {

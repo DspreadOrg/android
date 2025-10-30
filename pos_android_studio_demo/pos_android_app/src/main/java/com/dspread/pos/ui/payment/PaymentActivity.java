@@ -92,10 +92,8 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
     @Override
     public int initContentView(Bundle savedInstanceState) {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().getDecorView().setSystemUiVisibility(
-                View.SYSTEM_UI_FLAG_FULLSCREEN
-                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
         );
         return R.layout.activity_payment;
@@ -202,10 +200,10 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
 //                    handleSendReceipt();
                 }
                 viewModel.setTransactionSuccess();
-                paymentStatus(amount,maskedPAN,terminalTime);
+                paymentStatus(amount,maskedPAN,terminalTime,"");
             } else {
                 viewModel.setTransactionFailed("Transaction failed because of the network!");
-                paymentStatus("","","");
+                paymentStatus("","","","Transaction failed because of the network!");
             }
         });
     }
@@ -448,7 +446,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
                     }
                     List<TLV> list = TLVParser.parse(result.getTlv());
                     TLV tlvpan = TLVParser.searchTLV(list, "C4");
-                    paymentStatus(amount,tlvpan == null? paymentModel.getCardNo() : tlvpan.value,terminalTime);
+                    paymentStatus(amount,tlvpan == null? paymentModel.getCardNo() : tlvpan.value,terminalTime,"");
                 }
             }
         }
@@ -460,11 +458,11 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
                 keyboardUtil.hide();
             }
             if(errorMessage != null){
-                paymentStatus("","","");
+                paymentStatus("","","",errorMessage);
                 viewModel.setTransactionFailed(errorMessage);
                 viewModel.setTransactionErr(errorMessage);
             }
-
+            finish();
         }
 
         /**
@@ -498,7 +496,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
         }
 
         @Override
-        public void onReturnGetPinInputResult(int num) {
+        public void onReturnGetPinInputResult(int num, QPOSService.PinError error, int minLen, int maxLen) {
             TRACE.i("onReturnGetPinInputResult  ===" + num);
                 StringBuilder s = new StringBuilder();
                 if (num == -1) {
@@ -545,7 +543,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
         disallowKey(false);
     }
     private AtomicBoolean isStarting = new AtomicBoolean(false);
-    private void paymentStatus(String amount, String maskedPAN,String terminalTime){
+    private void paymentStatus(String amount, String maskedPAN,String terminalTime,String errorMsg){
         if (isStarting.compareAndSet(false, true)) {
             try {
                 Intent intent = new Intent(PaymentActivity.this, PaymentStatusActivity.class);
@@ -553,7 +551,8 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
                     intent.putExtra("amount", amount);
                     intent.putExtra("maskedPAN",maskedPAN);
                     intent.putExtra("terminalTime",terminalTime);
-
+                }else if(errorMsg!=null &&!"".equals(errorMsg)){
+                    intent.putExtra("errorMsg", errorMsg);
                 }
                 startActivity(intent);
                 finish();
