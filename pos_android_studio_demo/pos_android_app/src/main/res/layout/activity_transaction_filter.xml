@@ -116,11 +116,24 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="13dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="10dp"
+            android:text="Transaction Type"
+            android:textColor="@android:color/black"
+            android:textSize="20sp"
+            android:visibility="@{viewModel.isD70 ? View.VISIBLE : View.GONE}"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="13dp"
             android:layout_marginTop="32dp"
             android:layout_marginBottom="10dp"
             android:text="Transaction Type"
             android:textColor="@android:color/black"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            android:visibility="@{viewModel.isD70 ? View.GONE : View.VISIBLE}"
+            />
 
         <!-- 核心改动2：交易类型也用RadioGroup -->
         <RadioGroup

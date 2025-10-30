@@ -16,6 +16,7 @@ import android.hardware.usb.UsbDevice;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.graphics.Typeface;
 import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -332,6 +333,13 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
             alertDialog.setCanceledOnTouchOutside(false);
             alertDialog.setCancelable(false);
             alertDialog.show();
+            
+            Button positiveButton = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+            if (positiveButton != null) {
+                positiveButton.setTextColor(getResources().getColor(R.color.transaction_detail_text_red));
+                positiveButton.setTextSize(16);
+                positiveButton.setTypeface(null, Typeface.BOLD);
+            }
         }
     }
 

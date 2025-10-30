@@ -43,7 +43,8 @@
             tools:text="$0.00"
             android:clickable="false"
             android:focusable="false"
-            android:focusableInTouchMode="false"/>
+            android:focusableInTouchMode="false"
+            app:backgroundTint="@color/keyboard_back_color"/>
 
         <!-- 税额显示 -->
         <TextView
