@@ -23,6 +23,7 @@ import com.dspread.xpos.CQPOSService;
 import com.dspread.xpos.QPOSService;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -117,11 +118,17 @@ public class POSManager {
                 pos.connectBluetoothDevice(true, 25, deviceAddress);
             }else {
                 posType = POS_TYPE.USB;
-                UsbDevice usbDevice = USBClass.getMdevices().get(deviceAddress);
-                initMode(QPOSService.CommunicationMode.USB_OTG_CDC_ACM);
-                pos.openUsb(usbDevice);
+                // 添加空值检查，防止NullPointerException
+                HashMap<String, UsbDevice> deviceMap = USBClass.getMdevices();
+                if (deviceMap != null) {
+                    UsbDevice usbDevice = deviceMap.get(deviceAddress);
+                    initMode(QPOSService.CommunicationMode.USB_OTG_CDC_ACM);
+                    pos.openUsb(usbDevice);
+                } else {
+                    notifyConnectionCallbacks(cb -> cb.onRequestQposDisconnected());
+                }
             }
-        }else {
+        }else {            
             posType = POS_TYPE.UART;
             initMode(QPOSService.CommunicationMode.UART);
             pos.openUart();
