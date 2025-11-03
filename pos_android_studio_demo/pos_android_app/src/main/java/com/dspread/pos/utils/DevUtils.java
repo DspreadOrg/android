@@ -35,6 +35,17 @@ public class DevUtils {
         }
     }
 
+    public static String getVersionName(Context context) {
+        try {
+            PackageInfo packageInfo = context.getPackageManager()
+                    .getPackageInfo(context.getPackageName(), 0);
+            return packageInfo.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+            return "Unknown";
+        }
+    }
+
     /**
      * Get process name
      */

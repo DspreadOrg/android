@@ -3,7 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
         <import type="android.view.View" />
+
         <variable
             name="viewModel"
             type="com.dspread.pos.ui.transaction.TransactionViewModel" />
@@ -66,12 +68,12 @@
 
         <!-- 第二部分: 统计信息 -->
         <LinearLayout
-            android:visibility="@{viewModel.isTransactionHeader?View.VISIBLE:View.GONE}"
             android:id="@+id/ll_transaction_header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingVertical="16dp">
+            android:paddingVertical="16dp"
+            android:visibility="@{viewModel.isTransactionHeader?View.VISIBLE:View.GONE}">
 
             <TextView
                 android:id="@+id/payments_count"
@@ -93,11 +95,11 @@
 
 
         <LinearLayout
-            android:visibility="@{viewModel.isTransactionViewAll?View.VISIBLE:View.GONE}"
             android:id="@+id/ll_transaction_view_all"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="@{viewModel.isTransactionViewAll?View.VISIBLE:View.GONE}">
 
             <TextView
                 android:layout_width="0dp"
@@ -111,7 +113,7 @@
                 android:id="@+id/view_all_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="10dp"
+                android:paddingVertical="@dimen/dp_10"
                 android:text="View All"
                 android:textColor="#ffcf161c"
                 android:textSize="16sp" />
@@ -127,7 +129,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:src="@mipmap/ic_transaction_empty"
-                android:visibility="@{viewModel.isEmpty?View.VISIBLE:View.GONE}"/>
+                android:visibility="@{viewModel.isEmpty?View.VISIBLE:View.GONE}" />
 
             <ProgressBar
                 android:id="@+id/transaction_pb"
@@ -139,6 +141,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
             <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
                 android:id="@+id/swipe_refresh_layout"
                 android:layout_width="match_parent"

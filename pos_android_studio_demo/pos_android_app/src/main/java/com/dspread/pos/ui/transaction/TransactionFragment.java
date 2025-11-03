@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -227,13 +228,19 @@ public class TransactionFragment extends BaseFragment<FragmentTransactionBinding
             for (Transaction transaction : transactions) {
                 amount += transaction.getAmount();
             }
-
             String mAmount = DeviceUtils.convertAmountToCents(new BigDecimal(amount).toPlainString());
-
-
             binding.paymentsAmount.setText("$" + mAmount);
+            if (binding.paymentsAmount.length() > 16) {
+                binding.paymentsAmount.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+            } else {
+                binding.paymentsAmount.setTextSize(TypedValue.COMPLEX_UNIT_SP, 44);
+                // 默认大小
+            }
 
-            binding.paymentsCount.setText(transactions.size() + " Payments Today");
+            int todayCount = transactions != null ? TransactionDateFilter.getTodayTransactions(transactions).size() : 0;
+
+            binding.paymentsCount.setText(todayCount + " Payments Today");
+
         }
 
         if (transactions != null && transactions.size() < 1) {

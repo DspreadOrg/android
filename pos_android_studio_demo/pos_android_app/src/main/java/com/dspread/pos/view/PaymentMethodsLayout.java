@@ -250,10 +250,10 @@ public class PaymentMethodsLayout extends LinearLayout {
         LayoutParams ivParams;
 
         if (isSmallScreen) {
-            // 小屏幕：图标较小，放在左侧
+            // 小屏幕：图标较小
             iconSize = (int) (Math.min(cellWidth, cellHeight) * 0.3f);
             ivParams = new LayoutParams(iconSize, iconSize);
-            ivParams.rightMargin = dpToPx(4); // 图标和文字之间的间距
+            //ivParams.rightMargin = dpToPx(4); // 图标和文字之间的间距
             ivParams.gravity = Gravity.CENTER;
         } else {
             // 正常屏幕：图标较大，放在上方
@@ -272,7 +272,7 @@ public class PaymentMethodsLayout extends LinearLayout {
         LayoutParams tvParams;
 
         if (isSmallScreen) {
-            // 小屏幕：文字在图标右侧，使用较小的字体
+            // 小屏幕：
             tvParams = new LayoutParams(
                     ViewGroup.LayoutParams.WRAP_CONTENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -394,19 +394,18 @@ public class PaymentMethodsLayout extends LinearLayout {
         GradientDrawable normalDrawable = new GradientDrawable();
         normalDrawable.setShape(GradientDrawable.RECTANGLE);
         normalDrawable.setCornerRadius(dpToPx(isSmallScreen ? 16 : 26));
-        normalDrawable.setStroke(dpToPx(2), Color.parseColor("#ffe47579"));
+        normalDrawable.setStroke(dpToPx(1), Color.parseColor("#BCBCBC"));
         normalDrawable.setColor(Color.WHITE);
 
         GradientDrawable pressedDrawable = new GradientDrawable();
         pressedDrawable.setShape(GradientDrawable.RECTANGLE);
         pressedDrawable.setCornerRadius(dpToPx(isSmallScreen ? 16 : 26));
-        pressedDrawable.setStroke(dpToPx(2), Color.parseColor("#ffe47579"));
+        pressedDrawable.setStroke(dpToPx(1), Color.parseColor("#ffe47579"));
         pressedDrawable.setColor(Color.parseColor("#ffffe9e9"));
 
         StateListDrawable states = new StateListDrawable();
         states.addState(new int[]{android.R.attr.state_pressed}, pressedDrawable);
         states.addState(new int[]{}, normalDrawable);
-
         return states;
     }
 

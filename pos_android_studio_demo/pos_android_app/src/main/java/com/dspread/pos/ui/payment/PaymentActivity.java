@@ -17,6 +17,7 @@ import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.LinearInterpolator;
 import android.widget.ArrayAdapter;
@@ -71,7 +72,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
     private int changePinTimes;
     private boolean isPinBack = false;
     private PaymentServiceCallback paymentServiceCallback;
-    private  String terminalTime;
+    private String terminalTime;
     private String maskedPAN;
     private SystemKeyListener systemKeyListener;
     private PowerManager.WakeLock wakeLock;
@@ -80,15 +81,16 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
     private Runnable runnable;
     private int currentIndex = 0;
     private int[] imageResources = {
-            R.mipmap.ic_insert_d70,
-            R.mipmap.ic_tap_d70,
-            R.mipmap.ic_swipe_d70
+            R.mipmap.ic_insert_new_d70,
+            R.mipmap.ic_tap_new_d70,
+            R.mipmap.ic_swipe_new_d70
     };
     private String[] textResources = {
             "<span style='color:red'>Insert</span><span style='color:black'>, tap or swipe</span>",
             "<span style='color:black'>Insert, </span><span style='color:red'>tap</span> <span style='color:black'>or swipe</span>",
             "<span style='color:black'>Insert, tap or </span><span style='color:red'>swipe</span>"
     };
+
     @Override
     public int initContentView(Bundle savedInstanceState) {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -124,11 +126,20 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
         viewModel.displayAmount(DeviceUtils.convertAmountToCents(amount));//ui
         handler = new Handler();
 
-        if("D70".equals(DeviceUtils.getPhoneModel())){
+        if ("D70".equals(DeviceUtils.getPhoneModel())) {
+            ViewGroup.LayoutParams params = binding.ivCloseBlackD70.getLayoutParams();
+            params.width = 26;  // 单位: px
+            params.height = 26;
+            binding.ivCloseBlackD70.setLayoutParams(params);
+            binding.ivCloseBlackD70.setImageResource(R.mipmap.btn_close_black);
+            binding.ivCloseBlackD70.setVisibility(View.VISIBLE);
+            binding.ivCloseBlack.setVisibility(View.GONE);
             TRACE.i("is d70 device");
             setupImageSwitcher();
-        }else {
+        } else {
             setupAnimationBasedOnDeviceModel();
+            binding.ivCloseBlackD70.setVisibility(View.GONE);
+            binding.ivCloseBlack.setVisibility(View.VISIBLE);
         }
         startTransaction();
         systemKeyListener = new SystemKeyListener(this);
@@ -161,29 +172,29 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
         binding.d70ImageView.setImageResource(imageResources[currentIndex]);
         binding.txtWaitInsertTapCard.setText(Html.fromHtml(textResources[currentIndex], Html.FROM_HTML_MODE_COMPACT));
     }
-    
+
     /**
      * Dynamically set Lottie animations according to the device model
      */
     private void setupAnimationBasedOnDeviceModel() {
         String deviceModel = DeviceUtils.getPhoneModel();
-        TRACE.d("model:"+deviceModel);
+        TRACE.d("model:" + deviceModel);
         if ("D20".equals(deviceModel)) {
             binding.animationView.setAnimation("D20_checkCardImg.json");
             binding.animationView.setImageAssetsFolder("D20_images/");
-        }else if ("D35".equals(deviceModel)) {
+        } else if ("D35".equals(deviceModel)) {
             binding.animationView.setAnimation("D35_checkCardImg.json");
             binding.animationView.setImageAssetsFolder("D35_images/");
-        }else if ("D80".equals(deviceModel)) {
+        } else if ("D80".equals(deviceModel)) {
             binding.animationView.setAnimation("D80_checkCard.json");
             binding.animationView.setImageAssetsFolder("D80_images/");
-        } else if("D50".equals(deviceModel)){
+        } else if ("D50".equals(deviceModel)) {
             binding.animationView.setAnimation("D50_checkCard.json");
             binding.animationView.setImageAssetsFolder("D50_images/");
-        }else if("D60".equals(deviceModel)){
+        } else if ("D60".equals(deviceModel)) {
             binding.animationView.setAnimation("D60_checkCard.json");
             binding.animationView.setImageAssetsFolder("D60_images/");
-        }else {//D30
+        } else {//D30
             binding.animationView.setAnimation("D30_checkCard.json");
             binding.animationView.setImageAssetsFolder("D30_images/");
         }
@@ -200,10 +211,10 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
 //                    handleSendReceipt();
                 }
                 viewModel.setTransactionSuccess();
-                paymentStatus(amount,maskedPAN,terminalTime,"");
+                paymentStatus(amount, maskedPAN, terminalTime, "");
             } else {
                 viewModel.setTransactionFailed("Transaction failed because of the network!");
-                paymentStatus("","","","Transaction failed because of the network!");
+                paymentStatus("", "", "", "Transaction failed because of the network!");
             }
         });
     }
@@ -214,8 +225,8 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
      */
     private void startTransaction() {
         new Thread(() -> {
-            if(!POSManager.getInstance().isDeviceReady()){
-                POSManager.getInstance().connect(deviceAddress,new ConnectionServiceCallback() {
+            if (!POSManager.getInstance().isDeviceReady()) {
+                POSManager.getInstance().connect(deviceAddress, new ConnectionServiceCallback() {
                     @Override
                     public void onRequestNoQposDetected() {
                     }
@@ -240,7 +251,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
      * Inner class to handle payment callbacks
      * Implements all payment related events and UI updates
      */
-    private class PaymentCallback implements PaymentServiceCallback{
+    private class PaymentCallback implements PaymentServiceCallback {
 
         @Override
         public void onRequestWaitingUser() {
@@ -282,7 +293,8 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
         /**
          * Handle PIN input request
          * Sets up PIN pad and keyboard for user input
-         * @param dataList List of PIN data
+         *
+         * @param dataList    List of PIN data
          * @param offlineTime Offline PIN try count
          */
         @Override
@@ -333,7 +345,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
         public void onRequestSetPin(boolean isOfflinePin, int tryNum) {
             TRACE.d("onRequestSetPin = " + isOfflinePin + "\ntryNum: " + tryNum);
             isPinBack = true;
-                // Clear previous error state when entering PIN input
+            // Clear previous error state when entering PIN input
             viewModel.clearErrorState();
             if (POSManager.getInstance().getTransType() == QPOSService.TransactionType.UPDATE_PIN) {
                 changePinTimes++;
@@ -418,6 +430,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
         /**
          * Handle transaction completion
          * Updates UI and processes different transaction types (MCR/NFC/ICC)
+         *
          * @param result Payment transaction result
          */
         @Override
@@ -425,16 +438,16 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
 //            viewModel.showPinpad.set(false);
             isChangePin = false;
             String transType = result.getTransactionType();
-            if(transType != null){
+            if (transType != null) {
                 binding.animationView.pauseAnimation();
                 result.setAmount(amount);
-                if(QPOSService.DoTradeResult.MCR.name().equals(transType)){
+                if (QPOSService.DoTradeResult.MCR.name().equals(transType)) {
                     HandleTxnsResultUtils.handleMCRResult(result, PaymentActivity.this, binding, viewModel);
                     maskedPAN = result.getMaskedPAN();
-                }else if(QPOSService.DoTradeResult.NFC_OFFLINE.name().equals(transType)||QPOSService.DoTradeResult.NFC_ONLINE.name().equals(transType)){
+                } else if (QPOSService.DoTradeResult.NFC_OFFLINE.name().equals(transType) || QPOSService.DoTradeResult.NFC_ONLINE.name().equals(transType)) {
                     HandleTxnsResultUtils.handleNFCResult(result, PaymentActivity.this, binding, viewModel);
                     maskedPAN = result.getMaskedPAN();
-                }else {//iCC result
+                } else {//iCC result
                     String content = getString(R.string.batch_data);
                     content += result.getTlv();
                     PaymentModel paymentModel = viewModel.setTransactionSuccess(content);
@@ -446,7 +459,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
                     }
                     List<TLV> list = TLVParser.parse(result.getTlv());
                     TLV tlvpan = TLVParser.searchTLV(list, "C4");
-                    paymentStatus(amount,tlvpan == null? paymentModel.getCardNo() : tlvpan.value,terminalTime,"");
+                    paymentStatus(amount, tlvpan == null ? paymentModel.getCardNo() : tlvpan.value, terminalTime, "");
                 }
             }
         }
@@ -457,8 +470,8 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
             if (keyboardUtil != null) {
                 keyboardUtil.hide();
             }
-            if(errorMessage != null){
-                paymentStatus("","","",errorMessage);
+            if (errorMessage != null) {
+                paymentStatus("", "", "", errorMessage);
                 viewModel.setTransactionFailed(errorMessage);
                 viewModel.setTransactionErr(errorMessage);
             }
@@ -468,6 +481,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
         /**
          * Handle online process request
          * Sends transaction data to server for online authorization
+         *
          * @param tlv TLV format transaction data
          */
         @Override
@@ -480,13 +494,13 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
             paymentModel.setAmount(amount);
             String cardNo = "";
             String cardOrg = "";
-            if("32".equals(decodeData.get("formatID"))){
+            if ("32".equals(decodeData.get("formatID"))) {
                 cardNo = decodeData.get("maskedPAN");
             } else {
                 List<TLV> tlvList = TLVParser.parse(tlv);
                 TLV cardNoTlv = TLVParser.searchTLV(tlvList, "C4");
-                cardNo = cardNoTlv == null?"":cardNoTlv.value;
-                cardNo = cardNo.substring(0,cardNo.length()-1);
+                cardNo = cardNoTlv == null ? "" : cardNoTlv.value;
+                cardNo = cardNo.substring(0, cardNo.length() - 1);
 
             }
             cardOrg = AdvancedBinDetector.detectCardType(cardNo).getDisplayName();
@@ -498,20 +512,20 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
         @Override
         public void onReturnGetPinInputResult(int num, QPOSService.PinError error, int minLen, int maxLen) {
             TRACE.i("onReturnGetPinInputResult  ===" + num);
-                StringBuilder s = new StringBuilder();
-                if (num == -1) {
-                    isPinBack = false;
-                    binding.pinpadEditText.setText("");
-                    viewModel.pincomPletedState();
-                    if (keyboardUtil != null) {
-                        keyboardUtil.hide();
-                    }
-                } else {
-                    for (int i = 0; i < num; i++) {
-                        s.append("*");
-                    }
-                    binding.pinpadEditText.setText(s.toString());
+            StringBuilder s = new StringBuilder();
+            if (num == -1) {
+                isPinBack = false;
+                binding.pinpadEditText.setText("");
+                viewModel.pincomPletedState();
+                if (keyboardUtil != null) {
+                    keyboardUtil.hide();
                 }
+            } else {
+                for (int i = 0; i < num; i++) {
+                    s.append("*");
+                }
+                binding.pinpadEditText.setText(s.toString());
+            }
         }
     }
 
@@ -542,16 +556,18 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
         }
         disallowKey(false);
     }
+
     private AtomicBoolean isStarting = new AtomicBoolean(false);
-    private void paymentStatus(String amount, String maskedPAN,String terminalTime,String errorMsg){
+
+    private void paymentStatus(String amount, String maskedPAN, String terminalTime, String errorMsg) {
         if (isStarting.compareAndSet(false, true)) {
             try {
                 Intent intent = new Intent(PaymentActivity.this, PaymentStatusActivity.class);
-                if(amount!=null &&!"".equals(amount)) {
+                if (amount != null && !"".equals(amount)) {
                     intent.putExtra("amount", amount);
-                    intent.putExtra("maskedPAN",maskedPAN);
-                    intent.putExtra("terminalTime",terminalTime);
-                }else if(errorMsg!=null &&!"".equals(errorMsg)){
+                    intent.putExtra("maskedPAN", maskedPAN);
+                    intent.putExtra("terminalTime", terminalTime);
+                } else if (errorMsg != null && !"".equals(errorMsg)) {
                     intent.putExtra("errorMsg", errorMsg);
                 }
                 startActivity(intent);
@@ -559,7 +575,8 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
             } finally {
                 // 延迟重置，确保在Activity创建完成前不会被再次调用
                 new Handler().postDelayed(() -> isStarting.set(false), 500);
-            }}
+            }
+        }
     }
 
     private void systemKeyStart() {
@@ -583,11 +600,13 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
                 wakeLock.acquire();
 
             }
+
             @Override
             public void onScreenOn() {
             }
         });
     }
+
     private void setupScreenBehavior() {
         getWindow().addFlags(
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |

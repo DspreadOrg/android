@@ -6,14 +6,8 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
-import android.text.Spanned;
-
-import androidx.annotation.RequiresApi;
-import androidx.navigation.PopUpToBuilder;
 
 import com.dspread.pos.common.enums.POS_TYPE;
-import com.dspread.pos_android_app.R;
-import com.dspread.xpos.QPOSService;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -21,8 +15,9 @@ import java.lang.reflect.Method;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Hashtable;
 import java.util.Locale;
+
+import androidx.annotation.RequiresApi;
 
 /**
  * [Describe the functionality of this class in one sentence]

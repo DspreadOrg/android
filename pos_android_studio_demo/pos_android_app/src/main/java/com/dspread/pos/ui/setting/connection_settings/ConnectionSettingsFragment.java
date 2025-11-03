@@ -13,6 +13,7 @@ import com.dspread.pos.common.enums.POS_TYPE;
 import com.dspread.pos.TitleProviderListener;
 import com.dspread.pos.ui.setting.device_config.DeviceConfigActivity;
 import com.dspread.pos.ui.setting.device_selection.DeviceSelectionActivity;
+import com.dspread.pos.utils.DevUtils;
 import com.dspread.pos.utils.TRACE;
 import com.dspread.pos_android_app.BR;
 import com.dspread.pos_android_app.R;
@@ -46,6 +47,14 @@ public class ConnectionSettingsFragment extends BaseFragment<FragmentConnectionS
 
         // Setup event listeners
         setupEventListeners();
+
+        initAppVersion();
+    }
+
+    private void initAppVersion() {
+
+        String versionName = DevUtils.getVersionName(getContext());
+        binding.tvAppVersion.setText("APP Version: "+versionName);
     }
 
     @Override
@@ -100,7 +109,7 @@ public class ConnectionSettingsFragment extends BaseFragment<FragmentConnectionS
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == Activity.RESULT_OK && data != null) {
+        if (resultCode == Activity.RESULT_OK && data != null) {
             if (requestCode == DeviceSelectionActivity.REQUEST_CODE_SELECT_DEVICE) {
                 // Get device name
                 String deviceName = data.getStringExtra(DeviceSelectionActivity.EXTRA_DEVICE_NAME);
@@ -131,11 +140,11 @@ public class ConnectionSettingsFragment extends BaseFragment<FragmentConnectionS
                 String transactionType = data.getStringExtra("transaction_type");
                 viewModel.transactionType.set(transactionType);
                 TRACE.i("transactionType = " + transactionType);
-            }else if(requestCode == REQUEST_CARD_MODE){
+            } else if (requestCode == REQUEST_CARD_MODE) {
                 String cardMode = data.getStringExtra("card_mode");
                 viewModel.cardMode.set(cardMode);
                 TRACE.i("cardMode = " + cardMode);
-            }else {
+            } else {
                 viewModel.loadSettings();
             }
         }

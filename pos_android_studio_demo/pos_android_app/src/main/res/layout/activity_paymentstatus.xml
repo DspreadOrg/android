@@ -33,16 +33,16 @@
                 android:id="@+id/iv_status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
+                android:layout_gravity="center"
                 android:layout_marginTop="60dp"
                 android:src="@mipmap/payment_failed"
                 android:visibility="@{viewModel.isSuccess ? View.GONE : View.VISIBLE}" />
 
             <com.airbnb.lottie.LottieAnimationView
                 android:layout_width="wrap_content"
-                android:layout_marginTop="30dp"
-                android:layout_marginLeft="10dp"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="30dp"
                 android:visibility="@{viewModel.isSuccess ? View.VISIBLE : View.GONE}"
                 app:lottie_autoPlay="true"
                 app:lottie_fileName="payment_success.json"
@@ -52,9 +52,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
             android:gravity="center"
             android:orientation="vertical"
-            android:layout_marginTop="20dp"
             android:visibility="@{viewModel.isD70DisplayScreen ? View.VISIBLE : View.GONE}">
 
             <ImageView
@@ -68,8 +68,8 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="5"
                 android:layout_marginLeft="10dp"
+                android:layout_weight="5"
                 android:src="@mipmap/icon_success"
                 android:visibility="@{viewModel.isSuccess ? View.VISIBLE : View.GONE}" />
 
@@ -92,12 +92,13 @@
                 android:textColor="@color/black"
                 android:textSize="24sp"
                 android:textStyle="bold" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@{viewModel.sendError}"
                 android:textColor="@color/black"
-                android:visibility="@{viewModel.isSuccess ? View.GONE : View.VISIBLE}"/>
+                android:visibility="@{viewModel.isSuccess ? View.GONE : View.VISIBLE}" />
 
             <TextView
                 android:id="@+id/tv_payment_result_amount"
@@ -118,11 +119,13 @@
             android:gravity="center"
             android:orientation="vertical"
             android:visibility="@{viewModel.isD70DisplayScreen ? View.VISIBLE : View.GONE}">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:orientation="horizontal">
+
                 <TextView
 
                     android:layout_width="wrap_content"
@@ -144,12 +147,13 @@
                     android:textStyle="bold"
                     android:visibility="@{viewModel.isSuccess ? View.VISIBLE : View.GONE}" />
             </LinearLayout>
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@{viewModel.sendError}"
                 android:textColor="@color/black"
-                android:visibility="@{viewModel.isSuccess ? View.GONE : View.VISIBLE}"/>
+                android:visibility="@{viewModel.isSuccess ? View.GONE : View.VISIBLE}" />
 
         </LinearLayout>
 

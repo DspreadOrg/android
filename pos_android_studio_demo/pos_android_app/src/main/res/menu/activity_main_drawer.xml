@@ -1,37 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-<!--    <group android:checkableBehavior="single">-->
-    <group android:checkableBehavior="single"
-        >
+    <!--    <group android:checkableBehavior="single">-->
+    <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_home"
             android:icon="@mipmap/menu_sale"
-            android:title="@string/menu_payment"
-            />
-<!--        <item-->
-<!--            android:enabled="false"-->
-<!--            android:checkable="false"-->
-<!--            app:actionLayout="@layout/item_nav_divider"-->
-<!--            tools:ignore="MenuTitle" />-->
-<!--        <item-->
-<!--            android:id="@+id/nav_autotrade"-->
-<!--            android:icon="@drawable/autotrade"-->
-<!--            android:title="@string/auto_trade"-->
-<!--            />-->
-<!--        <item-->
-<!--            android:id="@+id/nav_printer"-->
-<!--            android:icon="@drawable/print"-->
-<!--            android:title="@string/printer" />-->
+            android:title="@string/menu_payment" />
+        <!--        <item-->
+        <!--            android:enabled="false"-->
+        <!--            android:checkable="false"-->
+        <!--            app:actionLayout="@layout/item_nav_divider"-->
+        <!--            tools:ignore="MenuTitle" />-->
+        <!--        <item-->
+        <!--            android:id="@+id/nav_autotrade"-->
+        <!--            android:icon="@drawable/autotrade"-->
+        <!--            android:title="@string/auto_trade"-->
+        <!--            />-->
+        <!--        <item-->
+        <!--            android:id="@+id/nav_printer"-->
+        <!--            android:icon="@drawable/print"-->
+        <!--            android:title="@string/printer" />-->
 
-<!--        <item-->
-<!--            android:enabled="false"-->
-<!--            android:checkable="false"-->
-<!--            app:actionLayout="@layout/item_nav_divider"-->
-<!--            tools:ignore="MenuTitle" />-->
+        <!--        <item-->
+        <!--            android:enabled="false"-->
+        <!--            android:checkable="false"-->
+        <!--            app:actionLayout="@layout/item_nav_divider"-->
+        <!--            tools:ignore="MenuTitle" />-->
 
     </group>
 
@@ -41,8 +39,7 @@
         <item
             android:id="@+id/nav_transaction"
             android:icon="@mipmap/menu_transaction"
-            android:title="@string/transaction"
-            />
+            android:title="@string/transaction" />
     </group>
 
     <group
@@ -51,19 +48,18 @@
         <item
             android:id="@+id/nav_setting"
             android:icon="@mipmap/menu_setting"
-            android:title="@string/menu_setting">
-        </item>
+            android:title="@string/menu_setting"></item>
 
     </group>
-<!--    <group-->
-<!--        android:id="@+id/test"-->
-<!--        android:checkableBehavior="single">-->
-<!--        <item-->
+    <!--    <group-->
+    <!--        android:id="@+id/test"-->
+    <!--        android:checkableBehavior="single">-->
+    <!--        <item-->
 
-<!--            android:icon="@mipmap/menu_setting"-->
-<!--            android:title="@string/menu_setting">-->
-<!--        </item>-->
+    <!--            android:icon="@mipmap/menu_setting"-->
+    <!--            android:title="@string/menu_setting">-->
+    <!--        </item>-->
 
-<!--    </group>-->
+    <!--    </group>-->
 
 </menu>
