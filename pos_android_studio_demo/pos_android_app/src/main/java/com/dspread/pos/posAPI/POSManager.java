@@ -235,6 +235,12 @@ public class POSManager {
         }
     }
 
+    public void doEmvAPP(){
+        if (pos != null) {
+            pos.doEmvApp(QPOSService.EmvOption.START);
+        }
+    }
+
     public void sendTime(String terminalTime) {
         pos.sendTime(terminalTime);
     }
@@ -422,25 +428,26 @@ public class POSManager {
         @Override
         public void onDoTradeResult(QPOSService.DoTradeResult result, Hashtable<String, String> decodeData) {
             // Handle ICC card for EMV processing
-            setICC(false);
-            if (result == QPOSService.DoTradeResult.ICC) {
-                setICC(true);
-                notifyTransactionCallbacks(PaymentServiceCallback::onReturnCardInserted);
-                paymentResult.setTransactionType(result.name());
-                if (pos != null) {
-                    pos.doEmvApp(QPOSService.EmvOption.START);
-                }
+//            setICC(false);
+//            if (result == QPOSService.DoTradeResult.ICC) {
+//                setICC(true);
+//                notifyTransactionCallbacks(PaymentServiceCallback::onReturnCardInserted);
+//                paymentResult.setTransactionType(result.name());
+//                if (pos != null) {
+//                    pos.doEmvApp(QPOSService.EmvOption.START);
+//                }
+//            }else if(result == QPOSService.DoTradeResult.NFC_OFFLINE || result == QPOSService.DoTradeResult.NFC_ONLINE ||result == QPOSService.DoTradeResult.MCR){
+//                paymentResult = HandleTxnsResultUtils.handleTransactionResult(paymentResult,decodeData);
+//                paymentResult.setTransactionType(result.name());
+//                notifyTransactionCallbacks(cb -> cb.onTransactionCompleted(paymentResult));
+//            } else if(result == QPOSService.DoTradeResult.BAD_SWIPE){
+//                paymentResult.setTransactionType(result.name());
+//            }else {
+//                String msg = HandleTxnsResultUtils.getTradeResultMessage(result, context);
+//                notifyTransactionCallbacks(cb -> cb.onTransactionFailed(msg, null));
+//            }
+            notifyTransactionCallbacks(cb -> cb.onDoTradeResult(result,decodeData));
 
-            }else if(result == QPOSService.DoTradeResult.NFC_OFFLINE || result == QPOSService.DoTradeResult.NFC_ONLINE ||result == QPOSService.DoTradeResult.MCR){
-                paymentResult = HandleTxnsResultUtils.handleTransactionResult(paymentResult,decodeData);
-                paymentResult.setTransactionType(result.name());
-                notifyTransactionCallbacks(cb -> cb.onTransactionCompleted(paymentResult));
-            } else if(result == QPOSService.DoTradeResult.BAD_SWIPE){
-                paymentResult.setTransactionType(result.name());
-            }else {
-                String msg = HandleTxnsResultUtils.getTradeResultMessage(result, context);
-                notifyTransactionCallbacks(cb -> cb.onTransactionFailed(msg, null));
-            }
         }
 
         @Override
@@ -448,21 +455,15 @@ public class POSManager {
             String msg = HandleTxnsResultUtils.getTransactionResultMessage(transactionResult, context);
             paymentResult.setStatus(msg);
             if (!msg.isEmpty()) {
-                notifyTransactionCallbacks(cb -> cb.onTransactionFailed(msg,null));
+                notifyTransactionCallbacks(cb -> cb.onTransactionResult(false,paymentResult));
             }else {
-                notifyTransactionCallbacks(cb -> cb.onTransactionResult(paymentResult));
+                notifyTransactionCallbacks(cb -> cb.onTransactionResult(true,paymentResult));
             }
-
-        }
-
-        @Override
-        public void onRequestWaitingUser() {
-            notifyTransactionCallbacks(cb -> cb.onRequestWaitingUser());
         }
 
         @Override
         public void onRequestTime() {
-            notifyTransactionCallbacks(cb -> cb.onRequestTime());
+            notifyTransactionCallbacks(PaymentServiceCallback::onRequestTime);
         }
 
         @Override
@@ -478,12 +479,7 @@ public class POSManager {
         @Override
         public void onRequestBatchData(String tlv) {
             paymentResult.setTlv(tlv);
-            notifyTransactionCallbacks(cb -> cb.onTransactionCompleted(paymentResult));
-        }
-
-        @Override
-        public void onRequestSetPin(boolean isOfflinePin, int tryNum) {
-            notifyTransactionCallbacks(cb -> cb.onRequestSetPin(isOfflinePin, tryNum));
+            notifyTransactionCallbacks(cb -> cb.onTransactionResult(true,paymentResult));
         }
 
         @Override
@@ -494,18 +490,22 @@ public class POSManager {
 
         @Override
         public void onError(QPOSService.Error errorState) {
-            notifyTransactionCallbacks(cb -> cb.onTransactionFailed(errorState.name(), null));
+            paymentResult.setStatus(errorState.name());
+            notifyTransactionCallbacks(cb -> cb.onTransactionResult(false,paymentResult));
         }
 
         @Override
         public void onReturnReversalData(String tlv) {
             paymentResult.setTlv(tlv);
-            notifyTransactionCallbacks(cb -> cb.onTransactionCompleted(paymentResult));
+            paymentResult.setStatus("Reversal");
+            notifyTransactionCallbacks(cb -> cb.onTransactionResult(false,paymentResult));
         }
 
         @Override
         public void onEmvICCExceptionData(String tlv) {
-            notifyTransactionCallbacks(cb -> cb.onTransactionFailed("Decline", tlv));
+            paymentResult.setTlv(tlv);
+            paymentResult.setStatus("Emv ICC Exception");
+            notifyTransactionCallbacks(cb -> cb.onTransactionResult(false, paymentResult));
         }
 
         @Override
@@ -531,7 +531,8 @@ public class POSManager {
 
         @Override
         public void onTradeCancelled() {
-//            notifyTransactionCallbacks(cb -> cb.onTransactionFailed("Cancel", null));
+            paymentResult.setStatus("Cancel");
+            notifyTransactionCallbacks(cb -> cb.onTransactionResult(false, paymentResult));
         }
     }
 

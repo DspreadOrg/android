@@ -12,13 +12,6 @@ import java.util.List;
  */
 public interface PaymentServiceCallback {
     
-    // ==================== Core Transaction Callbacks ====================
-    
-    /**
-     * Waiting for user operation (insert/swipe/tap card)
-     */
-    default void onRequestWaitingUser() {}
-    
     /**
      * Request time
      */
@@ -47,11 +40,6 @@ public interface PaymentServiceCallback {
     default void onQposRequestPinResult(List<String> dataList, int offlineTime) {}
     
     /**
-     * Request to set PIN
-     */
-    default void onRequestSetPin(boolean isOfflinePin, int tryNum) {}
-    
-    /**
      * Request to set PIN (no parameters)
      */
     default void onRequestSetPin() {}
@@ -65,9 +53,6 @@ public interface PaymentServiceCallback {
      * Get card information result
      */
     default void onGetCardInfoResult(Hashtable<String, String> cardInfo) {}
-
-    default void onTransactionCompleted(PaymentResult result) {}
-    default void onTransactionFailed(String errorMessage,String data) {}
-    default void onTransactionResult(PaymentResult result) {}
-    default void onReturnCardInserted(){}
+    default void onTransactionResult(boolean isCompleteTxns, PaymentResult result) {}
+    default void onDoTradeResult(QPOSService.DoTradeResult result, Hashtable<String, String> decodeData){}
 }
