@@ -10,7 +10,7 @@ A comprehensive Point of Sale (POS) Android application that demonstrates paymen
 - **Device Configuration**: Connect to and configure POS devices via Bluetooth, USB, or UART
 
 ## Preview
-![Dspread demo operation](/_gif/Dspread demo operation.gif)
+![Dspread demo operation](_gif/Dspread demo operation.gif)
 
 ## Quick Start
 
@@ -57,7 +57,7 @@ If you want to integrate SDK, please follow as below:
 implementation 'com.dspread.library:dspread_pos_sdk:8.0.0'
 ```
 
-​	2)Add Gradle Groovy DSL repository command
+  2) Add Gradle Groovy DSL repository command
 
 ```java
 maven {
