@@ -10,7 +10,7 @@ A comprehensive Point of Sale (POS) Android application that demonstrates paymen
 - **Device Configuration**: Connect to and configure POS devices via Bluetooth, USB, or UART
 
 ## Preview
-![Dspread demo operation](_gif/Dspread demo operation.gif)
+![Dspread demo operation](/_gif/Dspread demo operation.gif)
 
 ## Quick Start
 
@@ -21,6 +21,9 @@ A comprehensive Point of Sale (POS) Android application that demonstrates paymen
 - Java 11 compatible development environment
 
 ### Installation and Setup
+
+#### APP installation:
+
 1. Clone the repository:
 ```bash
 git clone https://github.com/DspreadOrg/pos_demo.git
@@ -28,16 +31,41 @@ cd pos_demo/pos_android_studio_demo
 ```
 
 2. Open the project in Android Studio
-
 3. Sync the project with Gradle files
-
 4. Build and run the application on a compatible Android device 
 
-   ​
+#### SDK integration：
 
-   Tip:  If you want to integrate SDK, please follow as below:
+If you want to integrate SDK, please follow as below:
 
-   ​
+- **AAR**
+
+  1) Download the SDK AAR Package: Obtain the SDK AAR package from the designated source([SDK aar link](https://github.com/DspreadOrg/android/tree/master/pos_android_studio_demo/pos_android_app/libs))
+
+  2) Place the AAR Package in the Project: Copy the downloaded AAR package (e.g., dspread_pos_sdk_8.0.0.aar) into the libs folder of your Android project.
+
+
+- **MAVEN**
+
+  Please access the below path to view the latest SDK version.
+
+  [mave versions](https://gitlab.com/dspread/android/-/packages)
+
+  1) Gradle Groovy DSL install command
+
+```
+implementation 'com.dspread.library:dspread_pos_sdk:8.0.0'
+```
+
+​	2)Add Gradle Groovy DSL repository command
+
+```java
+maven {
+	url '<https://gitlab.com/api/v4/projects/4128550/packages/maven>'
+}
+```
+
+
 
 ## Integration
 
