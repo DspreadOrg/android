@@ -51,19 +51,19 @@ If you want to integrate SDK, please follow as below:
 
   [mave versions](https://gitlab.com/dspread/android/-/packages)
 
-  1) Gradle Groovy DSL install command
+  1) Gradle Groovy DSL install command to **module-level** (`app/build.gradle`) file:
 
-```
-implementation 'com.dspread.library:dspread_pos_sdk:8.0.0'
-```
+  ```java
+  implementation 'com.dspread.library:dspread_pos_sdk:8.0.0'
+  ```
 
-  2) Add Gradle Groovy DSL repository command
+  2) Add Gradle Groovy DSL repository command to **project-level** (`build.gradle`) file:
 
-```java
-maven {
-	url '<https://gitlab.com/api/v4/projects/4128550/packages/maven>'
-}
-```
+  ```java
+  maven {
+  	url '<https://gitlab.com/api/v4/projects/4128550/packages/maven>'
+  }
+  ```
 
 
 
@@ -101,7 +101,11 @@ private void startTransaction() {
     POSManager.getInstance().startTransaction(amount, paymentServiceCallback);
   }).start();
 }
+```
 
+Here are the corresponding callbacks, where you can handle transaction results, PIN entry, and other related operations. These are also implemented in the `PaymentActivity`.
+
+```java
 // Inner class to handle payment callbacks
 // Implements all payment related events and UI updates
 private class PaymentCallback implements PaymentServiceCallback {
@@ -180,8 +184,11 @@ private class PaymentCallback implements PaymentServiceCallback {
 }
 ```
 
+
+
 ### Documentation
--  [**Qpos doc **](https://dspreadorg.github.io/qpos/#/introduction) :Please check the link to know more about the process, including connection, transaction, data decryption and more.
+
+-  [**QPOS doc**](https://dspreadorg.github.io/qpos/#/introduction) :Please check the link to know more about the process, including connection, transaction, data decryption and more.
 -  **[API reference](https://github.com/DspreadOrg/android/blob/master/QPOS-Android-SDK-Userguid-en-detail.pdf)** : Please check the link to know the specific API reference involved in SDK.
 
 ## Support
