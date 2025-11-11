@@ -10,7 +10,7 @@ A comprehensive Point of Sale (POS) Android application that demonstrates paymen
 - **Device Configuration**: Connect to and configure POS devices via Bluetooth, USB, or UART
 
 ## Preview
-![Dspread demo operation](_gif/Dspread demo operation.gif)
+![Dspread demo operation](_gif/Dspread_demo_operation.gif)
 
 ## Quick Start
 
