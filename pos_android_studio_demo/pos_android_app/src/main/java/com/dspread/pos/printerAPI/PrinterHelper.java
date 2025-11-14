@@ -115,7 +115,6 @@ public class PrinterHelper {
 
         int qrSize = Integer.parseInt(size);
         Bitmap bitmap = QRCodeUtil.getQrcodeBM(content, qrSize);
-
         mPrinter.setPrintStyle(style);
         mPrinter.setFooter(80);
         mPrinter.printQRCode(context, errorLevel, qrSize, content, printLineAlign);
@@ -150,7 +149,6 @@ public class PrinterHelper {
 
     public Bitmap printPicture(Context context) throws RemoteException {
         Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.mipmap.test);
-
         PrintLineStyle printLineStyle = new PrintLineStyle();
         mPrinter.setFooter(80);
         printLineStyle.setAlign(PrintLine.CENTER);
@@ -160,7 +158,6 @@ public class PrinterHelper {
     }
 
     public Bitmap printBitmap(Context context, Bitmap bitmap) throws RemoteException {
-
         PrintLineStyle printLineStyle = new PrintLineStyle();
         mPrinter.setFooter(80);
         printLineStyle.setAlign(PrintLine.CENTER);
@@ -216,30 +213,56 @@ public class PrinterHelper {
     }
 
     public Bitmap getTicketBitmap(Context context, Map<String, String> map) throws RemoteException {
-        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_dspread_logo);
+        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.pdspread25);
         mPrinter.addBitmap(bitmap, PrintLine.CENTER);
         mPrinter.feedLines(5);
-        mPrinter.addPrintLintStyle(new PrintLineStyle(PrintStyle.FontStyle.BOLD, PrintLine.CENTER, 16));
-        mPrinter.addText("POS Signing of purchase orders");
-        mPrinter.addText("MERCHANT COPY");
-        mPrinter.addPrintLintStyle(new PrintLineStyle(PrintStyle.FontStyle.NORMAL, PrintLine.CENTER, 14));
-        mPrinter.addText("- - - - - - - - - - - - - - - - - -");
-        mPrinter.addPrintLintStyle(new PrintLineStyle(PrintStyle.FontStyle.NORMAL, PrintLine.LEFT, 14));
-        mPrinter.addText("ISSUER Agricultural Bank of China");
-        mPrinter.addText("ACQ 48873110");
-        mPrinter.addText("CARD number.");
-        mPrinter.addPrintLintStyle(new PrintLineStyle(PrintStyle.FontStyle.NORMAL, PrintLine.LEFT, 14));
-        mPrinter.addText((!map.get("maskedPAN").equals("")? map.get("maskedPAN") + " S" : "6228 48******8 116  S"));
-        mPrinter.addText("TYPE of transaction(TXN TYPE)");
-        mPrinter.addText("SALE");
-        mPrinter.addPrintLintStyle(new PrintLineStyle(PrintStyle.FontStyle.NORMAL, PrintLine.CENTER, 14));
-        mPrinter.addText("- - - - - - - - - - - - - - - - - -");
-        mPrinter.addTexts(new String[]{"BATCH NO", "000043"}, new int[]{5, 5}, new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.CENTER});
-        mPrinter.addTexts(new String[]{"VOUCHER NO", "000509"}, new int[]{5, 5}, new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.CENTER});
-        mPrinter.addTexts(new String[]{"AUTH NO", "000786"}, new int[]{5, 5}, new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.CENTER});
-        mPrinter.addTexts(new String[]{"DATE/TIME", map.get("terminalTime")}, new int[]{5, 5}, new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.CENTER});
-        mPrinter.addTexts(new String[]{"REF NO", "000001595276"}, new int[]{5, 5}, new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.CENTER});
-        mPrinter.addTexts(new String[]{"AMOUNT:", ""}, new int[]{5, 5}, new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.CENTER});
+        mPrinter.addPrintLintStyle(new PrintLineStyle(PrintStyle.FontStyle.BOLD, PrintLine.CENTER, 10));
+        mPrinter.addText("SALES RECEIPT");
+        //mPrinter.addText("MERCHANT COPY");
+        mPrinter.addPrintLintStyle(new PrintLineStyle(PrintStyle.FontStyle.NORMAL, PrintLine.CENTER, 10));
+        mPrinter.addText("- - - - - - - - - - - - - - - - - - - - - - - - - - - - -");
+        mPrinter.addPrintLintStyle(new PrintLineStyle(PrintStyle.FontStyle.NORMAL, PrintLine.LEFT, 10));
+        mPrinter.addText(" ISSUER Agricultural Bank of China");
+        mPrinter.addText(" ACQ 48873110");
+        mPrinter.addText(" CARD number.");
+        mPrinter.addPrintLintStyle(new PrintLineStyle(PrintStyle.FontStyle.NORMAL, PrintLine.LEFT, 10));
+        mPrinter.addText((!map.get("maskedPAN").equals("") ? " " + map.get("maskedPAN").replace("f", "*") : "6228 48******8 116  S"));
+        mPrinter.addText(" TYPE Of Transaction(TXN TYPE)");
+        mPrinter.addText(" SALE");
+        mPrinter.addPrintLintStyle(new PrintLineStyle(PrintStyle.FontStyle.NORMAL, PrintLine.CENTER, 10));
+        mPrinter.addText("- - - - - - - - - - - - - - - - - - - - - - - - - - - - -");
+        mPrinter.addTexts(
+                new String[]{"BATCH NO", "000043"},
+                new int[]{5, 5}, new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.CENTER},
+                new int[]{PrintStyle.FontStyle.NORMAL, PrintStyle.FontStyle.NORMAL},
+                10);
+        mPrinter.addTexts(
+                new String[]{"VOUCHER NO", "000509"},
+                new int[]{5, 5}, new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.CENTER},
+                new int[]{PrintStyle.FontStyle.NORMAL, PrintStyle.FontStyle.NORMAL},
+                10);
+        mPrinter.addTexts(
+                new String[]{"AUTH NO", "000786"},
+                new int[]{5, 5},
+                new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.CENTER},
+                new int[]{PrintStyle.FontStyle.NORMAL, PrintStyle.FontStyle.NORMAL},
+                10);
+        mPrinter.addTexts(new String[]{"DATE/TIME", map.get("terminalTime")},
+                new int[]{5, 5}, new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.CENTER},
+                new int[]{PrintStyle.FontStyle.NORMAL, PrintStyle.FontStyle.NORMAL},
+                10);
+        mPrinter.addTexts(new String[]{"REF NO", "000001595276"},
+                new int[]{5, 5},
+                new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.CENTER},
+                new int[]{PrintStyle.FontStyle.NORMAL, PrintStyle.FontStyle.NORMAL},
+                10);
+        mPrinter.addTexts(
+                new String[]{"AMOUNT:", ""},
+                new int[]{5, 5},
+                new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.CENTER},
+                new int[]{PrintStyle.FontStyle.NORMAL, PrintStyle.FontStyle.NORMAL},
+                10);
+        mPrinter.addPrintLintStyle(new PrintLineStyle(PrintStyle.FontStyle.BOLD, PrintLine.CENTER, 12));
         mPrinter.addText("$: " + map.get("terAmount"));
         mPrinter.setFooter(40);
         Bitmap receiptBitmap = mPrinter.getReceiptBitmap();

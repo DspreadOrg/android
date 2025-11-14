@@ -5,7 +5,6 @@ import android.os.Build;
 import android.os.Bundle;
 
 import com.dspread.pos.utils.DeviceUtils;
-import com.dspread.pos.utils.TRACE;
 import com.dspread.pos_android_app.BR;
 import com.dspread.pos_android_app.R;
 import com.dspread.pos_android_app.databinding.ActivityPaymentBinding;
@@ -20,6 +19,7 @@ public class PaymentStatusActivity extends BaseActivity<ActivityPaymentBinding, 
     private String maskedPAN;
     private String terminalTime;
     private String errorMsg;
+
     @Override
     public int initContentView(Bundle bundle) {
         return R.layout.activity_paymentstatus;
@@ -36,29 +36,29 @@ public class PaymentStatusActivity extends BaseActivity<ActivityPaymentBinding, 
         maskedPAN = getIntent().getStringExtra("maskedPAN");
         terminalTime = getIntent().getStringExtra("terminalTime");
         errorMsg = getIntent().getStringExtra("errorMsg");
-        if("D70".equals(Build.MODEL)){
-           viewModel.isD70DisplayScreen.set(true);
-        }else{
+        if ("D70".equals(Build.MODEL)) {
+            viewModel.isD70DisplayScreen.set(true);
+        } else {
             viewModel.isD70DisplayScreen.set(false);
         }
         if (amount != null && !"".equalsIgnoreCase(amount)) {
             viewModel.displayAmount(DeviceUtils.convertAmountToCents(amount));
             viewModel.setTransactionSuccess();
-            Map<String,String > map = new HashMap();
-            map.put("terAmount",DeviceUtils.convertAmountToCents(amount));
-            map.put("maskedPAN",maskedPAN);
-            map.put("terminalTime",terminalTime);
+            Map<String, String> map = new HashMap();
+            map.put("terAmount", DeviceUtils.convertAmountToCents(amount));
+            map.put("maskedPAN", maskedPAN);
+            map.put("terminalTime", terminalTime);
             viewModel.sendTranReceipt(map);
         } else {
-            String errorMsgs="";
-            if (errorMsg != null && !"".equalsIgnoreCase(errorMsg)){
-                errorMsgs=errorMsg;
+            String errorMsgs = "";
+            if (errorMsg != null && !"".equalsIgnoreCase(errorMsg)) {
+                errorMsgs = errorMsg;
             }
             viewModel.setTransactionFailed(errorMsgs);
         }
-        if(DeviceUtils.isPrinterDevices()){
+        if (DeviceUtils.isPrinterDevices()) {
             viewModel.isShouwPrinting.set(true);
-        }else {
+        } else {
             viewModel.isShouwPrinting.set(false);
         }
     }

@@ -205,7 +205,7 @@ public class PrintTicketActivity extends PrinterBaseActivity<ActivityPrinterBase
                 float moveDistance = -(currentY + imageHeight);
 
                 // 设置移动速度（像素/毫秒）
-                float moveSpeed = 0.5f; // 0.8像素/毫秒
+                float moveSpeed = 0.2f; // 0.8像素/毫秒
 
                 // 根据距离和速度计算持续时间
                 long duration = (long) (Math.abs(moveDistance) / moveSpeed);
