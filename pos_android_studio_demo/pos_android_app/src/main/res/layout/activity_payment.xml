@@ -79,7 +79,8 @@
                             android:layout_height="wrap_content"
                             android:text="@string/prompt_user_to_tap_card"
                             android:textColor="@color/red_color"
-                            android:textSize="19sp" />
+                            android:textSize="19sp"
+                            android:visibility="@{viewModel.isShowOtherCardTxt?View.VISIBLE : View.GONE }" />
                         <!-- 其他视图（如设备图片、支付方式图标等） -->
                     </LinearLayout>
 
@@ -116,14 +117,141 @@
                     android:id="@+id/animation_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:visibility="@{viewModel.isD70?View.GONE : View.VISIBLE }"
+                    android:visibility="@{viewModel.isShowAnimationView?View.GONE : View.VISIBLE }"
                     app:lottie_autoPlay="true"
                     app:lottie_fileName="D30_checkCard.json"
                     app:lottie_imageAssetsFolder="D30_images/"
                     app:lottie_loop="true" />
 
 
+                <LinearLayout
+                    android:id="@+id/ll_payment_guide_d35"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginHorizontal="@dimen/dp_30"
+                    android:layout_marginTop="@dimen/dp_20"
+                    android:orientation="vertical"
+                    android:visibility="@{viewModel.isPayMentGuideD35?View.GONE : View.VISIBLE }">
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/shape_payguide_bg"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:id="@+id/iv_nfc_guide_d35"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginHorizontal="83dp"
+                            android:layout_marginTop="@dimen/dp_22"
+                            android:src="@mipmap/ic_payguide_nfc_d35"></ImageView>
+
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginTop="@dimen/dp_10"
+                            android:layout_marginBottom="@dimen/dp_22"
+                            android:text="Tap to Pay"
+                            android:textColor="#ff3f3b3b"
+                            android:textSize="20sp"></TextView>
+                    </LinearLayout>
+
+
+                    <ImageView
+                        android:id="@+id/iv_card_guide_d35"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="35dp"
+                        android:src="@mipmap/ic_payguide_d35">
+
+                    </ImageView>
+
+                    <TextView
+                        android:id="@+id/txt_wait_insert_tap_card_d35"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="@dimen/dp_20"
+                        android:text="@string/prompt_user_to_tap_card_d35"
+                        android:textColor="@color/red_color"
+                        android:textSize="19sp" />
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/ll_payment_guide_d50"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginHorizontal="@dimen/dp_30"
+                    android:layout_marginTop="@dimen/dp_40"
+                    android:orientation="vertical"
+                    android:visibility="@{viewModel.isPayMentGuideD50?View.GONE : View.VISIBLE }">
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/shape_payguide_bg"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:id="@+id/iv_nfc_guide_d50"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginHorizontal="83dp"
+                            android:layout_marginTop="@dimen/dp_40"
+                            android:src="@mipmap/ic_payguide_nfc_d50"></ImageView>
+
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginTop="@dimen/dp_20"
+                            android:layout_marginBottom="@dimen/dp_40"
+                            android:text="Tap to Pay"
+                            android:textColor="#ff3f3b3b"
+                            android:textSize="20sp"></TextView>
+                    </LinearLayout>
+
+
+                    <ImageView
+                        android:id="@+id/iv_card_guide_d50"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="@dimen/dp_110"
+                        android:src="@mipmap/ic_payguide_d50">
+
+                    </ImageView>
+
+                    <TextView
+                        android:id="@+id/txt_wait_insert_tap_card_d50"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="@dimen/dp_40"
+                        android:text="@string/prompt_user_to_tap_card_d35"
+                        android:textColor="@color/red_color"
+                        android:textSize="@dimen/sp_22" />
+
+                </LinearLayout>
+
+
             </LinearLayout>
+
+
             <!--卡组织图片-->
             <LinearLayout
                 android:layout_width="match_parent"
@@ -233,29 +361,20 @@
 
                 </RelativeLayout>
 
-                <com.airbnb.lottie.LottieAnimationView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginBottom="5dp"
-                    android:visibility="@{viewModel.isD70 ? View.GONE : View.VISIBLE}"
-                    app:lottie_autoPlay="true"
-                    app:lottie_fileName="insert_icc_card.json"
-                    app:lottie_imageAssetsFolder="iccimages/"
-                    app:lottie_loop="false" />
-
+                <!--              <com.airbnb.lottie.LottieAnimationView
+                                  android:layout_width="wrap_content"
+                                  android:layout_height="wrap_content"
+                                  android:layout_marginLeft="10dp"
+                                  android:layout_marginRight="10dp"
+                                  android:layout_marginBottom="5dp"
+                                  android:visibility="@{viewModel.isD70 ? View.GONE : View.VISIBLE}"
+                                  app:lottie_autoPlay="true"
+                                  app:lottie_fileName="insert_icc_card.json"
+                                  app:lottie_imageAssetsFolder="iccimages/"
+                                  app:lottie_loop="false" />
+              -->
             </LinearLayout>
-            <!-- input pin -->
-            <!--            <androidx.cardview.widget.CardView-->
-            <!--                android:layout_width="match_parent"-->
-            <!--                android:layout_height="wrap_content"-->
-            <!--                android:layout_margin="16dp"-->
-            <!--                app:cardCornerRadius="8dp"-->
-            <!--                app:cardElevation="4dp"-->
-            <!--                android:visibility="@{viewModel.showPinpad ? View.VISIBLE : View.GONE}">-->
-            <!--              -->
-            <!--            </androidx.cardview.widget.CardView>-->
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

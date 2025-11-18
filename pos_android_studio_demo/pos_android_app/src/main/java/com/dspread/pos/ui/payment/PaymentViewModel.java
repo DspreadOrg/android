@@ -46,35 +46,55 @@ import me.goldze.mvvmhabit.utils.ToastUtils;
 public class PaymentViewModel extends BaseAppViewModel {
     private static final String AUTHFROMISSUER_URL = "https://ypparbjfugzgwijijfnb.supabase.co/functions/v1/request-online-result";
     private RequestOnlineAuthAPI apiService;
-
-    public PaymentViewModel(@NonNull Application application) {
-        super(application);
-        apiService = RetrofitClient.getInstance().create(RequestOnlineAuthAPI.class);
-        if("D70".equals(DeviceUtils.getPhoneModel())){
-            isD70.set(true);
-        }else {
-            isD70.set(false);
-        }
-    }
-
     public ObservableField<String> loadingText = new ObservableField<>("");
     public ObservableField<Boolean> isLoading = new ObservableField<>(false);
     public ObservableField<String> transactionResult = new ObservableField<>("");
     public ObservableField<String> amount = new ObservableField<>("");
     public ObservableField<String> titleText = new ObservableField<>("Payment");
     public ObservableBoolean isWaiting = new ObservableBoolean(true);
-//    public ObservableBoolean isSuccess = new ObservableBoolean(false);
+    //    public ObservableBoolean isSuccess = new ObservableBoolean(false);
     public ObservableBoolean isPrinting = new ObservableBoolean(false);
     public ObservableBoolean isD70 = new ObservableBoolean(false);
+    public ObservableBoolean isShowAnimationView = new ObservableBoolean(false);
+    public ObservableBoolean isShowOtherCardTxt = new ObservableBoolean(false);
+    //isPayMentGuideD35
+    public ObservableBoolean isPayMentGuideD35 = new ObservableBoolean(false);
+    public ObservableBoolean isPayMentGuideD50 = new ObservableBoolean(false);
     public SingleLiveEvent<Boolean> isOnlineSuccess = new SingleLiveEvent();
     public ObservableBoolean showPinpad = new ObservableBoolean(false);
     public ObservableBoolean showResultStatus = new ObservableBoolean(false);
     public ObservableBoolean TransactionResultStatus = new ObservableBoolean(false);
     public ObservableBoolean cardsInsertedStatus = new ObservableBoolean(false);
-    public ObservableField<String> receiptContent = new ObservableField<>();
-    private Bitmap receiptBitmap;
     private Context mContext;
-    private boolean isIccCard=false;
+    private boolean isIccCard = false;
+
+    public PaymentViewModel(@NonNull Application application) {
+        super(application);
+        apiService = RetrofitClient.getInstance().create(RequestOnlineAuthAPI.class);
+        if ("D70".equalsIgnoreCase(DeviceUtils.getPhoneModel())) {
+            isD70.set(true);
+            isShowAnimationView.set(true);
+            isPayMentGuideD35.set(true);
+        } else if ("D35".equalsIgnoreCase(DeviceUtils.getPhoneModel())) {
+            isD70.set(false);
+            isShowAnimationView.set(true);
+            isPayMentGuideD35.set(false);
+            isPayMentGuideD50.set(true);
+            isShowOtherCardTxt.set(false);
+        } else if ("D50".equalsIgnoreCase(DeviceUtils.getPhoneModel())) {
+            isD70.set(false);
+            isShowAnimationView.set(true);
+            isPayMentGuideD35.set(true);
+            isPayMentGuideD50.set(false);
+            isShowOtherCardTxt.set(false);
+        } else {
+            isD70.set(false);
+            isPayMentGuideD35.set(true);
+            isPayMentGuideD50.set(true);
+            isShowOtherCardTxt.set(true);
+        }
+    }
+
 
     public void setmContext(Context mContext) {
         this.mContext = mContext;
@@ -117,37 +137,42 @@ public class PaymentViewModel extends BaseAppViewModel {
         transactionResult.set(message);
         TransactionResultStatus.set(false);
         cardsInsertedStatus.set(false);
-         }
-    public  void setTransactionErr(String message){
+    }
+
+    public void setTransactionErr(String message) {
         TransactionResultStatus.set(false);
     }
+
     public void clearErrorState() {
         showResultStatus.set(true);
         showPinpad.set(true);
-        if(cardsInsertedStatus.get()){
-        cardsInsertedStatus.set(false);
+        if (cardsInsertedStatus.get()) {
+            cardsInsertedStatus.set(false);
         }
 //        transactionResult.set("");
 //        isSuccess.set(false);
     }
-    public void pincomPletedState(){
+
+    public void pincomPletedState() {
 
         showPinpad.set(false);
 
-        if(isIccCard&&!cardsInsertedStatus.get()){
+        if (isIccCard && !cardsInsertedStatus.get()) {
             showResultStatus.set(true);
             cardsInsertedStatus.set(true);
-        }else{
+        } else {
             showResultStatus.set(false);
         }
 
     }
-    public void cardInsertedState(){
+
+    public void cardInsertedState() {
         isIccCard = true;
         showResultStatus.set(true);
         cardsInsertedStatus.set(true);
 
     }
+
     public void displayAmount(String newAmount) {
         amount.set("$" + newAmount);
     }
@@ -165,9 +190,9 @@ public class PaymentViewModel extends BaseAppViewModel {
 //        showResultStatus.set(true);
 //        TransactionResultStatus.set(true);
 //        cardsInsertedStatus.set(true);
-        if(isIccCard){
+        if (isIccCard) {
             cardsInsertedStatus.set(true);
-        }else{
+        } else {
             showResultStatus.set(false);
         }
     }
@@ -184,7 +209,7 @@ public class PaymentViewModel extends BaseAppViewModel {
         loadingText.set("");
     }
 
-    public BindingCommand continueTxnsCommand = new BindingCommand(() -> finish());
+    // public BindingCommand continueTxnsCommand = new BindingCommand(() -> finish());
 
     public BindingCommand cancleTxnsCommand = new BindingCommand(() -> {
         new Thread(() -> {
@@ -192,7 +217,7 @@ public class PaymentViewModel extends BaseAppViewModel {
         }).start();
 //        finish();
     });
-    public BindingCommand sendReceiptCommand = new BindingCommand(new BindingAction() {
+/*    public BindingCommand sendReceiptCommand = new BindingCommand(new BindingAction() {
         @Override
         public void call() {
             isPrinting.set(true);
@@ -234,7 +259,7 @@ public class PaymentViewModel extends BaseAppViewModel {
                 });
             }, 100);
         }
-    });
+    });*/
 
 //    public Bitmap convertReceiptToBitmap(TextView receiptView) {
 //        float originalTextSize = receiptView.getTextSize();
@@ -264,37 +289,34 @@ public class PaymentViewModel extends BaseAppViewModel {
 
     public void requestOnlineAuth(boolean isICC, PaymentModel paymentModel) {
         AuthRequest authRequest = createAuthRequest(paymentModel);
-        addSubscribe(apiService.sendMessage(AUTHFROMISSUER_URL, authRequest)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(response -> {
-                    TRACE.i("online auth rsp code= " + response.getResult());
-                    String onlineRspCode = (String) response.getResult();
-                    if (response.isOk()) {
-                        ToastUtils.showShort("Send online success");
-                        if (isICC) {
-                            POSManager.getInstance().sendOnlineProcessResult("8A02" + onlineRspCode);
-                        } else {
-                            isOnlineSuccess.setValue(true);
-                        }
-                    } else {
-                        if (isICC) {
-                            POSManager.getInstance().sendOnlineProcessResult("8A023030");
-                        } else {
-                            isOnlineSuccess.setValue(false);
-                        }
-                        transactionResult.set("Send online failed：" + response.getMessage());
-                        ToastUtils.showShort("Send online failed：" + response.getMessage());
-                    }
-                }, throwable -> {
-                    if (isICC) {
-                        POSManager.getInstance().sendOnlineProcessResult("8A023035");
-                    } else {
-                        isOnlineSuccess.setValue(false);
-                    }
-                    ToastUtils.showShort("The network is failed：" + throwable.getMessage());
-                    transactionResult.set("The network is failed：" + throwable.getMessage());
-                }));
+        addSubscribe(apiService.sendMessage(AUTHFROMISSUER_URL, authRequest).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(response -> {
+            TRACE.i("online auth rsp code= " + response.getResult());
+            String onlineRspCode = (String) response.getResult();
+            if (response.isOk()) {
+                ToastUtils.showShort("Send online success");
+                if (isICC) {
+                    POSManager.getInstance().sendOnlineProcessResult("8A02" + onlineRspCode);
+                } else {
+                    isOnlineSuccess.setValue(true);
+                }
+            } else {
+                if (isICC) {
+                    POSManager.getInstance().sendOnlineProcessResult("8A023030");
+                } else {
+                    isOnlineSuccess.setValue(false);
+                }
+                transactionResult.set("Send online failed：" + response.getMessage());
+                ToastUtils.showShort("Send online failed：" + response.getMessage());
+            }
+        }, throwable -> {
+            if (isICC) {
+                POSManager.getInstance().sendOnlineProcessResult("8A023035");
+            } else {
+                isOnlineSuccess.setValue(false);
+            }
+            ToastUtils.showShort("The network is failed：" + throwable.getMessage());
+            transactionResult.set("The network is failed：" + throwable.getMessage());
+        }));
     }
 
     private AuthRequest createAuthRequest(PaymentModel paymentModel) {
@@ -305,6 +327,6 @@ public class PaymentViewModel extends BaseAppViewModel {
         String cardOrg = paymentModel.getCardOrg();
         String payType = "Card";
         String transResult = "Paid";
-        return new AuthRequest(deviceSn, amount, maskPan, cardOrg, transactionType, payType,transResult, DeviceUtils.getDeviceDate(),DeviceUtils.getDeviceTime());
+        return new AuthRequest(deviceSn, amount, maskPan, cardOrg, transactionType, payType, transResult, DeviceUtils.getDeviceDate(), DeviceUtils.getDeviceTime());
     }
 }

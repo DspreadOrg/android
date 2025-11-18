@@ -71,24 +71,13 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
     private Runnable runnable;
     private int currentIndex = 0;
     private AtomicBoolean isStarting = new AtomicBoolean(false);
-    private final int[] imageResources = {
-            R.mipmap.ic_insert_new_d70,
-            R.mipmap.ic_tap_new_d70,
-            R.mipmap.ic_swipe_new_d70
-    };
-    private final String[] textResources = {
-            "<span style='color:red'>Insert</span><span style='color:black'>, tap or swipe</span>",
-            "<span style='color:black'>Insert, </span><span style='color:red'>tap</span> <span style='color:black'>or swipe</span>",
-            "<span style='color:black'>Insert, tap or </span><span style='color:red'>swipe</span>"
-    };
+    private final int[] imageResources = {R.mipmap.ic_insert_new_d70, R.mipmap.ic_tap_new_d70, R.mipmap.ic_swipe_new_d70};
+    private final String[] textResources = {"<span style='color:red'>Insert</span><span style='color:black'>, tap or swipe</span>", "<span style='color:black'>Insert, </span><span style='color:red'>tap</span> <span style='color:black'>or swipe</span>", "<span style='color:black'>Insert, tap or </span><span style='color:red'>swipe</span>"};
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        getWindow().getDecorView().setSystemUiVisibility(
-                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-        );
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         return R.layout.activity_payment;
     }
 
@@ -135,7 +124,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
     private void showCardImage() {
         if ("D70".equals(DeviceUtils.getPhoneModel())) {
             ViewGroup.LayoutParams params = binding.ivCloseBlackD70.getLayoutParams();
-            params.width = 26;  // unit: px
+            params.width = 26;
             params.height = 26;
             binding.ivCloseBlackD70.setLayoutParams(params);
             binding.ivCloseBlackD70.setImageResource(R.mipmap.btn_close_black);
@@ -158,7 +147,6 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
             public void run() {
                 currentIndex = (currentIndex + 1) % imageResources.length;
                 updateContent();
-
                 handler.postDelayed(this, 2000);
             }
         };
@@ -181,16 +169,16 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
         if ("D20".equals(deviceModel)) {
             binding.animationView.setAnimation("D20_checkCardImg.json");
             binding.animationView.setImageAssetsFolder("D20_images/");
-        } else if ("D35".equals(deviceModel)) {
+        } /*else if ("D35".equals(deviceModel)) {
             binding.animationView.setAnimation("D35_checkCardImg.json");
             binding.animationView.setImageAssetsFolder("D35_images/");
-        } else if ("D80".equals(deviceModel)) {
+        }*/ else if ("D80".equals(deviceModel)) {
             binding.animationView.setAnimation("D80_checkCard.json");
             binding.animationView.setImageAssetsFolder("D80_images/");
-        } else if ("D50".equals(deviceModel)) {
+        } /*else if ("D50".equals(deviceModel)) {
             binding.animationView.setAnimation("D50_checkCard.json");
             binding.animationView.setImageAssetsFolder("D50_images/");
-        } else if ("D60".equals(deviceModel)) {
+        }*/ else if ("D60".equals(deviceModel)) {
             binding.animationView.setAnimation("D60_checkCard.json");
             binding.animationView.setImageAssetsFolder("D60_images/");
         } else {//D30
@@ -473,7 +461,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
                 binding.pinpadEditText.setText("");
                 viewModel.pincomPletedState();
                 if (binding.d70ImageView != null) {
-                    binding.d70ImageView.setVisibility(View.INVISIBLE);
+                    binding.d70ImageView.setVisibility(View.GONE);
                 }
                 if (keyboardUtil != null) {
                     keyboardUtil.hide();
@@ -517,7 +505,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
 
     private void paymentStatus(String amount, String maskedPAN, String terminalTime, String errorMsg) {
         if (binding.d70ImageView != null) {
-            binding.d70ImageView.setVisibility(View.INVISIBLE);
+            binding.d70ImageView.setVisibility(View.GONE);
         }
         if (isStarting.compareAndSet(false, true)) {
             try {
@@ -551,10 +539,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
             public void onScreenOff() {
                 registerScreenReceiver();
                 PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
-                wakeLock = powerManager.newWakeLock(
-                        PowerManager.SCREEN_BRIGHT_WAKE_LOCK |
-                                PowerManager.ACQUIRE_CAUSES_WAKEUP,
-                        "ui.payment.PaymentActivity:PaymentScreenOn");
+                wakeLock = powerManager.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, "ui.payment.PaymentActivity:PaymentScreenOn");
                 wakeLock.acquire();
 
             }
@@ -566,12 +551,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
     }
 
     private void setupScreenBehavior() {
-        getWindow().addFlags(
-                WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
-                        WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
-                        WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON |
-                        WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
-        );
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
             setShowWhenLocked(true);
             setTurnScreenOn(true);
@@ -601,8 +581,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
     private class ScreenStateReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (Intent.ACTION_SCREEN_ON.equals(intent.getAction()) ||
-                    Intent.ACTION_USER_PRESENT.equals(intent.getAction())) {
+            if (Intent.ACTION_SCREEN_ON.equals(intent.getAction()) || Intent.ACTION_USER_PRESENT.equals(intent.getAction())) {
                 setupScreenBehavior();
             }
         }

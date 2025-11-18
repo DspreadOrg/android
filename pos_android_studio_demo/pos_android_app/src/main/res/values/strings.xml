@@ -475,7 +475,6 @@
     <string name="input_new_pin_confirm">Please confirm new PIN</string>
     <string name="input_new_pin_check_error">Input different PIN</string>
 
-
     <string name="barcode_height">BarCodeHeight</string>
     <string name="barcode_width">BarCodeWidth</string>
     <string name="grayLevel">GrayLevel</string>
@@ -540,16 +539,17 @@
     <string name="connect_warnning">Pls connect your devices first!</string>
     <string name="no_device">No device</string>
 
-<!--    sale detail-->
+    <!--    sale detail-->
     <string name="total">Total</string>
-    <string name="prompt_user_to_tap_card">Insert, tap or swipe</string>
+    <string name="prompt_user_to_tap_card">insert,tap or swipe</string>
+    <string name="prompt_user_to_tap_card_d35">swipe,insert or tap</string>
     <string name="payment_failed">Payment failed</string>
     <string name="payment_complete">Payment complete</string>
     <string name="payment_total">total</string>
 
-<!--    transaction-->
+    <!--    transaction-->
     <string name="filter">Filter</string>
 
-<!--    pin input-->
+    <!--    pin input-->
     <string name="enter_pin_text">Enter Your PIN</string>
 </resources>

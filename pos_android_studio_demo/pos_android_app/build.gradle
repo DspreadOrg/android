@@ -32,13 +32,13 @@ android {
         minSdk 24
         targetSdk 34
         versionCode 113
-        versionName "8.1.3-2511141030"
+        versionName "8.1.3-2511181630"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         ndk {
             // Set up supported SO library architecture
-            abiFilters 'armeabi-v7a' , 'arm64-v8a' //'x86', 'x86_64'
+            abiFilters 'armeabi-v7a', 'arm64-v8a' //'x86', 'x86_64'
         }
     }
 
@@ -119,7 +119,8 @@ dependencies {
     implementation 'com.alibaba:fastjson:1.2.83'
 
     implementation("com.tencent.shiply:upgrade:2.2.0")
-    implementation("com.tencent.shiply:upgrade-ui:2.2.0") // Pop up UI related, if the business side customizes their own pop ups, they can not rely on this library
+    implementation("com.tencent.shiply:upgrade-ui:2.2.0")
+    // Pop up UI related, if the business side customizes their own pop ups, they can not rely on this library
     implementation 'com.github.midorikocak:currency-picker-android:1.2.1'
 
     implementation 'com.journeyapps:zxing-android-embedded:4.3.0'

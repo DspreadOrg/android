@@ -399,6 +399,7 @@ public class POSManager {
 
     private class QPOSServiceListener extends CQPOSService {
 
+
         @Override
         public void onRequestQposConnected() {
             connectLatch.countDown();
