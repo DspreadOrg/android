@@ -220,7 +220,7 @@ public class PrinterHelper {
         mPrinter.addText("SALES RECEIPT");
         //mPrinter.addText("MERCHANT COPY");
         mPrinter.addPrintLintStyle(new PrintLineStyle(PrintStyle.FontStyle.NORMAL, PrintLine.CENTER, 10));
-        mPrinter.addText("- - - - - - - - - - - - - - - - - - - - - - - - - - - - -");
+        mPrinter.addText("- - - - - - - - - - - - - - - - - - - - - - - - - - ");
         mPrinter.addPrintLintStyle(new PrintLineStyle(PrintStyle.FontStyle.NORMAL, PrintLine.LEFT, 10));
         mPrinter.addText(" ISSUER Agricultural Bank of China");
         mPrinter.addText(" ACQ 48873110");
@@ -230,7 +230,7 @@ public class PrinterHelper {
         mPrinter.addText(" TYPE Of Transaction(TXN TYPE)");
         mPrinter.addText(" SALE");
         mPrinter.addPrintLintStyle(new PrintLineStyle(PrintStyle.FontStyle.NORMAL, PrintLine.CENTER, 10));
-        mPrinter.addText("- - - - - - - - - - - - - - - - - - - - - - - - - - - - -");
+        mPrinter.addText("- - - - - - - - - - - - - - - - - - - - - - - - - - ");
         mPrinter.addTexts(
                 new String[]{"BATCH NO", "000043"},
                 new int[]{5, 5}, new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.CENTER},

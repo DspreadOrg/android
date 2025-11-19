@@ -43,35 +43,34 @@
             </com.google.android.material.appbar.MaterialToolbar>
 
             <!-- 顶部黑色圆柱 -->
-            <View
-                android:id="@+id/black_cylinder"
-                android:layout_width="0dp"
-                android:layout_height="20dp"
-                android:layout_marginStart="19dp"
-                android:layout_marginEnd="19dp"
-                android:background="@drawable/shape_black_cylinder"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/toolbar" />
+
 
             <!-- 主要内容区域 -->
-            <androidx.core.widget.NestedScrollView
+            <FrameLayout
                 android:id="@+id/print_scroll_view"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_marginLeft="@dimen/dp_20"
                 android:layout_marginRight="@dimen/dp_20"
                 android:fillViewport="true"
-                app:layout_constraintBottom_toTopOf="@id/button_container"
-                app:layout_constraintTop_toBottomOf="@id/black_cylinder">
+                app:layout_constraintTop_toBottomOf="@id/toolbar">
+
+                <View
+                    android:id="@+id/black_cylinder"
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:background="@drawable/shape_black_cylinder" />
 
                 <LinearLayout
                     android:id="@+id/content_container"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/dp_8"
+                    android:layout_marginTop="@dimen/dp_8"
                     android:orientation="vertical" />
-
-            </androidx.core.widget.NestedScrollView>
+            </FrameLayout>
 
             <!-- 底部按钮容器 -->
             <LinearLayout
