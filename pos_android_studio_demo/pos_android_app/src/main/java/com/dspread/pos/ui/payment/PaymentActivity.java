@@ -195,25 +195,33 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
      */
     private void startTransaction() {
         new Thread(() -> {
+            // 创建连接回调
+            ConnectionServiceCallback connectionCallback = new ConnectionServiceCallback() {
+                @Override
+                public void onRequestNoQposDetected() {
+                    ToastUtils.showLong("Device connected fail");
+                }
+
+                @Override
+                public void onRequestQposConnected() {
+                    ToastUtils.showLong("Device connected");
+                }
+
+                @Override
+                public void onRequestQposDisconnected() {
+                    ToastUtils.showLong("Device disconnected");
+                    finish();
+                }
+            };
+            
+            // 无论设备是否已连接，都注册连接回调
             if (!POSManager.getInstance().isDeviceReady()) {
-                POSManager.getInstance().connect(deviceAddress, new ConnectionServiceCallback() {
-                    @Override
-                    public void onRequestNoQposDetected() {
-                        ToastUtils.showLong("Device connected fail");
-                    }
-
-                    @Override
-                    public void onRequestQposConnected() {
-                        ToastUtils.showLong("Device connected");
-                    }
-
-                    @Override
-                    public void onRequestQposDisconnected() {
-                        ToastUtils.showLong("Device disconnected");
-                        finish();
-                    }
-                });
+                POSManager.getInstance().connect(deviceAddress, connectionCallback);
+            } else {
+                // 如果设备已连接，单独注册连接回调
+                POSManager.getInstance().registerConnectionCallback(connectionCallback);
             }
+            
             POSManager.getInstance().startTransaction(amount, paymentServiceCallback);
         }).start();
     }

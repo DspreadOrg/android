@@ -37,6 +37,10 @@
     </style>
 
     <style name="Theme.Despreaddemo1" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- 禁用焦点高亮显示 -->
+        <item name="android:autofilledHighlight">@null</item>
+        <item name="android:defaultFocusHighlightEnabled">false</item>
+
         <!-- 主要颜色 -->
         <item name="colorPrimary">@color/main_theme_backend</item>
         <item name="colorPrimaryVariant">@color/main_theme_backend</item>
@@ -64,6 +68,10 @@
     </style>
 
     <style name="StatusBarTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- 禁用焦点高亮显示 -->
+        <item name="android:autofilledHighlight">@null</item>
+        <item name="android:defaultFocusHighlightEnabled">false</item>
+
         <item name="android:statusBarColor">@color/white</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="buttonStyle">@style/Widget.AppCompat.Button</item>
