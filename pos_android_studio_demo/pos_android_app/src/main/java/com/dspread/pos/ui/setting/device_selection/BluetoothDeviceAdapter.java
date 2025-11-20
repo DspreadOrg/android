@@ -2,8 +2,6 @@ package com.dspread.pos.ui.setting.device_selection;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothDevice;
-import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,15 +9,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.dspread.pos_android_app.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import me.goldze.mvvmhabit.utils.SPUtils;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class BluetoothDeviceAdapter extends RecyclerView.Adapter<BluetoothDeviceAdapter.ViewHolder> {
 

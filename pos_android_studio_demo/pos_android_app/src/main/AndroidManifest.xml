@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -66,8 +67,7 @@
         <activity
             android:name="com.dspread.pos.ui.payment.PaymentStatusActivity"
             android:exported="false"
-            android:theme="@style/StatusBarTheme"
-            />
+            android:theme="@style/StatusBarTheme" />
 
         <activity
             android:name="com.dspread.pos.ui.payment.PaymentMethodActivity"
@@ -81,32 +81,9 @@
         <activity
             android:name="com.dspread.pos.ui.payment.PaymentActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/StatusBarTheme"
-           />
-
-        <activity
-            android:name="com.dspread.pos.ui.printer.activities.PrintTextActivity"
-            android:exported="false" />
-        <activity
-            android:name="com.dspread.pos.ui.printer.activities.base.PrinterBaseActivity"
-            android:exported="false" />
-        <activity
-            android:name="com.dspread.pos.ui.printer.activities.BarCodeActivity"
-            android:exported="false" />
-        <activity
-            android:name="com.dspread.pos.ui.printer.activities.QRCodeActivity"
-            android:exported="false" />
-        <activity
-            android:name="com.dspread.pos.ui.printer.activities.BitmapActivity"
-            android:exported="false" />
-        <activity
-            android:name="com.dspread.pos.ui.printer.activities.PrintFunctionMultiActivity"
-            android:exported="false" />
+            android:theme="@style/StatusBarTheme" />
         <activity
             android:name="com.dspread.pos.ui.printer.activities.PrintTicketActivity"
-            android:exported="false" />
-        <activity
-            android:name="com.dspread.pos.ui.printer.activities.PrinterStatusActivity"
             android:exported="false" />
         <activity
             android:name="com.dspread.pos.ui.setting.device_selection.DeviceSelectionActivity"

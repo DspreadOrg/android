@@ -12,7 +12,7 @@ import com.dspread.pos.utils.TRACE;
 import com.dspread.pos_android_app.BR;
 import com.dspread.pos_android_app.R;
 import com.dspread.pos_android_app.databinding.ActivityReissueReceiptBinding;
-import com.dspread.pos_android_app.generated.callback.OnClickListener;
+
 
 import java.math.BigDecimal;
 

@@ -24,7 +24,6 @@ import com.dspread.pos_android_app.BR;
 import com.dspread.pos_android_app.R;
 import com.dspread.pos_android_app.databinding.ActivityPrintTicketBinding;
 import com.dspread.pos_android_app.databinding.ActivityPrinterBaseBinding;
-import com.dspread.pos_android_app.generated.callback.OnClickListener;
 import com.dspread.print.device.PrinterDevice;
 
 import java.text.ParseException;

@@ -22,6 +22,9 @@ public class DeviceSelectionViewModel extends BaseViewModel {
     public final ObservableField<String> bluetoothAddress = new ObservableField<>();
     public final ObservableField<String> bluetoothName = new ObservableField<>();
     public final ObservableField<Boolean> isConnecting = new ObservableField<>(false);
+    //isShowDeviceSelectionList
+
+    public final ObservableField<Boolean> isShowDeviceSelectionList = new ObservableField<>(false);
     public SingleLiveEvent<Void> showUsbDeviceDialogEvent = new SingleLiveEvent<>();
 
     // Connection method options
@@ -45,13 +48,13 @@ public class DeviceSelectionViewModel extends BaseViewModel {
 
     public DeviceSelectionViewModel(@NonNull Application application) {
         super(application);
-        if(!"".equals(SPUtils.getInstance().getString("device_type"))){
+        if (!"".equals(SPUtils.getInstance().getString("device_type"))) {
             connectedDeviceName = SPUtils.getInstance().getString("device_type");
-            if(connectedDeviceName.equals(POS_TYPE.UART.name())){
+            if (connectedDeviceName.equals(POS_TYPE.UART.name())) {
                 currentPOSType = POS_TYPE.UART;
-            }else if(connectedDeviceName.equals(POS_TYPE.USB.name())){
+            } else if (connectedDeviceName.equals(POS_TYPE.USB.name())) {
                 currentPOSType = POS_TYPE.USB;
-            }else if(connectedDeviceName.contains(POS_TYPE.BLUETOOTH.name())){
+            } else if (connectedDeviceName.contains(POS_TYPE.BLUETOOTH.name())) {
                 currentPOSType = POS_TYPE.BLUETOOTH;
             }
             loadSelectedConnectionMethod(connectedDeviceName);
@@ -77,25 +80,29 @@ public class DeviceSelectionViewModel extends BaseViewModel {
      * Connection method selection command
      */
     public BindingCommand<String> connectionMethodRadioSelectedCommand = new BindingCommand<>(radioText -> {
-        TRACE.i("radio btn selected ="+radioText);
+        TRACE.i("radio btn selected =" + radioText);
         {
             POSManager.getInstance().close();
-            if(connectionMethods[0].equals(radioText)){
+            if (connectionMethods[0].equals(radioText)) {
                 selectedIndex.setValue(0);
                 startScanBluetoothEvent.setValue(POS_TYPE.BLUETOOTH);
-                SPUtils.getInstance().put("device_type","BLUETOOTH");
-            }else if(connectionMethods[1].equals(radioText)){
+                SPUtils.getInstance().put("device_type", "BLUETOOTH");
+            } else if (connectionMethods[1].equals(radioText)) {
                 selectedIndex.setValue(1);
-                SPUtils.getInstance().put("device_type","UART");
+                SPUtils.getInstance().put("device_type", "UART");
                 finish();
-            }else if(connectionMethods[2].equals(radioText)){
+            } else if (connectionMethods[2].equals(radioText)) {
                 selectedIndex.setValue(2);
                 showUsbDeviceDialogEvent.call();
-                SPUtils.getInstance().put("device_type","USB");
-            }else {
+                SPUtils.getInstance().put("device_type", "USB");
+            } else {
                 selectedIndex.setValue(-1);
             }
         }
     });
+
+    public void setShowDeviceSelectionList(boolean isShow) {
+        isShowDeviceSelectionList.set(isShow);
+    }
 
 }

@@ -2,16 +2,14 @@ package com.dspread.pos.ui.setting.connection_settings;
 
 import android.app.Application;
 
-import androidx.annotation.NonNull;
-import androidx.databinding.ObservableBoolean;
-import androidx.databinding.ObservableField;
-
 import com.dspread.pos.TerminalApplication;
 import com.dspread.pos.common.enums.POS_TYPE;
-import com.dspread.pos.posAPI.POSManager;
 import com.dspread.pos.utils.DeviceUtils;
 import com.dspread.pos_android_app.R;
 
+import androidx.annotation.NonNull;
+import androidx.databinding.ObservableBoolean;
+import androidx.databinding.ObservableField;
 import me.goldze.mvvmhabit.base.BaseApplication;
 import me.goldze.mvvmhabit.base.BaseViewModel;
 import me.goldze.mvvmhabit.binding.command.BindingCommand;
@@ -123,7 +121,7 @@ public class ConnectionSettingsViewModel extends BaseViewModel {
             }
         }
     }
-    public BindingCommand<Boolean> toggleDeviceCommand = new BindingCommand<>(isChecked -> {
+ /*   public BindingCommand<Boolean> toggleDeviceCommand = new BindingCommand<>(isChecked -> {
         deviceConnected.set(isChecked);
         String deviceType = SPUtils.getInstance().getString("device_type", "");
         if (isChecked) {
@@ -138,7 +136,7 @@ public class ConnectionSettingsViewModel extends BaseViewModel {
 
         saveSettings();
     });
-
+*/
     /**
      * Select device command
      */

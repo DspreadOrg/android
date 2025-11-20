@@ -13,7 +13,6 @@ import com.dspread.pos.utils.DeviceUtils;
 import com.dspread.pos_android_app.BR;
 import com.dspread.pos_android_app.R;
 import com.dspread.pos_android_app.databinding.ActivityPaymentGenerateBinding;
-import com.dspread.pos_android_app.generated.callback.OnClickListener;
 
 import me.goldze.mvvmhabit.base.BaseActivity;
 

@@ -83,6 +83,7 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
         // Set return button click event
         binding.toolbar.setNavigationOnClickListener(v -> finish());
         initBluetoothDevicesDialog();
+
         // Set up event monitoring
         setupEventListeners();
         bluetoothEnableLauncher = registerForActivityResult(
@@ -105,6 +106,7 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
         });
     }
 
+
     // init bluetooth adapter
     private boolean initBluetooth() {
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -121,8 +123,7 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
      */
     private void setupEventListeners() {
         // Monitor connection method selection completion event
-        viewModel.connectionMethodSelectedEvent.observe(this, this::onConnectionMethodSelected);
-
+        //viewModel.connectionMethodSelectedEvent.observe(this, this::onConnectionMethodSelected);
         // Monitor and display Bluetooth device list events
         viewModel.startScanBluetoothEvent.observe(this, new Observer<POS_TYPE>() {
             @Override
@@ -130,6 +131,7 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
                 if (!initBluetooth()) {
                     return;
                 }
+                TRACE.d("click connect BluetoothEvent");
                 currentPOSType = posType;
                 checkLocationAndRequestPermissions(posType);
             }
@@ -137,10 +139,8 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
     }
 
     private void initBluetoothDevicesDialog() {
-        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_bluetooth_devices, null);
-        recyclerView = dialogView.findViewById(R.id.recycler_bluetooth_devices);
+        recyclerView = findViewById(R.id.recycler_bluetooth_devices);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
         // Initialize adapter
         bluetoothDeviceAdapter = new BluetoothDeviceAdapter(this, device -> {
             if (bluetoothAdapter != null) {
@@ -148,28 +148,21 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
             }
             viewModel.bluetoothAddress.set(device.getAddress());
             viewModel.bluetoothName.set(device.getName());
-//            viewModel.connectBluetooth(currentPOSType,device.getAddress());
-            if (bluetoothDevicesDialog != null && bluetoothDevicesDialog.isShowing()) {
-                bluetoothDevicesDialog.dismiss();
-            }
+
             SPUtils.getInstance().put("device_type", POS_TYPE.BLUETOOTH.name());
             SPUtils.getInstance().put("deviceAddress", device.getAddress());
             finish();
         });
         recyclerView.setAdapter(bluetoothDeviceAdapter);
 
-        Button btnCancel = dialogView.findViewById(R.id.btn_cancel);
-        btnCancel.setOnClickListener(v -> bluetoothDevicesDialog.dismiss());
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setView(dialogView);
-        bluetoothDevicesDialog = builder.create();
     }
 
     /**
      * Process connection method selection completion event
      */
-    private void onConnectionMethodSelected(POS_TYPE posType) {
+   /* private void onConnectionMethodSelected(POS_TYPE posType) {
+        TRACE.d("onConnectionMethodSelected");
         // Create return result
         Intent resultIntent = new Intent();
         // If it's not a Bluetooth connection, return the result directly
@@ -183,8 +176,7 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
         setResult(Activity.RESULT_OK, resultIntent);
         finish();
         // If it is a Bluetooth connection, the result will be returned after selecting the Bluetooth device
-    }
-
+    }*/
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();
@@ -206,9 +198,10 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
             ).subscribe(granted -> {
                 if (granted) {
                     TRACE.i("permission grant above---");
-                    if (!bluetoothDevicesDialog.isShowing()) {
+                   /* if (!bluetoothDevicesDialog.isShowing()) {
                         bluetoothDevicesDialog.show();
-                    }
+                    }*/
+                    viewModel.setShowDeviceSelectionList(true);
                     bluetoothRelaPer(posType);
                 } else {
                     Toast.makeText(this, "Pls grant the bluetooth permission first!", Toast.LENGTH_LONG).show();
@@ -224,9 +217,10 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
             ).subscribe(granted -> {
                 if (granted) {
                     TRACE.i("permission grant below---");
-                    if (!bluetoothDevicesDialog.isShowing()) {
+                   /* if (!bluetoothDevicesDialog.isShowing()) {
                         bluetoothDevicesDialog.show();
-                    }
+                    }*/
+                    viewModel.setShowDeviceSelectionList(true);
                     bluetoothRelaPer(posType);
                 } else {
                     Toast.makeText(this, "Pls grant the bluetooth permission first!", Toast.LENGTH_LONG).show();
@@ -275,6 +269,7 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
                 Toast.makeText(this, "Please open the bluetooth in device Setting", Toast.LENGTH_LONG).show();
             }
         } else {
+            TRACE.i("blu is need to start discovery");
             bluetoothAdapter.startDiscovery();
         }
     }
@@ -296,7 +291,7 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
                 Toast.makeText(getApplication(), "No Permission", Toast.LENGTH_SHORT).show();
             }
         });
-        
+
         ArrayList<String> deviceList = usb.GetUSBDevices(getApplication());
         if (deviceList != null) {
             openUsbDeviceDialog(deviceList);
@@ -333,7 +328,7 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
             alertDialog.setCanceledOnTouchOutside(false);
             alertDialog.setCancelable(false);
             alertDialog.show();
-            
+
             Button positiveButton = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
             if (positiveButton != null) {
                 positiveButton.setTextColor(getResources().getColor(R.color.transaction_detail_text_red));
@@ -348,6 +343,12 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
         super.onResume();
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
         registerReceiver(receiver, filter);
+
+       /* String savedDeviceName = SPUtils.getInstance().getString("device_type", "");
+        if(savedDeviceName.equalsIgnoreCase(POS_TYPE.BLUETOOTH.name())){
+
+            checkLocationAndRequestPermissions(POS_TYPE.BLUETOOTH);
+        }*/
     }
 
     @Override
@@ -376,7 +377,8 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
                 // 发现设备
                 if (bluetoothDeviceAdapter != null) {
                     BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                    if(device.getName() != null && !"".equals(device.getName())) {
+                    if (device.getName() != null && !"".equals(device.getName())) {
+                        TRACE.d("blue is start scan result:" + device.getName());
                         bluetoothDeviceAdapter.addDevice(device);
                     }
                 }

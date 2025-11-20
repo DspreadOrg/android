@@ -6,7 +6,6 @@ import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 import androidx.databinding.ObservableField;
-
 import me.goldze.mvvmhabit.base.ItemViewModel;
 import me.goldze.mvvmhabit.binding.command.BindingCommand;
 

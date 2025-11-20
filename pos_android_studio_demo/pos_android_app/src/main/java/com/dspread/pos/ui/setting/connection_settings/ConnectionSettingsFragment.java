@@ -44,7 +44,6 @@ public class ConnectionSettingsFragment extends BaseFragment<FragmentConnectionS
     @Override
     public void initData() {
         super.initData();
-
         // Setup event listeners
         setupEventListeners();
 
@@ -52,9 +51,8 @@ public class ConnectionSettingsFragment extends BaseFragment<FragmentConnectionS
     }
 
     private void initAppVersion() {
-
         String versionName = DevUtils.getVersionName(getContext());
-        binding.tvAppVersion.setText("APP Version: "+versionName);
+        binding.tvAppVersion.setText("APP Version: " + versionName);
     }
 
     @Override
@@ -71,7 +69,6 @@ public class ConnectionSettingsFragment extends BaseFragment<FragmentConnectionS
         viewModel.selectDeviceEvent.observe(this, v -> {
             navigateToDeviceSelection();
         });
-
         // Transaction type click event
         viewModel.transactionTypeClickEvent.observe(this, v -> {
             Intent intent = new Intent(getActivity(), DeviceConfigActivity.class);
