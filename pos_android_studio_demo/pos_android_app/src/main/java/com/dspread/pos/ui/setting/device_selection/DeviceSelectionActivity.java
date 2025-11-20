@@ -17,6 +17,7 @@ import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.graphics.Typeface;
+import android.os.Handler;
 import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -61,6 +62,11 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
     private ActivityResultLauncher<Intent> bluetoothEnableLauncher;
     private BluetoothAdapter bluetoothAdapter;
 
+    // 添加扫描状态跟踪和设备列表
+    private boolean isScanning = false;
+    private List<BluetoothDevice> discoveredDevices = new ArrayList<>();
+    private Handler handler = new Handler();
+
     @Override
     public int initContentView(Bundle savedInstanceState) {
         return R.layout.activity_device_selection;
@@ -91,7 +97,7 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
                 result -> {
                     if (result.getResultCode() == Activity.RESULT_OK) {
                         // Bluetooth is enabled, now check location and request permissions
-                        bluetoothAdapter.startDiscovery();
+                        startBluetoothDiscovery();
                     } else {
                         Toast.makeText(this, "Please enable Bluetooth to continue", Toast.LENGTH_LONG).show();
                     }
@@ -105,7 +111,6 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
             showUsbDeviceDialog();
         });
     }
-
 
     // init bluetooth adapter
     private boolean initBluetooth() {
@@ -123,8 +128,6 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
      */
     private void setupEventListeners() {
         // Monitor connection method selection completion event
-        //viewModel.connectionMethodSelectedEvent.observe(this, this::onConnectionMethodSelected);
-        // Monitor and display Bluetooth device list events
         viewModel.startScanBluetoothEvent.observe(this, new Observer<POS_TYPE>() {
             @Override
             public void onChanged(POS_TYPE posType) {
@@ -143,9 +146,7 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         // Initialize adapter
         bluetoothDeviceAdapter = new BluetoothDeviceAdapter(this, device -> {
-            if (bluetoothAdapter != null) {
-                bluetoothAdapter.cancelDiscovery();
-            }
+            stopBluetoothDiscovery();
             viewModel.bluetoothAddress.set(device.getAddress());
             viewModel.bluetoothName.set(device.getName());
 
@@ -154,29 +155,8 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
             finish();
         });
         recyclerView.setAdapter(bluetoothDeviceAdapter);
-
-
     }
 
-    /**
-     * Process connection method selection completion event
-     */
-   /* private void onConnectionMethodSelected(POS_TYPE posType) {
-        TRACE.d("onConnectionMethodSelected");
-        // Create return result
-        Intent resultIntent = new Intent();
-        // If it's not a Bluetooth connection, return the result directly
-        if (posType == POS_TYPE.BLUETOOTH) {
-            resultIntent.putExtra(EXTRA_DEVICE_NAME, viewModel.bluetoothName.get());
-            SPUtils.getInstance().put("device_name", viewModel.bluetoothAddress.get());
-        }
-        SPUtils.getInstance().put("device_type", posType.name());
-        resultIntent.putExtra(EXTRA_CONNECTION_TYPE, posType.name());
-        // Set the result and close it Activity
-        setResult(Activity.RESULT_OK, resultIntent);
-        finish();
-        // If it is a Bluetooth connection, the result will be returned after selecting the Bluetooth device
-    }*/
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();
@@ -198,9 +178,6 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
             ).subscribe(granted -> {
                 if (granted) {
                     TRACE.i("permission grant above---");
-                   /* if (!bluetoothDevicesDialog.isShowing()) {
-                        bluetoothDevicesDialog.show();
-                    }*/
                     viewModel.setShowDeviceSelectionList(true);
                     bluetoothRelaPer(posType);
                 } else {
@@ -217,9 +194,6 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
             ).subscribe(granted -> {
                 if (granted) {
                     TRACE.i("permission grant below---");
-                   /* if (!bluetoothDevicesDialog.isShowing()) {
-                        bluetoothDevicesDialog.show();
-                    }*/
                     viewModel.setShowDeviceSelectionList(true);
                     bluetoothRelaPer(posType);
                 } else {
@@ -248,6 +222,8 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
                     @Override
                     public void onActivityResult(ActivityResult result) {
                         TRACE.i("open setting---");
+                        // 用户从设置返回后重新检查位置服务
+                        checkLocationAndRequestPermissions(posType);
                     }
                 });
                 launcher.launch(intent);
@@ -259,9 +235,9 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
 
     @SuppressLint("MissingPermission")
     public void bluetoothRelaPer(POS_TYPE posType) {
-        android.bluetooth.BluetoothAdapter adapter = android.bluetooth.BluetoothAdapter.getDefaultAdapter();
+        BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
         if (adapter != null && !adapter.isEnabled()) {
-            Intent enabler = new Intent(android.bluetooth.BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            Intent enabler = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             try {
                 TRACE.i("blu is need to open");
                 bluetoothEnableLauncher.launch(enabler);
@@ -270,8 +246,140 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
             }
         } else {
             TRACE.i("blu is need to start discovery");
-            bluetoothAdapter.startDiscovery();
+            startBluetoothDiscovery();
         }
+    }
+
+    /**
+     * 优化蓝牙扫描方法
+     */
+    @SuppressLint("MissingPermission")
+    private void startBluetoothDiscovery() {
+        if (bluetoothAdapter == null || !bluetoothAdapter.isEnabled()) {
+            Toast.makeText(this, "Bluetooth is not available", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // 停止之前的扫描
+        if (isScanning) {
+            bluetoothAdapter.cancelDiscovery();
+            isScanning = false;
+        }
+
+        // 清空之前的结果
+        discoveredDevices.clear();
+        if (bluetoothDeviceAdapter != null) {
+            bluetoothDeviceAdapter.clearDevices();
+        }
+
+        // 注册广播接收器（确保每次扫描都重新注册）
+        registerBluetoothReceiver();
+
+        // 开始扫描
+        isScanning = bluetoothAdapter.startDiscovery();
+        if (isScanning) {
+            TRACE.d("Bluetooth discovery started successfully");
+            Toast.makeText(this, "Scanning for Bluetooth devices...", Toast.LENGTH_SHORT).show();
+
+            // 设置扫描超时（30秒）
+            handler.postDelayed(scanTimeoutRunnable, 30000);
+        } else {
+            TRACE.e("Failed to start Bluetooth discovery");
+            Toast.makeText(this, "Failed to start scanning", Toast.LENGTH_SHORT).show();
+            isScanning = false;
+        }
+    }
+
+    private Runnable scanTimeoutRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (isScanning) {
+                TRACE.d("Bluetooth scan timeout");
+                stopBluetoothDiscovery();
+                Toast.makeText(DeviceSelectionActivity.this,
+                        "Scan completed, found " + discoveredDevices.size() + " devices",
+                        Toast.LENGTH_SHORT).show();
+            }
+        }
+    };
+
+    /**
+     * 注册蓝牙广播接收器
+     */
+    private void registerBluetoothReceiver() {
+        try {
+            // 先取消注册，避免重复注册
+            unregisterReceiver(receiver);
+        } catch (Exception e) {
+            TRACE.d("Receiver was not registered or already unregistered");
+        }
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(BluetoothDevice.ACTION_FOUND);
+        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
+        registerReceiver(receiver, filter);
+        TRACE.d("Bluetooth broadcast receiver registered");
+    }
+
+    /**
+     * 停止蓝牙扫描
+     */
+    @SuppressLint("MissingPermission")
+    private void stopBluetoothDiscovery() {
+        if (bluetoothAdapter != null && isScanning) {
+            bluetoothAdapter.cancelDiscovery();
+            isScanning = false;
+            TRACE.d("Bluetooth discovery stopped");
+        }
+        handler.removeCallbacks(scanTimeoutRunnable);
+    }
+
+    /**
+     * 优化的广播接收器
+     */
+    private final BroadcastReceiver receiver = new BroadcastReceiver() {
+        @SuppressLint("MissingPermission")
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            TRACE.d("Bluetooth broadcast received: " + action);
+
+            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                if (device != null && device.getName() != null && !device.getName().isEmpty()) {
+                    // 检查是否已经发现过该设备
+                    if (!isDeviceDiscovered(device)) {
+                        TRACE.d("New Bluetooth device found: " + device.getName() + " (" + device.getAddress() + ")");
+                        discoveredDevices.add(device);
+                        bluetoothDeviceAdapter.addDevice(device);
+                    } else {
+                        TRACE.d("Duplicate device ignored: " + device.getName());
+                    }
+                }
+            } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
+                TRACE.d("Bluetooth discovery finished");
+                isScanning = false;
+                handler.removeCallbacks(scanTimeoutRunnable);
+                Toast.makeText(DeviceSelectionActivity.this,
+                        "Scan completed, found " + discoveredDevices.size() + " devices",
+                        Toast.LENGTH_SHORT).show();
+            } else if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)) {
+                TRACE.d("Bluetooth discovery started");
+                isScanning = true;
+            }
+        }
+    };
+
+    /**
+     * 检查设备是否已经发现过
+     */
+    private boolean isDeviceDiscovered(BluetoothDevice newDevice) {
+        for (BluetoothDevice device : discoveredDevices) {
+            if (device.getAddress().equals(newDevice.getAddress())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void showUsbDeviceDialog() {
@@ -341,48 +449,38 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
     @Override
     protected void onResume() {
         super.onResume();
-        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-        registerReceiver(receiver, filter);
+        TRACE.d("onResume - Registering broadcast receiver");
 
-       /* String savedDeviceName = SPUtils.getInstance().getString("device_type", "");
-        if(savedDeviceName.equalsIgnoreCase(POS_TYPE.BLUETOOTH.name())){
+        // 注册蓝牙广播接收器
+        registerBluetoothReceiver();
 
-            checkLocationAndRequestPermissions(POS_TYPE.BLUETOOTH);
-        }*/
+        // 检查是否有保存的蓝牙设备类型，自动开始扫描
+        String savedDeviceName = SPUtils.getInstance().getString("device_type", "");
+        if (savedDeviceName.equalsIgnoreCase(POS_TYPE.BLUETOOTH.name())) {
+            if (initBluetooth()) {
+                checkLocationAndRequestPermissions(POS_TYPE.BLUETOOTH);
+            }
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        unregisterReceiver(receiver);
-        // 停止扫描
-        if (bluetoothAdapter != null) {
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
-
-                return;
-            }
-            bluetoothAdapter.cancelDiscovery();
-        }
+        // 不在onPause中停止扫描，让扫描在后台继续
+        TRACE.d("onPause - Bluetooth scanning may continue in background");
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-    }
-
-    private final BroadcastReceiver receiver = new BroadcastReceiver() {
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-                // 发现设备
-                if (bluetoothDeviceAdapter != null) {
-                    BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                    if (device.getName() != null && !"".equals(device.getName())) {
-                        TRACE.d("blue is start scan result:" + device.getName());
-                        bluetoothDeviceAdapter.addDevice(device);
-                    }
-                }
-            }
+        TRACE.d("onDestroy - Cleaning up Bluetooth resources");
+        stopBluetoothDiscovery();
+        try {
+            unregisterReceiver(receiver);
+        } catch (Exception e) {
+            TRACE.e("Error unregistering receiver: " + e.getMessage());
         }
-    };
+        handler.removeCallbacks(scanTimeoutRunnable);
+        handler.removeCallbacksAndMessages(null);
+    }
 }
