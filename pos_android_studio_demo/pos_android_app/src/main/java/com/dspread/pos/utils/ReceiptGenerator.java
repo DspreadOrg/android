@@ -3,7 +3,7 @@ package com.dspread.pos.utils;
 import android.text.Html;
 import android.text.Spanned;
 
-import com.dspread.pos.posAPI.PaymentResult;
+import com.dspread.pos.ui.payment.PaymentResult;
 import com.dspread.pos.ui.payment.PaymentModel;
 
 import java.util.Hashtable;
@@ -74,7 +74,7 @@ public class ReceiptGenerator {
         return Html.fromHtml(receiptBuilder.toString(), Html.FROM_HTML_MODE_COMPACT);
     }
 
-    public static Spanned generateMSRReceipt(PaymentResult paymentResult, String batchNo) {
+    public static Spanned generateReceipt(PaymentResult paymentResult, String batchNo) {
         String transType = SPUtils.getInstance().getString("transactionType");
         StringBuilder receiptBuilder = new StringBuilder()
                 .append(center(bold(size("POS of purchase orders", 5))))
@@ -105,7 +105,7 @@ public class ReceiptGenerator {
         return Html.fromHtml(receiptBuilder.toString(), Html.FROM_HTML_MODE_COMPACT);
     }
 
-    public static Spanned generateMSRReceipt(Hashtable<String, String> decodeData,String batchNo) {
+    public static Spanned generateReceipt(Hashtable<String, String> decodeData, String batchNo) {
         String transType = SPUtils.getInstance().getString("transactionType");
         StringBuilder receiptBuilder = new StringBuilder()
                 .append(center(bold(size("POS of purchase orders", 5))))

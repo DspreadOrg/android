@@ -1,5 +1,6 @@
 package com.dspread.pos.posAPI;
 
+import com.dspread.pos.ui.payment.PaymentResult;
 import com.dspread.xpos.QPOSService;
 
 import java.util.ArrayList;

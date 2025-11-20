@@ -22,7 +22,6 @@ import android.widget.ListView;
 
 import com.dspread.pos.posAPI.ConnectionServiceCallback;
 import com.dspread.pos.posAPI.POSManager;
-import com.dspread.pos.posAPI.PaymentResult;
 import com.dspread.pos.posAPI.PaymentServiceCallback;
 import com.dspread.pos.printerAPI.PrinterHelper;
 import com.dspread.pos.ui.payment.pinkeyboard.KeyboardUtil;
@@ -60,10 +59,11 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
     private String deviceAddress;
     private KeyboardUtil keyboardUtil;
     public PinPadDialog pinPadDialog;
-    private boolean isPinBack = false;
+    private boolean isPinBack = false;//去掉
     private PaymentServiceCallback paymentServiceCallback;
     private String terminalTime;
     private String maskedPAN;
+    private ConnectionServiceCallback connectionCallback;
     private SystemKeyListener systemKeyListener;
     private PowerManager.WakeLock wakeLock;
     private ScreenStateReceiver screenStateReceiver;
@@ -94,7 +94,6 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
     public void initData() {
         disallowKey(true);
         binding.setVariable(BR.viewModel, viewModel);
-        viewModel.setmContext(this);
         binding.pinpadEditText.setText("");
         viewModel.titleText.set("Paymenting");
 
@@ -102,7 +101,8 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
         amount = getIntent().getStringExtra("amount");
         deviceAddress = getIntent().getStringExtra("deviceAddress");
         viewModel.displayAmount(DeviceUtils.convertAmountToCents(amount));//ui
-        handler = new Handler();
+
+        initConnectionCallback();
         startTransaction();
         showCardImage();
     }
@@ -142,6 +142,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
     }
 
     private void setupImageSwitcher() {
+        handler = new Handler();
         runnable = new Runnable() {
             @Override
             public void run() {
@@ -169,16 +170,10 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
         if ("D20".equals(deviceModel)) {
             binding.animationView.setAnimation("D20_checkCardImg.json");
             binding.animationView.setImageAssetsFolder("D20_images/");
-        } /*else if ("D35".equals(deviceModel)) {
-            binding.animationView.setAnimation("D35_checkCardImg.json");
-            binding.animationView.setImageAssetsFolder("D35_images/");
-        }*/ else if ("D80".equals(deviceModel)) {
+        }  else if ("D80".equals(deviceModel)) {
             binding.animationView.setAnimation("D80_checkCard.json");
             binding.animationView.setImageAssetsFolder("D80_images/");
-        } /*else if ("D50".equals(deviceModel)) {
-            binding.animationView.setAnimation("D50_checkCard.json");
-            binding.animationView.setImageAssetsFolder("D50_images/");
-        }*/ else if ("D60".equals(deviceModel)) {
+        } else if ("D60".equals(deviceModel)) {
             binding.animationView.setAnimation("D60_checkCard.json");
             binding.animationView.setImageAssetsFolder("D60_images/");
         } else {//D30
@@ -189,36 +184,36 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
         binding.animationView.playAnimation();
     }
 
+    private void initConnectionCallback(){
+        connectionCallback = new ConnectionServiceCallback() {
+            @Override
+            public void onRequestNoQposDetected() {
+                ToastUtils.showLong("Device connected fail");
+            }
+
+            @Override
+            public void onRequestQposConnected() {
+                ToastUtils.showLong("Device connected");
+            }
+
+            @Override
+            public void onRequestQposDisconnected() {
+                ToastUtils.showLong("Device disconnected");
+                finish();
+            }
+        };
+    }
+
     /**
      * Start payment transaction in background thread
      * Handles device connection and transaction initialization
      */
     private void startTransaction() {
         new Thread(() -> {
-            // 创建连接回调
-            ConnectionServiceCallback connectionCallback = new ConnectionServiceCallback() {
-                @Override
-                public void onRequestNoQposDetected() {
-                    ToastUtils.showLong("Device connected fail");
-                }
-
-                @Override
-                public void onRequestQposConnected() {
-                    ToastUtils.showLong("Device connected");
-                }
-
-                @Override
-                public void onRequestQposDisconnected() {
-                    ToastUtils.showLong("Device disconnected");
-                    finish();
-                }
-            };
-            
-            // 无论设备是否已连接，都注册连接回调
             if (!POSManager.getInstance().isDeviceReady()) {
                 POSManager.getInstance().connect(deviceAddress, connectionCallback);
             } else {
-                // 如果设备已连接，单独注册连接回调
+                // if device has connected, just register connection callback
                 POSManager.getInstance().registerConnectionCallback(connectionCallback);
             }
             
@@ -237,7 +232,6 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
             terminalTime = new SimpleDateFormat("yyyyMMddHHmmss").format(Calendar.getInstance().getTime());
             TRACE.d("onRequestTime: " + terminalTime);
             POSManager.getInstance().sendTime(terminalTime);
-
         }
 
         @Override
@@ -312,40 +306,31 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
             isPinBack = true;
             // Clear previous error state when entering PIN input
             viewModel.clearErrorState();
-            if ("D70".equals(Build.MODEL) || "D80K".equals(Build.MODEL)) {
-                boolean isOfflinePin = !POSManager.getInstance().isOnlinePin();
-                if (isOfflinePin) {
-                    viewModel.titleText.set(getString(R.string.input_offlinePin));
-                } else {
-                    viewModel.titleText.set(getString(R.string.input_onlinePin));
+            //CR100 devices
+            viewModel.titleText.set(getString(R.string.input_pin));
+            pinPadDialog = new PinPadDialog(PaymentActivity.this);
+            pinPadDialog.getPayViewPass().setRandomNumber(true).setPayClickListener(POSManager.getInstance().getQPOSService(), new PinPadView.OnPayClickListener() {
+
+                @Override
+                public void onCencel() {
+                    POSManager.getInstance().cancelPin();
+                    pinPadDialog.dismiss();
                 }
-                viewModel.stopLoading();
-                viewModel.showPinpad.set(true);
-            } else {//CR100 devices
-                viewModel.titleText.set(getString(R.string.input_pin));
-                pinPadDialog = new PinPadDialog(PaymentActivity.this);
-                pinPadDialog.getPayViewPass().setRandomNumber(true).setPayClickListener(POSManager.getInstance().getQPOSService(), new PinPadView.OnPayClickListener() {
 
-                    @Override
-                    public void onCencel() {
-                        POSManager.getInstance().cancelPin();
-                        pinPadDialog.dismiss();
-                    }
+                @Override
+                public void onPaypass() {
+                    POSManager.getInstance().bypassPin();
+                    pinPadDialog.dismiss();
+                }
 
-                    @Override
-                    public void onPaypass() {
-                        POSManager.getInstance().bypassPin();
-                        pinPadDialog.dismiss();
-                    }
+                @Override
+                public void onConfirm(String password) {
+                    String pinBlock = QPOSUtil.buildCvmPinBlock(POSManager.getInstance().computeISOPinBlockStringHashtable(), password);// build the ISO format4 pin block
+                    POSManager.getInstance().sendCvmPin(pinBlock, true);
+                    pinPadDialog.dismiss();
+                }
+            });
 
-                    @Override
-                    public void onConfirm(String password) {
-                        String pinBlock = QPOSUtil.buildCvmPinBlock(POSManager.getInstance().getEncryptData(), password);// build the ISO format4 pin block
-                        POSManager.getInstance().sendCvmPin(pinBlock, true);
-                        pinPadDialog.dismiss();
-                    }
-                });
-            }
         }
 
         @Override
@@ -374,19 +359,21 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
             if (result == QPOSService.DoTradeResult.ICC) {
                 viewModel.cardInsertedState();
                 POSManager.getInstance().doEmvAPP();
-            } else if (result == QPOSService.DoTradeResult.NFC_ONLINE || result == QPOSService.DoTradeResult.NFC_OFFLINE) {
-                paymentResult = HandleTxnsResultUtils.handleTransactionResult(paymentResult, decodeData);
-                binding.animationView.pauseAnimation();
+            }else if(result == QPOSService.DoTradeResult.NFC_ONLINE || result == QPOSService.DoTradeResult.NFC_OFFLINE){
+                Hashtable<String, String> batchData = POSManager.getInstance().getNFCBatchData();
+                String tlv = batchData.get("tlv");
+                TRACE.i("NFC Batch data: " + tlv);
+
                 paymentResult.setAmount(amount);
-                HandleTxnsResultUtils.handleNFCResult(paymentResult, PaymentActivity.this, binding, viewModel);
-                maskedPAN = paymentResult.getMaskedPAN();
-            } else if (result == QPOSService.DoTradeResult.MCR) {
-                paymentResult = HandleTxnsResultUtils.handleTransactionResult(paymentResult, decodeData);
+                HandleTxnsResultUtils.handleDoTradeResult(paymentResult,decodeData,binding, viewModel);
                 binding.animationView.pauseAnimation();
-                paymentResult.setAmount(amount);
-                HandleTxnsResultUtils.handleMCRResult(paymentResult, PaymentActivity.this, binding, viewModel);
                 maskedPAN = paymentResult.getMaskedPAN();
-            } else {
+            }else if(result == QPOSService.DoTradeResult.MCR){
+                paymentResult.setAmount(amount);
+                HandleTxnsResultUtils.handleDoTradeResult(paymentResult,decodeData,binding, viewModel);
+                binding.animationView.pauseAnimation();
+                maskedPAN = paymentResult.getMaskedPAN();
+            }else {
                 viewModel.showPinpad.set(false);
                 if (keyboardUtil != null) {
                     keyboardUtil.hide();

@@ -59,29 +59,6 @@ public class KeyboardUtil {
         context.getWindow().getDecorView().getWindowVisibleDisplayFrame(rect);
         mHeightPixels = rect.bottom;
     }
-    public KeyboardUtil(Activity context, List<String> dataList) {
-        LinearLayout mIncludeKeyboardview = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.include_pinpad, null);
-        this.dataList = dataList;
-        this.mActivity =  context;
-        this.mParent = mIncludeKeyboardview;
-
-        pinpadEditText = mIncludeKeyboardview.findViewById(R.id.pinpadEditText);
-        mKeyboardView = (MyKeyboardView) mIncludeKeyboardview.findViewById(R.id.keyboard_view);
-        mWindow = new PopupWindow(mIncludeKeyboardview, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, false);
-        mWindow.setAnimationStyle(R.style.AnimBottom);   //Animation style
-        mWindow.setOnDismissListener(mOnDismissListener);
-        mWindow.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);//prevent being blocked by the bottom toolbar
-        int mEditTextHeight = dp2px(44);//44dp edit text height
-        mKeyboardHeight = dp2px(260);//260dp
-        mKeyBoardMarginEditTextTopHeight = mEditTextHeight * 2;
-        mHeightPixels = context.getResources().getDisplayMetrics().heightPixels;
-        initKeyboard(MyKeyboardView.KEYBOARDTYPE_Only_Num_Pwd, pinpadEditText);
-
-    }
-
-    public void initKeyboard(EditText... editTexts) {
-        initKeyboard(MyKeyboardView.KEYBOARDTYPE_Num_Pwd, editTexts);
-    }
 
     /**
      * init keyboard

@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.hardware.usb.UsbDevice;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.widget.Toast;
@@ -14,6 +13,7 @@ import androidx.core.app.ActivityCompat;
 
 import com.dspread.pos.common.enums.POS_TYPE;
 import com.dspread.pos.common.enums.TransCardMode;
+import com.dspread.pos.ui.payment.PaymentResult;
 import com.dspread.pos.utils.DeviceUtils;
 import com.dspread.pos.utils.FileUtils;
 import com.dspread.pos.utils.HandleTxnsResultUtils;
@@ -208,7 +208,7 @@ public class POSManager {
         if (!isDeviceReady()) {
             return;
         }
-        getDeviceId();
+
         if (callback != null) {
             registerPaymentCallback(callback);
         }
@@ -287,8 +287,8 @@ public class POSManager {
         }
     }
 
-    public Hashtable<String, String> getEncryptData() {
-        return pos.getEncryptData();
+    public Hashtable<String, String> computeISOPinBlockStringHashtable() {
+        return pos.computeISOPinBlockStringHashtable();
     }
 
     public Hashtable<String, String> getNFCBatchData() {
@@ -453,18 +453,18 @@ public class POSManager {
 
         @Override
         public void onRequestTransactionResult(QPOSService.TransactionResult transactionResult) {
-            String msg = HandleTxnsResultUtils.getTransactionResultMessage(transactionResult, context);
-            paymentResult.setStatus(msg);
-            if (!msg.isEmpty()) {
+//            String msg = HandleTxnsResultUtils.getTransactionResultMessage(transactionResult, context);
+            paymentResult.setStatus(transactionResult.name());
+            if (transactionResult != QPOSService.TransactionResult.APPROVED) {
                 notifyTransactionCallbacks(cb -> cb.onTransactionResult(false,paymentResult));
             }else {
-                notifyTransactionCallbacks(cb -> cb.onTransactionResult(true,paymentResult));
+//                notifyTransactionCallbacks(cb -> cb.onTransactionResult(true,paymentResult));
             }
         }
 
         @Override
         public void onRequestTime() {
-            notifyTransactionCallbacks(PaymentServiceCallback::onRequestTime);
+            notifyTransactionCallbacks(cb -> cb.onRequestTime());
         }
 
         @Override

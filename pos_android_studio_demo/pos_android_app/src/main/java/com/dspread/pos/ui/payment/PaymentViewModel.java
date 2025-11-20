@@ -52,8 +52,6 @@ public class PaymentViewModel extends BaseAppViewModel {
     public ObservableField<String> amount = new ObservableField<>("");
     public ObservableField<String> titleText = new ObservableField<>("Payment");
     public ObservableBoolean isWaiting = new ObservableBoolean(true);
-    //    public ObservableBoolean isSuccess = new ObservableBoolean(false);
-    public ObservableBoolean isPrinting = new ObservableBoolean(false);
     public ObservableBoolean isD70 = new ObservableBoolean(false);
     public ObservableBoolean isShowAnimationView = new ObservableBoolean(false);
     public ObservableBoolean isShowOtherCardTxt = new ObservableBoolean(false);
@@ -65,7 +63,6 @@ public class PaymentViewModel extends BaseAppViewModel {
     public ObservableBoolean showResultStatus = new ObservableBoolean(false);
     public ObservableBoolean TransactionResultStatus = new ObservableBoolean(false);
     public ObservableBoolean cardsInsertedStatus = new ObservableBoolean(false);
-    private Context mContext;
     private boolean isIccCard = false;
 
     public PaymentViewModel(@NonNull Application application) {
@@ -93,11 +90,6 @@ public class PaymentViewModel extends BaseAppViewModel {
             isPayMentGuideD50.set(true);
             isShowOtherCardTxt.set(true);
         }
-    }
-
-
-    public void setmContext(Context mContext) {
-        this.mContext = mContext;
     }
 
     public PaymentModel setTransactionSuccess(String message) {
@@ -149,8 +141,6 @@ public class PaymentViewModel extends BaseAppViewModel {
         if (cardsInsertedStatus.get()) {
             cardsInsertedStatus.set(false);
         }
-//        transactionResult.set("");
-//        isSuccess.set(false);
     }
 
     public void pincomPletedState() {
@@ -163,33 +153,23 @@ public class PaymentViewModel extends BaseAppViewModel {
         } else {
             showResultStatus.set(false);
         }
-
     }
 
     public void cardInsertedState() {
         isIccCard = true;
         showResultStatus.set(true);
         cardsInsertedStatus.set(true);
-
     }
 
     public void displayAmount(String newAmount) {
         amount.set("$" + newAmount);
     }
 
-    public void setWaitingStatus(boolean isWaitings) {
-        isWaiting.set(isWaitings);
-    }
-
     public void setTransactionSuccess() {
         titleText.set("Payment finished");
         stopLoading();
         showPinpad.set(false);
-//        isSuccess.set(true);
         isWaiting.set(false);
-//        showResultStatus.set(true);
-//        TransactionResultStatus.set(true);
-//        cardsInsertedStatus.set(true);
         if (isIccCard) {
             cardsInsertedStatus.set(true);
         } else {
@@ -209,83 +189,11 @@ public class PaymentViewModel extends BaseAppViewModel {
         loadingText.set("");
     }
 
-    // public BindingCommand continueTxnsCommand = new BindingCommand(() -> finish());
-
     public BindingCommand cancleTxnsCommand = new BindingCommand(() -> {
         new Thread(() -> {
             POSManager.getInstance().cancelTransaction();
         }).start();
-//        finish();
     });
-/*    public BindingCommand sendReceiptCommand = new BindingCommand(new BindingAction() {
-        @Override
-        public void call() {
-            isPrinting.set(true);
-            PrinterManager instance = PrinterManager.getInstance();
-            PrinterDevice mPrinter = instance.getPrinter();
-            PrinterHelper.getInstance().setPrinter(mPrinter);
-            PrinterHelper.getInstance().initPrinter(mContext);
-            TRACE.i("bitmap = " + receiptBitmap);
-            new Handler().postDelayed(() -> {
-                try {
-                    PrinterHelper.getInstance().printBitmap(getApplication(), receiptBitmap);
-                } catch (RemoteException e) {
-                    throw new RuntimeException(e);
-                }
-                PrinterHelper.getInstance().getmPrinter().setPrintListener(new PrintListener() {
-                    @Override
-                    public void printResult(boolean b, String s, PrinterDevice.ResultType resultType) {
-                        TRACE.i("resultType = " + resultType.getValue());
-                        if (!b && resultType.getValue() == -9) {
-                            if (mContext != null) {
-                                DialogUtils.showLowBatteryDialog(mContext, R.layout.dialog_low_battery, R.id.okButton, false, new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        isPrinting.set(false);
-                                        finish();
-                                    }
-                                });
-                                return;
-                            }
-                        }
-                        if (b) {
-                            ToastUtils.showShort("Print Finished!");
-                        } else {
-                            ToastUtils.showShort("Print Result: " + s);
-                        }
-                        isPrinting.set(false);
-                        finish();
-                    }
-                });
-            }, 100);
-        }
-    });*/
-
-//    public Bitmap convertReceiptToBitmap(TextView receiptView) {
-//        float originalTextSize = receiptView.getTextSize();
-//        int originalWidth = receiptView.getWidth();
-//        int originalHeight = receiptView.getHeight();
-//        receiptView.setTextSize(TypedValue.COMPLEX_UNIT_PX, originalTextSize * 1.5f);
-//        receiptView.measure(
-//                View.MeasureSpec.makeMeasureSpec(receiptView.getWidth(), View.MeasureSpec.EXACTLY),
-//                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
-//        );
-//
-//        Bitmap bitmap = Bitmap.createBitmap(
-//                receiptView.getWidth(),
-//                receiptView.getMeasuredHeight(),
-//                Bitmap.Config.ARGB_8888
-//        );
-//
-//        Canvas canvas = new Canvas(bitmap);
-//        canvas.drawColor(Color.WHITE);
-//        receiptView.layout(0, 0, receiptView.getWidth(), receiptView.getMeasuredHeight());
-//        receiptView.draw(canvas);
-//        receiptView.setTextSize(TypedValue.COMPLEX_UNIT_PX, originalTextSize);
-//        receiptView.layout(0, 0, originalWidth, originalHeight);
-//        receiptBitmap = bitmap;
-//        return bitmap;
-//    }
 
     public void requestOnlineAuth(boolean isICC, PaymentModel paymentModel) {
         AuthRequest authRequest = createAuthRequest(paymentModel);

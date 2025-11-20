@@ -1,126 +1,49 @@
 package com.dspread.pos.utils;
 
 import android.content.Context;
-import android.text.Spanned;
-import android.text.method.LinkMovementMethod;
 
-import com.dspread.pos.posAPI.POSManager;
-import com.dspread.pos.posAPI.PaymentResult;
+import com.dspread.pos.ui.payment.PaymentResult;
 import com.dspread.pos.ui.payment.PaymentModel;
 import com.dspread.pos.ui.payment.PaymentViewModel;
 import com.dspread.pos_android_app.R;
 import com.dspread.pos_android_app.databinding.ActivityPaymentBinding;
 import com.dspread.xpos.QPOSService;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Hashtable;
 
 public class HandleTxnsResultUtils {
+    public static PaymentResult handleDoTradeResult(PaymentResult paymentResult, Hashtable<String, String> decodeData,ActivityPaymentBinding binding, PaymentViewModel viewModel){
+        paymentResult.setFormatID(decodeData.get("formatID") == null?"":decodeData.get("formatID"));
+        paymentResult.setMaskedPAN(decodeData.get("maskedPAN") == null? "":decodeData.get("maskedPAN"));
+        paymentResult.setExpiryDate(decodeData.get("expiryDate") == null? "":decodeData.get("expiryDate"));
+        paymentResult.setCardHolderName(decodeData.get("cardholderName") == null? "":decodeData.get("cardholderName"));
+        paymentResult.setServiceCode(decodeData.get("serviceCode") == null? "":decodeData.get("serviceCode"));
+        paymentResult.setTrack1Length(decodeData.get("track1Length") == null? "":decodeData.get("track1Length"));
+        paymentResult.setTrack2Length(decodeData.get("track2Length") == null? "":decodeData.get("track2Length"));
+        paymentResult.setTrack3Length(decodeData.get("track3Length") == null? "":decodeData.get("track3Length"));
+        paymentResult.setEncTracks(decodeData.get("encTracks") == null? "":decodeData.get("encTracks"));
+        paymentResult.setEncTrack1(decodeData.get("encTrack1") == null? "":decodeData.get("encTrack1"));
+        paymentResult.setEncTrack2(decodeData.get("encTrack2") == null? "":decodeData.get("encTrack2"));
+        paymentResult.setEncTrack3(decodeData.get("encTrack3") == null? "":decodeData.get("encTrack3"));
+        paymentResult.setPartialTrack(decodeData.get("partialTrack") == null? "":decodeData.get("partialTrack"));
+        paymentResult.setPinKsn(decodeData.get("pinKsn") == null? "":decodeData.get("pinKsn"));
+        paymentResult.setTrackksn(decodeData.get("trackksn") == null? "":decodeData.get("trackksn"));
+        paymentResult.setPinBlock(decodeData.get("pinBlock") == null? "":decodeData.get("pinBlock"));
+        paymentResult.setEncPAN(decodeData.get("encPAN") == null? "":decodeData.get("encPAN"));
+        paymentResult.setTrackRandomNumber(decodeData.get("trackRandomNumber") == null? "":decodeData.get("trackRandomNumber"));
+        paymentResult.setPinRandomNumber(decodeData.get("pinRandomNumber") == null? "":decodeData.get("pinRandomNumber"));
 
-    // handle the NFC txns result
-    public static void handleNFCResult(PaymentResult result, Context context, ActivityPaymentBinding binding, PaymentViewModel viewModel) {
-        Spanned receiptContent = ReceiptGenerator.generateMSRReceipt(result, "000015");
-        binding.tvReceipt.setMovementMethod(LinkMovementMethod.getInstance());
-        binding.tvReceipt.setText(receiptContent);
-
-        Hashtable<String, String> batchData = POSManager.getInstance().getNFCBatchData();
-        String tlv = batchData.get("tlv");
-        TRACE.i("NFC Batch data: " + tlv);
+//        Spanned receiptContent = ReceiptGenerator.generateReceipt(result, "000015");
+//        binding.tvReceipt.setMovementMethod(LinkMovementMethod.getInstance());
+//        binding.tvReceipt.setText(receiptContent);
 
         PaymentModel model = new PaymentModel();
-        model.setAmount(result.getAmount());
-        model.setCardNo(result.getMaskedPAN());
-        model.setCardOrg(AdvancedBinDetector.detectCardType(result.getMaskedPAN()).getDisplayName());
+        model.setAmount(paymentResult.getAmount());
+        model.setCardNo(paymentResult.getMaskedPAN());
+        model.setCardOrg(AdvancedBinDetector.detectCardType(paymentResult.getMaskedPAN()).getDisplayName());
         viewModel.startLoading("processing...");
         viewModel.requestOnlineAuth(false, model);
-    }
-
-    public static void handleMCRResult(PaymentResult result, Context context, ActivityPaymentBinding binding, PaymentViewModel viewModel) {
-        Spanned receiptContent = ReceiptGenerator.generateMSRReceipt(result, "000013");
-        binding.tvReceipt.setMovementMethod(LinkMovementMethod.getInstance());
-        binding.tvReceipt.setText(receiptContent);
-
-        // send txns result to online
-        PaymentModel model = new PaymentModel();
-        model.setAmount(result.getAmount());
-        model.setCardNo(result.getMaskedPAN());
-        model.setCardOrg(AdvancedBinDetector.detectCardType(result.getMaskedPAN()).getDisplayName());
-        viewModel.startLoading("processing...");
-        viewModel.requestOnlineAuth(false, model);
-    }
-
-    public static PaymentResult handleTransactionResult(PaymentResult paymentResult, Hashtable<String, String> decodeData) {
-        paymentResult.setFormatID(decodeData.get("formatID") == null ? "" : decodeData.get("formatID"));
-        paymentResult.setMaskedPAN(decodeData.get("maskedPAN") == null ? "" : decodeData.get("maskedPAN"));
-        paymentResult.setExpiryDate(decodeData.get("expiryDate") == null ? "" : decodeData.get("expiryDate"));
-        paymentResult.setCardHolderName(decodeData.get("cardholderName") == null ? "" : decodeData.get("cardholderName"));
-        paymentResult.setServiceCode(decodeData.get("serviceCode") == null ? "" : decodeData.get("serviceCode"));
-        paymentResult.setTrack1Length(decodeData.get("track1Length") == null ? "" : decodeData.get("track1Length"));
-        paymentResult.setTrack2Length(decodeData.get("track2Length") == null ? "" : decodeData.get("track2Length"));
-        paymentResult.setTrack3Length(decodeData.get("track3Length") == null ? "" : decodeData.get("track3Length"));
-        paymentResult.setEncTracks(decodeData.get("encTracks") == null ? "" : decodeData.get("encTracks"));
-        paymentResult.setEncTrack1(decodeData.get("encTrack1") == null ? "" : decodeData.get("encTrack1"));
-        paymentResult.setEncTrack2(decodeData.get("encTrack2") == null ? "" : decodeData.get("encTrack2"));
-        paymentResult.setEncTrack3(decodeData.get("encTrack3") == null ? "" : decodeData.get("encTrack3"));
-        paymentResult.setPartialTrack(decodeData.get("partialTrack") == null ? "" : decodeData.get("partialTrack"));
-        paymentResult.setPinKsn(decodeData.get("pinKsn") == null ? "" : decodeData.get("pinKsn"));
-        paymentResult.setTrackksn(decodeData.get("trackksn") == null ? "" : decodeData.get("trackksn"));
-        paymentResult.setPinBlock(decodeData.get("pinBlock") == null ? "" : decodeData.get("pinBlock"));
-        paymentResult.setEncPAN(decodeData.get("encPAN") == null ? "" : decodeData.get("encPAN"));
-        paymentResult.setTrackRandomNumber(decodeData.get("trackRandomNumber") == null ? "" : decodeData.get("trackRandomNumber"));
-        paymentResult.setPinRandomNumber(decodeData.get("pinRandomNumber") == null ? "" : decodeData.get("pinRandomNumber"));
-
         return paymentResult;
-    }
-
-    // handle normal txns format
-    public static String handleNormalFormat(Hashtable<String, String> decodeData, Context context) {
-        String formatID = decodeData.get("formatID");
-        String maskedPAN = decodeData.get("maskedPAN");
-        String expiryDate = decodeData.get("expiryDate");
-        String cardHolderName = decodeData.get("cardholderName");
-        String serviceCode = decodeData.get("serviceCode");
-        String track1Length = decodeData.get("track1Length");
-        String track2Length = decodeData.get("track2Length");
-        String track3Length = decodeData.get("track3Length");
-        String encTracks = decodeData.get("encTracks");
-        String encTrack1 = decodeData.get("encTrack1");
-        String encTrack2 = decodeData.get("encTrack2");
-        String encTrack3 = decodeData.get("encTrack3");
-        String partialTrack = decodeData.get("partialTrack");
-        String pinKsn = decodeData.get("pinKsn");
-        String trackksn = decodeData.get("trackksn");
-        String pinBlock = decodeData.get("pinBlock");
-        String encPAN = decodeData.get("encPAN");
-        String trackRandomNumber = decodeData.get("trackRandomNumber");
-        String pinRandomNumber = decodeData.get("pinRandomNumber");
-        String orderID = decodeData.get("orderId");
-
-        StringBuilder content = new StringBuilder();
-        if (orderID != null && !orderID.isEmpty()) {
-            content.append("orderID: ").append(orderID).append("\n");
-        }
-        content.append(context.getString(R.string.format_id)).append(" ").append(formatID).append("\n");
-        content.append(context.getString(R.string.masked_pan)).append(" ").append(maskedPAN).append("\n");
-        content.append(context.getString(R.string.expiry_date)).append(" ").append(expiryDate).append("\n");
-        content.append(context.getString(R.string.cardholder_name)).append(" ").append(cardHolderName).append("\n");
-        content.append(context.getString(R.string.pinKsn)).append(" ").append(pinKsn).append("\n");
-        content.append(context.getString(R.string.trackksn)).append(" ").append(trackksn).append("\n");
-        content.append(context.getString(R.string.service_code)).append(" ").append(serviceCode).append("\n");
-        content.append(context.getString(R.string.track_1_length)).append(" ").append(track1Length).append("\n");
-        content.append(context.getString(R.string.track_2_length)).append(" ").append(track2Length).append("\n");
-        content.append(context.getString(R.string.track_3_length)).append(" ").append(track3Length).append("\n");
-        content.append(context.getString(R.string.encrypted_tracks)).append(" ").append(encTracks).append("\n");
-        content.append(context.getString(R.string.encrypted_track_1)).append(" ").append(encTrack1).append("\n");
-        content.append(context.getString(R.string.encrypted_track_2)).append(" ").append(encTrack2).append("\n");
-        content.append(context.getString(R.string.encrypted_track_3)).append(" ").append(encTrack3).append("\n");
-        content.append(context.getString(R.string.partial_track)).append(" ").append(partialTrack).append("\n");
-        content.append(context.getString(R.string.pinBlock)).append(" ").append(pinBlock).append("\n");
-        content.append("encPAN: ").append(encPAN).append("\n");
-        content.append("trackRandomNumber: ").append(trackRandomNumber).append("\n");
-        content.append("pinRandomNumber: ").append(pinRandomNumber).append("\n");
-        return content.toString();
     }
 
     public static String getTradeResultMessage(QPOSService.DoTradeResult result, Context context) {
@@ -137,14 +60,6 @@ public class HandleTxnsResultUtils {
             default:
                 return context.getString(R.string.unknown_error);
         }
-    }
-
-    // generate txns log
-    public static String generateTransactionLog(String content, String requestTime, Context context) {
-        return "{\"createdAt\": " + requestTime +
-                ", \"deviceInfo\": " + DeviceUtils.getPhoneDetail() +
-                ", \"countryCode\": " + DeviceUtils.getDevieCountry(context) +
-                ", \"tlv\": " + content + "}";
     }
 
     // get the TransactionType value
