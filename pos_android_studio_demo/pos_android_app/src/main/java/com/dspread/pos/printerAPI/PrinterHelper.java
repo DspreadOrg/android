@@ -264,7 +264,7 @@ public class PrinterHelper {
                 10);
         mPrinter.addPrintLintStyle(new PrintLineStyle(PrintStyle.FontStyle.BOLD, PrintLine.CENTER, 12));
         mPrinter.addText("$: " + map.get("terAmount"));
-        mPrinter.setFooter(40);
+        mPrinter.feedLines(100);
         Bitmap receiptBitmap = mPrinter.getReceiptBitmap();
         return receiptBitmap;
     }
