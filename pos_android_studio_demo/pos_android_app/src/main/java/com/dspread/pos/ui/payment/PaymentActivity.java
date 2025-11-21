@@ -272,20 +272,8 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
                 viewModel.stopLoading();
                 viewModel.clearErrorState();
                 viewModel.showPinpad.set(true);
-                boolean onlinePin = POSManager.getInstance().isOnlinePin();
                 if (keyboardUtil != null) {
                     keyboardUtil.hide();
-                }
-                if (onlinePin) {
-                    viewModel.titleText.set(getString(R.string.input_onlinePin));
-                } else {
-                    int cvmPinTryLimit = POSManager.getInstance().getCvmPinTryLimit();
-                    TRACE.d("PinTryLimit:" + cvmPinTryLimit);
-                    if (cvmPinTryLimit == 1) {
-                        viewModel.titleText.set(getString(R.string.input_offlinePin_last));
-                    } else {
-                        viewModel.titleText.set(getString(R.string.input_offlinePin));
-                    }
                 }
             }
             binding.pinpadEditText.setText("");
@@ -365,30 +353,30 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
                 TRACE.i("NFC Batch data: " + tlv);
 
                 paymentResult.setAmount(amount);
-                HandleTxnsResultUtils.handleDoTradeResult(paymentResult,decodeData,binding, viewModel);
+                HandleTxnsResultUtils.handleDoTradeResult(paymentResult,decodeData, viewModel);
                 binding.animationView.pauseAnimation();
                 maskedPAN = paymentResult.getMaskedPAN();
             }else if(result == QPOSService.DoTradeResult.MCR){
                 paymentResult.setAmount(amount);
-                HandleTxnsResultUtils.handleDoTradeResult(paymentResult,decodeData,binding, viewModel);
+                HandleTxnsResultUtils.handleDoTradeResult(paymentResult,decodeData, viewModel);
                 binding.animationView.pauseAnimation();
                 maskedPAN = paymentResult.getMaskedPAN();
-            }else {
+            }else if(result == QPOSService.DoTradeResult.PLS_SEE_PHONE){
                 viewModel.showPinpad.set(false);
                 if (keyboardUtil != null) {
                     keyboardUtil.hide();
                 }
-                String msg = HandleTxnsResultUtils.getTradeResultMessage(result, PaymentActivity.this);
-                paymentStatus("", "", "", msg);
-                viewModel.setTransactionFailed(msg);
-                viewModel.setTransactionErr(msg);
-                finish();
+                viewModel.titleText.set(getString(R.string.pls_see_phone));
+//                paymentStatus("", "", "", getString(R.string.pls_see_phone));
+//                viewModel.setTransactionFailed(getString(R.string.pls_see_phone));
+//                viewModel.setTransactionErr(getString(R.string.pls_see_phone));
+//                finish();
             }
         }
 
         @Override
-        public void onTransactionResult(boolean isCompleteTxns, PaymentResult result) {
-            if (isCompleteTxns) {
+        public void onTransactionResult(PaymentResult result) {
+            if (result.getStatus() != null && result.getStatus().equals(QPOSService.TransactionResult.APPROVED.name())) {
                 binding.animationView.pauseAnimation();
                 result.setAmount(amount);
                 if (result.getTlv() != null) {
@@ -399,8 +387,8 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
                     Spanned receiptContent = ReceiptGenerator.generateICCReceipt(paymentModel);
                     binding.tvReceipt.setText(receiptContent);
                     List<TLV> list = TLVParser.parse(result.getTlv());
-                    TLV tlvpan = TLVParser.searchTLV(list, "C4");
-                    paymentStatus(amount, tlvpan == null ? paymentModel.getCardNo() : tlvpan.value, terminalTime, "");
+                    TLV tlvMaskedPan = TLVParser.searchTLV(list, "C4");
+                    paymentStatus(amount, tlvMaskedPan == null ? paymentModel.getCardNo() : tlvMaskedPan.value, terminalTime, "");
                 }
             } else {
                 viewModel.showPinpad.set(false);
@@ -439,7 +427,6 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
                 TLV cardNoTlv = TLVParser.searchTLV(tlvList, "C4");
                 cardNo = cardNoTlv == null ? "" : cardNoTlv.value;
                 cardNo = cardNo.substring(0, cardNo.length() - 1);
-
             }
             cardOrg = AdvancedBinDetector.detectCardType(cardNo).getDisplayName();
             paymentModel.setCardNo(cardNo);
@@ -455,9 +442,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
                 isPinBack = false;
                 binding.pinpadEditText.setText("");
                 viewModel.pincomPletedState();
-                if (binding.d70ImageView != null) {
-                    binding.d70ImageView.setVisibility(View.GONE);
-                }
+                binding.d70ImageView.setVisibility(View.GONE);
                 if (keyboardUtil != null) {
                     keyboardUtil.hide();
                 }
@@ -499,9 +484,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
     }
 
     private void paymentStatus(String amount, String maskedPAN, String terminalTime, String errorMsg) {
-        if (binding.d70ImageView != null) {
-            binding.d70ImageView.setVisibility(View.GONE);
-        }
+        binding.d70ImageView.setVisibility(View.GONE);
         if (isStarting.compareAndSet(false, true)) {
             try {
                 Intent intent = new Intent(PaymentActivity.this, PaymentStatusActivity.class);

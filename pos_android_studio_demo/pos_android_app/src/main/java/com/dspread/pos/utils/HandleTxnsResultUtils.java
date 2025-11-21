@@ -6,13 +6,12 @@ import com.dspread.pos.ui.payment.PaymentResult;
 import com.dspread.pos.ui.payment.PaymentModel;
 import com.dspread.pos.ui.payment.PaymentViewModel;
 import com.dspread.pos_android_app.R;
-import com.dspread.pos_android_app.databinding.ActivityPaymentBinding;
 import com.dspread.xpos.QPOSService;
 
 import java.util.Hashtable;
 
 public class HandleTxnsResultUtils {
-    public static PaymentResult handleDoTradeResult(PaymentResult paymentResult, Hashtable<String, String> decodeData,ActivityPaymentBinding binding, PaymentViewModel viewModel){
+    public static void handleDoTradeResult(PaymentResult paymentResult, Hashtable<String, String> decodeData, PaymentViewModel viewModel){
         paymentResult.setFormatID(decodeData.get("formatID") == null?"":decodeData.get("formatID"));
         paymentResult.setMaskedPAN(decodeData.get("maskedPAN") == null? "":decodeData.get("maskedPAN"));
         paymentResult.setExpiryDate(decodeData.get("expiryDate") == null? "":decodeData.get("expiryDate"));
@@ -33,33 +32,12 @@ public class HandleTxnsResultUtils {
         paymentResult.setTrackRandomNumber(decodeData.get("trackRandomNumber") == null? "":decodeData.get("trackRandomNumber"));
         paymentResult.setPinRandomNumber(decodeData.get("pinRandomNumber") == null? "":decodeData.get("pinRandomNumber"));
 
-//        Spanned receiptContent = ReceiptGenerator.generateReceipt(result, "000015");
-//        binding.tvReceipt.setMovementMethod(LinkMovementMethod.getInstance());
-//        binding.tvReceipt.setText(receiptContent);
-
         PaymentModel model = new PaymentModel();
         model.setAmount(paymentResult.getAmount());
         model.setCardNo(paymentResult.getMaskedPAN());
         model.setCardOrg(AdvancedBinDetector.detectCardType(paymentResult.getMaskedPAN()).getDisplayName());
         viewModel.startLoading("processing...");
         viewModel.requestOnlineAuth(false, model);
-        return paymentResult;
-    }
-
-    public static String getTradeResultMessage(QPOSService.DoTradeResult result, Context context) {
-        switch (result) {
-            //case NONE: return context.getString(R.string.no_card_detected);
-            //case TRY_ANOTHER_INTERFACE: return context.getString(R.string.try_another_interface);
-            // case NOT_ICC: return context.getString(R.string.card_inserted);
-            //case BAD_SWIPE: return context.getString(R.string.bad_swipe);
-            //case CARD_NOT_SUPPORT: return "GPO NOT SUPPORT";
-            case PLS_SEE_PHONE:
-                return "PLS SEE PHONE, and pls wait for cardholder to confirm, then to try again";
-            //case NFC_DECLINED: return context.getString(R.string.transaction_declined);
-            //case NO_RESPONSE: return context.getString(R.string.card_no_response);
-            default:
-                return context.getString(R.string.unknown_error);
-        }
     }
 
     // get the TransactionType value
@@ -114,63 +92,16 @@ public class HandleTxnsResultUtils {
         }
     }
 
-    public static String getTransactionResultMessage(QPOSService.TransactionResult result, Context context) {
-        switch (result) {
-            case APPROVED:
-                return "";
-            case TERMINATED:
-                return context.getString(R.string.transaction_terminated);
-            case DECLINED:
-                return context.getString(R.string.transaction_declined);
-            case CANCEL:
-                return context.getString(R.string.transaction_cancel);
-           /* case CAPK_FAIL:
-                return context.getString(R.string.transaction_capk_fail);
-            case NOT_ICC:
-                return context.getString(R.string.transaction_not_icc);
-            case SELECT_APP_FAIL:
-                return context.getString(R.string.transaction_app_fail);
-            case DEVICE_ERROR:
-                return context.getString(R.string.transaction_device_error);
-            case TRADE_LOG_FULL:
-                return "the trade log has fulled!pls clear the trade log!";
-            case CARD_NOT_SUPPORTED:
-                return context.getString(R.string.card_not_supported);
-            case MISSING_MANDATORY_DATA:
-                return context.getString(R.string.missing_mandatory_data);
-            case CARD_BLOCKED_OR_NO_EMV_APPS:
-                return context.getString(R.string.card_blocked_or_no_evm_apps);
-            case INVALID_ICC_DATA:
-                return context.getString(R.string.invalid_icc_data);
-            case FALLBACK:
-                return "trans fallback";
-            case NFC_TERMINATED:
-                return "NFC Terminated";
-            case CARD_REMOVED:
-                return "CARD REMOVED";
-            case CONTACTLESS_TRANSACTION_NOT_ALLOW:
-                return "TRANS NOT ALLOW";
-            case CARD_BLOCKED:
-                return "CARD BLOCKED";
-            case TRANS_TOKEN_INVALID:
-                return "TOKEN INVALID";
-            case APP_BLOCKED:
-                return "APP BLOCKED";*/
-            default:
-                return result.name();
-        }
-    }
-
     public static String getDisplayMessage(QPOSService.Display displayMsg, Context context) {
         switch (displayMsg) {
-            // case CLEAR_DISPLAY_MSG: return "";
             case PLEASE_WAIT:
                 return context.getString(R.string.wait);
             case REMOVE_CARD:
                 return context.getString(R.string.remove_card);
-            // case TRY_ANOTHER_INTERFACE: return context.getString(R.string.try_another_interface);
             case PROCESSING:
                 return context.getString(R.string.processing);
+            case INPUT_ONLINE_PIN:
+            case INPUT_OFFLINE_PIN:
             case INPUT_PIN_ING:
                 return "please input pin on pos";
             case INPUT_OFFLINE_PIN_ONLY:
@@ -178,7 +109,6 @@ public class HandleTxnsResultUtils {
                 return "please input offline pin on pos";
             case MAG_TO_ICC_TRADE:
                 return "please insert chip card on pos";
-            //  case CARD_REMOVED: return "card removed";
             case TRANSACTION_TERMINATED:
                 return "transaction terminated";
             case PlEASE_TAP_CARD_AGAIN:

@@ -428,38 +428,13 @@ public class POSManager {
 
         @Override
         public void onDoTradeResult(QPOSService.DoTradeResult result, Hashtable<String, String> decodeData) {
-            // Handle ICC card for EMV processing
-//            setICC(false);
-//            if (result == QPOSService.DoTradeResult.ICC) {
-//                setICC(true);
-//                notifyTransactionCallbacks(PaymentServiceCallback::onReturnCardInserted);
-//                paymentResult.setTransactionType(result.name());
-//                if (pos != null) {
-//                    pos.doEmvApp(QPOSService.EmvOption.START);
-//                }
-//            }else if(result == QPOSService.DoTradeResult.NFC_OFFLINE || result == QPOSService.DoTradeResult.NFC_ONLINE ||result == QPOSService.DoTradeResult.MCR){
-//                paymentResult = HandleTxnsResultUtils.handleTransactionResult(paymentResult,decodeData);
-//                paymentResult.setTransactionType(result.name());
-//                notifyTransactionCallbacks(cb -> cb.onTransactionCompleted(paymentResult));
-//            } else if(result == QPOSService.DoTradeResult.BAD_SWIPE){
-//                paymentResult.setTransactionType(result.name());
-//            }else {
-//                String msg = HandleTxnsResultUtils.getTradeResultMessage(result, context);
-//                notifyTransactionCallbacks(cb -> cb.onTransactionFailed(msg, null));
-//            }
             notifyTransactionCallbacks(cb -> cb.onDoTradeResult(result,decodeData));
-
         }
 
         @Override
         public void onRequestTransactionResult(QPOSService.TransactionResult transactionResult) {
-//            String msg = HandleTxnsResultUtils.getTransactionResultMessage(transactionResult, context);
             paymentResult.setStatus(transactionResult.name());
-            if (transactionResult != QPOSService.TransactionResult.APPROVED) {
-                notifyTransactionCallbacks(cb -> cb.onTransactionResult(false,paymentResult));
-            }else {
-//                notifyTransactionCallbacks(cb -> cb.onTransactionResult(true,paymentResult));
-            }
+            notifyTransactionCallbacks(cb -> cb.onTransactionResult(paymentResult));
         }
 
         @Override
@@ -480,7 +455,7 @@ public class POSManager {
         @Override
         public void onRequestBatchData(String tlv) {
             paymentResult.setTlv(tlv);
-            notifyTransactionCallbacks(cb -> cb.onTransactionResult(true,paymentResult));
+//            notifyTransactionCallbacks(cb -> cb.onTransactionResult(true,paymentResult));
         }
 
         @Override
@@ -492,21 +467,24 @@ public class POSManager {
         @Override
         public void onError(QPOSService.Error errorState) {
             paymentResult.setStatus(errorState.name());
-            notifyTransactionCallbacks(cb -> cb.onTransactionResult(false,paymentResult));
+            if(errorState == QPOSService.Error.BAD_SWIPE){
+                return;
+            }
+            notifyTransactionCallbacks(cb -> cb.onTransactionResult(paymentResult));
         }
 
         @Override
         public void onReturnReversalData(String tlv) {
             paymentResult.setTlv(tlv);
             paymentResult.setStatus("Reversal");
-            notifyTransactionCallbacks(cb -> cb.onTransactionResult(false,paymentResult));
+//            notifyTransactionCallbacks(cb -> cb.onTransactionResult(false,paymentResult));
         }
 
         @Override
         public void onEmvICCExceptionData(String tlv) {
             paymentResult.setTlv(tlv);
             paymentResult.setStatus("Emv ICC Exception");
-            notifyTransactionCallbacks(cb -> cb.onTransactionResult(false, paymentResult));
+//            notifyTransactionCallbacks(cb -> cb.onTransactionResult(false, paymentResult));
         }
 
         @Override
@@ -533,7 +511,7 @@ public class POSManager {
         @Override
         public void onTradeCancelled() {
             paymentResult.setStatus("Cancel");
-            notifyTransactionCallbacks(cb -> cb.onTransactionResult(false, paymentResult));
+//            notifyTransactionCallbacks(cb -> cb.onTransactionResult(false, paymentResult));
         }
     }
 

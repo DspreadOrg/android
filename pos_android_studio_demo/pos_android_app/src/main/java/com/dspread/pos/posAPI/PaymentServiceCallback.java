@@ -54,6 +54,6 @@ public interface PaymentServiceCallback {
      * Get card information result
      */
     default void onGetCardInfoResult(Hashtable<String, String> cardInfo) {}
-    default void onTransactionResult(boolean isCompleteTxns, PaymentResult result) {}
+    default void onTransactionResult(PaymentResult result) {}
     default void onDoTradeResult(QPOSService.DoTradeResult result, Hashtable<String, String> decodeData){}
 }
