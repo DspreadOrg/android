@@ -17,10 +17,10 @@ import me.goldze.mvvmhabit.utils.SPUtils;
 
 public class DeviceSelectionViewModel extends BaseViewModel {
     // The currently selected connection method
-    public final ObservableField<String> selectedConnectionMethod = new ObservableField<>();
-    public final ObservableField<String> connectBtnTitle = new ObservableField<>("Connect");
-    public final ObservableField<String> bluetoothAddress = new ObservableField<>();
-    public final ObservableField<String> bluetoothName = new ObservableField<>();
+   // public final ObservableField<String> selectedConnectionMethod = new ObservableField<>();
+    // public final ObservableField<String> connectBtnTitle = new ObservableField<>("Connect");
+    // public final ObservableField<String> bluetoothAddress = new ObservableField<>();
+    // public final ObservableField<String> bluetoothName = new ObservableField<>();
     public final ObservableField<Boolean> isConnecting = new ObservableField<>(false);
     //isShowDeviceSelectionList
 
@@ -34,7 +34,7 @@ public class DeviceSelectionViewModel extends BaseViewModel {
     public final POS_TYPE[] posTypes = {POS_TYPE.BLUETOOTH, POS_TYPE.UART, POS_TYPE.USB};
 
     // Event: Connection method selection completed
-    public final SingleLiveEvent<POS_TYPE> connectionMethodSelectedEvent = new SingleLiveEvent<>();
+    // public final SingleLiveEvent<POS_TYPE> connectionMethodSelectedEvent = new SingleLiveEvent<>();
 
     public final SingleLiveEvent<POS_TYPE> startScanBluetoothEvent = new SingleLiveEvent<>();
 
@@ -43,8 +43,8 @@ public class DeviceSelectionViewModel extends BaseViewModel {
     public String connectedDeviceName;
     public POS_TYPE currentPOSType;
 
-    private static final int REQUEST_ENABLE_BT = 1;
-    private static final int PERMISSION_REQUEST_CODE = 2;
+    //private static final int REQUEST_ENABLE_BT = 1;
+    //private static final int PERMISSION_REQUEST_CODE = 2;
 
     public DeviceSelectionViewModel(@NonNull Application application) {
         super(application);
@@ -70,7 +70,7 @@ public class DeviceSelectionViewModel extends BaseViewModel {
         for (int i = 0; i < posTypes.length; i++) {
             if (posTypes[i].name().equals(savedConnectionType)) {
                 selectedIndex.setValue(i);
-                selectedConnectionMethod.set(connectionMethods[i]);
+                //selectedConnectionMethod.set(connectionMethods[i]);
                 break;
             }
         }
@@ -94,6 +94,7 @@ public class DeviceSelectionViewModel extends BaseViewModel {
             } else if (connectionMethods[2].equals(radioText)) {
                 selectedIndex.setValue(2);
                 showUsbDeviceDialogEvent.call();
+                setShowDeviceSelectionList(false); // 隐藏蓝牙列表视图
                 SPUtils.getInstance().put("device_type", "USB");
             } else {
                 selectedIndex.setValue(-1);

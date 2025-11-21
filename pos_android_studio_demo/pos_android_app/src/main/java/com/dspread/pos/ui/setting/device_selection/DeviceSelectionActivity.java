@@ -56,9 +56,10 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
     public static final String EXTRA_CONNECTION_TYPE = "connection_type";
     public static final int REQUEST_CODE_SELECT_DEVICE = 10001;
     private BluetoothDeviceAdapter bluetoothDeviceAdapter;
-    private AlertDialog bluetoothDevicesDialog;
+    // private AlertDialog bluetoothDevicesDialog;
     private RecyclerView recyclerView;
-    private POS_TYPE currentPOSType;
+
+    // private POS_TYPE currentPOSType;
     private ActivityResultLauncher<Intent> bluetoothEnableLauncher;
     private BluetoothAdapter bluetoothAdapter;
 
@@ -79,6 +80,7 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
 
     @Override
     public DeviceSelectionViewModel initViewModel() {
+        TRACE.d("DeviceSelectionActivity initViewModel");
         return new ViewModelProvider(this).get(DeviceSelectionViewModel.class);
     }
 
@@ -97,6 +99,7 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
                 result -> {
                     if (result.getResultCode() == Activity.RESULT_OK) {
                         // Bluetooth is enabled, now check location and request permissions
+                        TRACE.d("startBluetoothDiscovery initData");
                         startBluetoothDiscovery();
                     } else {
                         Toast.makeText(this, "Please enable Bluetooth to continue", Toast.LENGTH_LONG).show();
@@ -135,7 +138,7 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
                     return;
                 }
                 TRACE.d("click connect BluetoothEvent");
-                currentPOSType = posType;
+                // currentPOSType = posType;
                 checkLocationAndRequestPermissions(posType);
             }
         });
@@ -147,9 +150,8 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
         // Initialize adapter
         bluetoothDeviceAdapter = new BluetoothDeviceAdapter(this, device -> {
             stopBluetoothDiscovery();
-            viewModel.bluetoothAddress.set(device.getAddress());
-            viewModel.bluetoothName.set(device.getName());
-
+            //viewModel.bluetoothAddress.set(device.getAddress());
+            //viewModel.bluetoothName.set(device.getName());
             SPUtils.getInstance().put("device_type", POS_TYPE.BLUETOOTH.name());
             SPUtils.getInstance().put("deviceAddress", device.getAddress());
             finish();
@@ -411,6 +413,7 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
         if (items.length == 1) {
             String selectedDevice = (String) items[0];
             SPUtils.getInstance().put("deviceAddress", selectedDevice);
+            finish();
         } else {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Select a Reader");

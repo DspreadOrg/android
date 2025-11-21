@@ -21,26 +21,27 @@ import me.goldze.mvvmhabit.utils.SPUtils;
 public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewModel> implements TitleProviderListener {
     private boolean canshow = true;
     private CountDownTimer showTimer;
-    
+
     @Override
     public int initContentView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return R.layout.fragment_home;
     }
-    
+
     @Override
     public int initVariableId() {
         return BR.viewModel;
     }
-    
+
     @Override
     public void initData() {
         initTimer();
     }
-    
+
     private void initTimer() {
         showTimer = new CountDownTimer(500, 500) {
             @Override
-            public void onTick(long millisUntilFinished) {}
+            public void onTick(long millisUntilFinished) {
+            }
 
             @Override
             public void onFinish() {
@@ -49,14 +50,14 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
         };
     }
 
-    private void navigateToPaymentMethod(long inputMoney){
-        String deviceAddress = SPUtils.getInstance().getString("deviceAddress","");
+    private void navigateToPaymentMethod(long inputMoney) {
+        String deviceAddress = SPUtils.getInstance().getString("deviceAddress", "");
         Intent intent = new Intent(getActivity(), PaymentMethodActivity.class);
         intent.putExtra("amount", String.valueOf(inputMoney));
         intent.putExtra("deviceAddress", deviceAddress);
         startActivity(intent);
     }
-    
+
     @Override
     public void initViewObservable() {
         viewModel.paymentStartEvent.observe(this, inputMoney -> {
@@ -75,7 +76,7 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
 
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        TRACE.i("home on keydown = "+keyCode);
+        TRACE.i("home on keydown = " + keyCode);
         if (event.getAction() == KeyEvent.ACTION_UP) {
             switch (keyCode) {
                 case KeyEvent.KEYCODE_0:
@@ -118,7 +119,7 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
         }
         return true;
     }
-    
+
     @Override
     public void onDestroy() {
         super.onDestroy();
