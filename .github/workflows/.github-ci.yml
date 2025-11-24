@@ -193,7 +193,7 @@ jobs:
           tag_name: ${{ env.TAG_NAME }}
           name: v${{ env.VERSION_NAME }}
           body: |
-             ${{ env.VERSION_NAME }}
+            ${{ env.VERSION_NAME }}
             
             **Changes:**
             ${{ env.COMMIT_MESSAGE }}
