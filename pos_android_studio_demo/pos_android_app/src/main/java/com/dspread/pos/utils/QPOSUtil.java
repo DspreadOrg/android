@@ -375,12 +375,12 @@ public class QPOSUtil {
         }
     }
 
-    public static String buildCvmPinBlock(Hashtable<String, String> value, String pin) {
-        String randomData = value.get("RandomData") == null ? "" : value.get("RandomData");
-        String pan = value.get("PAN") == null ? "" : value.get("PAN");
-        String AESKey = value.get("AESKey") == null ? "" : value.get("AESKey");
-        String isOnline = value.get("isOnlinePin") == null ? "" : value.get("isOnlinePin");
-        String pinTryLimit = value.get("pinTryLimit") == null ? "" : value.get("pinTryLimit");
+    public static String buildISO4PinBlock(Hashtable<String, String> AESParam, String pin) {
+        String randomData = AESParam.get("RandomData") == null ? "" : AESParam.get("RandomData");
+        String pan = AESParam.get("PAN") == null ? "" : AESParam.get("PAN");
+        String AESKey = AESParam.get("AESKey") == null ? "" : AESParam.get("AESKey");
+        String isOnline = AESParam.get("isOnlinePin") == null ? "" : AESParam.get("isOnlinePin");
+        String pinTryLimit = AESParam.get("pinTryLimit") == null ? "" : AESParam.get("pinTryLimit");
         //iso-format4 pinblock
         int pinLen = pin.length();
         pin = "4" + Integer.toHexString(pinLen) + pin;

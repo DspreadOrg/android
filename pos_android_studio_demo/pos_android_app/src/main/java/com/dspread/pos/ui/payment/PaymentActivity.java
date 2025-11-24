@@ -1,19 +1,12 @@
 package com.dspread.pos.ui.payment;
 
 import android.app.Dialog;
-import android.app.KeyguardManager;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.PowerManager;
 import android.text.Html;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -34,7 +27,6 @@ import com.dspread.pos.utils.HandleTxnsResultUtils;
 import com.dspread.pos.utils.LogFileConfig;
 import com.dspread.pos.utils.QPOSUtil;
 import com.dspread.pos.utils.ReceiptGenerator;
-import com.dspread.pos.utils.SystemKeyListener;
 import com.dspread.pos.utils.TLV;
 import com.dspread.pos.utils.TLVParser;
 import com.dspread.pos.utils.TRACE;
@@ -64,9 +56,6 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
     private String terminalTime;
     private String maskedPAN;
     private ConnectionServiceCallback connectionCallback;
-    private SystemKeyListener systemKeyListener;
-    private PowerManager.WakeLock wakeLock;
-    private ScreenStateReceiver screenStateReceiver;
     private Handler handler;
     private Runnable runnable;
     private int currentIndex = 0;
@@ -92,7 +81,6 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
      */
     @Override
     public void initData() {
-        disallowKey(true);
         binding.setVariable(BR.viewModel, viewModel);
         binding.pinpadEditText.setText("");
         viewModel.titleText.set("Paymenting");
@@ -136,9 +124,6 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
             binding.ivCloseBlackD70.setVisibility(View.GONE);
             binding.ivCloseBlack.setVisibility(View.VISIBLE);
         }
-        systemKeyListener = new SystemKeyListener(this);
-        systemKeyStart();
-        systemKeyListener.startSystemKeyListener();
     }
 
     private void setupImageSwitcher() {
@@ -313,7 +298,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
 
                 @Override
                 public void onConfirm(String password) {
-                    String pinBlock = QPOSUtil.buildCvmPinBlock(POSManager.getInstance().computeISOPinBlockStringHashtable(), password);// build the ISO format4 pin block
+                    String pinBlock = QPOSUtil.buildISO4PinBlock(POSManager.getInstance().computeISOPinBlockStringHashtable(), password);// build the ISO format4 pin block
                     POSManager.getInstance().sendCvmPin(pinBlock, true);
                     pinPadDialog.dismiss();
                 }
@@ -467,16 +452,6 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
         LogFileConfig.getInstance(this).readLog();
         PrinterHelper.getInstance().close();
         POSManager.getInstance().unregisterCallbacks();
-        if (systemKeyListener != null) {
-            systemKeyListener.stopSystemKeyListener();
-        }
-        if (wakeLock != null && wakeLock.isHeld()) {
-            wakeLock.release();
-        }
-        if (screenStateReceiver != null) {
-            unregisterReceiver(screenStateReceiver);
-        }
-        disallowKey(false);
     }
 
     private void paymentStatus(String amount, String maskedPAN, String terminalTime, String errorMsg) {
@@ -499,85 +474,4 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
         }
     }
 
-    private void systemKeyStart() {
-        systemKeyListener.setOnSystemKeyListener(new SystemKeyListener.OnSystemKeyListener() {
-            @Override
-            public void onHomePressed() {
-            }
-
-            @Override
-            public void onMenuPressed() {
-            }
-
-            @Override
-            public void onScreenOff() {
-                registerScreenReceiver();
-                PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
-                wakeLock = powerManager.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, "ui.payment.PaymentActivity:PaymentScreenOn");
-                wakeLock.acquire();
-
-            }
-
-            @Override
-            public void onScreenOn() {
-            }
-        });
-    }
-
-    private void setupScreenBehavior() {
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
-            setShowWhenLocked(true);
-            setTurnScreenOn(true);
-        }
-        dismissKeyguard();
-    }
-
-    private void dismissKeyguard() {
-        KeyguardManager keyguardManager = (KeyguardManager) getSystemService(KEYGUARD_SERVICE);
-        if (keyguardManager != null && keyguardManager.isKeyguardLocked()) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                keyguardManager.requestDismissKeyguard(this, null);
-            }
-        }
-    }
-
-    private void registerScreenReceiver() {
-        screenStateReceiver = new ScreenStateReceiver();
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(Intent.ACTION_SCREEN_ON);
-        filter.addAction(Intent.ACTION_USER_PRESENT);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            registerReceiver(screenStateReceiver, filter, RECEIVER_NOT_EXPORTED);
-        }
-    }
-
-    private class ScreenStateReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (Intent.ACTION_SCREEN_ON.equals(intent.getAction()) || Intent.ACTION_USER_PRESENT.equals(intent.getAction())) {
-                setupScreenBehavior();
-            }
-        }
-    }
-
-    private static final String ACTION_DSPREAD_INTERCEPT_KEY = "com.dspread.action.INTERCEPT_KEY";
-
-    private void disallowKey(boolean disable) {
-        try {
-            Intent intent = new Intent();
-            if (disable) {
-                String keyCode = KeyEvent.KEYCODE_HOME + "," + KeyEvent.KEYCODE_APP_SWITCH + "," + KeyEvent.KEYCODE_POWER;
-                intent.putExtra("keys", keyCode);
-                intent.setAction(ACTION_DSPREAD_INTERCEPT_KEY);
-                sendBroadcast(intent);
-            } else {
-                intent.putExtra("keys", "");
-                intent.setAction(ACTION_DSPREAD_INTERCEPT_KEY);
-                sendBroadcast(intent);
-            }
-        } catch (Exception e) {
-
-        }
-    }
 }
