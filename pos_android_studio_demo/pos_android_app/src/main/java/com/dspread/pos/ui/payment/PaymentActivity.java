@@ -170,7 +170,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
         if ("D20".equals(deviceModel)) {
             binding.animationView.setAnimation("D20_checkCardImg.json");
             binding.animationView.setImageAssetsFolder("D20_images/");
-        }  else if ("D80".equals(deviceModel)) {
+        } else if ("D80".equals(deviceModel)) {
             binding.animationView.setAnimation("D80_checkCard.json");
             binding.animationView.setImageAssetsFolder("D80_images/");
         } else if ("D60".equals(deviceModel)) {
@@ -184,7 +184,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
         binding.animationView.playAnimation();
     }
 
-    private void initConnectionCallback(){
+    private void initConnectionCallback() {
         connectionCallback = new ConnectionServiceCallback() {
             @Override
             public void onRequestNoQposDetected() {
@@ -216,7 +216,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
                 // if device has connected, just register connection callback
                 POSManager.getInstance().registerConnectionCallback(connectionCallback);
             }
-            
+
             POSManager.getInstance().startTransaction(amount, paymentServiceCallback);
         }).start();
     }
@@ -347,30 +347,26 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
             if (result == QPOSService.DoTradeResult.ICC) {
                 viewModel.cardInsertedState();
                 POSManager.getInstance().doEmvAPP();
-            }else if(result == QPOSService.DoTradeResult.NFC_ONLINE || result == QPOSService.DoTradeResult.NFC_OFFLINE){
+            } else if (result == QPOSService.DoTradeResult.NFC_ONLINE || result == QPOSService.DoTradeResult.NFC_OFFLINE) {
                 Hashtable<String, String> batchData = POSManager.getInstance().getNFCBatchData();
                 String tlv = batchData.get("tlv");
                 TRACE.i("NFC Batch data: " + tlv);
 
                 paymentResult.setAmount(amount);
-                HandleTxnsResultUtils.handleDoTradeResult(paymentResult,decodeData, viewModel);
+                HandleTxnsResultUtils.handleDoTradeResult(paymentResult, decodeData, viewModel);
                 binding.animationView.pauseAnimation();
                 maskedPAN = paymentResult.getMaskedPAN();
-            }else if(result == QPOSService.DoTradeResult.MCR){
+            } else if (result == QPOSService.DoTradeResult.MCR) {
                 paymentResult.setAmount(amount);
-                HandleTxnsResultUtils.handleDoTradeResult(paymentResult,decodeData, viewModel);
+                HandleTxnsResultUtils.handleDoTradeResult(paymentResult, decodeData, viewModel);
                 binding.animationView.pauseAnimation();
                 maskedPAN = paymentResult.getMaskedPAN();
-            }else if(result == QPOSService.DoTradeResult.PLS_SEE_PHONE){
+            } else if (result == QPOSService.DoTradeResult.PLS_SEE_PHONE) {
                 viewModel.showPinpad.set(false);
                 if (keyboardUtil != null) {
                     keyboardUtil.hide();
                 }
                 viewModel.titleText.set(getString(R.string.pls_see_phone));
-//                paymentStatus("", "", "", getString(R.string.pls_see_phone));
-//                viewModel.setTransactionFailed(getString(R.string.pls_see_phone));
-//                viewModel.setTransactionErr(getString(R.string.pls_see_phone));
-//                finish();
             }
         }
 
