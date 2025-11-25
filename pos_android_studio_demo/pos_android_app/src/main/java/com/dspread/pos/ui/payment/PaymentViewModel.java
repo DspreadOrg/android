@@ -228,7 +228,7 @@ public class PaymentViewModel extends BaseAppViewModel {
             TRACE.i("online auth rsp code= " + response.getResult());
             String onlineRspCode = (String) response.getResult();
             if (response.isOk()) {
-                ToastUtils.showShort("Send online success");
+//                ToastUtils.showShort("Send online success");
                 if (isICC) {
                     POSManager.getInstance().sendOnlineProcessResult("8A02" + onlineRspCode);
                 } else {
