@@ -2,14 +2,13 @@ package com.dspread.pos.ui.setting.device_selection;
 
 import android.app.Application;
 
-import androidx.annotation.NonNull;
-import androidx.databinding.ObservableField;
-import androidx.lifecycle.MutableLiveData;
-
 import com.dspread.pos.common.enums.POS_TYPE;
 import com.dspread.pos.posAPI.POSManager;
 import com.dspread.pos.utils.TRACE;
 
+import androidx.annotation.NonNull;
+import androidx.databinding.ObservableField;
+import androidx.lifecycle.MutableLiveData;
 import me.goldze.mvvmhabit.base.BaseViewModel;
 import me.goldze.mvvmhabit.binding.command.BindingCommand;
 import me.goldze.mvvmhabit.bus.event.SingleLiveEvent;
@@ -17,7 +16,7 @@ import me.goldze.mvvmhabit.utils.SPUtils;
 
 public class DeviceSelectionViewModel extends BaseViewModel {
     // The currently selected connection method
-   // public final ObservableField<String> selectedConnectionMethod = new ObservableField<>();
+    // public final ObservableField<String> selectedConnectionMethod = new ObservableField<>();
     // public final ObservableField<String> connectBtnTitle = new ObservableField<>("Connect");
     // public final ObservableField<String> bluetoothAddress = new ObservableField<>();
     // public final ObservableField<String> bluetoothName = new ObservableField<>();
@@ -25,7 +24,12 @@ public class DeviceSelectionViewModel extends BaseViewModel {
     //isShowDeviceSelectionList
 
     public final ObservableField<Boolean> isShowDeviceSelectionList = new ObservableField<>(false);
-    public SingleLiveEvent<Void> showUsbDeviceDialogEvent = new SingleLiveEvent<>();
+
+
+
+    //isShowDeviceSelectedView
+    public final ObservableField<Boolean> isShowDeviceSelectedView = new ObservableField<>(false);
+
 
     // Connection method options
     public final String[] connectionMethods = {"BLUETOOTH", "UART", "USB"};
@@ -33,18 +37,14 @@ public class DeviceSelectionViewModel extends BaseViewModel {
     // POS_TTYPE corresponding to the connection method
     public final POS_TYPE[] posTypes = {POS_TYPE.BLUETOOTH, POS_TYPE.UART, POS_TYPE.USB};
 
-    // Event: Connection method selection completed
-    // public final SingleLiveEvent<POS_TYPE> connectionMethodSelectedEvent = new SingleLiveEvent<>();
-
     public final SingleLiveEvent<POS_TYPE> startScanBluetoothEvent = new SingleLiveEvent<>();
 
-    // Index of the currently selected connection method
+    public SingleLiveEvent<Void> showUsbDeviceDialogEvent = new SingleLiveEvent<>();
+
     public final MutableLiveData<Integer> selectedIndex = new MutableLiveData<>(-1);
     public String connectedDeviceName;
     public POS_TYPE currentPOSType;
 
-    //private static final int REQUEST_ENABLE_BT = 1;
-    //private static final int PERMISSION_REQUEST_CODE = 2;
 
     public DeviceSelectionViewModel(@NonNull Application application) {
         super(application);
@@ -79,6 +79,7 @@ public class DeviceSelectionViewModel extends BaseViewModel {
     /**
      * Connection method selection command
      */
+/*
     public BindingCommand<String> connectionMethodRadioSelectedCommand = new BindingCommand<>(radioText -> {
         TRACE.i("radio btn selected =" + radioText);
         {
@@ -101,6 +102,7 @@ public class DeviceSelectionViewModel extends BaseViewModel {
             }
         }
     });
+*/
 
     public void setShowDeviceSelectionList(boolean isShow) {
         isShowDeviceSelectionList.set(isShow);

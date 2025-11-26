@@ -132,6 +132,8 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         POSManager.getInstance().close();
         SPUtils.getInstance().put("isConnected",false);
         SPUtils.getInstance().put("device_type", "");
+        SPUtils.getInstance().put("bluetoothName", "");
+        SPUtils.getInstance().put("bluetoothAddress", "");
     }
 
     @Override

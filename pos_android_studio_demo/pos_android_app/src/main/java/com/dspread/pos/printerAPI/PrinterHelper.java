@@ -44,23 +44,21 @@ public class PrinterHelper {
     }
 
     public void initPrinter(Context context) {
-        if ("D30".equalsIgnoreCase(Build.MODEL) || DeviceUtils.isAppInstalled(context, DeviceUtils.UART_AIDL_SERVICE_APP_PACKAGE_NAME)) {
-            TRACE.i("init printer with callkback==");
-            mPrinter.initPrinter(context, new PrinterInitListener() {
-                @Override
-                public void connected() {
-                    TRACE.i("init printer with callkback success==");
-                    mPrinter.setPrinterTerminatedState(PrinterDevice.PrintTerminationState.PRINT_STOP);
-                }
-
-                @Override
-                public void disconnected() {
-                }
-            });
-        } else {
-            TRACE.i("init printer ==");
-            mPrinter.initPrinter(context);
+        if (mPrinter == null) {
+            TRACE.i("init printer == null");
+            return;
         }
+        mPrinter.initPrinter(context, new PrinterInitListener() {
+            @Override
+            public void connected() {
+                TRACE.i("init printer with callkback success==");
+            }
+
+            @Override
+            public void disconnected() {
+            }
+        });
+        // }
     }
 
     public void printText(String alignText, String fontStyle, String textSize, String printContent) throws RemoteException {
@@ -231,37 +229,12 @@ public class PrinterHelper {
         mPrinter.addText(" SALE");
         mPrinter.addPrintLintStyle(new PrintLineStyle(PrintStyle.FontStyle.NORMAL, PrintLine.CENTER, 10));
         mPrinter.addText("- - - - - - - - - - - - - - - - - - - - - - - - - - ");
-        mPrinter.addTexts(
-                new String[]{"BATCH NO", "000043"},
-                new int[]{5, 5}, new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.CENTER},
-                new int[]{PrintStyle.FontStyle.NORMAL, PrintStyle.FontStyle.NORMAL},
-                10);
-        mPrinter.addTexts(
-                new String[]{"VOUCHER NO", "000509"},
-                new int[]{5, 5}, new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.CENTER},
-                new int[]{PrintStyle.FontStyle.NORMAL, PrintStyle.FontStyle.NORMAL},
-                10);
-        mPrinter.addTexts(
-                new String[]{"AUTH NO", "000786"},
-                new int[]{5, 5},
-                new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.CENTER},
-                new int[]{PrintStyle.FontStyle.NORMAL, PrintStyle.FontStyle.NORMAL},
-                10);
-        mPrinter.addTexts(new String[]{"DATE/TIME", map.get("terminalTime")},
-                new int[]{5, 5}, new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.CENTER},
-                new int[]{PrintStyle.FontStyle.NORMAL, PrintStyle.FontStyle.NORMAL},
-                10);
-        mPrinter.addTexts(new String[]{"REF NO", "000001595276"},
-                new int[]{5, 5},
-                new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.CENTER},
-                new int[]{PrintStyle.FontStyle.NORMAL, PrintStyle.FontStyle.NORMAL},
-                10);
-        mPrinter.addTexts(
-                new String[]{"AMOUNT:", ""},
-                new int[]{5, 5},
-                new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.CENTER},
-                new int[]{PrintStyle.FontStyle.NORMAL, PrintStyle.FontStyle.NORMAL},
-                10);
+        mPrinter.addTexts(new String[]{"BATCH NO", "000043"}, new int[]{5, 5}, new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.CENTER}, new int[]{PrintStyle.FontStyle.NORMAL, PrintStyle.FontStyle.NORMAL}, 10);
+        mPrinter.addTexts(new String[]{"VOUCHER NO", "000509"}, new int[]{5, 5}, new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.CENTER}, new int[]{PrintStyle.FontStyle.NORMAL, PrintStyle.FontStyle.NORMAL}, 10);
+        mPrinter.addTexts(new String[]{"AUTH NO", "000786"}, new int[]{5, 5}, new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.CENTER}, new int[]{PrintStyle.FontStyle.NORMAL, PrintStyle.FontStyle.NORMAL}, 10);
+        mPrinter.addTexts(new String[]{"DATE/TIME", map.get("terminalTime")}, new int[]{5, 5}, new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.CENTER}, new int[]{PrintStyle.FontStyle.NORMAL, PrintStyle.FontStyle.NORMAL}, 10);
+        mPrinter.addTexts(new String[]{"REF NO", "000001595276"}, new int[]{5, 5}, new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.CENTER}, new int[]{PrintStyle.FontStyle.NORMAL, PrintStyle.FontStyle.NORMAL}, 10);
+        mPrinter.addTexts(new String[]{"AMOUNT:", ""}, new int[]{5, 5}, new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.CENTER}, new int[]{PrintStyle.FontStyle.NORMAL, PrintStyle.FontStyle.NORMAL}, 10);
         mPrinter.addPrintLintStyle(new PrintLineStyle(PrintStyle.FontStyle.BOLD, PrintLine.CENTER, 12));
         mPrinter.addText("$: " + map.get("terAmount"));
         mPrinter.feedLines(100);
