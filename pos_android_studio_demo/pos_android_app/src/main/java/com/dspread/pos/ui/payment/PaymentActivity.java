@@ -316,14 +316,20 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
                 builder.setMessage("Success,Contine ready");
                 builder.setPositiveButton("Confirm", null);
                 builder.show();
-            } else {
+            } else if(displayMsg == QPOSService.Display.INPUT_ONLINE_PIN || displayMsg == QPOSService.Display.INPUT_OFFLINE_PIN){
+                TRACE.d("onRequestDisplay(Display displayMsg):pin input" + displayMsg.toString());
+                viewModel.stopLoading();
+                viewModel.clearErrorState();
+                viewModel.showPinpad.set(true);
+                binding.animationView.pauseAnimation();
+            }else {
                 msg = HandleTxnsResultUtils.getDisplayMessage(displayMsg, PaymentActivity.this);
+                if (handler != null && runnable != null) {
+                    handler.removeCallbacks(runnable);
+                }
+                binding.animationView.pauseAnimation();
+                viewModel.startLoading(msg);
             }
-            if (handler != null && runnable != null) {
-                handler.removeCallbacks(runnable);
-            }
-            binding.animationView.pauseAnimation();
-            viewModel.startLoading(msg);
         }
 
         @Override
