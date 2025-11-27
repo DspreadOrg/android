@@ -37,18 +37,13 @@ public abstract class PrinterBaseActivity<V extends ViewDataBinding, VM extends 
             PrinterAlertDialog.showAlertDialog(this);
             return;
         }
-
         // Set printer instance to ViewModel
         viewModel.setPrinter(mPrinter, this);
-
         MyPrinterListener myPrinterListener = new MyPrinterListener();
         mPrinter.setPrintListener(myPrinterListener);
         mPrinter.setFooter(50);//unit is px
-
-        // Set return button click event
         binding.toolbar.setNavigationOnClickListener(v -> finish());
     }
-
 
     protected abstract void onReturnPrintResult(boolean isSuccess, String status, PrinterDevice.ResultType resultType);
 

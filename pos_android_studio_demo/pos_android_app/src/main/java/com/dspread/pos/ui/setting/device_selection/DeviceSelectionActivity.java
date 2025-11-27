@@ -3,40 +3,23 @@ package com.dspread.pos.ui.setting.device_selection;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
-import android.hardware.usb.UsbDevice;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.graphics.Typeface;
 import android.os.Handler;
 import android.provider.Settings;
-import android.view.LayoutInflater;
+import android.text.TextUtils;
 import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
-
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.core.app.ActivityCompat;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.dspread.pos.common.enums.POS_TYPE;
 import com.dspread.pos.utils.TRACE;
-import com.dspread.pos.utils.USBClass;
 import com.dspread.pos_android_app.BR;
 import com.dspread.pos_android_app.R;
 import com.dspread.pos_android_app.databinding.ActivityDeviceSelectionBinding;
@@ -45,6 +28,13 @@ import com.tbruyelle.rxpermissions2.RxPermissions;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.utils.SPUtils;
 import me.goldze.mvvmhabit.utils.ToastUtils;
@@ -67,6 +57,7 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
     private boolean isScanning = false;
     private List<BluetoothDevice> discoveredDevices = new ArrayList<>();
     private Handler handler = new Handler();
+    private boolean isSelectBuletooth = false;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -89,11 +80,31 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
     public void initData() {
         super.initData();
         // Set return button click event
-        binding.toolbar.setNavigationOnClickListener(v -> finish());
-        initBluetoothDevicesDialog();
+        // binding.toolbar.setNavigationOnClickListener(v -> finish());
 
+        binding.toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setBackActivity();
+            }
+        });
+        String bluetoothName = SPUtils.getInstance().getString("bluetoothName");
+        //bluetoothAddress
+        String bluetoothAddress = SPUtils.getInstance().getString("bluetoothAddress");
+
+        if(!TextUtils.isEmpty(bluetoothAddress)&& !TextUtils.isEmpty(bluetoothName)){
+            viewModel.isShowDeviceSelectedView.set(true);
+            binding.tvBluetoothAddress.setText(bluetoothAddress);
+            binding.tvBluetoothSelectedName.setText(bluetoothName);
+        }
+        initBluetoothDevicesDialog();
         // Set up event monitoring
-        setupEventListeners();
+        // setupEventListeners();
+
+        if (!initBluetooth()) {
+            checkLocationAndRequestPermissions(POS_TYPE.BLUETOOTH);
+        }
+
         bluetoothEnableLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
@@ -107,12 +118,10 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
                 });
     }
 
+
     @Override
     public void initViewObservable() {
         super.initViewObservable();
-        viewModel.showUsbDeviceDialogEvent.observe(this, v -> {
-            showUsbDeviceDialog();
-        });
     }
 
     // init bluetooth adapter
@@ -129,32 +138,23 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
     /**
      * Set up event monitoring
      */
-    private void setupEventListeners() {
-        // Monitor connection method selection completion event
-        viewModel.startScanBluetoothEvent.observe(this, new Observer<POS_TYPE>() {
-            @Override
-            public void onChanged(POS_TYPE posType) {
-                if (!initBluetooth()) {
-                    return;
-                }
-                TRACE.d("click connect BluetoothEvent");
-                // currentPOSType = posType;
-                checkLocationAndRequestPermissions(posType);
-            }
-        });
-    }
-
     private void initBluetoothDevicesDialog() {
         recyclerView = findViewById(R.id.recycler_bluetooth_devices);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         // Initialize adapter
         bluetoothDeviceAdapter = new BluetoothDeviceAdapter(this, device -> {
             stopBluetoothDiscovery();
-            //viewModel.bluetoothAddress.set(device.getAddress());
-            //viewModel.bluetoothName.set(device.getName());
-            SPUtils.getInstance().put("device_type", POS_TYPE.BLUETOOTH.name());
+            viewModel.isShowDeviceSelectedView.set(true);
+            binding.tvBluetoothAddress.setText(device.getAddress());
+            binding.tvBluetoothSelectedName.setText(device.getName());
+            isSelectBuletooth = true;
+
+            //保存选中的蓝牙名称与MAC地址
+
+            SPUtils.getInstance().put("bluetoothName", device.getName());
+            SPUtils.getInstance().put("bluetoothAddress", device.getAddress());
+
             SPUtils.getInstance().put("deviceAddress", device.getAddress());
-            finish();
         });
         recyclerView.setAdapter(bluetoothDeviceAdapter);
     }
@@ -384,71 +384,6 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
         return false;
     }
 
-    private void showUsbDeviceDialog() {
-        if (isFinishing() || isDestroyed()) {
-            return;
-        }
-        USBClass usb = new USBClass();
-        usb.setUsbPermissionListener(new USBClass.UsbPermissionListener() {
-            @Override
-            public void onPermissionGranted(UsbDevice device) {
-                ArrayList<String> deviceList = usb.GetUSBDevices(getApplication());
-                openUsbDeviceDialog(deviceList);
-            }
-
-            @Override
-            public void onPermissionDenied(UsbDevice device) {
-                Toast.makeText(getApplication(), "No Permission", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        ArrayList<String> deviceList = usb.GetUSBDevices(getApplication());
-        if (deviceList != null) {
-            openUsbDeviceDialog(deviceList);
-        }
-    }
-
-    private void openUsbDeviceDialog(ArrayList<String> deviceList) {
-        final CharSequence[] items = deviceList.toArray(new CharSequence[deviceList.size()]);
-        if (items.length == 1) {
-            String selectedDevice = (String) items[0];
-            SPUtils.getInstance().put("deviceAddress", selectedDevice);
-            finish();
-        } else {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Select a Reader");
-            if (items.length == 0) {
-                builder.setMessage(getApplication().getString(R.string.setting_disusb));
-                builder.setPositiveButton(getApplication().getString(R.string.confirm), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        finish();
-                    }
-                });
-            }
-            builder.setSingleChoiceItems(items, -1, (dialog, item) -> {
-                if (items.length > item) {
-                    String selectedDevice = items[item].toString();
-                    dialog.dismiss();
-                    SPUtils.getInstance().put("deviceAddress", selectedDevice);
-                    finish();
-                }
-            });
-            AlertDialog alertDialog = builder.create();
-            alertDialog.setCanceledOnTouchOutside(false);
-            alertDialog.setCancelable(false);
-            alertDialog.show();
-
-            Button positiveButton = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
-            if (positiveButton != null) {
-                positiveButton.setTextColor(getResources().getColor(R.color.transaction_detail_text_red));
-                positiveButton.setTextSize(16);
-                positiveButton.setTypeface(null, Typeface.BOLD);
-            }
-        }
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -457,12 +392,8 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
         // 注册蓝牙广播接收器
         registerBluetoothReceiver();
 
-        // 检查是否有保存的蓝牙设备类型，自动开始扫描
-        String savedDeviceName = SPUtils.getInstance().getString("device_type", "");
-        if (savedDeviceName.equalsIgnoreCase(POS_TYPE.BLUETOOTH.name())) {
-            if (initBluetooth()) {
-                checkLocationAndRequestPermissions(POS_TYPE.BLUETOOTH);
-            }
+        if (initBluetooth()) {
+            checkLocationAndRequestPermissions(POS_TYPE.BLUETOOTH);
         }
     }
 
@@ -485,5 +416,20 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
         }
         handler.removeCallbacks(scanTimeoutRunnable);
         handler.removeCallbacksAndMessages(null);
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        setBackActivity();
+    }
+
+
+    private void setBackActivity() {
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra("isBluetoothStates", isSelectBuletooth);
+        setResult(RESULT_OK, resultIntent);
+        finish();
     }
 }

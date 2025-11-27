@@ -14,127 +14,129 @@
     </data>
 
 
-        <RelativeLayout
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:layout_constraintTop_toTopOf="parent"
+                app:navigationIcon="@mipmap/ic_back_bluetooth">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:text="BLUETOOTH"
+                    android:textColor="?attr/colorOnPrimary"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+            </com.google.android.material.appbar.MaterialToolbar>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <com.google.android.material.appbar.MaterialToolbar
-                    android:id="@+id/toolbar"
+                android:orientation="vertical"
+                android:paddingHorizontal="@dimen/dp_16">
+                <!-- 标题 -->
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:navigationIcon="@mipmap/left">
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="6dp"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical"
+                    android:visibility="@{viewModel.isShowDeviceSelectedView ? View.VISIBLE : View.GONE}">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:text="Connection Method"
-                        android:textColor="?attr/colorOnPrimary"
+                        android:layout_marginVertical="@dimen/dp_5"
+                        android:paddingHorizontal="10dp"
+                        android:text="Selected"
+                        android:textColor="#333333"
                         android:textSize="18sp"
                         android:textStyle="bold" />
-                </com.google.android.material.appbar.MaterialToolbar>
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:cardCornerRadius="5dp"
+                        app:cardElevation="2dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:paddingHorizontal="10dp"
+                            android:paddingVertical="5dp">
+
+                            <ImageView
+                                android:id="@+id/iv_bluetooth_selected"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="16dp"
+                                android:src="@mipmap/ic_bluetooth_selected" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/tv_bluetooth_selected_name"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="#333333"
+                                    android:textSize="16sp"
+                                    android:textStyle="bold"></TextView>
+
+                                <TextView
+                                    android:id="@+id/tv_bluetooth_address"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="#333333"
+                                    android:textSize="16sp" />
+                            </LinearLayout>
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+
+                </LinearLayout>
+
 
                 <LinearLayout
+                    android:id="@+id/ll_device_selection"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="#FFFFFF"
                     android:orientation="vertical"
-                    android:padding="16dp">
-                    <!-- 标题 -->
-                    <LinearLayout
+                    android:visibility="@{viewModel.isShowDeviceSelectionList ? View.VISIBLE : View.GONE}">
+
+                    <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="16dp"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
+                        android:layout_marginVertical="@dimen/dp_5"
+                        android:paddingHorizontal="10dp"
+                        android:text="Available devices"
+                        android:textColor="#333333"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Choose connection method"
-                            android:textColor="#333333"
-                            android:textSize="18sp"
-                            android:textStyle="bold" />
-                    </LinearLayout>
-
-                    <!-- 分隔线 -->
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginBottom="16dp"
-                        android:background="#E0E0E0" />
-
-                    <!-- 连接方式选项组 -->
-                    <RadioGroup
-                        android:id="@+id/radio_group_connection"
+                    <androidx.cardview.widget.CardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        binding:onCheckedChangedCommand="@{viewModel.connectionMethodRadioSelectedCommand}">
+                        android:layout_marginTop="@dimen/dp_10"
+                        app:cardCornerRadius="5dp"
+                        app:cardElevation="2dp">
 
-                        <!-- Bluetooth 选项 -->
-                        <RadioButton
-                            android:id="@+id/radio_bluetooth"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:checked="@{viewModel.selectedIndex == 0}"
-                            android:padding="12dp"
-                            android:text="BLUETOOTH"
-                            android:textColor="#333333"
-                            android:textSize="16sp" />
-
-                        <!--uart-->
-                        <RadioButton
-                            android:id="@+id/radio_uart"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:checked="@{viewModel.selectedIndex == 1}"
-                            android:padding="12dp"
-                            android:text="UART"
-                            android:textColor="#333333"
-                            android:textSize="16sp" />
-
-                        <!-- USB 选项 -->
-                        <RadioButton
-                            android:id="@+id/radio_usb"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:checked="@{viewModel.selectedIndex == 2}"
-                            android:padding="12dp"
-                            android:text="USB"
-                            android:textColor="#333333"
-                            android:textSize="16sp" />
-
-                    </RadioGroup>
-
-                    <!-- 分隔线 -->
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginBottom="16dp"
-                        android:background="#E0E0E0" />
-
-                    <LinearLayout
-                        android:id="@+id/ll_device_selection"
-                        android:visibility="@{viewModel.isShowDeviceSelectionList ? View.VISIBLE : View.GONE}"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="#FFFFFF"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="5dp"
-                            android:text="Available devices"
-                            android:textColor="#333333"
-                            android:textSize="14sp"
-                            android:textStyle="bold" />
 
                         <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/recycler_bluetooth_devices"
@@ -142,34 +144,36 @@
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="5dp" />
 
-                    </LinearLayout>
-
+                    </androidx.cardview.widget.CardView>
 
                 </LinearLayout>
+
+
             </LinearLayout>
-            <!-- 添加加载框 -->
-            <RelativeLayout
-                android:id="@+id/loading_layout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="#80000000"
-                android:visibility="@{viewModel.isConnecting ? View.VISIBLE : View.GONE}">
+        </LinearLayout>
+        <!-- 添加加载框 -->
+        <RelativeLayout
+            android:id="@+id/loading_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#80000000"
+            android:visibility="@{viewModel.isConnecting ? View.VISIBLE : View.GONE}">
 
-                <ProgressBar
-                    android:id="@+id/progress_bar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true" />
+            <ProgressBar
+                android:id="@+id/progress_bar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/progress_bar"
-                    android:layout_centerInParent="true"
-                    android:layout_marginTop="8dp"
-                    android:text="@string/connecting_bt_pos"
-                    android:textColor="#FFFFFF" />
-            </RelativeLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/progress_bar"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="8dp"
+                android:text="@string/connecting_bt_pos"
+                android:textColor="#FFFFFF" />
         </RelativeLayout>
+    </RelativeLayout>
 
 </layout>

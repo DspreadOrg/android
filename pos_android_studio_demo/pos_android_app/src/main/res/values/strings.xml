@@ -338,6 +338,7 @@
     <string name="str_device">device</string>
     <string name="str_scaning">scanning</string>
     <string name="str_connected">connected </string>
+    <string name="str_selected">selected </string>
     <string name="str_connecting">connecting to </string>
     <string name="str_scanover">scanning is finished!</string>
     <string name="str_disconnected">not connected to </string>

@@ -1,10 +1,12 @@
 package com.dspread.pos.ui.setting.connection_settings;
 
 import android.app.Application;
+import android.text.TextUtils;
 
 import com.dspread.pos.TerminalApplication;
 import com.dspread.pos.common.enums.POS_TYPE;
 import com.dspread.pos.utils.DeviceUtils;
+import com.dspread.pos.utils.TRACE;
 import com.dspread.pos_android_app.R;
 
 import androidx.annotation.NonNull;
@@ -19,6 +21,8 @@ import me.goldze.mvvmhabit.utils.SPUtils;
 public class ConnectionSettingsViewModel extends BaseViewModel {
     // The name of the currently connected device
     public final ObservableField<String> deviceName = new ObservableField<>(getApplication().getString(R.string.no_device));
+    public final ObservableField<String> bluetoothDeviceName = new ObservableField<>(getApplication().getString(R.string.no_device));
+    public final ObservableField<String> uartDeviceName = new ObservableField<>(getApplication().getString(R.string.no_device));
 
     //Device connection status
     public final ObservableBoolean deviceConnected = new ObservableBoolean(false);
@@ -33,7 +37,15 @@ public class ConnectionSettingsViewModel extends BaseViewModel {
     public final ObservableField<String> currencyCode = new ObservableField<>("");
 
     // Event: Select Device
-    public final SingleLiveEvent<Void> selectDeviceEvent = new SingleLiveEvent<>();
+    // public final SingleLiveEvent<Void> selectDeviceEvent = new SingleLiveEvent<>();
+
+
+    public final SingleLiveEvent<Void> selectBluetoothEvent = new SingleLiveEvent<>();
+
+    public final SingleLiveEvent<Void> selectUartEvent = new SingleLiveEvent<>();
+
+    public final SingleLiveEvent<Void> selectUsbEvent = new SingleLiveEvent<>();
+
 
     // Event: Transaction Type Click
     public final SingleLiveEvent<Void> transactionTypeClickEvent = new SingleLiveEvent<>();
@@ -43,13 +55,29 @@ public class ConnectionSettingsViewModel extends BaseViewModel {
 
     // Event: Currency Code Click
     public final SingleLiveEvent<Void> currencyCodeClickEvent = new SingleLiveEvent<>();
+
+
+    //isShowUSBImageView
+
+    public final ObservableField<Boolean> isShowBluetoothImageView = new ObservableField<>(false);
+    public final ObservableField<Boolean> isShowBluetoothTextView = new ObservableField<>(false);
+
+
+    public final ObservableField<Boolean> isShowUartImageView = new ObservableField<>(false);
+    public final ObservableField<Boolean> isShowUartTextView = new ObservableField<>(false);
+
+
+    public final ObservableField<Boolean> isShowUSBImageView = new ObservableField<>(false);
+    public final ObservableField<Boolean> isShowUsbTextView = new ObservableField<>(false);
+
+
     private TerminalApplication baseApplication;
     private POS_TYPE currentPOSType;
 
     public ConnectionSettingsViewModel(@NonNull Application application) {
         super(application);
         loadSettings();
-        if(baseApplication == null){
+        if (baseApplication == null) {
             baseApplication = (TerminalApplication) BaseApplication.getInstance();
         }
     }
@@ -59,26 +87,20 @@ public class ConnectionSettingsViewModel extends BaseViewModel {
      */
     public void loadSettings() {
         // Load device name
-        String savedDeviceName = SPUtils.getInstance().getString("device_type", "");
-        if(!"".equals(savedDeviceName)){
-            deviceName.set(savedDeviceName);
-            if(savedDeviceName.equals(POS_TYPE.UART.name())){
-                currentPOSType = POS_TYPE.UART;
-            }else if(savedDeviceName.equals(POS_TYPE.USB.name())){
-                currentPOSType = POS_TYPE.USB;
-            }else  if(savedDeviceName.equals(POS_TYPE.BLUETOOTH.name())){
-                currentPOSType = POS_TYPE.BLUETOOTH;
-            }
+        String bluetoothName = SPUtils.getInstance().getString("bluetoothName");
+        //bluetoothAddress
+        String bluetoothAddress = SPUtils.getInstance().getString("bluetoothAddress");
+        if (!TextUtils.isEmpty(bluetoothName) && !TextUtils.isEmpty(bluetoothAddress)) {
+            isShowBluetoothImageView.set(true);
+            isShowBluetoothTextView.set(true);
             deviceConnected.set(true);
-        }else {
-            savedDeviceName = getApplication().getString(R.string.no_device);
+            SPUtils.getInstance().put("deviceAddress", bluetoothAddress);
         }
-        updateDeviceName(savedDeviceName);
 
         // Load transaction type
         String savedTransType = SPUtils.getInstance().getString("transactionType", "");
         if (savedTransType == null || "".equals(savedTransType)) {
-            SPUtils.getInstance().put("transactionType","GOODS");
+            SPUtils.getInstance().put("transactionType", "GOODS");
             savedTransType = "GOODS";
         }
         transactionType.set(savedTransType);
@@ -86,10 +108,10 @@ public class ConnectionSettingsViewModel extends BaseViewModel {
         // Loading card mode
         String savedCardMode = SPUtils.getInstance().getString("cardMode", "");
         if (savedCardMode == null || "".equals(savedCardMode)) {
-            if(DeviceUtils.isSmartDevices()) {
+            if (DeviceUtils.isSmartDevices()) {
                 SPUtils.getInstance().put("cardMode", "SWIPE_TAP_INSERT_CARD_NOTUP");
                 savedCardMode = "SWIPE_TAP_INSERT_CARD_NOTUP";
-            }else {
+            } else {
                 SPUtils.getInstance().put("cardMode", "SWIPE_TAP_INSERT_CARD");
                 savedCardMode = "SWIPE_TAP_INSERT_CARD";
             }
@@ -99,50 +121,29 @@ public class ConnectionSettingsViewModel extends BaseViewModel {
         // Load currency code
         String savedCurrencyCode = SPUtils.getInstance().getString("currencyName", "");
         if (savedCurrencyCode == null || "".equals(savedCurrencyCode)) {
-            SPUtils.getInstance().put("currencyCode",156);
+            SPUtils.getInstance().put("currencyCode", 156);
             savedCurrencyCode = "CNY";
         }
         currencyCode.set(savedCurrencyCode);
     }
 
-    /**
-     * Save settings to SharedReferences
-     */
-    public void saveSettings() {
-        // Save device connection status
-        if("".equals(deviceName.get())||getApplication().getString(R.string.no_device).equals(deviceName.get())) {
-            // Save device name
-            SPUtils.getInstance().put("device_type", "");
-        }else {
-            if(deviceName.get().contains(POS_TYPE.BLUETOOTH.name())){
-                SPUtils.getInstance().put("device_type", POS_TYPE.BLUETOOTH.name());
-            }else {
-                SPUtils.getInstance().put("device_type", deviceName.get());
-            }
-        }
-    }
- /*   public BindingCommand<Boolean> toggleDeviceCommand = new BindingCommand<>(isChecked -> {
-        deviceConnected.set(isChecked);
-        String deviceType = SPUtils.getInstance().getString("device_type", "");
-        if (isChecked) {
-            selectDeviceEvent.call();
-        } else {
-            if (!"".equals(deviceType)) {
-                POSManager.getInstance().close();
-            }
-            SPUtils.getInstance().put("device_type","");
-            updateDeviceName(getApplication().getString(R.string.no_device));
-        }
+    public BindingCommand selectBluetoothCommand = new BindingCommand(() -> {
+        TRACE.d("selectBluetoothCommand XX");
+        selectBluetoothEvent.call();
+    });
 
-        saveSettings();
+
+    public BindingCommand selectUartCommand = new BindingCommand(() -> {
+        TRACE.d("selectUartCommand XX");
+        selectUartEvent.call();
     });
-*/
-    /**
-     * Select device command
-     */
-    public BindingCommand selectDeviceCommand = new BindingCommand(() -> {
-        selectDeviceEvent.call();
+
+
+    public BindingCommand selectUSBCommand = new BindingCommand(() -> {
+        TRACE.d("selectUSBCommand XX");
+        selectUsbEvent.call();
     });
+
 
     /**
      * Transaction Type Click Command
@@ -164,12 +165,4 @@ public class ConnectionSettingsViewModel extends BaseViewModel {
     public BindingCommand currencyCodeCommand = new BindingCommand(() -> {
         currencyCodeClickEvent.call();
     });
-
-    /**
-     * Update device name
-     */
-    public void updateDeviceName(String name) {
-        deviceName.set(name);
-        saveSettings();
-    }
 }

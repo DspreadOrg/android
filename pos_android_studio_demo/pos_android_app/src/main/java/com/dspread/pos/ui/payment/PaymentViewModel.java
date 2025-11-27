@@ -72,6 +72,8 @@ public class PaymentViewModel extends BaseAppViewModel {
             isD70.set(true);
             isShowAnimationView.set(true);
             isPayMentGuideD35.set(true);
+            isPayMentGuideD50.set(true);
+            isShowOtherCardTxt.set(true);
         } else if ("D35".equalsIgnoreCase(DeviceUtils.getPhoneModel())) {
             isD70.set(false);
             isShowAnimationView.set(true);
@@ -144,16 +146,22 @@ public class PaymentViewModel extends BaseAppViewModel {
     }
 
     public void pincomPletedState() {
-
         showPinpad.set(false);
-
-        if (isIccCard && !cardsInsertedStatus.get()) {
+        if (isD70Device()) {
+            cardsInsertedStatus.set(false);
             showResultStatus.set(true);
+            isD70.set(false);
+            return;
+        }
+
+        boolean shouldShowResult = isIccCard && !cardsInsertedStatus.get();
+        showResultStatus.set(shouldShowResult);
+
+        if (shouldShowResult) {
             cardsInsertedStatus.set(true);
-        } else {
-            showResultStatus.set(false);
         }
     }
+
 
     public void cardInsertedState() {
         isIccCard = true;
@@ -165,23 +173,42 @@ public class PaymentViewModel extends BaseAppViewModel {
         amount.set("$" + newAmount);
     }
 
+
     public void setTransactionSuccess() {
         titleText.set("Payment finished");
         stopLoading();
         showPinpad.set(false);
         isWaiting.set(false);
+
         if (isIccCard) {
-            cardsInsertedStatus.set(true);
+            cardsInsertedStatus.set(!isD70Device());
         } else {
             showResultStatus.set(false);
         }
     }
 
+
     public void startLoading(String text) {
         isWaiting.set(false);
         isLoading.set(true);
         loadingText.set(text);
+        if (isD70Device()) {
+            handleD70Loading();
+        }
     }
+
+
+    private void handleD70Loading() {
+        isD70.set(false);
+        cardsInsertedStatus.set(false);
+        showResultStatus.set(true);
+    }
+
+
+    private boolean isD70Device() {
+        return "D70".equalsIgnoreCase(DeviceUtils.getPhoneModel());
+    }
+
 
     public void stopLoading() {
         isLoading.set(false);
@@ -201,7 +228,7 @@ public class PaymentViewModel extends BaseAppViewModel {
             TRACE.i("online auth rsp code= " + response.getResult());
             String onlineRspCode = (String) response.getResult();
             if (response.isOk()) {
-                ToastUtils.showShort("Send online success");
+//                ToastUtils.showShort("Send online success");
                 if (isICC) {
                     POSManager.getInstance().sendOnlineProcessResult("8A02" + onlineRspCode);
                 } else {
