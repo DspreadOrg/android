@@ -334,6 +334,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
 
         @Override
         public void onDoTradeResult(QPOSService.DoTradeResult result, Hashtable<String, String> decodeData) {
+            TRACE.i("onDoTradeResult = "+result);
             PaymentResult paymentResult = new PaymentResult();
             if (result == QPOSService.DoTradeResult.ICC) {
                 viewModel.cardInsertedState();

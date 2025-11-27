@@ -19,6 +19,7 @@ import com.dspread.pos.utils.FileUtils;
 import com.dspread.pos.utils.HandleTxnsResultUtils;
 import com.dspread.pos.utils.TRACE;
 import com.dspread.pos.utils.USBClass;
+import com.dspread.pos_android_app.R;
 import com.dspread.xpos.CQPOSService;
 import com.dspread.xpos.QPOSService;
 
@@ -31,6 +32,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import me.goldze.mvvmhabit.utils.SPUtils;
+import me.goldze.mvvmhabit.utils.ToastUtils;
 
 public class POSManager {
     private static volatile POSManager instance;
@@ -466,8 +468,10 @@ public class POSManager {
 
         @Override
         public void onError(QPOSService.Error errorState) {
+            TRACE.i("onError = "+errorState);
             paymentResult.setStatus(errorState.name());
             if(errorState == QPOSService.Error.BAD_SWIPE){
+                ToastUtils.showLong(context.getString(R.string.bad_swipe));
                 return;
             }
             notifyTransactionCallbacks(cb -> cb.onTransactionResult(paymentResult));
