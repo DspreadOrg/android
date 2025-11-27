@@ -23,7 +23,7 @@ public class BluetoothDeviceAdapter extends RecyclerView.Adapter<BluetoothDevice
     private OnItemClickListener listener;
     private Activity context;
 
-    public BluetoothDeviceAdapter(Activity activity,OnItemClickListener listener) {
+    public BluetoothDeviceAdapter(Activity activity, OnItemClickListener listener) {
         this.context = activity;
         this.listener = listener;
     }
@@ -39,8 +39,12 @@ public class BluetoothDeviceAdapter extends RecyclerView.Adapter<BluetoothDevice
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         BluetoothDevice device = devices.get(position);
-        holder.tvDeviceAddress.setText(device.getName()+"("+device.getAddress()+")");
-        Drawable imageBmp = device.getBondState() == BluetoothDevice.BOND_BONDED ? context.getDrawable(R.mipmap.bluetooth_blue) : context.getDrawable(R.mipmap.bluetooth_blue_unbond);
+        holder.tvDeviceName.setText(device.getName());
+        holder.tvDeviceAddress.setText((device.getAddress()));
+        // Drawable imageBmp = device.getBondState() == BluetoothDevice.BOND_BONDED ? context.getDrawable(R.mipmap.bluetooth_blue) : context.getDrawable(R.mipmap.bluetooth_blue_unbond);
+
+        Drawable imageBmp = device.getBondState() == BluetoothDevice.BOND_BONDED ? context.getDrawable(R.mipmap.ic_bluetooth) : context.getDrawable(R.mipmap.ic_bluetooth);
+
         holder.imgBluetooth.setImageDrawable(imageBmp);
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) {
@@ -72,12 +76,13 @@ public class BluetoothDeviceAdapter extends RecyclerView.Adapter<BluetoothDevice
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tvDeviceAddress;
+        TextView tvDeviceAddress, tvDeviceName;
         ImageView imgBluetooth;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             tvDeviceAddress = itemView.findViewById(R.id.tv_device_address);
+            tvDeviceName = itemView.findViewById(R.id.tv_device_name);
             imgBluetooth = itemView.findViewById(R.id.img_device);
         }
     }
