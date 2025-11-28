@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 
 import com.dspread.pos.TitleProviderListener;
 
+import com.dspread.pos.posAPI.ConnectionServiceCallback;
 import com.dspread.pos.posAPI.NtagCardServiceCallback;
 import com.dspread.pos.ui.payment.PaymentViewModel;
 import com.dspread.pos.utils.TRACE;
@@ -19,9 +20,12 @@ import com.dspread.pos_android_app.databinding.FragmentNtagBinding;
 
 import java.util.Hashtable;
 
+import me.goldze.mvvmhabit.utils.ToastUtils;
+
 
 public class NtagFragment extends BaseFragment<FragmentNtagBinding, NtagViewModel> implements TitleProviderListener {
     private NtagCardServiceCallback ntagCardServiceCallback;
+    private ConnectionServiceCallback connectionCallback;
 
     @Override
     public String getTitle() {
@@ -35,7 +39,11 @@ public class NtagFragment extends BaseFragment<FragmentNtagBinding, NtagViewMode
 
     @Override
     public void initData(){
+        // 初始化回调
+        initConnectionCallback();
         ntagCardServiceCallback = new NtagCardCallback();
+        // 在这里注册回调，确保在initData时已经初始化
+        POSManager.getInstance().registerNtagCardCallback(ntagCardServiceCallback);
     }
 
     @Override
@@ -46,8 +54,26 @@ public class NtagFragment extends BaseFragment<FragmentNtagBinding, NtagViewMode
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // 注册Ntag回调
-        POSManager.getInstance().registerNtagCardCallback(ntagCardServiceCallback);
+        // 不再在这里注册回调，移到initData()中
+    }
+
+    private void initConnectionCallback() {
+        connectionCallback = new ConnectionServiceCallback() {
+            @Override
+            public void onRequestNoQposDetected() {
+                ToastUtils.showLong("Device connected fail");
+            }
+
+            @Override
+            public void onRequestQposConnected() {
+                ToastUtils.showLong("Device connected");
+            }
+
+            @Override
+            public void onRequestQposDisconnected() {
+                ToastUtils.showLong("Device disconnected");
+            }
+        };
     }
 
     @Override
@@ -57,7 +83,16 @@ public class NtagFragment extends BaseFragment<FragmentNtagBinding, NtagViewMode
         // 设置按钮点击监听
         binding.pollOnNtagCard.setOnClickListener(v -> {
             TRACE.i("Poll NTag card clicked");
-            POSManager.getInstance().pollOnNtagCard(5); // timeout=5
+            new Thread(() -> {
+                if (!POSManager.getInstance().isDeviceReady()) {
+                    POSManager.getInstance().connect("", connectionCallback);
+                } else {
+                    // if device has connected, just register connection callback
+                    POSManager.getInstance().registerConnectionCallback(connectionCallback);
+                }
+                POSManager.getInstance().pollOnNtagCard(5); // timeout=5
+            }).start();
+
         });
         
         binding.finishNtagCard.setOnClickListener(v -> {
@@ -82,6 +117,7 @@ public class NtagFragment extends BaseFragment<FragmentNtagBinding, NtagViewMode
     @Override
     public void onDestroy() {
         super.onDestroy();
+        TRACE.i("NtagFragment onDestroy: unregistering callbacks");
         // 注销回调
         POSManager.getInstance().unregisterCallbacks();
     }
@@ -123,13 +159,13 @@ public class NtagFragment extends BaseFragment<FragmentNtagBinding, NtagViewMode
 
         @Override
         public void writeMifareULData(String arg0) {
+            TRACE.i("writeMifareULData callback received: " + arg0);
             requireActivity().runOnUiThread(() -> {
-                String cardData = arg0;
                 if(arg0 != null) {
                     binding.resultText.setText("Write result:\n"+arg0);
-
+                } else {
+                    binding.resultText.setText("Write result: null");
                 }
-
             });
         }
 

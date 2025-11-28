@@ -17,6 +17,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.dspread.pos.common.manager.FragmentCacheManager;
 import com.dspread.pos.TitleProviderListener;
 import com.dspread.pos.ui.home.HomeFragment;
+import com.dspread.pos.ui.ntag.NtagFragment;
 import com.dspread.pos.ui.payment.PaymentMethodActivity;
 import com.dspread.pos.ui.setting.connection_settings.ConnectionSettingsFragment;
 import com.dspread.pos.ui.transaction.SerachKeyboardUtils;
@@ -120,6 +121,8 @@ public class MainViewModel extends BaseViewModel {
                 return new ConnectionSettingsFragment();
            case R.id.nav_transaction:
                return new TransactionFragment();
+            case R.id.nav_NTagcard:
+                return new NtagFragment();
 //            case R.id.nav_scan:
 //                return new ScanFragment();
         }

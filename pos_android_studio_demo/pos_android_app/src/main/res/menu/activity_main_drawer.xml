@@ -61,5 +61,14 @@
     <!--        </item>-->
 
     <!--    </group>-->
+    <group
+        android:id="@+id/group_NTagcard"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_NTagcard"
+            android:icon="@mipmap/menu_setting"
+            android:title="NTAG card"></item>
+
+    </group>
 
 </menu>

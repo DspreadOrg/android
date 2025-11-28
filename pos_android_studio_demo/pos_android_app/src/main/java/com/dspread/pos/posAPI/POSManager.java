@@ -340,19 +340,26 @@ public class POSManager {
         pollOnNtagCard(timout);
     }
     public void pollOnNtagCard(int timeout) {
-
-        pos.pollOnMifareCard(timeout);
+        if(pos != null) {
+            pos.pollOnMifareCard(timeout);
+        }
     }
     public void finishNtagCard(int timeout) {
-        pos.finishMifareCard(timeout);
+        if(pos!= null) {
+            pos.finishMifareCard(timeout);
+        }
     }
 
     public void writeNtagCard(String block, String data, int timeout) {
-        pos.writeMifareCard(QPOSService.MifareCardType.UlTRALIGHT, block, data, timeout);
+        if(pos!= null) {
+            pos.writeMifareCard(QPOSService.MifareCardType.UlTRALIGHT, block, data, timeout);
+        }
     }
 
     public void readNtagCard(String block, int timeout) {
-        pos.readMifareCard(QPOSService.MifareCardType.UlTRALIGHT, block, timeout);
+        if(pos!= null) {
+            pos.readMifareCard(QPOSService.MifareCardType.UlTRALIGHT, block, timeout);
+        }
     }
 
     public void close() {
@@ -570,21 +577,25 @@ public class POSManager {
 
         @Override
         public void onSearchMifareCardResult(Hashtable<String, String> cardConfig) {
+            TRACE.d("onSearchMifareCardResult:"+cardConfig);
             notifyNTagCardCallbacks(cb -> cb.onSearchMifareCardResult(cardConfig));
         }
 
         @Override
         public void onFinishMifareCardResult(boolean arg0) {
+            TRACE.d("onFinishMifareCardResult:"+arg0);
             notifyNTagCardCallbacks(cb -> cb.onFinishMifareCardResult(arg0));
         }
 
         @Override
         public void writeMifareULData(String arg0) {
+            TRACE.d("writeMifareULData:"+arg0);
             notifyNTagCardCallbacks(cb -> cb.writeMifareULData(arg0));
         }
 
         @Override
         public void getMifareReadData(Hashtable<String, String> arg0) {
+            TRACE.d("getMifareReadData:"+arg0);
             notifyNTagCardCallbacks(cb -> cb.getMifareReadData(arg0));
         }
     }

@@ -99,7 +99,7 @@
                 android:textSize="19sp"
                 android:textColor="@color/black"
                 android:textAllCaps="false"
-                android:text="@={viewModel.blockAddress}"/>
+                />
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
@@ -127,7 +127,7 @@
                 android:textSize="19sp"
                 android:textColor="@color/black"
                 android:textAllCaps="false"
-                android:text="@={viewModel.keyValue}"/>
+                />
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
