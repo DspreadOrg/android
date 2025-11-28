@@ -42,6 +42,7 @@ public class POSManager {
     // Callback management
     private final List<ConnectionServiceCallback> connectionCallbacks = new CopyOnWriteArrayList<>();
     private final List<PaymentServiceCallback> transactionCallbacks = new CopyOnWriteArrayList<>();
+    private final List<NtagCardServiceCallback> ntagCardServiceCallbacks = new CopyOnWriteArrayList<>();
     private Handler mainHandler;
     private CountDownLatch connectLatch;
     private PaymentResult paymentResult;
@@ -328,6 +329,32 @@ public class POSManager {
         }
     }
 
+    public void pollOnNtagCard(NtagCardServiceCallback callback, int timout) {
+        if (!isDeviceReady()) {
+            return;
+        }
+
+        if (callback != null) {
+            registerNtagCardCallback(callback);
+        }
+        pollOnNtagCard(timout);
+    }
+    public void pollOnNtagCard(int timeout) {
+
+        pos.pollOnMifareCard(timeout);
+    }
+    public void finishNtagCard(int timeout) {
+        pos.finishMifareCard(timeout);
+    }
+
+    public void writeNtagCard(String block, String data, int timeout) {
+        pos.writeMifareCard(QPOSService.MifareCardType.UlTRALIGHT, block, data, timeout);
+    }
+
+    public void readNtagCard(String block, int timeout) {
+        pos.readMifareCard(QPOSService.MifareCardType.UlTRALIGHT, block, timeout);
+    }
+
     public void close() {
         TRACE.d("start close");
         if (pos == null || posType == null) {
@@ -365,9 +392,20 @@ public class POSManager {
         }
     }
 
+    /**
+     * register ntagcard service callback
+     */
+    public void registerNtagCardCallback(NtagCardServiceCallback callback) {
+        if (callback != null && !ntagCardServiceCallbacks.contains(callback)) {
+            ntagCardServiceCallbacks.add(callback);
+        }
+    }
+
+
     public void unregisterCallbacks() {
         connectionCallbacks.clear();
         transactionCallbacks.clear();
+        ntagCardServiceCallbacks.clear();
     }
 
     private void notifyConnectionCallbacks(CallbackAction<ConnectionServiceCallback> action) {
@@ -389,6 +427,18 @@ public class POSManager {
                     action.execute(callback);
                 } catch (Exception e) {
                     TRACE.e("Error in transaction callback: " + e.getMessage());
+                }
+            }
+        });
+    }
+
+    private void notifyNTagCardCallbacks(CallbackAction<NtagCardServiceCallback> action) {
+        mainHandler.post(() -> {
+            for (NtagCardServiceCallback callback : ntagCardServiceCallbacks) {
+                try {
+                    action.execute(callback);
+                } catch (Exception e) {
+                    TRACE.e("Error in NtagCardServiceCallback: " + e.getMessage());
                 }
             }
         });
@@ -516,6 +566,26 @@ public class POSManager {
         public void onTradeCancelled() {
             paymentResult.setStatus("Cancel");
 //            notifyTransactionCallbacks(cb -> cb.onTransactionResult(false, paymentResult));
+        }
+
+        @Override
+        public void onSearchMifareCardResult(Hashtable<String, String> cardConfig) {
+            notifyNTagCardCallbacks(cb -> cb.onSearchMifareCardResult(cardConfig));
+        }
+
+        @Override
+        public void onFinishMifareCardResult(boolean arg0) {
+            notifyNTagCardCallbacks(cb -> cb.onFinishMifareCardResult(arg0));
+        }
+
+        @Override
+        public void writeMifareULData(String arg0) {
+            notifyNTagCardCallbacks(cb -> cb.writeMifareULData(arg0));
+        }
+
+        @Override
+        public void getMifareReadData(Hashtable<String, String> arg0) {
+            notifyNTagCardCallbacks(cb -> cb.getMifareReadData(arg0));
         }
     }
 

@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:binding="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.dspread.pos.ui.ntag.NtagViewModel" />
+    </data>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/pollOnNtagCard"
+                android:layout_margin="8dp"
+                android:text="Poll NTag"
+                android:textSize="19sp"
+                android:textColor="@color/red_color"
+                android:textAllCaps="false"
+                android:background="@drawable/button_white_red_stroke"
+                />
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/finishNtagCard"
+                android:text="Finish NTag"
+                android:layout_margin="8dp"
+                android:textSize="19sp"
+                android:textColor="@color/red_color"
+                android:textAllCaps="false"
+                android:background="@drawable/button_white_red_stroke"
+                />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/writeNtagCard"
+                android:layout_margin="8dp"
+                android:text="Write NTag"
+                android:textSize="19sp"
+                android:textColor="@color/red_color"
+                android:textAllCaps="false"
+                android:background="@drawable/button_white_red_stroke"
+                />
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/readNtagCard"
+                android:text="Read NTag"
+                android:layout_margin="8dp"
+                android:textSize="19sp"
+                android:textColor="@color/red_color"
+                android:textAllCaps="false"
+                android:background="@drawable/button_white_red_stroke"
+                />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_margin="8dp"
+                android:text="Block Address:"
+                android:textSize="15sp"
+                android:textColor="@color/red_color"
+                android:textAllCaps="false"
+                />
+            <EditText
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:id="@+id/blockAddressText"
+                android:hint="please input block addr"
+                android:text="0A"
+                android:layout_margin="8dp"
+                android:textSize="19sp"
+                android:textColor="@color/black"
+                android:textAllCaps="false"
+                android:text="@={viewModel.blockAddress}"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_margin="8dp"
+                android:text="Key value or card Data:"
+                android:textSize="15sp"
+                android:textColor="@color/red_color"
+                android:textAllCaps="false"
+                />
+            <EditText
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:id="@+id/ketValueText"
+                android:hint="please input key value or cardData"
+                android:text="ffffffffffff"
+                android:layout_margin="8dp"
+                android:textSize="19sp"
+                android:textColor="@color/black"
+                android:textAllCaps="false"
+                android:text="@={viewModel.keyValue}"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_margin="8dp"
+                android:text="Result:"
+                android:textSize="15sp"
+                android:textColor="@color/red_color"
+                android:textAllCaps="false"
+                />
+            <EditText
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:id="@+id/resultText"
+                android:hint="write/read result"
+                android:layout_margin="8dp"
+                android:textSize="19sp"
+                android:textColor="@color/black"
+                android:textAllCaps="false"
+                android:text="@={viewModel.keyValue}"/>
+        </LinearLayout>
+
+    </LinearLayout>
+</layout>
