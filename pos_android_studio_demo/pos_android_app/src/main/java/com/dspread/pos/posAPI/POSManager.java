@@ -341,24 +341,24 @@ public class POSManager {
     }
     public void pollOnNtagCard(int timeout) {
         if(pos != null) {
-            pos.pollOnMifareCard(timeout);
+            pos.pollOnM1Card(timeout);
         }
     }
     public void finishNtagCard(int timeout) {
         if(pos!= null) {
-            pos.finishMifareCard(timeout);
+            pos.finishM1Card();
         }
     }
 
-    public void writeNtagCard(String block, String data, int timeout) {
+    public void writeNtagCard(int pageNo, String data) {
         if(pos!= null) {
-            pos.writeMifareCard(QPOSService.MifareCardType.UlTRALIGHT, block, data, timeout);
+            pos.writeM1CardData(pageNo,data);
         }
     }
 
-    public void readNtagCard(String block, int timeout) {
+    public void readNtagCard(int pageNo) {
         if(pos!= null) {
-            pos.readMifareCard(QPOSService.MifareCardType.UlTRALIGHT, block, timeout);
+            pos.readM1CardData(pageNo);
         }
     }
 
@@ -535,11 +535,36 @@ public class POSManager {
         }
 
         @Override
+        public void onReadM1CardData(boolean flag, Hashtable<String, String> result) {
+            super.onReadM1CardData(flag, result);
+            notifyNTagCardCallbacks(cb -> cb.getMifareReadData(flag, result));
+        }
+
+        @Override
+        public void onWriteM1CardData(boolean flag) {
+            super.onWriteM1CardData(flag);
+            notifyNTagCardCallbacks(cb -> cb.writeMifareULData(flag));
+        }
+
+        @Override
+        public void onReturnPollOnMifareResult(boolean result, QPOSService.CardsType cardType, String atr, int atrLen) {
+            super.onReturnPollOnMifareResult(result, cardType, atr, atrLen);
+            notifyNTagCardCallbacks(cb -> cb.onSearchMifareCardResult(result,cardType,atr,atrLen));
+        }
+
+        @Override
+        public void onFinishM1Card(boolean flag) {
+            super.onFinishM1Card(flag);
+            notifyNTagCardCallbacks(cb -> cb.onFinishMifareCardResult(flag));
+        }
+
+        @Override
         public void onReturnReversalData(String tlv) {
             paymentResult.setTlv(tlv);
             paymentResult.setStatus("Reversal");
 //            notifyTransactionCallbacks(cb -> cb.onTransactionResult(false,paymentResult));
         }
+
 
         @Override
         public void onEmvICCExceptionData(String tlv) {
@@ -575,29 +600,6 @@ public class POSManager {
 //            notifyTransactionCallbacks(cb -> cb.onTransactionResult(false, paymentResult));
         }
 
-        @Override
-        public void onSearchMifareCardResult(Hashtable<String, String> cardConfig) {
-            TRACE.d("onSearchMifareCardResult:"+cardConfig);
-            notifyNTagCardCallbacks(cb -> cb.onSearchMifareCardResult(cardConfig));
-        }
-
-        @Override
-        public void onFinishMifareCardResult(boolean arg0) {
-            TRACE.d("onFinishMifareCardResult:"+arg0);
-            notifyNTagCardCallbacks(cb -> cb.onFinishMifareCardResult(arg0));
-        }
-
-        @Override
-        public void writeMifareULData(String arg0) {
-            TRACE.d("writeMifareULData:"+arg0);
-            notifyNTagCardCallbacks(cb -> cb.writeMifareULData(arg0));
-        }
-
-        @Override
-        public void getMifareReadData(Hashtable<String, String> arg0) {
-            TRACE.d("getMifareReadData:"+arg0);
-            notifyNTagCardCallbacks(cb -> cb.getMifareReadData(arg0));
-        }
     }
 
 }

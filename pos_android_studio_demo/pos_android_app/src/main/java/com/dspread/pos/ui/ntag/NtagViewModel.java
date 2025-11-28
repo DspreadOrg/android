@@ -4,10 +4,10 @@ import android.app.Application;
 
 import androidx.annotation.NonNull;
 
-//import com.dspread.pos.log.TRACE;
 import androidx.databinding.ObservableField;
 
 import com.dspread.pos.common.base.BaseAppViewModel;
+import com.dspread.pos.utils.TRACE;
 
 public class NtagViewModel extends BaseAppViewModel {
     // 双向绑定字段

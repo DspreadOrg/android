@@ -17,6 +17,7 @@ import com.dspread.pos.posAPI.POSManager;
 import com.dspread.pos_android_app.R;
 import com.dspread.pos.common.base.BaseFragment;
 import com.dspread.pos_android_app.databinding.FragmentNtagBinding;
+import com.dspread.xpos.QPOSService;
 
 import java.util.Hashtable;
 
@@ -54,7 +55,9 @@ public class NtagFragment extends BaseFragment<FragmentNtagBinding, NtagViewMode
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // 不再在这里注册回调，移到initData()中
+        initConnectionCallback();
+        // 注册Ntag回调
+        POSManager.getInstance().registerNtagCardCallback(ntagCardServiceCallback);
     }
 
     private void initConnectionCallback() {
@@ -104,13 +107,13 @@ public class NtagFragment extends BaseFragment<FragmentNtagBinding, NtagViewMode
             String block = binding.blockAddressText.getText().toString();
             String data = binding.ketValueText.getText().toString();
             TRACE.i("Write NTag card clicked, block: " + block + ", data: " + data);
-            POSManager.getInstance().writeNtagCard(block, data, 5); // timeout=5
+            POSManager.getInstance().writeNtagCard(Integer.parseInt(block), data); // timeout=5
         });
         
         binding.readNtagCard.setOnClickListener(v -> {
             String block = binding.blockAddressText.getText().toString();
             TRACE.i("Read NTag card clicked, block: " + block);
-            POSManager.getInstance().readNtagCard(block, 5); // timeout=5
+            POSManager.getInstance().readNtagCard(Integer.parseInt(block)); // timeout=5
         });
     }
 
@@ -126,27 +129,15 @@ public class NtagFragment extends BaseFragment<FragmentNtagBinding, NtagViewMode
 
     private class NtagCardCallback implements NtagCardServiceCallback {
         @Override
-        public void onSearchMifareCardResult(Hashtable<String, String> cardConfig) {
+        public void onSearchMifareCardResult(boolean result, QPOSService.CardsType cardType, String atr, int atrLen) {
             requireActivity().runOnUiThread(() -> {
-                String statuString = cardConfig.get("status");
-                String cardTypeString = cardConfig.get("cardType");
-                String cardUidLen = cardConfig.get("cardUidLen");
-                String cardUid = cardConfig.get("cardUid");
-                String cardAtsLen = cardConfig.get("cardAtsLen");
-                String cardAts = cardConfig.get("cardAts");
-                String ATQA = cardConfig.get("ATQA");
-                String SAK = cardConfig.get("SAK");
 
-                String result = "Status: " + statuString + "\n" +
-                        "Card Type: " + cardTypeString + "\n" +
-                        "UID Len: " + cardUidLen + "\n" +
-                        "UID: " + cardUid + "\n" +
-                        "ATS Len: " + cardAtsLen + "\n" +
-                        "ATS: " + cardAts + "\n" +
-                        "ATQA: " + ATQA + "\n" +
-                        "SAK: " + SAK;
+                String pollresult = "Status: " + result + "\n" +
+                        "Card Type: " + cardType + "\n" +
+                        "UID Len: " + atrLen + "\n" +
+                        "UID: " + atr + "\n";
 
-                binding.resultText.setText(result);
+                binding.resultText.setText(pollresult);
             });
         }
 
@@ -158,25 +149,29 @@ public class NtagFragment extends BaseFragment<FragmentNtagBinding, NtagViewMode
         }
 
         @Override
-        public void writeMifareULData(String arg0) {
-            TRACE.i("writeMifareULData callback received: " + arg0);
+        public void writeMifareULData(boolean arg0) {
             requireActivity().runOnUiThread(() -> {
-                if(arg0 != null) {
+                if(arg0) {
                     binding.resultText.setText("Write result:\n"+arg0);
-                } else {
-                    binding.resultText.setText("Write result: null");
+
+                }else {
+                    binding.resultText.setText("Write result: failed!");
                 }
             });
         }
 
         @Override
-        public void getMifareReadData(Hashtable<String, String> arg0) {
+        public void getMifareReadData(boolean flag, Hashtable<String, String> arg0) {
             requireActivity().runOnUiThread(() -> {
                 StringBuilder result = new StringBuilder("Read result:\n");
-                for (String key : arg0.keySet()) {
-                    result.append(key).append(": ").append(arg0.get(key)).append("\n");
+                if(flag) {
+                    for (String key : arg0.keySet()) {
+                        result.append(key).append(": ").append(arg0.get(key)).append("\n");
+                    }
+                    binding.resultText.setText(result.toString());
+                }else {
+                    binding.resultText.setText("Read result: failed!\n");
                 }
-                binding.resultText.setText(result.toString());
             });
         }
     }

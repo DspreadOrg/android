@@ -1,12 +1,14 @@
 package com.dspread.pos.posAPI;
 
+import com.dspread.xpos.QPOSService;
+
 import java.util.Hashtable;
 
 public interface NtagCardServiceCallback {
     /**
      * Poll on Ntag card result
      */
-    default void onSearchMifareCardResult(Hashtable<String, String> arg0) {}
+    default void onSearchMifareCardResult(boolean result, QPOSService.CardsType cardType, String atr, int atrLen) {}
 
     /**
      * Finish Ntag card result
@@ -16,11 +18,11 @@ public interface NtagCardServiceCallback {
     /**
      * Write Ntag card result
      */
-    default void writeMifareULData(String arg0){};
+    default void writeMifareULData(boolean arg0){};
 
     /**
      * Read Ntag card result
      */
-    default void getMifareReadData(Hashtable<String, String> arg0) {}
+    default void getMifareReadData(boolean flag, Hashtable<String, String> result) {}
 
 }
