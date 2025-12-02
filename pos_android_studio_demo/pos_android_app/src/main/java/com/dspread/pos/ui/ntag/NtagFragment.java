@@ -107,11 +107,19 @@ public class NtagFragment extends BaseFragment<FragmentNtagBinding, NtagViewMode
             String block = binding.blockAddressText.getText().toString();
             String data = binding.ketValueText.getText().toString();
             TRACE.i("Write NTag card clicked, block: " + block + ", data: " + data);
+            if(block.isEmpty() || data.isEmpty()){
+                ToastUtils.showLong("the write block or data is empty, pls fill in that.");
+                return;
+            }
             POSManager.getInstance().writeNtagCard(Integer.parseInt(block), data); // timeout=5
         });
         
         binding.readNtagCard.setOnClickListener(v -> {
             String block = binding.blockAddressText.getText().toString();
+            if(block.isEmpty()){
+                ToastUtils.showLong("the write block or data is empty, pls fill in that.");
+                return;
+            }
             TRACE.i("Read NTag card clicked, block: " + block);
             POSManager.getInstance().readNtagCard(Integer.parseInt(block)); // timeout=5
         });
