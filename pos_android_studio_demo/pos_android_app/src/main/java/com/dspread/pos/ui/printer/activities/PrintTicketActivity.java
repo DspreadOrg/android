@@ -8,18 +8,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.Toast;
 
-import com.dspread.pos.ui.home.HomeFragment;
 import com.dspread.pos.ui.main.MainActivity;
 import com.dspread.pos.ui.printer.activities.base.PrinterBaseActivity;
 import com.dspread.pos.utils.PrintDialogUtils;
-import com.dspread.pos.utils.TRACE;
 import com.dspread.pos_android_app.BR;
 import com.dspread.pos_android_app.R;
 import com.dspread.pos_android_app.databinding.ActivityPrintTicketBinding;
@@ -86,55 +83,103 @@ public class PrintTicketActivity extends PrinterBaseActivity<ActivityPrinterBase
     }
 
     private void setupViews() {
+        // 清理旧的位图资源
+        cleanupBitmap();
+
+        // 构建参数映射
+        Map<String, String> map = buildParameterMap();
+
+        // 生成收据位图并处理结果
+        viewModel.generateReceiptBitmap(map);
+        observeReceiptBitmap();
+
+        initViewOnlick(map);
+    }
+
+    /**
+     * 清理旧的位图资源
+     */
+    private void cleanupBitmap() {
         if (mBitmap != null && !mBitmap.isRecycled()) {
             mBitmap.recycle();
             mBitmap = null;
         }
+    }
+
+    /**
+     * 构建参数映射
+     */
+    private Map<String, String> buildParameterMap() {
         Map<String, String> map = new HashMap<>();
-        if (amount != null && !"".equals(amount)) {
-        } else {
-            amount = "";
+
+        map.put("terAmount", getSafeString(amount));
+        map.put("maskedPAN", getSafeString(maskedPAN));
+        map.put("terminalTime", buildTerminalTimeString());
+
+        return map;
+    }
+
+    /**
+     * 获取安全的非空字符串
+     */
+    private String getSafeString(String value) {
+        return !TextUtils.isEmpty(value) ? value : "";
+    }
+
+    /**
+     * 构建终端时间字符串
+     */
+    private String buildTerminalTimeString() {
+        if (TextUtils.isEmpty(terminalTime)) {
+            return getSafeString(transactionTime);
         }
-        map.put("terAmount", amount);
-        if (maskedPAN != null && !"".equals(maskedPAN)) {
-        } else {
-            maskedPAN = "";
+
+        // 格式化时间
+        String formattedTime = formatDateTime(terminalTime);
+
+        // 追加交易时间
+        if (!TextUtils.isEmpty(transactionTime)) {
+            return formattedTime + " " + transactionTime;
         }
-        map.put("maskedPAN", maskedPAN);
-        if (terminalTime != null && !"".equals(terminalTime)) {
+
+        return formattedTime;
+    }
+
+    /**
+     * 格式化日期时间
+     */
+    private String formatDateTime(String dateTimeStr) {
+        if (TextUtils.isEmpty(dateTimeStr)) {
+            return "";
+        }
+
+        try {
             SimpleDateFormat inputFormat = new SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault());
             SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault());
-            try {
-                // 解析输入的日期字符串
-                Date date = inputFormat.parse(terminalTime);
-                // 格式化日期
-                terminalTime = outputFormat.format(date);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-        } else {
-            terminalTime = "";
-        }
 
-        if (!TextUtils.isEmpty(transactionTime)) {
-            terminalTime = terminalTime + " " + transactionTime;
+            Date date = inputFormat.parse(dateTimeStr);
+            return outputFormat.format(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return dateTimeStr; // 解析失败时返回原字符串
         }
-        map.put("terminalTime", terminalTime);
-        viewModel.generateReceiptBitmap(map);
+    }
+
+    /**
+     * 观察收据位图变化
+     */
+    private void observeReceiptBitmap() {
         viewModel.getReceiptBitmap().observe(this, bitmap -> {
-            if (bitmap != null) {
-                this.mBitmap = bitmap;
-                if (isSmallDevices) {
-                    if (mBitmap != null && !mBitmap.isRecycled()) {
-                        viewModel.printTicket(mBitmap);
-                    }
-                } else {
-                    contentBinding.receiptImage.setImageBitmap(bitmap);
-                }
+            if (bitmap == null) return;
+
+            this.mBitmap = bitmap;
+
+            if (isSmallDevices) {
+                viewModel.printTicket(bitmap);
+            } else {
+                contentBinding.receiptImage.setImageBitmap(bitmap);
             }
         });
-
-        initViewOnlick(map);
     }
 
     private void initViewOnlick(Map<String, String> map) {
@@ -143,6 +188,7 @@ public class PrintTicketActivity extends PrinterBaseActivity<ActivityPrinterBase
             public void onClick(View view) {
 
                 if (mBitmap != null && !mBitmap.isRecycled()) {
+                    binding.btnPrintTicket.setEnabled(false);
                     viewModel.printTicket(mBitmap);
                     startPrintAnimation();
                 } else {
@@ -167,6 +213,7 @@ public class PrintTicketActivity extends PrinterBaseActivity<ActivityPrinterBase
                 if (mBitmap != null && !mBitmap.isRecycled()) {
                     viewModel.isSmallScreenButton.set(false);
                     binding.tvTitle.setText("Please Wait...");
+                    binding.btnSmallPrint.setEnabled(false);
                     viewModel.printTicket(mBitmap);
                 } else {
                     Toast.makeText(PrintTicketActivity.this, "Receipt not ready", Toast.LENGTH_SHORT).show();
@@ -248,6 +295,8 @@ public class PrintTicketActivity extends PrinterBaseActivity<ActivityPrinterBase
 
     @Override
     protected void onReturnPrintResult(boolean isSuccess, String status, PrinterDevice.ResultType resultType) {
+        binding.btnPrintTicket.setEnabled(true);
+        binding.btnSmallPrint.setEnabled(true);
         if (isSuccess) {
             viewModel.onPrintComplete(isSuccess, status);
             dialog(PrintTicketActivity.this, R.mipmap.ic_print_success, "Print Successful", status, 3000L, true, false);
