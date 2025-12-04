@@ -18,6 +18,8 @@ import java.security.spec.RSAPublicKeySpec;
 import java.util.Hashtable;
 import java.util.Map;
 
+import me.goldze.mvvmhabit.utils.ToastUtils;
+
 
 public class QPOSUtil {
     static final String HEXES = "0123456789ABCDEF";
@@ -361,7 +363,8 @@ public class QPOSUtil {
     private static String getRequiredParam(Map<String, byte[]> params, String key) {
         String value = Util.byteArray2Hex(params.get(key));
         if (value == null || value.trim().isEmpty()) {
-            throw new IllegalArgumentException("Missing required parameter: " + key);
+            ToastUtils.showLong("Missing required parameter: " + key);
+            return null;
         }
         return value.trim();
     }
@@ -410,10 +413,12 @@ public class QPOSUtil {
 
     public static String buildISO4PinBlock(Hashtable<String, byte[]> pinParams, String userPin) {
         if (pinParams == null) {
-            throw new IllegalArgumentException("PIN params can't be null");
+            ToastUtils.showLong("PIN params can't be null");
+            return null;
         }
         if (userPin == null || !userPin.matches("\\d{4,12}")) {
-            throw new IllegalArgumentException("PIN length must be 4-12");
+            ToastUtils.showLong("PIN length must be 4-12");
+            return null;
         }
 
         String randomData = getRequiredParam(pinParams, "RandomData");
