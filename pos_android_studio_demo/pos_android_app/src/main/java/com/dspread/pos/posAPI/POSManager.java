@@ -289,8 +289,8 @@ public class POSManager {
         }
     }
 
-    public Hashtable<String, String> computeISOPinBlockStringHashtable() {
-        return pos.computeISOPinBlockStringHashtable();
+    public Hashtable<String, byte[]> getIsoFormat4PinBlockParams() {
+        return pos.getIsoFormat4PinBlockParams();
     }
 
     public Hashtable<String, String> getNFCBatchData() {

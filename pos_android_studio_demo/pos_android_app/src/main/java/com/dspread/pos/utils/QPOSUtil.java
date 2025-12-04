@@ -358,8 +358,8 @@ public class QPOSUtil {
         return result;
     }
 
-    private static String getRequiredParam(Map<String, String> params, String key) {
-        String value = params.get(key);
+    private static String getRequiredParam(Map<String, byte[]> params, String key) {
+        String value = Util.byteArray2Hex(params.get(key));
         if (value == null || value.trim().isEmpty()) {
             throw new IllegalArgumentException("Missing required parameter: " + key);
         }
@@ -408,7 +408,7 @@ public class QPOSUtil {
         return panBlockBuilder.toString();
     }
 
-    public static String buildISO4PinBlock(Hashtable<String, String> pinParams, String userPin) {
+    public static String buildISO4PinBlock(Hashtable<String, byte[]> pinParams, String userPin) {
         if (pinParams == null) {
             throw new IllegalArgumentException("PIN params can't be null");
         }
