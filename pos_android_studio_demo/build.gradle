@@ -6,7 +6,7 @@ buildscript {
         jcenter()
         maven { url 'https://jitpack.io' }
         maven { url "https://bugly.qq.com/maven/" }
-        maven { url "https://tencent-tds-maven.pkg.coding.net/repository/shiply/repo" }
+        maven { url "https://maven.cnb.cool/tencent-tds/shiply-public/-/packages/" }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:7.4.0'
