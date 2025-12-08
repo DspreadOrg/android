@@ -298,8 +298,10 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
 
                 @Override
                 public void onConfirm(String password) {
-                    String pinBlock = QPOSUtil.buildISO4PinBlock(POSManager.getInstance().computeISOPinBlockStringHashtable(), password);// build the ISO format4 pin block
-                    POSManager.getInstance().sendCvmPin(pinBlock, true);
+                    String pinBlock = QPOSUtil.buildISO4PinBlock(POSManager.getInstance().getIsoFormat4PinBlockParams(), password);// build the ISO format4 pin block
+                    if(!pinBlock.isEmpty()) {
+                        POSManager.getInstance().sendCvmPin(pinBlock, true);
+                    }
                     pinPadDialog.dismiss();
                 }
             });

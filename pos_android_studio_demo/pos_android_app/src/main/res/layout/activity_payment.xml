@@ -300,8 +300,9 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:gravity="center_horizontal"
                 android:orientation="vertical"
                 android:visibility="@{viewModel.cardsInsertedStatus ? View.VISIBLE : View.GONE}">
 
@@ -361,18 +362,17 @@
 
                 </RelativeLayout>
 
-                <!--              <com.airbnb.lottie.LottieAnimationView
-                                  android:layout_width="wrap_content"
-                                  android:layout_height="wrap_content"
-                                  android:layout_marginLeft="10dp"
-                                  android:layout_marginRight="10dp"
-                                  android:layout_marginBottom="5dp"
-                                  android:visibility="@{viewModel.isD70 ? View.GONE : View.VISIBLE}"
-                                  app:lottie_autoPlay="true"
-                                  app:lottie_fileName="insert_icc_card.json"
-                                  app:lottie_imageAssetsFolder="iccimages/"
-                                  app:lottie_loop="false" />
-              -->
+                <com.airbnb.lottie.LottieAnimationView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:visibility="@{viewModel.isD70 ? View.GONE : View.VISIBLE}"
+                    app:lottie_autoPlay="true"
+                    app:lottie_fileName="insert_icc_card.json"
+                    app:lottie_imageAssetsFolder="iccimages/"
+                    app:lottie_loop="false" />
             </LinearLayout>
 
             <LinearLayout

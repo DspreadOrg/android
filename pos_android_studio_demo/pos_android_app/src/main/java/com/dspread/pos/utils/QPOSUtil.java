@@ -16,6 +16,9 @@ import java.security.KeyFactory;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.RSAPublicKeySpec;
 import java.util.Hashtable;
+import java.util.Map;
+
+import me.goldze.mvvmhabit.utils.ToastUtils;
 
 
 public class QPOSUtil {
@@ -357,57 +360,78 @@ public class QPOSUtil {
         return result;
     }
 
-    public static String readRSANStream(InputStream in) throws Exception {
-        try {
-            BufferedReader br = new BufferedReader(new InputStreamReader(in,"UTF-8"));
-            String line = null;
-            StringBuilder sb = new StringBuilder();
-
-            while ((line = br.readLine()) != null) {
-                sb.append(line);
-                sb.append('\r');
-            }
-            return sb.toString();
-        } catch (IOException var5) {
-            throw new Exception("鍏\ue104挜鏁版嵁娴佽\ue1f0鍙栭敊锟�?");
-        } catch (NullPointerException var6) {
-            throw new Exception("鍏\ue104挜杈撳叆娴佷负锟�?");
+    private static String getRequiredParam(Map<String, byte[]> params, String key) {
+        String value = Util.byteArray2Hex(params.get(key));
+        if (value == null || value.trim().isEmpty()) {
+            ToastUtils.showLong("Missing required parameter: " + key);
+            return null;
         }
+        return value.trim();
     }
 
-    public static String buildISO4PinBlock(Hashtable<String, String> AESParam, String pin) {
-        String randomData = AESParam.get("RandomData") == null ? "" : AESParam.get("RandomData");
-        String pan = AESParam.get("PAN") == null ? "" : AESParam.get("PAN");
-        String AESKey = AESParam.get("AESKey") == null ? "" : AESParam.get("AESKey");
-        String isOnline = AESParam.get("isOnlinePin") == null ? "" : AESParam.get("isOnlinePin");
-        String pinTryLimit = AESParam.get("pinTryLimit") == null ? "" : AESParam.get("pinTryLimit");
-        //iso-format4 pinblock
-        int pinLen = pin.length();
-        pin = "4" + Integer.toHexString(pinLen) + pin;
-        for (int i = 0; i < 14 - pinLen; i++) {
-            pin = pin + "A";
+    private static String buildPinDataBlock(String userPin, String randomData) {
+        int pinLength = userPin.length();
+
+        StringBuilder pinBlockBuilder = new StringBuilder()
+                .append("4")                            // ISO format4 label
+                .append(Integer.toHexString(pinLength)) // PIN length
+                .append(userPin);                       // PIN
+
+        // fill 'A' to block lenth to 16
+        for (int i = 0; i < 16 - 2 -pinLength; i++) {
+            pinBlockBuilder.append("A");
         }
-        pin += randomData.substring(0, 16);
-        String panBlock = "";
-        int panLen = pan.length();
-        int m = 0;
-        if (panLen < 12) {
-            panBlock = "0";
-            for (int i = 0; i < 12 - panLen; i++) {
-                panBlock += "0";
-            }
-            panBlock = panBlock + pan + "0000000000000000000";
+
+        // add random data
+        pinBlockBuilder.append(randomData, 0, 16);
+
+        return pinBlockBuilder.toString();
+    }
+
+    private static String buildPanDataBlock(String pan) {
+        int panLength = pan.length();
+
+        StringBuilder panBlockBuilder = new StringBuilder();
+
+        if (panLength < 12) {
+            panBlockBuilder.append("0");
+            panBlockBuilder.append(String.format("%0" + (12 - panLength) + "d", 0));
+            panBlockBuilder.append(pan);
         } else {
-            m = pan.length() - 12;
-            panBlock = m + pan;
-            for (int i = 0; i < 31 - panLen; i++) {
-                panBlock += "0";
-            }
+            int rightOffset = panLength - 12;
+            panBlockBuilder.append(Integer.toHexString(rightOffset));
+            panBlockBuilder.append(pan);
         }
-        String pinBlock1 = AESUtil.encrypt(AESKey, pin);
-        pin = Util.xor16(HexStringToByteArray(pinBlock1), HexStringToByteArray(panBlock));
-        String pinBlock2 = AESUtil.encrypt(AESKey, pin);
-        return pinBlock2;
+
+        // fill the pan lentght to 32 with 0(16bytes)
+        while (panBlockBuilder.length() < 32) {
+            panBlockBuilder.append("0");
+        }
+
+        return panBlockBuilder.toString();
+    }
+
+    public static String buildISO4PinBlock(Hashtable<String, byte[]> pinParams, String userPin) {
+        if (pinParams == null) {
+            ToastUtils.showLong("PIN params can't be null");
+            return null;
+        }
+        if (userPin == null || !userPin.matches("\\d{4,12}")) {
+            ToastUtils.showLong("PIN length must be 4-12");
+            return null;
+        }
+
+        String randomData = getRequiredParam(pinParams, "RandomData");
+        String pan = getRequiredParam(pinParams, "PAN");
+        String AESKey = getRequiredParam(pinParams, "AESKey");
+
+        //iso-format4 pinblock
+        String pinBlock = buildPinDataBlock(userPin, randomData);
+        String panBlock = buildPanDataBlock(pan);
+
+        String encryptedPinBlock = AESUtil.encrypt(AESKey, pinBlock);
+        String xoredResult = Util.xor16(HexStringToByteArray(encryptedPinBlock), HexStringToByteArray(panBlock));
+        return AESUtil.encrypt(AESKey, xoredResult);
     }
 
 }
