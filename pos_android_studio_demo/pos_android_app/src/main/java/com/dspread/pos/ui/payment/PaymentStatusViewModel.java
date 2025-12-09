@@ -24,15 +24,9 @@ import me.goldze.mvvmhabit.binding.command.BindingAction;
 import me.goldze.mvvmhabit.binding.command.BindingCommand;
 
 public class PaymentStatusViewModel extends BaseAppViewModel {
-    private Context mContext;
-    private Bitmap receiptBitmap;
     private String terAmount;
     private String maskedPAN;
     private String terminalTime;
-
-    public void setmContext(Context mContext) {
-        this.mContext = mContext;
-    }
 
     public ObservableBoolean isSuccess = new ObservableBoolean(false);
     public ObservableField<String> amount = new ObservableField<>("");

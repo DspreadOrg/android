@@ -22,7 +22,6 @@ public class PaymentStatusActivity extends BaseActivity<ActivityPaymentstatusBin
     private String maskedPAN;
     private String terminalTime;
     private String errorMsg;
-    // 建议在类顶部定义常量
     private static final String KEY_AMOUNT = "amount";
     private static final String KEY_MASKED_PAN = "maskedPAN";
     private static final String KEY_TERMINAL_TIME = "terminalTime";
@@ -41,7 +40,6 @@ public class PaymentStatusActivity extends BaseActivity<ActivityPaymentstatusBin
 
 
     public void initData() {
-        viewModel.setmContext(this);
         Intent intent = getIntent();
         amount = getStringExtraSafely(intent, KEY_AMOUNT);
         maskedPAN = getStringExtraSafely(intent, KEY_MASKED_PAN);

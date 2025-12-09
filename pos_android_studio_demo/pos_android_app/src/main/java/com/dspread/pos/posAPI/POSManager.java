@@ -480,14 +480,14 @@ public class POSManager {
         @Override
         public void onReturnReversalData(String tlv) {
             paymentResult.setTlv(tlv);
-            paymentResult.setStatus("Reversal");
+            paymentResult.setTransResult("Reversal");
 //            notifyTransactionCallbacks(cb -> cb.onTransactionResult(false,paymentResult));
         }
 
         @Override
         public void onEmvICCExceptionData(String tlv) {
             paymentResult.setTlv(tlv);
-            paymentResult.setStatus("Emv ICC Exception");
+            paymentResult.setTransResult("Emv ICC Exception");
 //            notifyTransactionCallbacks(cb -> cb.onTransactionResult(false, paymentResult));
         }
 
