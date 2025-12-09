@@ -123,7 +123,7 @@ public class PaymentViewModel extends BaseAppViewModel {
 
     public void setTransactionFailed(String message) {
         titleText.set("Payment finished");
-        stopLoading();
+//        stopLoading();
         showPinpad.set(false);
 //        isSuccess.set(false);
         showResultStatus.set(true);

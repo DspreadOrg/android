@@ -390,7 +390,6 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
                     viewModel.setTransactionFailed(result.getStatus());
                     viewModel.setTransactionErr(result.getStatus());
                 }
-                finish();
             }
         }
 
@@ -475,8 +474,15 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
                 } else if (errorMsg != null && !"".equals(errorMsg)) {
                     intent.putExtra("errorMsg", errorMsg);
                 }
+                getWindow().setBackgroundDrawableResource(android.R.color.transparent);
                 startActivity(intent);
-                finish();
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                new Handler().postDelayed(() -> {
+                    if (!isFinishing()) {
+                        finish();
+                        overridePendingTransition(0, 0);
+                    }
+                }, 400);
             } finally {
                 new Handler().postDelayed(() -> isStarting.set(false), 500);
             }
