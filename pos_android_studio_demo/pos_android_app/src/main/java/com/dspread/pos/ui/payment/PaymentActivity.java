@@ -179,6 +179,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
             @Override
             public void onRequestQposConnected() {
                 ToastUtils.showLong("Device connected");
+                POSManager.getInstance().getDeviceId();
             }
 
             @Override

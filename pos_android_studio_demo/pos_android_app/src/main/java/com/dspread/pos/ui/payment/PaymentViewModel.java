@@ -128,7 +128,7 @@ public class PaymentViewModel extends BaseAppViewModel {
 //        isSuccess.set(false);
         showResultStatus.set(true);
         isWaiting.set(false);
-        transactionResult.set(message);
+        // transactionResult.set(message);
         TransactionResultStatus.set(false);
         cardsInsertedStatus.set(false);
     }
@@ -231,26 +231,23 @@ public class PaymentViewModel extends BaseAppViewModel {
 //                ToastUtils.showShort("Send online success");
                 if (isICC) {
                     POSManager.getInstance().sendOnlineProcessResult("8A02" + onlineRspCode);
-                } else {
-                    isOnlineSuccess.setValue(true);
                 }
+                isOnlineSuccess.setValue(true);
             } else {
                 if (isICC) {
                     POSManager.getInstance().sendOnlineProcessResult("8A023030");
-                } else {
-                    isOnlineSuccess.setValue(false);
                 }
-                transactionResult.set("Send online failed：" + response.getMessage());
-                ToastUtils.showShort("Send online failed：" + response.getMessage());
+                isOnlineSuccess.setValue(true);
+                //  transactionResult.set("Send online failed：" + response.getMessage());
+                //  ToastUtils.showShort("Send online failed：" + response.getMessage());
             }
         }, throwable -> {
             if (isICC) {
                 POSManager.getInstance().sendOnlineProcessResult("8A023035");
-            } else {
-                isOnlineSuccess.setValue(false);
             }
-            ToastUtils.showShort("The network is failed：" + throwable.getMessage());
-            transactionResult.set("The network is failed：" + throwable.getMessage());
+            isOnlineSuccess.setValue(true);
+            //ToastUtils.showShort("The network is failed：" + throwable.getMessage());
+            //transactionResult.set("The network is failed：" + throwable.getMessage());
         }));
     }
 
