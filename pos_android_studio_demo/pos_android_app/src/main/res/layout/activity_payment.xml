@@ -149,7 +149,7 @@
                             android:layout_gravity="center"
                             android:layout_marginHorizontal="83dp"
                             android:layout_marginTop="@dimen/dp_22"
-                            android:src="@mipmap/ic_payguide_nfc_d35"></ImageView>
+                            android:src="@mipmap/ic_payguide_nfc_d35"/>
 
 
                         <TextView
@@ -160,7 +160,7 @@
                             android:layout_marginBottom="@dimen/dp_22"
                             android:text="Tap to Pay"
                             android:textColor="#ff3f3b3b"
-                            android:textSize="20sp"></TextView>
+                            android:textSize="20sp"/>
                     </LinearLayout>
 
 
@@ -211,7 +211,7 @@
                             android:layout_gravity="center"
                             android:layout_marginHorizontal="83dp"
                             android:layout_marginTop="@dimen/dp_40"
-                            android:src="@mipmap/ic_payguide_nfc_d50"></ImageView>
+                            android:src="@mipmap/ic_payguide_nfc_d50"/>
 
 
                         <TextView
@@ -222,7 +222,7 @@
                             android:layout_marginBottom="@dimen/dp_40"
                             android:text="Tap to Pay"
                             android:textColor="#ff3f3b3b"
-                            android:textSize="20sp"></TextView>
+                            android:textSize="20sp"/>
                     </LinearLayout>
 
 
@@ -245,7 +245,6 @@
                         android:text="@string/prompt_user_to_tap_card_d35"
                         android:textColor="@color/red_color"
                         android:textSize="@dimen/sp_22" />
-
                 </LinearLayout>
 
 
@@ -254,6 +253,7 @@
 
             <!--卡组织图片-->
             <LinearLayout
+                android:id="@+id/lin_cardbrand"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
@@ -377,7 +377,8 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
                 android:layout_marginTop="@dimen/dp_90"
                 android:orientation="vertical"
                 android:visibility="@{viewModel.showPinpad ? View.VISIBLE : View.GONE}">
@@ -405,7 +406,6 @@
                         android:textColor="@color/black"
                         android:textSize="22dp"
                         android:textStyle="bold"
-
                         />
                 </LinearLayout>
 
@@ -442,49 +442,6 @@
                         android:textStyle="bold" />
                 </LinearLayout>
             </LinearLayout>
-
-            <!--交易结果-->
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1">
-
-                <!-- 交易信息区域 -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:visibility="@{viewModel.TransactionResultStatus ? View.VISIBLE : View.GONE}">
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/gainsboro" />
-
-                    <ScrollView
-                        android:id="@+id/scv_text"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_gravity="center"
-                        android:layout_margin="16dp"
-                        android:layout_weight="1">
-
-                        <TextView
-                            android:id="@+id/tv_receipt"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/bg_receipt"
-                            android:fontFamily="monospace"
-                            android:gravity="start"
-                            android:padding="16dp"
-                            android:text="@{viewModel.transactionResult}"
-                            android:textAlignment="viewStart"
-                            android:textColor="@color/text_primary"
-                            android:textIsSelectable="true"
-                            android:textSize="16sp" />
-                    </ScrollView>
-                </LinearLayout>
-            </FrameLayout>
         </LinearLayout>
 
         <View

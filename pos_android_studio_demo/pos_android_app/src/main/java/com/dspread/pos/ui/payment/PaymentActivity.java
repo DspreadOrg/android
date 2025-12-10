@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Html;
-import android.text.Spanned;
-import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -26,7 +24,6 @@ import com.dspread.pos.utils.DeviceUtils;
 import com.dspread.pos.utils.HandleTxnsResultUtils;
 import com.dspread.pos.utils.LogFileConfig;
 import com.dspread.pos.utils.QPOSUtil;
-import com.dspread.pos.utils.ReceiptGenerator;
 import com.dspread.pos.utils.TLV;
 import com.dspread.pos.utils.TLVParser;
 import com.dspread.pos.utils.TRACE;
@@ -179,6 +176,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
             @Override
             public void onRequestQposConnected() {
                 ToastUtils.showLong("Device connected");
+
             }
 
             @Override
@@ -201,7 +199,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
                 // if device has connected, just register connection callback
                 POSManager.getInstance().registerConnectionCallback(connectionCallback);
             }
-
+            POSManager.getInstance().getDeviceId();
             POSManager.getInstance().startTransaction(amount, paymentServiceCallback);
         }).start();
     }
@@ -268,7 +266,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
                 }
             });
             if (POSManager.getInstance().isDeviceReady()) {
-                keyboardUtil = new KeyboardUtil(PaymentActivity.this, binding.scvText, dataList);
+                keyboardUtil = new KeyboardUtil(PaymentActivity.this, binding.relSaleDetails, dataList);
                 keyboardUtil.initKeyboard(MyKeyboardView.KEYBOARDTYPE_Only_Num_Pwd, binding.pinpadEditText);//Random keyboard
             }
         }
@@ -366,6 +364,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
 
         @Override
         public void onTransactionResult(PaymentResult result) {
+            viewModel.startLoading("processing");
             if (result.getStatus() != null && result.getStatus().equals(QPOSService.TransactionResult.APPROVED.name())) {
                 binding.animationView.pauseAnimation();
                 result.setAmount(amount);
@@ -373,9 +372,6 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
                     String content = getString(R.string.batch_data);
                     content += result.getTlv();
                     PaymentModel paymentModel = viewModel.setTransactionSuccess(content);
-                    binding.tvReceipt.setMovementMethod(LinkMovementMethod.getInstance());
-                    Spanned receiptContent = ReceiptGenerator.generateICCReceipt(paymentModel);
-                    binding.tvReceipt.setText(receiptContent);
                     List<TLV> list = TLVParser.parse(result.getTlv());
                     TLV tlvMaskedPan = TLVParser.searchTLV(list, "C4");
                     paymentStatus(amount, tlvMaskedPan == null ? paymentModel.getCardNo() : tlvMaskedPan.value, terminalTime, "");
@@ -388,9 +384,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
                 if (result.getStatus() != null && !result.getStatus().isEmpty()) {
                     paymentStatus("", "", "", result.getStatus());
                     viewModel.setTransactionFailed(result.getStatus());
-                    viewModel.setTransactionErr(result.getStatus());
                 }
-                finish();
             }
         }
 
@@ -431,7 +425,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
             if (num == -1) {
                 isPinBack = false;
                 binding.pinpadEditText.setText("");
-                viewModel.pincomPletedState();
+                viewModel.onPinInputCompleted();
                 binding.d70ImageView.setVisibility(View.GONE);
                 if (keyboardUtil != null) {
                     keyboardUtil.hide();
@@ -468,15 +462,22 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
         if (isStarting.compareAndSet(false, true)) {
             try {
                 Intent intent = new Intent(PaymentActivity.this, PaymentStatusActivity.class);
-                if (amount != null && !"".equals(amount)) {
+                if (amount != null && !amount.isEmpty()) {
                     intent.putExtra("amount", amount);
                     intent.putExtra("maskedPAN", maskedPAN);
                     intent.putExtra("terminalTime", terminalTime);
-                } else if (errorMsg != null && !"".equals(errorMsg)) {
+                } else if (errorMsg != null && !errorMsg.isEmpty()) {
                     intent.putExtra("errorMsg", errorMsg);
                 }
+                getWindow().setBackgroundDrawableResource(android.R.color.transparent);
                 startActivity(intent);
-                finish();
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                new Handler().postDelayed(() -> {
+                    if (!isFinishing()) {
+                        finish();
+                        overridePendingTransition(0, 0);
+                    }
+                }, 400);
             } finally {
                 new Handler().postDelayed(() -> isStarting.set(false), 500);
             }

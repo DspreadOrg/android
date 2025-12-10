@@ -27,6 +27,15 @@ public class PaymentResult implements Serializable {
     private String pinRandomNumber;
     private String tlv;
     private String transactionType;
+    private String transResult;
+
+    public String getTransResult() {
+        return transResult;
+    }
+
+    public void setTransResult(String transResult) {
+        this.transResult = transResult;
+    }
 
     public String getTransactionType() {
         return transactionType;

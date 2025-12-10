@@ -18,7 +18,7 @@ dependencyResolutionManagement {
 
         maven { setUrl("https://maven.aliyun.com/repository/public") }
         maven { setUrl("https://maven.aliyun.com/repository/google") }
-        maven { url "https://tencent-tds-maven.pkg.coding.net/repository/shiply/repo" }
+        maven { url "https://maven.cnb.cool/tencent-tds/shiply-public/-/packages/" }
         maven {
             url 'https://gitlab.com/api/v4/projects/4128550/packages/maven'
         }

@@ -1,16 +1,6 @@
 package com.dspread.pos.ui.payment;
 
 import android.app.Application;
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.os.Build;
-import android.os.Handler;
-import android.os.RemoteException;
-import android.util.TypedValue;
-import android.view.View;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.ObservableBoolean;
@@ -21,26 +11,18 @@ import com.dspread.pos.common.http.RetrofitClient;
 import com.dspread.pos.common.http.api.RequestOnlineAuthAPI;
 import com.dspread.pos.common.http.model.AuthRequest;
 import com.dspread.pos.posAPI.POSManager;
-import com.dspread.pos.printerAPI.PrinterHelper;
 import com.dspread.pos.utils.DeviceUtils;
-import com.dspread.pos.utils.DialogUtils;
 import com.dspread.pos.utils.TLV;
 import com.dspread.pos.utils.TLVParser;
 import com.dspread.pos.utils.TRACE;
-import com.dspread.pos_android_app.R;
-import com.dspread.print.device.PrintListener;
-import com.dspread.print.device.PrinterDevice;
-import com.dspread.print.device.PrinterManager;
 
 import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
-import me.goldze.mvvmhabit.binding.command.BindingAction;
 import me.goldze.mvvmhabit.binding.command.BindingCommand;
 import me.goldze.mvvmhabit.bus.event.SingleLiveEvent;
 import me.goldze.mvvmhabit.utils.SPUtils;
-import me.goldze.mvvmhabit.utils.ToastUtils;
 
 
 public class PaymentViewModel extends BaseAppViewModel {
@@ -48,7 +30,6 @@ public class PaymentViewModel extends BaseAppViewModel {
     private RequestOnlineAuthAPI apiService;
     public ObservableField<String> loadingText = new ObservableField<>("");
     public ObservableField<Boolean> isLoading = new ObservableField<>(false);
-    public ObservableField<String> transactionResult = new ObservableField<>("");
     public ObservableField<String> amount = new ObservableField<>("");
     public ObservableField<String> titleText = new ObservableField<>("Payment");
     public ObservableBoolean isWaiting = new ObservableBoolean(true);
@@ -106,7 +87,6 @@ public class PaymentViewModel extends BaseAppViewModel {
             return paymentModel;
         }
         TLV dateTlv = TLVParser.searchTLV(tlvList, "9A");
-//        TLV transTypeTlv = TLVParser.searchTLV(tlvList,"9C");
         TLV transCurrencyCodeTlv = TLVParser.searchTLV(tlvList, "5F2A");
         TLV transAmountTlv = TLVParser.searchTLV(tlvList, "9F02");
         TLV tvrTlv = TLVParser.searchTLV(tlvList, "95");
@@ -123,18 +103,14 @@ public class PaymentViewModel extends BaseAppViewModel {
 
     public void setTransactionFailed(String message) {
         titleText.set("Payment finished");
-        stopLoading();
+//        stopLoading();
         showPinpad.set(false);
 //        isSuccess.set(false);
         showResultStatus.set(true);
         isWaiting.set(false);
-        transactionResult.set(message);
+        // transactionResult.set(message);
         TransactionResultStatus.set(false);
         cardsInsertedStatus.set(false);
-    }
-
-    public void setTransactionErr(String message) {
-        TransactionResultStatus.set(false);
     }
 
     public void clearErrorState() {
@@ -145,7 +121,7 @@ public class PaymentViewModel extends BaseAppViewModel {
         }
     }
 
-    public void pincomPletedState() {
+    public void onPinInputCompleted() {
         showPinpad.set(false);
         if (isD70Device()) {
             cardsInsertedStatus.set(false);
@@ -153,7 +129,7 @@ public class PaymentViewModel extends BaseAppViewModel {
             isD70.set(false);
             return;
         }
-
+        startLoading("processing...");
         boolean shouldShowResult = isIccCard && !cardsInsertedStatus.get();
         showResultStatus.set(shouldShowResult);
 
@@ -161,7 +137,6 @@ public class PaymentViewModel extends BaseAppViewModel {
             cardsInsertedStatus.set(true);
         }
     }
-
 
     public void cardInsertedState() {
         isIccCard = true;
@@ -173,10 +148,9 @@ public class PaymentViewModel extends BaseAppViewModel {
         amount.set("$" + newAmount);
     }
 
-
     public void setTransactionSuccess() {
         titleText.set("Payment finished");
-        stopLoading();
+//        stopLoading();
         showPinpad.set(false);
         isWaiting.set(false);
 
@@ -187,7 +161,6 @@ public class PaymentViewModel extends BaseAppViewModel {
         }
     }
 
-
     public void startLoading(String text) {
         isWaiting.set(false);
         isLoading.set(true);
@@ -197,18 +170,15 @@ public class PaymentViewModel extends BaseAppViewModel {
         }
     }
 
-
     private void handleD70Loading() {
         isD70.set(false);
         cardsInsertedStatus.set(false);
         showResultStatus.set(true);
     }
 
-
     private boolean isD70Device() {
         return "D70".equalsIgnoreCase(DeviceUtils.getPhoneModel());
     }
-
 
     public void stopLoading() {
         isLoading.set(false);
@@ -217,6 +187,7 @@ public class PaymentViewModel extends BaseAppViewModel {
     }
 
     public BindingCommand cancleTxnsCommand = new BindingCommand(() -> {
+        startLoading("processing...");
         new Thread(() -> {
             POSManager.getInstance().cancelTransaction();
         }).start();
@@ -228,29 +199,24 @@ public class PaymentViewModel extends BaseAppViewModel {
             TRACE.i("online auth rsp code= " + response.getResult());
             String onlineRspCode = (String) response.getResult();
             if (response.isOk()) {
-//                ToastUtils.showShort("Send online success");
                 if (isICC) {
                     POSManager.getInstance().sendOnlineProcessResult("8A02" + onlineRspCode);
-                } else {
+                }else {
                     isOnlineSuccess.setValue(true);
                 }
             } else {
                 if (isICC) {
                     POSManager.getInstance().sendOnlineProcessResult("8A023030");
-                } else {
-                    isOnlineSuccess.setValue(false);
+                }else {
+                    isOnlineSuccess.setValue(true);
                 }
-                transactionResult.set("Send online failed：" + response.getMessage());
-                ToastUtils.showShort("Send online failed：" + response.getMessage());
             }
         }, throwable -> {
             if (isICC) {
-                POSManager.getInstance().sendOnlineProcessResult("8A023035");
-            } else {
-                isOnlineSuccess.setValue(false);
+                POSManager.getInstance().sendOnlineProcessResult("8A023030");
+            }else {
+                isOnlineSuccess.setValue(true);
             }
-            ToastUtils.showShort("The network is failed：" + throwable.getMessage());
-            transactionResult.set("The network is failed：" + throwable.getMessage());
         }));
     }
 
