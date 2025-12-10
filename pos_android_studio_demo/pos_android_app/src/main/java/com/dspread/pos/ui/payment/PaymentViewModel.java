@@ -129,8 +129,7 @@ public class PaymentViewModel extends BaseAppViewModel {
             isD70.set(false);
             return;
         }
-        isLoading.set(true);
-        loadingText.set("processing...");
+        startLoading("processing...");
         boolean shouldShowResult = isIccCard && !cardsInsertedStatus.get();
         showResultStatus.set(shouldShowResult);
 
@@ -188,6 +187,7 @@ public class PaymentViewModel extends BaseAppViewModel {
     }
 
     public BindingCommand cancleTxnsCommand = new BindingCommand(() -> {
+        startLoading("processing...");
         new Thread(() -> {
             POSManager.getInstance().cancelTransaction();
         }).start();

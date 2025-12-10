@@ -364,6 +364,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
 
         @Override
         public void onTransactionResult(PaymentResult result) {
+            viewModel.startLoading("processing");
             if (result.getStatus() != null && result.getStatus().equals(QPOSService.TransactionResult.APPROVED.name())) {
                 binding.animationView.pauseAnimation();
                 result.setAmount(amount);
@@ -371,9 +372,6 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
                     String content = getString(R.string.batch_data);
                     content += result.getTlv();
                     PaymentModel paymentModel = viewModel.setTransactionSuccess(content);
-//                    binding.tvReceipt.setMovementMethod(LinkMovementMethod.getInstance());
-//                    Spanned receiptContent = ReceiptGenerator.generateICCReceipt(paymentModel);
-//                    binding.tvReceipt.setText(receiptContent);
                     List<TLV> list = TLVParser.parse(result.getTlv());
                     TLV tlvMaskedPan = TLVParser.searchTLV(list, "C4");
                     paymentStatus(amount, tlvMaskedPan == null ? paymentModel.getCardNo() : tlvMaskedPan.value, terminalTime, "");
