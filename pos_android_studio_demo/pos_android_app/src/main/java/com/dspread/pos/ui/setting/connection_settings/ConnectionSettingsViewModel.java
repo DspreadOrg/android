@@ -20,9 +20,9 @@ import me.goldze.mvvmhabit.utils.SPUtils;
 
 public class ConnectionSettingsViewModel extends BaseViewModel {
     // The name of the currently connected device
-    public final ObservableField<String> deviceName = new ObservableField<>(getApplication().getString(R.string.no_device));
+   /* public final ObservableField<String> deviceName = new ObservableField<>(getApplication().getString(R.string.no_device));
     public final ObservableField<String> bluetoothDeviceName = new ObservableField<>(getApplication().getString(R.string.no_device));
-    public final ObservableField<String> uartDeviceName = new ObservableField<>(getApplication().getString(R.string.no_device));
+    public final ObservableField<String> uartDeviceName = new ObservableField<>(getApplication().getString(R.string.no_device));*/
 
     //Device connection status
     public final ObservableBoolean deviceConnected = new ObservableBoolean(false);
@@ -91,10 +91,25 @@ public class ConnectionSettingsViewModel extends BaseViewModel {
         //bluetoothAddress
         String bluetoothAddress = SPUtils.getInstance().getString("bluetoothAddress");
         if (!TextUtils.isEmpty(bluetoothName) && !TextUtils.isEmpty(bluetoothAddress)) {
+            hideView();
             isShowBluetoothImageView.set(true);
             isShowBluetoothTextView.set(true);
             deviceConnected.set(true);
             SPUtils.getInstance().put("deviceAddress", bluetoothAddress);
+        } else if (SPUtils.getInstance().getBoolean("isSelectUartSuccess")) {
+            hideView();
+            isShowUartImageView.set(true);
+            isShowUartTextView.set(true);
+            deviceConnected.set(true);
+            SPUtils.getInstance().put("deviceAddress", "");
+
+        } else if (SPUtils.getInstance().getBoolean("isSelectUsbSuccess")) {
+            String deviceAddress = SPUtils.getInstance().getString("deviceAddress");
+            hideView();
+            isShowUSBImageView.set(true);
+            isShowUsbTextView.set(true);
+            deviceConnected.set(true);
+            SPUtils.getInstance().put("deviceAddress", deviceAddress);
         }
 
         // Load transaction type
@@ -127,20 +142,29 @@ public class ConnectionSettingsViewModel extends BaseViewModel {
         currencyCode.set(savedCurrencyCode);
     }
 
+    private void hideView() {
+        isShowUsbTextView.set(false);
+        isShowUSBImageView.set(false);
+        isShowUartImageView.set(false);
+        isShowUartTextView.set(false);
+        isShowBluetoothImageView.set(false);
+        isShowBluetoothImageView.set(false);
+        deviceConnected.set(false);
+    }
+
     public BindingCommand selectBluetoothCommand = new BindingCommand(() -> {
-        TRACE.d("selectBluetoothCommand XX");
         selectBluetoothEvent.call();
     });
 
 
     public BindingCommand selectUartCommand = new BindingCommand(() -> {
-        TRACE.d("selectUartCommand XX");
+
         selectUartEvent.call();
     });
 
 
     public BindingCommand selectUSBCommand = new BindingCommand(() -> {
-        TRACE.d("selectUSBCommand XX");
+
         selectUsbEvent.call();
     });
 
@@ -165,4 +189,6 @@ public class ConnectionSettingsViewModel extends BaseViewModel {
     public BindingCommand currencyCodeCommand = new BindingCommand(() -> {
         currencyCodeClickEvent.call();
     });
+
+
 }

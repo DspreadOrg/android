@@ -130,10 +130,12 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         super.onDestroy();
         TRACE.i("main is onDestroy");
         POSManager.getInstance().close();
-        SPUtils.getInstance().put("isConnected",false);
+        SPUtils.getInstance().put("isConnected", false);
         SPUtils.getInstance().put("device_type", "");
         SPUtils.getInstance().put("bluetoothName", "");
         SPUtils.getInstance().put("bluetoothAddress", "");
+        SPUtils.getInstance().put("isSelectUartSuccess", false);
+        SPUtils.getInstance().put("isSelectUsbSuccess", false);
     }
 
     @Override
