@@ -69,17 +69,16 @@ public class PaymentMethodActivity extends BaseActivity<ActivityPaymentMetholdBi
                     if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
                         String scanData = result.getData().getStringExtra("data");
                         scanData = amount;
-                        Intent intent = new Intent(PaymentMethodActivity.this, PaymentStatusActivity.class);
-                        intent.putExtra("amount", scanData);
-                        startActivity(intent);
+                        gotoPaymentstatusActivity(scanData);
+                        finish();
                     } else {
-                        Intent intent = new Intent(PaymentMethodActivity.this, PaymentStatusActivity.class);
-                        intent.putExtra("amount", "");
-                        startActivity(intent);
+                        gotoPaymentstatusActivity("");
+                        finish();
                     }
                 }
         );
     }
+
 
     private void handlePaymentMethodSelection(int methodIndex) {
         switch (methodIndex) {
@@ -167,5 +166,11 @@ public class PaymentMethodActivity extends BaseActivity<ActivityPaymentMetholdBi
         }
 
     };
+
+    private void gotoPaymentstatusActivity(String scanData) {
+        Intent intent = new Intent(PaymentMethodActivity.this, PaymentStatusActivity.class);
+        intent.putExtra("amount", scanData);
+        startActivity(intent);
+    }
 
 }

@@ -63,7 +63,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
     @Override
     public int initContentView(Bundle savedInstanceState) {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+//        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         return R.layout.activity_payment;
     }
 
@@ -88,6 +88,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
         viewModel.displayAmount(DeviceUtils.convertAmountToCents(amount));//ui
 
         initConnectionCallback();
+        TRACE.i("start Transaction -===");
         startTransaction();
         showCardImage();
     }
@@ -199,6 +200,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
                 // if device has connected, just register connection callback
                 POSManager.getInstance().registerConnectionCallback(connectionCallback);
             }
+            TRACE.i("start Transaction now===");
             POSManager.getInstance().getDeviceId();
             POSManager.getInstance().startTransaction(amount, paymentServiceCallback);
         }).start();
@@ -297,7 +299,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
                 @Override
                 public void onConfirm(String password) {
                     String pinBlock = QPOSUtil.buildISO4PinBlock(POSManager.getInstance().getIsoFormat4PinBlockParams(), password);// build the ISO format4 pin block
-                    if(!pinBlock.isEmpty()) {
+                    if(pinBlock != null && !pinBlock.isEmpty()) {
                         POSManager.getInstance().sendCvmPin(pinBlock, true);
                     }
                     pinPadDialog.dismiss();

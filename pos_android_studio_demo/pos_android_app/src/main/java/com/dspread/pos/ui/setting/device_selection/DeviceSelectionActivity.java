@@ -92,7 +92,7 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
         //bluetoothAddress
         String bluetoothAddress = SPUtils.getInstance().getString("bluetoothAddress");
 
-        if(!TextUtils.isEmpty(bluetoothAddress)&& !TextUtils.isEmpty(bluetoothName)){
+        if (!TextUtils.isEmpty(bluetoothAddress) && !TextUtils.isEmpty(bluetoothName)) {
             viewModel.isShowDeviceSelectedView.set(true);
             binding.tvBluetoothAddress.setText(bluetoothAddress);
             binding.tvBluetoothSelectedName.setText(bluetoothName);
@@ -153,8 +153,9 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
 
             SPUtils.getInstance().put("bluetoothName", device.getName());
             SPUtils.getInstance().put("bluetoothAddress", device.getAddress());
-
             SPUtils.getInstance().put("deviceAddress", device.getAddress());
+            SPUtils.getInstance().put("isSelectUsbSuccess", false);
+            SPUtils.getInstance().put("isSelectUartSuccess", false);
         });
         recyclerView.setAdapter(bluetoothDeviceAdapter);
     }

@@ -56,8 +56,7 @@ public class TransactionViewModel extends BaseAppViewModel {
     }
 
 
-
-    public void requestTransactionRequest(String  filter) {
+    public void requestTransactionRequest(String filter) {
         TRACE.d("result network requestTransactionRequest");
         TransactionRequest transactionRequest = createAuthRequest(filter);
         addSubscribe(apiService.getTransaction(AUTHFROMISSUER_URL, transactionRequest)
@@ -68,18 +67,17 @@ public class TransactionViewModel extends BaseAppViewModel {
                     TRACE.i("result network rsp code=" + response.getResult());
                     String jsonString = JsonUtil.toJsonString(response.getResult());
                     List<Transaction> transactions = JsonParser.parseTransactionList(jsonString);
-
-
                     transactionList.setValue(transactions);
                 }, throwable -> {
                     isLoading.set(false);
-                    ToastUtils.showShort("The network is failed：" + throwable.getMessage());
+                    isEmpty.set(true);
+                    //ToastUtils.showShort("The network is failed：" + throwable.getMessage());
                 }));
     }
 
-    private TransactionRequest createAuthRequest(String  filter) {
+    private TransactionRequest createAuthRequest(String filter) {
         String deviceSn = SPUtils.getInstance().getString("posID", "");
-        return new TransactionRequest(deviceSn,filter);
+        return new TransactionRequest(deviceSn, filter);
     }
 
 }

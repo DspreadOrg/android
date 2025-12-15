@@ -92,6 +92,8 @@ public class ConnectionSettingsFragment extends BaseFragment<FragmentConnectionS
             SPUtils.getInstance().put("deviceAddress", "");
             SPUtils.getInstance().put("bluetoothName", "");
             SPUtils.getInstance().put("bluetoothAddress", "");
+            SPUtils.getInstance().put("isSelectUartSuccess", true);
+            SPUtils.getInstance().put("isSelectUsbSuccess", false);
         });
 
 
@@ -220,6 +222,8 @@ public class ConnectionSettingsFragment extends BaseFragment<FragmentConnectionS
             SPUtils.getInstance().put("deviceAddress", selectedDevice);
             SPUtils.getInstance().put("bluetoothName", "");
             SPUtils.getInstance().put("bluetoothAddress", "");
+            SPUtils.getInstance().put("isSelectUsbSuccess", true);
+            SPUtils.getInstance().put("isSelectUartSuccess", false);
             hideAllView();
             viewModel.isShowUSBImageView.set(true);
             viewModel.isShowUsbTextView.set(true);
@@ -242,6 +246,7 @@ public class ConnectionSettingsFragment extends BaseFragment<FragmentConnectionS
                     String selectedDevice = items[item].toString();
                     dialog.dismiss();
                     SPUtils.getInstance().put("deviceAddress", selectedDevice);
+                    SPUtils.getInstance().put("isSelectUsbSuccess", true);
 
                 }
             });
