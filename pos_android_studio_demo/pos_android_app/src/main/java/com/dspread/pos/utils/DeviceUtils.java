@@ -29,14 +29,15 @@ import androidx.annotation.RequiresApi;
 public class DeviceUtils {
 
     private static Date currentDate;
-        /**
-         * Get the current mobile system language。
-         *
-         * @return Return the current system language. For example, if the current setting is "Chinese-China", return "zh-CN"
-         */
-        public static String getSystemLanguage() {
-            return Locale.getDefault().getLanguage();
-        }
+
+    /**
+     * Get the current mobile system language。
+     *
+     * @return Return the current system language. For example, if the current setting is "Chinese-China", return "zh-CN"
+     */
+    public static String getSystemLanguage() {
+        return Locale.getDefault().getLanguage();
+    }
 
     /**
      * Retrieve the list of languages (Locale list) on the current system
@@ -114,8 +115,8 @@ public class DeviceUtils {
         return "Brand:" + DeviceUtils.getPhoneBrand() + " || Name:" + DeviceUtils.getDeviceName() + " || Model:" + DeviceUtils.getPhoneModel() + " || Version:" + DeviceUtils.getVersionRelease();
     }
 
-    public static String convertAmountToCents(String original){
-        String result ="";
+    public static String convertAmountToCents(String original) {
+        String result = "";
         try {
             double number = Double.parseDouble(original);
             DecimalFormat decimalFormat = new DecimalFormat("#0.00");
@@ -130,7 +131,7 @@ public class DeviceUtils {
     /**
      * Get the name of the phone motherboard
      *
-     * @return  Motherboard name
+     * @return Motherboard name
      */
     public static String getDeviceBoard() {
         return Build.BOARD;
@@ -214,17 +215,15 @@ public class DeviceUtils {
 
     public static final String UART_AIDL_SERVICE_APP_PACKAGE_NAME = "com.dspread.sdkservice";//新架构的service包名
 
-    public static String getDeviceDate(){
+    public static String getDeviceDate() {
         currentDate = new Date();
-
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-
         // 2023-11-07
         return dateFormat.format(currentDate);
     }
 
-    public static String getDeviceTime(){
-        if(currentDate == null){
+    public static String getDeviceTime() {
+        if (currentDate == null) {
             currentDate = new Date();
         }
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());

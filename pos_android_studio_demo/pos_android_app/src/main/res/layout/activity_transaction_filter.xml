@@ -91,7 +91,6 @@
             android:id="@+id/rbToday"
             style="@style/FilterButton"
             android:text="Today"
-            android:checked="true"
           />
 
         <!-- 3天按钮 -->
@@ -108,6 +107,7 @@
             style="@style/FilterButton"
             android:layout_marginStart="10dp"
             android:text="All"
+            android:checked="true"
           />
     </RadioGroup>
 
