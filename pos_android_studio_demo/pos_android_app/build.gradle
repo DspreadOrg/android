@@ -32,7 +32,7 @@ android {
         minSdk 24
         targetSdk 34
         versionCode 118
-        versionName "8.2.0-2512171640"
+        versionName "8.2.0-2512191840"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         ndk {

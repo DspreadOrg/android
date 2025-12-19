@@ -299,7 +299,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
                 @Override
                 public void onConfirm(String password) {
                     String pinBlock = QPOSUtil.buildISO4PinBlock(POSManager.getInstance().getIsoFormat4PinBlockParams(), password);// build the ISO format4 pin block
-                    if(pinBlock != null && !pinBlock.isEmpty()) {
+                    if (pinBlock != null && !pinBlock.isEmpty()) {
                         POSManager.getInstance().sendCvmPin(pinBlock, true);
                     }
                     pinPadDialog.dismiss();
@@ -318,13 +318,13 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
                 builder.setMessage("Success,Contine ready");
                 builder.setPositiveButton("Confirm", null);
                 builder.show();
-            } else if(displayMsg == QPOSService.Display.INPUT_ONLINE_PIN || displayMsg == QPOSService.Display.INPUT_OFFLINE_PIN){
+            } else if (displayMsg == QPOSService.Display.INPUT_ONLINE_PIN || displayMsg == QPOSService.Display.INPUT_OFFLINE_PIN) {
                 TRACE.d("onRequestDisplay(Display displayMsg):pin input" + displayMsg.toString());
                 viewModel.stopLoading();
                 viewModel.clearErrorState();
                 viewModel.showPinpad.set(true);
                 binding.animationView.pauseAnimation();
-            }else {
+            } else {
                 msg = HandleTxnsResultUtils.getDisplayMessage(displayMsg, PaymentActivity.this);
                 if (handler != null && runnable != null) {
                     handler.removeCallbacks(runnable);
@@ -336,7 +336,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
 
         @Override
         public void onDoTradeResult(QPOSService.DoTradeResult result, Hashtable<String, String> decodeData) {
-            TRACE.i("onDoTradeResult = "+result);
+            TRACE.i("onDoTradeResult = " + result);
             PaymentResult paymentResult = new PaymentResult();
             if (result == QPOSService.DoTradeResult.ICC) {
                 viewModel.cardInsertedState();
@@ -429,6 +429,8 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
                 binding.pinpadEditText.setText("");
                 viewModel.onPinInputCompleted();
                 binding.d70ImageView.setVisibility(View.GONE);
+                binding.llPaymentGuideD35.setVisibility(View.INVISIBLE);
+                binding.llPaymentGuideD50.setVisibility(View.INVISIBLE);
                 if (keyboardUtil != null) {
                     keyboardUtil.hide();
                 }
