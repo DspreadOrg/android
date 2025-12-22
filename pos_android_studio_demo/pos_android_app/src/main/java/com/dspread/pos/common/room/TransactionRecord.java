@@ -65,24 +65,7 @@ public class TransactionRecord {
         this.deviceDate = "";
         this.deviceTime = "";
         this.createdAt = System.currentTimeMillis();
-        this.merchantName="";
-    }
-
-    // 带参数的构造方法（可选）
-    public TransactionRecord(@NonNull String deviceSn,
-                             @NonNull String transactionType,
-                             @NonNull String amount) {
-        this.deviceSn = deviceSn;
-        this.transactionType = transactionType;
-        this.amount = amount;
-        this.maskPan = "";
-        this.cardOrg = "";
-        this.payType = "";
-        this.transResult = "";
-        this.deviceDate = "";
-        this.deviceTime = "";
-        this.createdAt = System.currentTimeMillis();
-        this.merchantName="";
+        this.merchantName = "";
     }
 
     // Getters and Setters
