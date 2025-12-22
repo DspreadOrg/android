@@ -194,7 +194,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
      */
     private void startTransaction() {
         new Thread(() -> {
-            if (!POSManager.getInstance().isDeviceReady()) {
+            if (!POSManager.getInstance().isDeviceConnected()) {
                 POSManager.getInstance().connect(deviceAddress, connectionCallback);
             } else {
                 // if device has connected, just register connection callback
@@ -253,7 +253,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
         @Override
         public void onQposRequestPinResult(List<String> dataList, int offlineTime) {
             TRACE.d("onQposRequestPinResult = " + dataList + "\nofflineTime: " + offlineTime);
-            if (POSManager.getInstance().isDeviceReady()) {
+            if (POSManager.getInstance().isDeviceConnected()) {
                 viewModel.stopLoading();
                 viewModel.clearErrorState();
                 viewModel.showPinpad.set(true);
@@ -263,11 +263,11 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
             }
             binding.pinpadEditText.setText("");
             MyKeyboardView.setKeyBoardListener(value -> {
-                if (POSManager.getInstance().isDeviceReady()) {
+                if (POSManager.getInstance().isDeviceConnected()) {
                     POSManager.getInstance().pinMapSync(value, 20);
                 }
             });
-            if (POSManager.getInstance().isDeviceReady()) {
+            if (POSManager.getInstance().isDeviceConnected()) {
                 keyboardUtil = new KeyboardUtil(PaymentActivity.this, binding.relSaleDetails, dataList);
                 keyboardUtil.initKeyboard(MyKeyboardView.KEYBOARDTYPE_Only_Num_Pwd, binding.pinpadEditText);//Random keyboard
             }

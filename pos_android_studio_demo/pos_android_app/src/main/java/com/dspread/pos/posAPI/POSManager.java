@@ -153,7 +153,7 @@ public class POSManager {
         return pos;
     }
 
-    public void clearPosService() {
+    public void releasePosService() {
         pos = null;
     }
 
@@ -167,8 +167,8 @@ public class POSManager {
      *
      * @return true if device is connected and ready
      */
-    public boolean isDeviceReady() {
-        return pos != null;
+    public boolean isDeviceConnected() {
+        return pos != null && pos.isQposPresent();
     }
 
     public void setDeviceAddress(String address) {
@@ -207,7 +207,7 @@ public class POSManager {
      * @param callback Callback to handle payment events
      */
     public void startTransaction(String amount, PaymentServiceCallback callback) {
-        if (!isDeviceReady()) {
+        if (!isDeviceConnected()) {
             return;
         }
 
@@ -346,7 +346,7 @@ public class POSManager {
             pos.disconnectBT();
         }
         SPUtils.getInstance().put("deviceAddress", "");
-        clearPosService();
+        releasePosService();
     }
 
     /**
@@ -416,7 +416,7 @@ public class POSManager {
         public void onRequestQposDisconnected() {
             SPUtils.getInstance().put("isConnected",false);
             SPUtils.getInstance().put("device_type","");
-            clearPosService();
+            releasePosService();
             connectLatch.countDown();
             notifyConnectionCallbacks(cb -> cb.onRequestQposDisconnected());
         }
@@ -425,7 +425,7 @@ public class POSManager {
         public void onRequestNoQposDetected() {
             SPUtils.getInstance().put("isConnected",false);
             SPUtils.getInstance().put("device_type","");
-            clearPosService();
+            releasePosService();
             connectLatch.countDown();
             notifyConnectionCallbacks(cb -> cb.onRequestNoQposDetected());
         }
