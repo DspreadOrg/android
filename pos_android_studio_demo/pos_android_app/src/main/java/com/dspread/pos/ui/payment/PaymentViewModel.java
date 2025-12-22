@@ -1,18 +1,8 @@
 package com.dspread.pos.ui.payment;
 
 import android.app.Application;
-import android.os.Handler;
-
-import androidx.annotation.NonNull;
-import androidx.databinding.ObservableBoolean;
-import androidx.databinding.ObservableField;
-
 
 import com.dspread.pos.common.base.BaseAppViewModel;
-import com.dspread.pos.common.http.RetrofitClient;
-import com.dspread.pos.common.http.api.RequestOnlineAuthAPI;
-import com.dspread.pos.common.http.model.AuthRequest;
-
 import com.dspread.pos.common.room.TransactionRecord;
 import com.dspread.pos.common.room.TransactionRecordRepository;
 import com.dspread.pos.posAPI.POSManager;
@@ -23,19 +13,16 @@ import com.dspread.pos.utils.TRACE;
 
 import java.util.List;
 
-import androidx.lifecycle.LiveData;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
+import androidx.annotation.NonNull;
+import androidx.databinding.ObservableBoolean;
+import androidx.databinding.ObservableField;
 import me.goldze.mvvmhabit.binding.command.BindingCommand;
 import me.goldze.mvvmhabit.bus.event.SingleLiveEvent;
 import me.goldze.mvvmhabit.utils.SPUtils;
 
 
 public class PaymentViewModel extends BaseAppViewModel {
-    private static final String AUTHFROMISSUER_URL = "https://ypparbjfugzgwijijfnb.supabase.co/functions/v1/request-online-result";
-    private RequestOnlineAuthAPI apiService;
     private TransactionRecordRepository transactionRecordRepository;
-    private long currentTransactionId = -1;
 
     public ObservableField<String> loadingText = new ObservableField<>("");
     public ObservableField<Boolean> isLoading = new ObservableField<>(false);
@@ -56,7 +43,6 @@ public class PaymentViewModel extends BaseAppViewModel {
 
     public PaymentViewModel(@NonNull Application application) {
         super(application);
-        apiService = RetrofitClient.getInstance().create(RequestOnlineAuthAPI.class);
         transactionRecordRepository = TransactionRecordRepository.getInstance(application);
         initDeviceConfig();
     }
@@ -212,12 +198,11 @@ public class PaymentViewModel extends BaseAppViewModel {
 
     public void requestOnlineAuth(boolean isICC, PaymentModel paymentModel) {
         // AuthRequest authRequest = createAuthRequest(paymentModel);
-        // 保存交易记录到数据库
+        // Save transaction records to the ROOM database
         sendOnlineAuthRequest(isICC);
         saveTransactionRecordToDatabase(paymentModel, new TransactionRecordRepository.InsertCallback() {
             @Override
             public void onInserted(long id) {
-                currentTransactionId = id;
                 TRACE.i("Transaction record saved with ID: " + id);
             }
         });
@@ -236,38 +221,6 @@ public class PaymentViewModel extends BaseAppViewModel {
         }
     }
 
-    private void handleAuthError(boolean isICC, Throwable throwable) {
-        TRACE.e("Online auth request failed: " + throwable.getMessage());
-
-        if (isICC) {
-            POSManager.getInstance().sendOnlineProcessResult("8A023030");
-        } else {
-            isOnlineSuccess.setValue(true);
-        }
-    }
-
-    private AuthRequest createAuthRequest(PaymentModel paymentModel) {
-        String deviceSn = SPUtils.getInstance().getString("posID", "");
-        String transactionType = SPUtils.getInstance().getString("transactionType", "");
-        String amount = paymentModel.getAmount();
-        String maskPan = paymentModel.getCardNo();
-        String cardOrg = paymentModel.getCardOrg();
-        String payType = "Card";
-        String transResult = "Paid";
-
-        return new AuthRequest(
-                deviceSn,
-                amount,
-                maskPan,
-                cardOrg,
-                transactionType,
-                payType,
-                transResult,
-                DeviceUtils.getDeviceDate(),
-                DeviceUtils.getDeviceTime()
-        );
-    }
-
     private void saveTransactionRecordToDatabase(PaymentModel paymentModel,
                                                  TransactionRecordRepository.InsertCallback callback) {
         try {
@@ -281,7 +234,6 @@ public class PaymentViewModel extends BaseAppViewModel {
             transactionRecord.setTransResult("Paid");
             transactionRecord.setDeviceDate(DeviceUtils.getDeviceDate());
             transactionRecord.setDeviceTime(DeviceUtils.getDeviceTime());
-            // 异步保存到数据库
             transactionRecordRepository.insertAsync(transactionRecord, callback);
         } catch (Exception e) {
             TRACE.e("Failed to save transaction record: " + e.getMessage());

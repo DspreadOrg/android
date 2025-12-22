@@ -17,55 +17,43 @@ public class TransactionRecord {
     private int id;
 
     @NonNull
-    @ColumnInfo(name = "device_sn", defaultValue = "")
-    private String deviceSn;
+    @ColumnInfo(name = "device_sn")
+    private String deviceSn = "";
 
     @NonNull
-    @ColumnInfo(name = "transaction_type", defaultValue = "")
-    private String transactionType;
+    @ColumnInfo(name = "transaction_type")
+    private String transactionType = "";
 
     @NonNull
-    @ColumnInfo(name = "amount", defaultValue = "")
-    private String amount;
+    @ColumnInfo(name = "amount")
+    private String amount = "";
 
-    @ColumnInfo(name = "mask_pan", defaultValue = "")
-    private String maskPan;
+    @ColumnInfo(name = "mask_pan")
+    private String maskPan = "";
 
-    @ColumnInfo(name = "card_org", defaultValue = "")
-    private String cardOrg;
+    @ColumnInfo(name = "card_org")
+    private String cardOrg = "";
 
-    @ColumnInfo(name = "pay_type", defaultValue = "")
-    private String payType;
+    @ColumnInfo(name = "pay_type")
+    private String payType = "";
 
-    @ColumnInfo(name = "trans_result", defaultValue = "")
-    private String transResult;
+    @ColumnInfo(name = "trans_result")
+    private String transResult = "";
 
-    @ColumnInfo(name = "device_date", defaultValue = "")
-    private String deviceDate;
+    @ColumnInfo(name = "device_date")
+    private String deviceDate = "";
 
-    @ColumnInfo(name = "device_time", defaultValue = "")
-    private String deviceTime;
+    @ColumnInfo(name = "device_time")
+    private String deviceTime = "";
 
     @ColumnInfo(name = "created_at")
-    private long createdAt;
+    private long createdAt = System.currentTimeMillis();
 
 
     @ColumnInfo(name = "merchant_name")
     private String merchantName;
 
     public TransactionRecord() {
-        // 初始化所有字段
-        this.deviceSn = "";
-        this.transactionType = "";
-        this.amount = "";
-        this.maskPan = "";
-        this.cardOrg = "";
-        this.payType = "";
-        this.transResult = "";
-        this.deviceDate = "";
-        this.deviceTime = "";
-        this.createdAt = System.currentTimeMillis();
-        this.merchantName = "";
     }
 
     // Getters and Setters

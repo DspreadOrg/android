@@ -15,23 +15,22 @@ public class TransactionRecordRepository {
     private final TransactionRecordDao transactionRecordDao;
     private final ExecutorService executorService;
 
-    // 单例实例
+    // Single instance
     private static volatile TransactionRecordRepository instance;
 
-    /**
-     * 私有构造函数
-     */
+
     private TransactionRecordRepository(Application application) {
         AppDatabase database = AppDatabase.getInstance(application);
         transactionRecordDao = database.transactionRecordDao();
         executorService = Executors.newSingleThreadExecutor();
     }
 
+
     /**
-     * 获取单例实例（需要Application参数）
+     * Get singleton instance (requires Application parameter)
      *
-     * @param application Application实例
-     * @return TransactionRecordRepository单例
+     * @ param application instance
+     * @ return TransactionRecordRepository singleton
      */
     public static TransactionRecordRepository getInstance(Application application) {
         if (instance == null) {
@@ -45,7 +44,7 @@ public class TransactionRecordRepository {
     }
 
     /**
-     * 销毁单例实例（主要用于测试或清理）
+     * destory this a single instance
      */
     public static void destroy() {
         if (instance != null) {

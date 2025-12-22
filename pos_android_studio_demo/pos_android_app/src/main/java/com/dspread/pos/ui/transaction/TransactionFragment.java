@@ -37,6 +37,7 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import me.goldze.mvvmhabit.utils.SPUtils;
 
 public class TransactionFragment extends BaseFragment<FragmentTransactionBinding, TransactionViewModel> implements TitleProviderListener {
     private String filter = "all";
@@ -117,6 +118,7 @@ public class TransactionFragment extends BaseFragment<FragmentTransactionBinding
                 result -> {
                     if (result.getResultCode() == FILTER_RECEIVE && result.getData() != null) {
                         filter = result.getData().getStringExtra("filter");
+                        TRACE.d("go back:"+filter);
                         viewModel.requestTransactionRequest(filter);
                     }
                 }
@@ -170,14 +172,14 @@ public class TransactionFragment extends BaseFragment<FragmentTransactionBinding
     @Override
     public void onPause() {
         super.onPause();
-        // 清除所有待处理的刷新任务
+        //Clear all pending refresh tasks
         handler.removeCallbacks(refreshRunnable);
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        // 清理Handler和Runnable
+        // Clean up Handler and Runnable
         handler.removeCallbacksAndMessages(null);
         refreshRunnable = null;
     }
@@ -186,23 +188,13 @@ public class TransactionFragment extends BaseFragment<FragmentTransactionBinding
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
         TRACE.d("TransactionFragment hidden:" + hidden);
-        // 当Fragment变为可见时触发刷新
+        // Trigger refresh when fragment becomes visible
         if (!hidden) {
-            // 清除之前的刷新任务
             handler.removeCallbacks(refreshRunnable);
-
-            // 使用postDelayed确保UI已经准备好
-            handler.postDelayed(refreshRunnable, 300); // 稍微延迟确保动画完成
+            handler.postDelayed(refreshRunnable, 300);
         }
     }
 
-    // 可选：提供手动刷新方法
-    public void refreshTransactionData() {
-        if (handler != null && refreshRunnable != null) {
-            handler.removeCallbacks(refreshRunnable);
-            handler.post(refreshRunnable);
-        }
-    }
 
     private void setupSwipeRefresh() {
         binding.swipeRefreshLayout.setColorSchemeResources(
@@ -213,7 +205,8 @@ public class TransactionFragment extends BaseFragment<FragmentTransactionBinding
             @Override
             public void onRefresh() {
                 if (binding.searchEditText.getText().toString().trim().isEmpty()) {
-                    viewModel.refreshWithFilter(filter);
+                    String filterType = SPUtils.getInstance().getString("filterType", "all");
+                    viewModel.refreshWithFilter(filterType);
                 } else {
                     performSearch();
                 }

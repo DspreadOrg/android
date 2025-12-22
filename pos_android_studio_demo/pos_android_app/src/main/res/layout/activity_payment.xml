@@ -35,7 +35,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <!-- 原有 LinearLayout 内容（总金额、提示文字、设备图片等） -->
+                    <!-- Original LinearLayout content (total amount, prompt text, equipment pictures, etc.)-->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -81,10 +81,10 @@
                             android:textColor="@color/red_color"
                             android:textSize="19sp"
                             android:visibility="@{viewModel.isShowOtherCardTxt?View.VISIBLE : View.GONE }" />
-                        <!-- 其他视图（如设备图片、支付方式图标等） -->
+                        <!-- Other views (such as device images, payment method icons, etc.)-->
                     </LinearLayout>
 
-                    <!-- 右上角的“×”图标 -->
+                    <!-- The "x" icon in the upper right corner -->
                     <ImageView
                         android:id="@+id/iv_close_black"
                         android:layout_width="wrap_content"
@@ -242,7 +242,7 @@
             </LinearLayout>
 
 
-            <!--卡组织图片-->
+            <!--Card Organization Picture-->
             <LinearLayout
                 android:id="@+id/lin_cardbrand"
                 android:layout_width="match_parent"
@@ -300,8 +300,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="2">
-
-                    <!-- 原有 LinearLayout 内容（总金额、提示文字、设备图片等） -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -326,7 +324,6 @@
                             android:textSize="44sp"
                             android:textStyle="bold" />
 
-                        <!-- 其他视图（如设备图片、支付方式图标等） -->
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -337,7 +334,7 @@
                             android:visibility="@{viewModel.isD70 ? View.VISIBLE : View.GONE}" />
                     </LinearLayout>
 
-                    <!-- 右上角的“×”图标 -->
+                    <!-- The "X" icon in the upper right corner -->
                     <ImageView
                         android:id="@+id/iv_btn_close_black"
                         android:layout_width="wrap_content"
@@ -457,14 +454,14 @@
                 android:gravity="center"
                 android:orientation="vertical"
                 android:padding="36dp">
-                <!-- 圆形进度条 -->
+                <!-- circular progress bar -->
                 <ProgressBar
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:indeterminate="true"
-                    android:indeterminateTint="@color/red_color" /> <!-- 进度条颜色（红色） -->
+                    android:indeterminateTint="@color/red_color" /> <!-- Progress bar color (red)-->
 
-                <!-- 提示文字 -->
+                <!-- prompt text -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

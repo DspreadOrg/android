@@ -62,7 +62,6 @@ public class Transaction implements Serializable {
     @SerializedName("transaction_date")
     private String transactionDate;
 
-    // Getter 和 Setter 方法
     public double getId() {
         return id;
     }

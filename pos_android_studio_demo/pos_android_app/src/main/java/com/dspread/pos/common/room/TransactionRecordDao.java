@@ -40,11 +40,7 @@ public interface TransactionRecordDao {
     @Query("DELETE FROM transaction_record")
     void deleteAll();
 
-    // 新增：查询设备三天内的数据（包括今天、昨天、前天）
-    @Query("SELECT * FROM transaction_record " +
-            "WHERE device_sn = :deviceSn " +
-            "AND device_date >= date('now', 'localtime', '-2 days') " +
-            "AND device_date <= date('now', 'localtime') " +
-            "ORDER BY created_at DESC")
+    //:Querying device data within three days (including today, yesterday, and the day before yesterday)
+    @Query("SELECT * FROM transaction_record " + "WHERE device_sn = :deviceSn " + "AND device_date >= date('now', 'localtime', '-2 days') " + "AND device_date <= date('now', 'localtime') " + "ORDER BY created_at DESC")
     List<TransactionRecord> getLast3DaysRecordsByDeviceSn(String deviceSn);
 }

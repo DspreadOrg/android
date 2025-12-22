@@ -10,7 +10,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 
 @Database(entities =
         {TransactionRecord.class},
-        version = 3,
+        version = 4,
         exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
@@ -18,7 +18,7 @@ public abstract class AppDatabase extends RoomDatabase {
 
     public abstract TransactionRecordDao transactionRecordDao();
 
-    static final Migration MIGRATION_2_3 = new Migration(2, 3) {
+    static final Migration MIGRATION_2_3 = new Migration(3, 4) {
         @Override
         public void migrate(SupportSQLiteDatabase database) {
             try {
@@ -26,7 +26,7 @@ public abstract class AppDatabase extends RoomDatabase {
                         "ALTER TABLE transaction_record ADD COLUMN merchant_name TEXT DEFAULT ''"
                 );
             } catch (Exception e) {
-                // 处理迁移异常
+                //Handling migration exceptions
                 e.printStackTrace();
             }
         }

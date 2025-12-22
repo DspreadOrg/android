@@ -13,6 +13,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -116,15 +118,25 @@ public class DeviceUtils {
     }
 
     public static String convertAmountToCents(String original) {
+        System.out.println("convertAmountToCents:" + original);
         String result = "";
+
         try {
-            double number = Double.parseDouble(original);
+            // Using NumberFormat for parsing with support for thousand separator commas.
+            NumberFormat format = NumberFormat.getInstance(Locale.US);
+            // or Locale.getDefault()
+            Number number = format.parse(original);
+
             DecimalFormat decimalFormat = new DecimalFormat("#0.00");
-            result = decimalFormat.format(number / 100);
-            System.out.println(result); // 输出: 1.23
-        } catch (NumberFormatException e) {
-            System.out.println("Invalid format");
+            result = decimalFormat.format(number.doubleValue() / 100);
+            System.out.println("Result: " + result);
+        } catch (ParseException e) {
+            System.out.println("Invalid format: " + original);
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.out.println("Unexpected error: " + e.getMessage());
         }
+
         return result;
     }
 

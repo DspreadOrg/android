@@ -35,13 +35,8 @@ import me.goldze.mvvmhabit.utils.SPUtils;
 import me.goldze.mvvmhabit.utils.ToastUtils;
 
 public class TransactionViewModel extends BaseAppViewModel {
-
-    private static final String AUTHFROMISSUER_URL = "https://ypparbjfugzgwijijfnb.supabase.co/functions/v1/get-transaction-records";
     private final TransactionRecordRepository transactionRecordRepository;
-
-
     public MutableLiveData<List<Transaction>> transactionList = new MutableLiveData<>();
-    private RequestOnlineAuthAPI apiService;
 
     public ObservableField<Boolean> isLoading = new ObservableField<>(false);
     public ObservableField<Boolean> isEmpty = new ObservableField<>(false);
@@ -54,13 +49,13 @@ public class TransactionViewModel extends BaseAppViewModel {
 
     public TransactionViewModel(@NonNull Application application) {
         super(application);
-        apiService = RetrofitClient.getInstance().create(RequestOnlineAuthAPI.class);
         transactionRecordRepository = TransactionRecordRepository.getInstance(application);
     }
 
     public void init() {
         isLoading.set(true);
-        requestTransactionRequest("all");
+        String filterType = SPUtils.getInstance().getString("filterType", "all");
+        requestTransactionRequest(filterType);
     }
 
     public void refreshWithFilter(String filter) {
@@ -95,13 +90,6 @@ public class TransactionViewModel extends BaseAppViewModel {
             });
         });
     }
-
-    private TransactionRequest createAuthRequest(String filter) {
-        String deviceSn = SPUtils.getInstance().getString("posID", "");
-        return new TransactionRequest(deviceSn, filter);
-    }
-
-
     private List<Transaction> convertToTransactionList(List<TransactionRecord> records) {
         if (records == null || records.isEmpty()) {
             return new ArrayList<>();
