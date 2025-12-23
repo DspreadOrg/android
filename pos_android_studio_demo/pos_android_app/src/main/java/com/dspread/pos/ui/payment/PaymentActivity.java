@@ -361,6 +361,13 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
                     keyboardUtil.hide();
                 }
                 viewModel.titleText.set(getString(R.string.pls_see_phone));
+            }else {//NFC DECLINED
+                viewModel.showPinpad.set(false);
+                if (keyboardUtil != null) {
+                    keyboardUtil.hide();
+                }
+                paymentStatus("", "", "", "NFC Declined");
+                viewModel.setTransactionFailed("NFC Declined");
             }
         }
 

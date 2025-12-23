@@ -72,6 +72,8 @@ public class TransactionFragment extends BaseFragment<FragmentTransactionBinding
     @Override
     public void initData() {
         super.initData();
+
+        // init the Runnable instance
         refreshRunnable = new Runnable() {
             @Override
             public void run() {
