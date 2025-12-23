@@ -44,7 +44,7 @@ public class TransactionFilterActivity extends BaseActivity<ActivityTransactionF
             binding.toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    backToFinsh();
+                    finish();
                 }
             });
         }
@@ -64,21 +64,13 @@ public class TransactionFilterActivity extends BaseActivity<ActivityTransactionF
                             filter = "all";
                             break;
                     }
-                    SPUtils.getInstance().put("filterType", filter);
                 });
-    }
-
-    private void backToFinsh() {
-        String filterType = SPUtils.getInstance().getString("filterType", "all");
-        Intent intent = new Intent();
-        intent.putExtra("filter", filterType);
-        setResult(FILTER_RECEIVE, intent);
-        finish();
     }
 
     @Override
     public void initViewObservable() {
         viewModel.doneEvent.observe(this, unused -> {
+            SPUtils.getInstance().put("filterType", filter);
             Intent intent = new Intent();
             intent.putExtra("filter", filter);
             setResult(FILTER_RECEIVE, intent);

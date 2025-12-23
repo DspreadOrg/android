@@ -94,9 +94,7 @@ public class TransactionViewModel extends BaseAppViewModel {
         if (records == null || records.isEmpty()) {
             return new ArrayList<>();
         }
-
         List<Transaction> transactionList = new ArrayList<>(records.size());
-
         for (TransactionRecord record : records) {
             Transaction transaction = convertToTransaction(record);
             if (transaction != null) {
