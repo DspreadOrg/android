@@ -13,6 +13,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -29,14 +31,15 @@ import androidx.annotation.RequiresApi;
 public class DeviceUtils {
 
     private static Date currentDate;
-        /**
-         * Get the current mobile system language。
-         *
-         * @return Return the current system language. For example, if the current setting is "Chinese-China", return "zh-CN"
-         */
-        public static String getSystemLanguage() {
-            return Locale.getDefault().getLanguage();
-        }
+
+    /**
+     * Get the current mobile system language。
+     *
+     * @return Return the current system language. For example, if the current setting is "Chinese-China", return "zh-CN"
+     */
+    public static String getSystemLanguage() {
+        return Locale.getDefault().getLanguage();
+    }
 
     /**
      * Retrieve the list of languages (Locale list) on the current system
@@ -114,23 +117,33 @@ public class DeviceUtils {
         return "Brand:" + DeviceUtils.getPhoneBrand() + " || Name:" + DeviceUtils.getDeviceName() + " || Model:" + DeviceUtils.getPhoneModel() + " || Version:" + DeviceUtils.getVersionRelease();
     }
 
-    public static String convertAmountToCents(String original){
-        String result ="";
+    public static String convertAmountToCents(String original) {
+        System.out.println("convertAmountToCents:" + original);
+        String result = "";
+
         try {
-            double number = Double.parseDouble(original);
+            // Using NumberFormat for parsing with support for thousand separator commas.
+            NumberFormat format = NumberFormat.getInstance(Locale.US);
+            // or Locale.getDefault()
+            Number number = format.parse(original);
+
             DecimalFormat decimalFormat = new DecimalFormat("#0.00");
-            result = decimalFormat.format(number / 100);
-            System.out.println(result); // 输出: 1.23
-        } catch (NumberFormatException e) {
-            System.out.println("Invalid format");
+            result = decimalFormat.format(number.doubleValue() / 100);
+            System.out.println("Result: " + result);
+        } catch (ParseException e) {
+            System.out.println("Invalid format: " + original);
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.out.println("Unexpected error: " + e.getMessage());
         }
+
         return result;
     }
 
     /**
      * Get the name of the phone motherboard
      *
-     * @return  Motherboard name
+     * @return Motherboard name
      */
     public static String getDeviceBoard() {
         return Build.BOARD;
@@ -214,17 +227,15 @@ public class DeviceUtils {
 
     public static final String UART_AIDL_SERVICE_APP_PACKAGE_NAME = "com.dspread.sdkservice";//新架构的service包名
 
-    public static String getDeviceDate(){
+    public static String getDeviceDate() {
         currentDate = new Date();
-
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-
         // 2023-11-07
         return dateFormat.format(currentDate);
     }
 
-    public static String getDeviceTime(){
-        if(currentDate == null){
+    public static String getDeviceTime() {
+        if (currentDate == null) {
             currentDate = new Date();
         }
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());

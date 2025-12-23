@@ -3,8 +3,9 @@ package com.dspread.pos.ui.transaction;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -13,7 +14,6 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.dspread.pos.TitleProviderListener;
 import com.dspread.pos.common.base.BaseFragment;
@@ -32,17 +32,18 @@ import java.util.List;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatEditText;
-import androidx.databinding.ObservableField;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
+import me.goldze.mvvmhabit.utils.SPUtils;
 
 public class TransactionFragment extends BaseFragment<FragmentTransactionBinding, TransactionViewModel> implements TitleProviderListener {
     private String filter = "all";
     private boolean isSmallScreenDevice = false;
+    private final Handler handler = new Handler(Looper.getMainLooper());
+    private Runnable refreshRunnable;
 
     @Override
     public String getTitle() {
@@ -62,7 +63,7 @@ public class TransactionFragment extends BaseFragment<FragmentTransactionBinding
     private PaymentsAdapter adapter;
     private List<Transaction> paymentList;
 
-    private ArrayList<Transaction> cacheArrayList = new ArrayList();
+    private final ArrayList<Transaction> cacheArrayList = new ArrayList<>();
     private boolean showCategorized = false;
 
     private ActivityResultLauncher<Intent> launcher;
@@ -71,6 +72,17 @@ public class TransactionFragment extends BaseFragment<FragmentTransactionBinding
     @Override
     public void initData() {
         super.initData();
+
+        // init the Runnable instance
+        refreshRunnable = new Runnable() {
+            @Override
+            public void run() {
+                if (getActivity() != null && !getActivity().isFinishing()) {
+                    viewModel.init();
+                }
+            }
+        };
+
         // Setup recycler view
         binding.paymentsRecycler.setLayoutManager(new LinearLayoutManager(getActivity()));
         viewModel.init();
@@ -84,18 +96,20 @@ public class TransactionFragment extends BaseFragment<FragmentTransactionBinding
             viewModel.isTransactionHeader.set(false);
             viewModel.isTransactionViewAll.set(false);
         }
-        viewModel.transactionList.observe(this, new Observer<List<Transaction>>() {
+
+        viewModel.transactionList.observe(getViewLifecycleOwner(), new Observer<List<Transaction>>() {
             @Override
             public void onChanged(List<Transaction> transactions) {
                 TransactionSorter.sortTransactions(transactions);
                 cacheArrayList.clear();
                 cacheArrayList.addAll(transactions);
                 if (showCategorized) {
-                    adapter.refreshAdapter(true, transactions);
+                    if (adapter != null) {
+                        adapter.refreshAdapter(true, transactions);
+                    }
                 } else {
                     handleList(transactions);
                 }
-
             }
         });
 
@@ -104,7 +118,6 @@ public class TransactionFragment extends BaseFragment<FragmentTransactionBinding
                 result -> {
                     if (result.getResultCode() == FILTER_RECEIVE && result.getData() != null) {
                         filter = result.getData().getStringExtra("filter");
-                        // 这里拿到 filter 字符串
                         viewModel.requestTransactionRequest(filter);
                     }
                 }
@@ -130,7 +143,7 @@ public class TransactionFragment extends BaseFragment<FragmentTransactionBinding
         binding.filterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                hideKeyboard();
                 Intent intent = new Intent(getActivity(), TransactionFilterActivity.class);
                 launcher.launch(intent);
             }
@@ -139,7 +152,6 @@ public class TransactionFragment extends BaseFragment<FragmentTransactionBinding
         binding.searchEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
-
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     performSearch();
                     return true;
@@ -148,23 +160,52 @@ public class TransactionFragment extends BaseFragment<FragmentTransactionBinding
             }
         });
         setupSwipeRefresh();
-
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        TRACE.d("TransactionFragment onResume");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        //Clear all pending refresh tasks
+        handler.removeCallbacks(refreshRunnable);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        // Clean up Handler and Runnable
+        handler.removeCallbacksAndMessages(null);
+        refreshRunnable = null;
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        TRACE.d("TransactionFragment hidden:" + hidden);
+        // Trigger refresh when fragment becomes visible
+        if (!hidden) {
+            handler.removeCallbacks(refreshRunnable);
+            handler.postDelayed(refreshRunnable, 300);
+        }
+    }
+
+
     private void setupSwipeRefresh() {
-        // 设置下拉刷新颜色
         binding.swipeRefreshLayout.setColorSchemeResources(
-               /* android.R.color.holo_blue_bright,
-                android.R.color.holo_green_light,
-                android.R.color.holo_orange_light,*/
                 android.R.color.holo_red_light
         );
-        // 设置下拉刷新监听器
+
         binding.swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 if (binding.searchEditText.getText().toString().trim().isEmpty()) {
-                    viewModel.refreshWithFilter(filter);
+                    String filterType = SPUtils.getInstance().getString("filterType", "all");
+                    viewModel.refreshWithFilter(filterType);
                 } else {
                     performSearch();
                 }
@@ -186,7 +227,6 @@ public class TransactionFragment extends BaseFragment<FragmentTransactionBinding
                 }
             }
             handleList(transactionsList);
-            transactionsList.clear();
             hideKeyboard();
         } else {
             handleList(cacheArrayList);
@@ -194,7 +234,6 @@ public class TransactionFragment extends BaseFragment<FragmentTransactionBinding
         }
     }
 
-    // 修复的隐藏键盘方法
     private void hideKeyboard() {
         try {
             InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -208,7 +247,7 @@ public class TransactionFragment extends BaseFragment<FragmentTransactionBinding
 
     private void handleList(List<Transaction> transactions) {
         this.paymentList = transactions;
-        // Setup adapter\
+
         showTransationListUI(transactions);
 
         adapter = new PaymentsAdapter(transactions, new PaymentsAdapter.OnItemClickListener() {
@@ -234,16 +273,26 @@ public class TransactionFragment extends BaseFragment<FragmentTransactionBinding
                 binding.paymentsAmount.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
             } else {
                 binding.paymentsAmount.setTextSize(TypedValue.COMPLEX_UNIT_SP, 44);
-                // 默认大小
             }
 
-            int todayCount = transactions != null ? TransactionDateFilter.getTodayTransactions(transactions).size() : 0;
-
-            binding.paymentsCount.setText(todayCount + " Payments Today");
-
+            String filterType = SPUtils.getInstance().getString("filterType", "all");
+            switch (filterType) {
+                case "1":
+                    binding.paymentsCount.setText(transactions.size() + " Payments Today");
+                    break;
+                case "3":
+                    binding.paymentsCount.setText(transactions.size() + " Payments 3Days");
+                    break;
+                case "all":
+                default:
+                    binding.paymentsCount.setText(transactions.size() + " Payments All");
+                    break;
+            }
+            //int todayCount = TransactionDateFilter.getTodayTransactions(transactions).size();
+            //binding.paymentsCount.setText(todayCount + " Payments Today");
         }
 
-        if (transactions != null && transactions.size() < 1) {
+        if (transactions == null || transactions.size() < 1) {
             viewModel.isEmpty.set(true);
             viewModel.isTransactionHeader.set(false);
             viewModel.isTransactionViewAll.set(false);
@@ -253,7 +302,6 @@ public class TransactionFragment extends BaseFragment<FragmentTransactionBinding
                 viewModel.isTransactionHeader.set(true);
                 viewModel.isTransactionViewAll.set(true);
             }
-
         }
     }
 }

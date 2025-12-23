@@ -6,7 +6,7 @@ import java.io.Serializable;
 
 public class Transaction implements Serializable {
     @SerializedName("id")
-    private double id;
+    private int id;
 
     @SerializedName("device_sn")
     private String deviceSn;
@@ -62,12 +62,11 @@ public class Transaction implements Serializable {
     @SerializedName("transaction_date")
     private String transactionDate;
 
-    // Getter 和 Setter 方法
-    public double getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(double id) {
+    public void setId(int id) {
         this.id = id;
     }
 

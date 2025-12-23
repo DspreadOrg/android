@@ -151,7 +151,8 @@ public class PaymentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if (holder instanceof HeaderViewHolder) {
             HeaderViewHolder headerHolder = (HeaderViewHolder) holder;
             headerHolder.headerText.setText(item.getHeaderText());
-            headerHolder.headerAmount.setText("$" + amountFormat.format(item.getMonthTotalAmount()));
+            String monthTotalAmount = DeviceUtils.convertAmountToCents(amountFormat.format(item.getMonthTotalAmount()));
+            headerHolder.headerAmount.setText("$" + monthTotalAmount);
         } else if (holder instanceof PaymentViewHolder) {
             PaymentViewHolder paymentHolder = (PaymentViewHolder) holder;
             Transaction payment = item.getPayment();

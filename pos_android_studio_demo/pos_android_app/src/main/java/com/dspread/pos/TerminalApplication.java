@@ -5,6 +5,7 @@ import android.os.Build;
 
 
 import com.dspread.pos.common.manager.FragmentCacheManager;
+import com.dspread.pos.common.room.TransactionRecordRepository;
 import com.dspread.pos.posAPI.POSManager;
 import com.dspread.pos.ui.main.MainActivity;
 import com.dspread.pos.utils.DevUtils;
@@ -24,7 +25,6 @@ import me.goldze.mvvmhabit.crash.CaocConfig;
  * @author user
  */
 public class TerminalApplication extends BaseApplication {
-
     @Override
     public void onCreate() {
         super.onCreate();
@@ -36,7 +36,6 @@ public class TerminalApplication extends BaseApplication {
         TRACE.setContext(this);
         POSManager.init(this);
     }
-
     private void initCrash() {
         CaocConfig.Builder.create()
                 .backgroundMode(CaocConfig.BACKGROUND_MODE_SILENT) //Background mode, activate immersive mode
@@ -70,7 +69,7 @@ public class TerminalApplication extends BaseApplication {
 
         // Set user data
         CrashReport.setUserId(DevUtils.getDeviceId(this));
-        CrashReport.setDeviceModel(this,Build.MODEL);
+        CrashReport.setDeviceModel(this, Build.MODEL);
 
         // Add custom logs
         CrashReport.setUserSceneTag(context, 9527); // Set label
@@ -78,7 +77,7 @@ public class TerminalApplication extends BaseApplication {
         CrashReport.putUserData(context, "deviceManufacturer", Build.MANUFACTURER);
     }
 
-    private void initShiply(){
+    private void initShiply() {
         String appId = "6316d5169f"; // The appid of the Android product applied for on the front-end page of Shiply
         String appKey = "ffe00435-2389-4189-bd87-4b30ffcaff8e"; // The appkey for Android products applied for on the front-end page of Shiply
         UpgradeConfig.Builder builder = new UpgradeConfig.Builder();
