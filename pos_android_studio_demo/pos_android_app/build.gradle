@@ -32,9 +32,8 @@ android {
         minSdk 24
         targetSdk 34
         versionCode 119
-        versionName "8.2.0-2512221800"
+        versionName "8.2.0-2512231200"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-
         ndk {
             // Set up supported SO library architecture
             abiFilters 'armeabi-v7a', 'arm64-v8a' //'x86', 'x86_64'

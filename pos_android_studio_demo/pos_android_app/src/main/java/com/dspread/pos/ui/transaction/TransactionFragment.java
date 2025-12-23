@@ -72,8 +72,6 @@ public class TransactionFragment extends BaseFragment<FragmentTransactionBinding
     @Override
     public void initData() {
         super.initData();
-
-        // 初始化刷新Runnable
         refreshRunnable = new Runnable() {
             @Override
             public void run() {
@@ -118,7 +116,6 @@ public class TransactionFragment extends BaseFragment<FragmentTransactionBinding
                 result -> {
                     if (result.getResultCode() == FILTER_RECEIVE && result.getData() != null) {
                         filter = result.getData().getStringExtra("filter");
-                        TRACE.d("go back:"+filter);
                         viewModel.requestTransactionRequest(filter);
                     }
                 }
@@ -144,6 +141,7 @@ public class TransactionFragment extends BaseFragment<FragmentTransactionBinding
         binding.filterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                hideKeyboard();
                 Intent intent = new Intent(getActivity(), TransactionFilterActivity.class);
                 launcher.launch(intent);
             }
@@ -159,7 +157,6 @@ public class TransactionFragment extends BaseFragment<FragmentTransactionBinding
                 return false;
             }
         });
-
         setupSwipeRefresh();
     }
 
@@ -276,8 +273,21 @@ public class TransactionFragment extends BaseFragment<FragmentTransactionBinding
                 binding.paymentsAmount.setTextSize(TypedValue.COMPLEX_UNIT_SP, 44);
             }
 
-            int todayCount = TransactionDateFilter.getTodayTransactions(transactions).size();
-            binding.paymentsCount.setText(todayCount + " Payments Today");
+            String filterType = SPUtils.getInstance().getString("filterType", "all");
+            switch (filterType) {
+                case "1":
+                    binding.paymentsCount.setText(transactions.size() + " Payments Today");
+                    break;
+                case "3":
+                    binding.paymentsCount.setText(transactions.size() + " Payments 3Days");
+                    break;
+                case "all":
+                default:
+                    binding.paymentsCount.setText(transactions.size() + " Payments All");
+                    break;
+            }
+            //int todayCount = TransactionDateFilter.getTodayTransactions(transactions).size();
+            //binding.paymentsCount.setText(todayCount + " Payments Today");
         }
 
         if (transactions == null || transactions.size() < 1) {

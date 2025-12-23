@@ -3,8 +3,6 @@ package com.dspread.pos.ui.transaction.filter;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.RadioGroup;
-import android.widget.Toast;
 
 import com.dspread.pos.utils.DeviceUtils;
 import com.dspread.pos_android_app.BR;
