@@ -22,6 +22,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.dspread.pos.common.manager.FragmentCacheManager;
 import com.dspread.pos.posAPI.POSManager;
 import com.dspread.pos.ui.home.HomeFragment;
+import com.dspread.pos.ui.transaction.SerachKeyboardUtils;
 import com.dspread.pos.utils.DevUtils;
 import com.dspread.pos.utils.Mydialog;
 import com.dspread.pos.utils.TRACE;
@@ -111,6 +112,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
             public void onChanged(View drawerView) {
 //                String packageVersionName = DevUtils.getPackageVersionName(MainActivity.this, "com.dspread.pos_android_app");
 //                tvAppVersion.setText(getString(R.string.app_version) + packageVersionName);
+                SerachKeyboardUtils.hideKeyboard(MainActivity.this);
                 checkUpdate();
             }
         });

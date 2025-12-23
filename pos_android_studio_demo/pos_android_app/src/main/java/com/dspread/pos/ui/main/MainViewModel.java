@@ -87,7 +87,6 @@ public class MainViewModel extends BaseViewModel {
 
     public void handleNavigationItemClick(int itemId) {
         MainActivity activity = activityRef.get();
-        SerachKeyboardUtils.hideKeyboard(activity);
         if (activity == null) return;
         Fragment targetFragment;
         // get Fragment from cache
