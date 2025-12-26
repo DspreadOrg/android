@@ -53,4 +53,8 @@ public abstract class BasePrinterViewModel extends BaseAppViewModel {
         isLoading.set(false);
         resultText.set(message);
     }
+
+    public void setShowLoading(boolean isShow) {
+        isLoading.set(isShow);
+    }
 }

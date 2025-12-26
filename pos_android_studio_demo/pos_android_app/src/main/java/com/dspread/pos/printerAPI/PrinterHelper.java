@@ -237,7 +237,7 @@ public class PrinterHelper {
         mPrinter.addTexts(new String[]{"AMOUNT:", ""}, new int[]{5, 5}, new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.CENTER}, new int[]{PrintStyle.FontStyle.NORMAL, PrintStyle.FontStyle.NORMAL}, 10);
         mPrinter.addPrintLintStyle(new PrintLineStyle(PrintStyle.FontStyle.BOLD, PrintLine.CENTER, 12));
         mPrinter.addText("$: " + map.get("terAmount"));
-        mPrinter.feedLines(110);
+        mPrinter.feedLines(120);
         Bitmap receiptBitmap = mPrinter.getReceiptBitmap();
         return receiptBitmap;
     }

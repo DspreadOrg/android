@@ -29,6 +29,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 
 public class PrintTicketActivity extends PrinterBaseActivity<ActivityPrinterBaseBinding, PrintTicketViewModel> {
@@ -83,21 +86,21 @@ public class PrintTicketActivity extends PrinterBaseActivity<ActivityPrinterBase
     }
 
     private void setupViews() {
-        // 清理旧的位图资源
+        // Clean up old bitmap resources
         cleanupBitmap();
-
-        // 构建参数映射
         Map<String, String> map = buildParameterMap();
 
-        // 生成收据位图并处理结果
-        viewModel.generateReceiptBitmap(map);
-        observeReceiptBitmap();
+        //Generate receipt bitmap and process the result
+        // viewModel.generateReceiptBitmap(map);
+        
+        generateReceiptInBackground(map);
 
+        // observeReceiptBitmap();
         initViewOnlick(map);
     }
 
     /**
-     * 清理旧的位图资源
+     *Clean up old bitmap resources
      */
     private void cleanupBitmap() {
         if (mBitmap != null && !mBitmap.isRecycled()) {
@@ -107,7 +110,7 @@ public class PrintTicketActivity extends PrinterBaseActivity<ActivityPrinterBase
     }
 
     /**
-     * 构建参数映射
+     *Build parameter mapping
      */
     private Map<String, String> buildParameterMap() {
         Map<String, String> map = new HashMap<>();
@@ -119,25 +122,20 @@ public class PrintTicketActivity extends PrinterBaseActivity<ActivityPrinterBase
         return map;
     }
 
-    /**
-     * 获取安全的非空字符串
-     */
     private String getSafeString(String value) {
         return !TextUtils.isEmpty(value) ? value : "";
     }
 
     /**
-     * 构建终端时间字符串
+     *Build terminal time string
      */
     private String buildTerminalTimeString() {
         if (TextUtils.isEmpty(terminalTime)) {
             return getSafeString(transactionTime);
         }
 
-        // 格式化时间
         String formattedTime = formatDateTime(terminalTime);
 
-        // 追加交易时间
         if (!TextUtils.isEmpty(transactionTime)) {
             return formattedTime + " " + transactionTime;
         }
@@ -146,7 +144,7 @@ public class PrintTicketActivity extends PrinterBaseActivity<ActivityPrinterBase
     }
 
     /**
-     * 格式化日期时间
+     *Format date and time
      */
     private String formatDateTime(String dateTimeStr) {
         if (TextUtils.isEmpty(dateTimeStr)) {
@@ -161,7 +159,7 @@ public class PrintTicketActivity extends PrinterBaseActivity<ActivityPrinterBase
             return outputFormat.format(date);
         } catch (ParseException e) {
             e.printStackTrace();
-            return dateTimeStr; // 解析失败时返回原字符串
+            return dateTimeStr;
         }
     }
 
@@ -193,7 +191,7 @@ public class PrintTicketActivity extends PrinterBaseActivity<ActivityPrinterBase
                     startPrintAnimation();
                 } else {
                     Toast.makeText(PrintTicketActivity.this, "Receipt not ready", Toast.LENGTH_SHORT).show();
-                    // 重新生成bitmap
+                    //Regenerate bitmap
                     viewModel.generateReceiptBitmap(map);
                 }
             }
@@ -217,7 +215,7 @@ public class PrintTicketActivity extends PrinterBaseActivity<ActivityPrinterBase
                     viewModel.printTicket(mBitmap);
                 } else {
                     Toast.makeText(PrintTicketActivity.this, "Receipt not ready", Toast.LENGTH_SHORT).show();
-                    // 重新生成bitmap
+                    //Regenerate bitmap
                     viewModel.generateReceiptBitmap(map);
                 }
             }
@@ -246,24 +244,23 @@ public class PrintTicketActivity extends PrinterBaseActivity<ActivityPrinterBase
                     imageHeight = screenHeight / 3;
                 }
 
-                // 计算需要移动的总距离（从当前位置移动到完全离开屏幕）
+                // Calculate the total distance needed to move (from the current position to completely exit the screen)
                 float currentY = contentBinding.receiptImage.getY();
                 float moveDistance = -(currentY + imageHeight);
 
-                // 设置移动速度（像素/毫秒）
-                float moveSpeed = 0.2f; // 0.8像素/毫秒
+                //Set movement speed (pixels/milliseconds)
+                float moveSpeed = 0.2f;
 
-                // 根据距离和速度计算持续时间
+                //Calculate duration based on distance and speed
                 long duration = (long) (Math.abs(moveDistance) / moveSpeed);
 
-                // 限制动画时间范围
+                //Limit animation time range
                 duration = Math.max(1000, Math.min(duration, 3000));
 
                 ObjectAnimator translateAnim = ObjectAnimator.ofFloat(contentBinding.receiptImage, "translationY", 0f, moveDistance);
 
                 ObjectAnimator alphaAnim = ObjectAnimator.ofFloat(contentBinding.receiptImage, "alpha", 1f, 0f);
 
-                // 透明度动画应该比移动动画稍快
                 alphaAnim.setDuration((long) (duration * 0.8));
                 AnimatorSet animatorSet = new AnimatorSet();
                 animatorSet.playTogether(translateAnim, alphaAnim);
@@ -335,13 +332,9 @@ public class PrintTicketActivity extends PrinterBaseActivity<ActivityPrinterBase
             }
         });
     }
-
-
     private void regenerateReceipt() {
-        // 确保在主线程执行
         runOnUiThread(() -> {
-            // 显示加载状态
-            // 延迟一下再重新生成，避免立即重试可能的问题
+
             contentBinding.receiptImage.postDelayed(() -> {
                 PrintTicketActivity.this.finish();
             }, 100);
@@ -351,10 +344,23 @@ public class PrintTicketActivity extends PrinterBaseActivity<ActivityPrinterBase
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        // 清理bitmap资源
         if (mBitmap != null && !mBitmap.isRecycled()) {
             mBitmap.recycle();
             mBitmap = null;
         }
+    }
+
+    private static final ExecutorService BITMAP_EXECUTOR = Executors.newFixedThreadPool(2);
+
+    private void generateReceiptInBackground(Map<String, String> map) {
+        contentBinding.receiptImage.setVisibility(View.INVISIBLE);
+        viewModel.setShowLoading(true);
+        CompletableFuture
+                .runAsync(() -> viewModel.generateReceiptBitmap(map), BITMAP_EXECUTOR)
+                .thenRunAsync(() -> {
+                    viewModel.setShowLoading(false);
+                    contentBinding.receiptImage.setVisibility(View.VISIBLE);
+                    observeReceiptBitmap();
+                }, this::runOnUiThread);
     }
 }
