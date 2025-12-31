@@ -70,6 +70,9 @@ If you want to integrate SDK, please follow as below:
 ## Integration
 
 ### POSManager
+
+##### Connect handler
+
 The `POSManager` class is the core component for interacting with POS devices. And we implement it in `PaymentActivity`. Here's a brief overview of its key features and functionality:
 
 ```java
@@ -78,30 +81,41 @@ POSManager.init(context);
 
 // Start payment transaction in background thread
 // Handles device connection and transaction initialization
+private void initConnectionCallback() {
+  connectionCallback = new ConnectionServiceCallback() {
+    @Override
+    public void onRequestNoQposDetected() {
+      ToastUtils.showLong("Device connected fail");
+    }
+
+    @Override
+    public void onRequestQposConnected() {
+      ToastUtils.showLong("Device connected");
+    }
+
+    @Override
+    public void onRequestQposDisconnected() {
+      ToastUtils.showLong("Device disconnected");
+      finish();
+    }
+  };
+}
+
 private void startTransaction() {
   new Thread(() -> {
-    if(!POSManager.getInstance().isDeviceReady()){
-      POSManager.getInstance().connect(deviceAddress,new ConnectionServiceCallback() {
-        @Override
-        public void onRequestNoQposDetected() {
-        }
-
-        @Override
-        public void onRequestQposConnected() {
-          ToastUtils.showLong("Device connected");
-        }
-
-        @Override
-        public void onRequestQposDisconnected() {
-          ToastUtils.showLong("Device disconnected");
-          finish();
-        }
-      });
+    if (!POSManager.getInstance().isDeviceReady()) {
+      POSManager.getInstance().connect(deviceAddress, connectionCallback);
+    } else {
+      // if device has connected, just register connection callback
+      POSManager.getInstance().registerConnectionCallback(connectionCallback);
     }
+
     POSManager.getInstance().startTransaction(amount, paymentServiceCallback);
   }).start();
 }
 ```
+
+##### Transaction handler
 
 Here are the corresponding callbacks, where you can handle transaction results, PIN entry, and other related operations. These are also implemented in the `PaymentActivity`.
 
@@ -132,17 +146,14 @@ private class PaymentCallback implements PaymentServiceCallback {
 
   @Override
   public void onRequestSetPin() {
-    if("D70".equals(Build.MODEL)||"D80K".equals(Build.MODEL)){
-    	// Enrtry PIN on physical keyboard
-      	..
-    } else {//CR100 devices
-    	// Set cancel input pin to CR100
-    	POSManager.getInstance().cancelPin();
-		// Bypass pin input to CR100
-    	POSManager.getInstance().bypassPin();
-		// Input the cipher pinblock on the client app side to CR100
-    	POSManager.getInstance().sendCvmPin(pinBlock, true);
-    }
+    //CR100 devices
+    // Set cancel input pin to CR100
+    POSManager.getInstance().cancelPin();
+    // Bypass pin input to CR100
+    POSManager.getInstance().bypassPin();
+    // Input the cipher pinblock on the client app side to CR100
+    POSManager.getInstance().sendCvmPin(pinBlock, true);
+    
   }
 
   @Override

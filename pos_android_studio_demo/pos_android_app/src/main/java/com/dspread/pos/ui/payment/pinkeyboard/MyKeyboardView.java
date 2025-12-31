@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
+import android.security.keystore.KeyInfo;
 import android.text.Editable;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -14,10 +15,14 @@ import android.widget.PopupWindow;
 
 
 import com.dspread.pos.utils.QPOSUtil;
+import com.dspread.pos.utils.TRACE;
 import com.dspread.pos_android_app.R;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * ****************************************************************
@@ -247,59 +252,138 @@ public class MyKeyboardView extends KeyboardView {
      * code 48-57 (0-9)
      */
     public void randomKey(Keyboard pLatinKeyboard) {
-        int[] ayRandomKey = new int[13];
-        if(dataList.size() == 0){
-            ayRandomKey = new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, -3, 0, -4, -5};
-//            Random random = new Random();
-//            for (int i = 0; i < ayRandomKey.length; i++) {
-//                int a = random.nextInt(ayRandomKey.length);
-//                int temp = ayRandomKey[i];
-//                ayRandomKey[i] = ayRandomKey[a];
-//                ayRandomKey[a] = temp;
-//            }
+        String keyBoardValue = getKeyBoardLocation(pLatinKeyboard);
+        keyBoardNumInterface.getNumberValue(keyBoardValue);
+    }
+
+    private String getKeyBoardLocation(Keyboard pLatinKeyboard){
+        List<Integer> keyboardValues;
+        if(dataList.isEmpty()){
+            keyboardValues = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, -3, 0, -4, -5);
         }else {
-            for (int i = 0; i < dataList.size(); i++) {
-                ayRandomKey[i] = Integer.valueOf(dataList.get(i), 16);
+            keyboardValues = new ArrayList<>();
+            for (String hex : dataList) {
+                keyboardValues.add(Integer.parseInt(hex, 16));
             }
         }
 
-        List<Keyboard.Key> pKeyLis = pLatinKeyboard.getKeys();
-        int index = 0;
-        int sy = mHeightPixels - pLatinKeyboard.getHeight();
-//        int sy = mHeightPixels-80*5-8*4;//D20 is 60 and 6，D1000 is 80 and 8
-//        Tip.i("sy = "+sy);
-        StringBuilder s = new StringBuilder();
-        for (int i = 0; i < pKeyLis.size(); i++) {
-//            if(i == 0){
-//                sy = mHeightPixels-pKeyLis.get(i).height*5-pKeyLis.get(i).x*6;//calculate interval value
-//            }
-            int code = pKeyLis.get(i).codes[0];
-            int y = sy + pKeyLis.get(i).y;
-            int x = pKeyLis.get(i).x;
-            int rit = x + pKeyLis.get(i).width;
-            int riby = y + pKeyLis.get(i).height;
-            String label;
-            if (code >= 0) {//number value
-                pKeyLis.get(i).label = ayRandomKey[index] + "";
-                pKeyLis.get(i).codes[0] = 48 + ayRandomKey[index];
-                String locationStr = QPOSUtil.byteArray2Hex(QPOSUtil.intToByteArray(ayRandomKey[index])) + QPOSUtil.byteArray2Hex(QPOSUtil.intToByteArray(x)) + QPOSUtil.byteArray2Hex(QPOSUtil.intToByteArray(y))
-                        + QPOSUtil.byteArray2Hex(QPOSUtil.intToByteArray(rit)) + QPOSUtil.byteArray2Hex(QPOSUtil.intToByteArray(riby));
-                s.append(locationStr);
-                index++;
-            } else {
-                if (code == -3) {
-                    label = QPOSUtil.byteArray2Hex(QPOSUtil.intToByteArray(13));
-                } else if (code == -4) {
-                    label = QPOSUtil.byteArray2Hex(QPOSUtil.intToByteArray(15));
-                } else {
-                    label = QPOSUtil.byteArray2Hex(QPOSUtil.intToByteArray(14));
+        List<Keyboard.Key> keyList = pLatinKeyboard.getKeys();
+        int screenBottomY = mHeightPixels - pLatinKeyboard.getHeight();
+        Map<Integer, KeyPositionInfo> codeToPositionMap = new HashMap<>();
+
+        for (Keyboard.Key key : keyList) {
+            int originalCode = key.codes[0];
+
+            int y = screenBottomY + key.y;
+            int x = key.x;
+            int right = x + key.width;
+            int bottom = y + key.height;
+
+            KeyPositionInfo info = new KeyPositionInfo(
+                    originalCode,
+                    x, y, right, bottom,
+                    key
+            );
+            codeToPositionMap.put(originalCode, info);
+        }
+        List<Integer> randomNumbers = new ArrayList<>();
+        if (dataList.isEmpty()) {
+            randomNumbers.addAll(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 0));
+        } else {
+            for (String hex : dataList) {
+                int value = Integer.parseInt(hex, 16);
+                if (value >= 0 && value <= 9) {
+                    randomNumbers.add(value);
                 }
-                String locationStr = label + QPOSUtil.byteArray2Hex(QPOSUtil.intToByteArray(x)) + QPOSUtil.byteArray2Hex(QPOSUtil.intToByteArray(y))
-                        + QPOSUtil.byteArray2Hex(QPOSUtil.intToByteArray(rit)) + QPOSUtil.byteArray2Hex(QPOSUtil.intToByteArray(riby));
-                s.append(locationStr);
             }
         }
-        keyBoardNumInterface.getNumberValue(s.toString());
+        Map<Integer, Integer> displayMapping = new HashMap<>();
+        int numberIndex = 0;
+
+        for (Keyboard.Key key : keyList) {
+            int originalCode = key.codes[0];
+
+            if (originalCode >= 48 && originalCode <= 57) {
+                // number（ASCII）
+                if (numberIndex < randomNumbers.size()) {
+                    displayMapping.put(originalCode, randomNumbers.get(numberIndex));
+                    numberIndex++;
+                }
+            } else if (originalCode >= 0 && originalCode <= 9) {
+                // number integer
+                if (numberIndex < randomNumbers.size()) {
+                    displayMapping.put(originalCode, randomNumbers.get(numberIndex));
+                    numberIndex++;
+                }
+            }
+        }
+
+        StringBuilder result = new StringBuilder();
+
+        for (int keyValue : keyboardValues) {
+            int keyCode = findKeyCodeForValue(keyValue, displayMapping, codeToPositionMap);
+
+            KeyPositionInfo positionInfo = codeToPositionMap.get(keyCode);
+            if (positionInfo != null) {
+                String locationStr =
+                        QPOSUtil.byteArray2Hex(QPOSUtil.intToByteArray(keyValue)) +
+                                QPOSUtil.byteArray2Hex(QPOSUtil.intToByteArray(positionInfo.x)) +
+                                QPOSUtil.byteArray2Hex(QPOSUtil.intToByteArray(positionInfo.y)) +
+                                QPOSUtil.byteArray2Hex(QPOSUtil.intToByteArray(positionInfo.right)) +
+                                QPOSUtil.byteArray2Hex(QPOSUtil.intToByteArray(positionInfo.bottom));
+
+                result.append(locationStr);
+
+                Keyboard.Key key = positionInfo.key;
+                if (displayMapping.containsKey(keyCode)) {
+                    int displayNumber = displayMapping.get(keyCode);
+                    key.label = String.valueOf(displayNumber);
+                    key.codes[0] = 48 + displayNumber;
+                    // Function key: Keep as is
+                }
+            }
+        }
+
+        return result.toString();
+    }
+
+    private int findKeyCodeForValue(int keyValue,
+                                    Map<Integer, Integer> displayMapping,
+                                    Map<Integer, KeyPositionInfo> codeToPositionMap) {
+        if (keyValue >= 0 && keyValue <= 9) {
+            for (Map.Entry<Integer, Integer> entry : displayMapping.entrySet()) {
+                if (entry.getValue() == keyValue) {
+                    return entry.getKey();
+                }
+            }
+        } else {
+            if (keyValue == 0x0D) { // 13
+                return -3;
+            } else if (keyValue == 0x0E) { // 14
+                return -5;
+            } else if (keyValue == 0x0F) { // 15
+                return -4;
+            }
+        }
+
+        return keyValue;
+    }
+    private static class KeyPositionInfo {
+        int originalCode;
+        int x;
+        int y;
+        int right;
+        int bottom;
+        Keyboard.Key key;
+
+        KeyPositionInfo(int originalCode, int x, int y, int right, int bottom, Keyboard.Key key) {
+            this.originalCode = originalCode;
+            this.x = x;
+            this.y = y;
+            this.right = right;
+            this.bottom = bottom;
+            this.key = key;
+        }
     }
 
     public static void setKeyBoardListener(KeyBoardNumInterface mkeyBoardNumInterface) {
