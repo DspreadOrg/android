@@ -1,32 +1,28 @@
 package com.dspread.pos.ui.main;
 
 import android.app.Application;
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+
+import com.dspread.pos.TitleProviderListener;
+import com.dspread.pos.common.manager.FragmentCacheManager;
+import com.dspread.pos.ui.home.HomeFragment;
+import com.dspread.pos.ui.setting.connection_settings.ConnectionSettingsFragment;
+import com.dspread.pos.ui.transaction.TransactionFragment;
+import com.dspread.pos.utils.TRACE;
+import com.dspread.pos_android_app.R;
+
+import java.lang.ref.WeakReference;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.ObservableBoolean;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-
-import com.dspread.pos.common.manager.FragmentCacheManager;
-import com.dspread.pos.TitleProviderListener;
-import com.dspread.pos.ui.home.HomeFragment;
-import com.dspread.pos.ui.payment.PaymentMethodActivity;
-import com.dspread.pos.ui.setting.connection_settings.ConnectionSettingsFragment;
-import com.dspread.pos.ui.transaction.SerachKeyboardUtils;
-import com.dspread.pos.ui.transaction.TransactionFragment;
-import com.dspread.pos.utils.TRACE;
-import com.dspread.pos_android_app.R;
-
-import java.lang.ref.WeakReference;
-import java.util.List;
-
 import me.goldze.mvvmhabit.base.BaseViewModel;
 import me.goldze.mvvmhabit.binding.command.BindingCommand;
 import me.goldze.mvvmhabit.binding.command.BindingConsumer;
@@ -40,7 +36,6 @@ public class MainViewModel extends BaseViewModel {
     public SingleLiveEvent<Void> closeDrawerCommand = new SingleLiveEvent<>();
     public ObservableBoolean isD70DisplayScreen = new ObservableBoolean(false);
     private MainActivity activity;
-    public List<Fragment> fragments;
 
     private WeakReference<MainActivity> activityRef;
     public Fragment currentFragment;
@@ -51,11 +46,29 @@ public class MainViewModel extends BaseViewModel {
         TRACE.i("main activity init");
         this.activityRef = new WeakReference<>(activity);
         this.activity = activity;
-        if("D70".equals(Build.MODEL)){
+        if ("D70".equals(Build.MODEL)) {
             isD70DisplayScreen.set(true);
-        }else{
+        } else {
             isD70DisplayScreen.set(false);
         }
+        preloadFragments();
+    }
+
+    //New Method: Preloading Fragment==========
+    private void preloadFragments() {
+        new Handler().post(() -> {
+            // Preloading  TransactionFragment
+            if (!FragmentCacheManager.getInstance().hasFragment(R.id.nav_transaction)) {
+                Fragment transactionFragment = new TransactionFragment();
+                FragmentCacheManager.getInstance().putFragment(R.id.nav_transaction, transactionFragment);
+            }
+
+            // Preloading ConnectionSettingsFragment
+            if (!FragmentCacheManager.getInstance().hasFragment(R.id.nav_setting)) {
+                Fragment settingFragment = new ConnectionSettingsFragment();
+                FragmentCacheManager.getInstance().putFragment(R.id.nav_setting, settingFragment);
+            }
+        });
     }
 
     public BindingCommand<View> onDrawerOpenedCommand = new BindingCommand<>(new BindingConsumer<View>() {
@@ -66,7 +79,7 @@ public class MainViewModel extends BaseViewModel {
         }
     });
 
-    public BindingCommand<View> onDrawerClosedCommand  = new BindingCommand<>(new BindingConsumer<View>() {
+    public BindingCommand<View> onDrawerClosedCommand = new BindingCommand<>(new BindingConsumer<View>() {
 
         @Override
         public void call(View drawerLayout) {
@@ -77,10 +90,10 @@ public class MainViewModel extends BaseViewModel {
     // command for switch Fragment
     public BindingCommand<Integer> switchFragmentCommand = new BindingCommand<>(integer -> {
         // switch Fragment
-        TRACE.i("this is switch:"+integer);
         fragmentChangeEvent.setValue(integer); // Here, different fragments can be set according to logic
         handleNavigationItemClick(integer);
     });
+
     public void closeDrawer() {
         closeDrawerCommand.call(); // 调用无参的方法
     }
@@ -101,7 +114,7 @@ public class MainViewModel extends BaseViewModel {
         }
 
         if (targetFragment != null) {
-            switchFragment(targetFragment,null);
+            switchFragment(targetFragment, null);
             // set fragment title
             if (targetFragment instanceof TitleProviderListener) {
                 activity.setTitle(((TitleProviderListener) targetFragment).getTitle());
@@ -113,38 +126,15 @@ public class MainViewModel extends BaseViewModel {
         switch (itemId) {
             case R.id.nav_home:
                 homeFragment = new HomeFragment();
-                TRACE.i("homeFragment = "+homeFragment);
                 return homeFragment;
             case R.id.nav_setting:
                 return new ConnectionSettingsFragment();
-           case R.id.nav_transaction:
-               return new TransactionFragment();
-//            case R.id.nav_scan:
-//                return new ScanFragment();
+            case R.id.nav_transaction:
+                return new TransactionFragment();
         }
 
         return null;
     }
-
-
-  /*  private void switchFragment(Fragment targetFragment) {
-        FragmentManager fragmentManager = activity.getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-
-        // hide current Fragment，show target Fragment
-        if (currentFragment != null) {
-            fragmentTransaction.hide(currentFragment);
-        }
-
-        if (!targetFragment.isAdded()) {
-            fragmentTransaction.add(R.id.nav_host_fragment, targetFragment);
-        } else {
-            fragmentTransaction.show(targetFragment);
-        }
-
-        fragmentTransaction.commitAllowingStateLoss();
-        currentFragment = targetFragment;
-    }*/
 
 
     private void switchFragment(Fragment targetFragment, Bundle args) {
@@ -154,23 +144,22 @@ public class MainViewModel extends BaseViewModel {
 
         FragmentManager fragmentManager = activity.getSupportFragmentManager();
 
-        // 避免在状态保存后提交事务
+        //Avoid submitting transactions after state saving
         if (fragmentManager.isStateSaved()) {
             return;
         }
 
-        // 检查并处理已附加到其他FragmentManager的情况
+
         if (targetFragment.isAdded() && targetFragment.getFragmentManager() != fragmentManager) {
             Log.w("FragmentSwitch", "Fragment already attached to different manager, creating new instance");
-            // 不能使用已附加的实例，需要创建新的
+
             targetFragment = createNewFragmentInstance(targetFragment.getClass(), args);
             if (targetFragment == null) return;
         }
-
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         String tag = targetFragment.getClass().getName();
 
-        // 设置或更新参数
+        //Set or update parameters
         if (args != null) {
             if (targetFragment.getArguments() == null) {
                 targetFragment.setArguments(new Bundle(args));
@@ -179,18 +168,17 @@ public class MainViewModel extends BaseViewModel {
             }
         }
 
-        // 隐藏当前Fragment
+        // hide Fragment
         if (currentFragment != null && currentFragment != targetFragment && currentFragment.isAdded()) {
             transaction.hide(currentFragment);
+            TRACE.d("hide currentFragment");
         }
-
-        // 处理目标Fragment
+        //Processing the target fragment
         if (!targetFragment.isAdded()) {
             transaction.add(R.id.nav_host_fragment, targetFragment, tag);
         } else {
             transaction.show(targetFragment);
         }
-
         transaction.commitAllowingStateLoss();
         currentFragment = targetFragment;
     }
@@ -207,8 +195,9 @@ public class MainViewModel extends BaseViewModel {
             return null;
         }
     }
-    public boolean onKeyDownInHome(int keyCode, KeyEvent event){
-        TRACE.i("noe hoeme = "+homeFragment);
+
+    public boolean onKeyDownInHome(int keyCode, KeyEvent event) {
+        TRACE.i("noe hoeme = " + homeFragment);
         if (homeFragment != null) {
             return homeFragment.onKeyDown(keyCode, event);
         }

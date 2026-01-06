@@ -11,6 +11,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 
@@ -49,6 +50,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     private TextView tvAppVersion;
     ActionBarDrawerToggle toggle;
     private HomeFragment homeFragment;
+
     @Override
     public void initParam() {
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
@@ -64,10 +66,12 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     public int initVariableId() {
         return BR.viewModel;
     }
+
     @Override
     protected void onResume() {
         super.onResume();
     }
+
     @Override
     public void initData() {
         super.initData();
@@ -123,7 +127,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
 
     }
 
-    private void checkUpdate(){
+    private void checkUpdate() {
         UpgradeManager.getInstance().checkUpgrade(true, null, new DefaultUpgradeStrategyRequestCallback());
     }
 
@@ -153,10 +157,10 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                 exit();
             }
             return true;
-        }else {
+        } else {
             if (action == KeyEvent.ACTION_UP) {
-                TRACE.i("---- = "+viewModel.homeFragment);
-                return viewModel.onKeyDownInHome(keyCode,event);
+                TRACE.i("---- = " + viewModel.homeFragment);
+                return viewModel.onKeyDownInHome(keyCode, event);
             }
 
             return super.dispatchKeyEvent(event);
