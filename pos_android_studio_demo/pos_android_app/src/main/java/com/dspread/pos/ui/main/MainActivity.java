@@ -167,35 +167,19 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         }
     }
 
-
-    private static boolean isExit = false;
-    Handler mHandler = new Handler(Looper.myLooper()) {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            isExit = false;
-        }
-    };
-
     private void exit() {
-        if (!isExit) {
-            isExit = true;
-            mHandler.sendEmptyMessageDelayed(0, 1500);
-        } else {
-            isExit = false;
-            Mydialog.manualExitDialog(MainActivity.this, getString(R.string.msg_exit), new Mydialog.OnMyClickListener() {
-                @Override
-                public void onCancel() {
-                    Mydialog.manualExitDialog.dismiss();
-                }
+        Mydialog.manualExitDialog(MainActivity.this, getString(R.string.msg_exit), new Mydialog.OnMyClickListener() {
+            @Override
+            public void onCancel() {
+                Mydialog.manualExitDialog.dismiss();
+            }
 
-                @Override
-                public void onConfirm() {
-                    finish();
-                    Mydialog.manualExitDialog.dismiss();
-                }
-            });
-        }
+            @Override
+            public void onConfirm() {
+                finish();
+                Mydialog.manualExitDialog.dismiss();
+            }
+        });
     }
 }
 
