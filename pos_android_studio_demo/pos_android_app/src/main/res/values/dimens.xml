@@ -438,4 +438,19 @@
     <!-- 文字大小 -->
     <dimen name="text_amount">32sp</dimen>
     <dimen name="text_button">18sp</dimen>
+
+    <!-- common devices size -->
+    <dimen name="common_total_text_size">19sp</dimen>
+    <dimen name="common_amount_text_size">44sp</dimen>
+    <dimen name="common_prompt_text_size">19sp</dimen>
+
+    <!-- D70 size -->
+    <dimen name="d70_total_text_size">16sp</dimen>
+    <dimen name="d70_amount_text_size">32sp</dimen>
+    <dimen name="d70_prompt_text_size">17sp</dimen>
+
+    <!-- D35/D50 size -->
+    <dimen name="d35_total_text_size">18sp</dimen>
+    <dimen name="d35_amount_text_size">38sp</dimen>
+    <dimen name="d35_guide_text_size">18sp</dimen>
 </resources>
