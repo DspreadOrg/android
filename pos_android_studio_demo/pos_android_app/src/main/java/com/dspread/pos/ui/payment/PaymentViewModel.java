@@ -28,51 +28,14 @@ public class PaymentViewModel extends BaseAppViewModel {
     public ObservableField<Boolean> isLoading = new ObservableField<>(false);
     public ObservableField<String> amount = new ObservableField<>("");
     public ObservableField<String> titleText = new ObservableField<>("Payment");
-    public ObservableBoolean isWaiting = new ObservableBoolean(true);
-    public ObservableBoolean isD70 = new ObservableBoolean(false);
-    public ObservableBoolean isShowAnimationView = new ObservableBoolean(false);
-    public ObservableBoolean isShowOtherCardTxt = new ObservableBoolean(false);
-    public ObservableBoolean isPayMentGuideD35 = new ObservableBoolean(false);
-    public ObservableBoolean isPayMentGuideD50 = new ObservableBoolean(false);
     public SingleLiveEvent<Boolean> isOnlineSuccess = new SingleLiveEvent();
     public ObservableBoolean showPinpad = new ObservableBoolean(false);
     public ObservableBoolean showResultStatus = new ObservableBoolean(false);
-    public ObservableBoolean TransactionResultStatus = new ObservableBoolean(false);
     public ObservableBoolean cardsInsertedStatus = new ObservableBoolean(false);
-    private boolean isIccCard = false;
 
     public PaymentViewModel(@NonNull Application application) {
         super(application);
         transactionRecordRepository = TransactionRecordRepository.getInstance(application);
-        initDeviceConfig();
-    }
-
-    private void initDeviceConfig() {
-        String deviceModel = DeviceUtils.getPhoneModel();
-        if ("D70".equalsIgnoreCase(deviceModel)) {
-            isD70.set(true);
-            isShowAnimationView.set(true);
-            isPayMentGuideD35.set(true);
-            isPayMentGuideD50.set(true);
-            isShowOtherCardTxt.set(true);
-        } else if ("D35".equalsIgnoreCase(deviceModel)) {
-            isD70.set(false);
-            isShowAnimationView.set(true);
-            isPayMentGuideD35.set(false);
-            isPayMentGuideD50.set(true);
-            isShowOtherCardTxt.set(false);
-        } else if ("D50".equalsIgnoreCase(deviceModel)) {
-            isD70.set(false);
-            isShowAnimationView.set(true);
-            isPayMentGuideD35.set(true);
-            isPayMentGuideD50.set(false);
-            isShowOtherCardTxt.set(false);
-        } else {
-            isD70.set(false);
-            isPayMentGuideD35.set(true);
-            isPayMentGuideD50.set(true);
-            isShowOtherCardTxt.set(true);
-        }
     }
 
     public PaymentModel setTransactionSuccess(String message) {
@@ -110,10 +73,7 @@ public class PaymentViewModel extends BaseAppViewModel {
         titleText.set("Payment finished");
         showPinpad.set(false);
         showResultStatus.set(true);
-        isWaiting.set(false);
-        TransactionResultStatus.set(false);
         cardsInsertedStatus.set(false);
-
         TRACE.e("Transaction failed: " + message);
     }
 
@@ -127,23 +87,11 @@ public class PaymentViewModel extends BaseAppViewModel {
 
     public void onPinInputCompleted() {
         showPinpad.set(false);
-        if (isD70Device()) {
-            cardsInsertedStatus.set(false);
-            showResultStatus.set(true);
-            isD70.set(false);
-            return;
-        }
         startLoading("processing...");
-        boolean shouldShowResult = isIccCard && !cardsInsertedStatus.get();
-        showResultStatus.set(shouldShowResult);
-
-        if (shouldShowResult) {
-            cardsInsertedStatus.set(true);
-        }
+        showResultStatus.set(false);
     }
 
     public void cardInsertedState() {
-        isIccCard = true;
         showResultStatus.set(true);
         cardsInsertedStatus.set(true);
     }
@@ -155,37 +103,17 @@ public class PaymentViewModel extends BaseAppViewModel {
     public void setTransactionSuccess() {
         titleText.set("Payment finished");
         showPinpad.set(false);
-        isWaiting.set(false);
-
-        if (isIccCard) {
-            cardsInsertedStatus.set(!isD70Device());
-        } else {
-            showResultStatus.set(false);
-        }
+        cardsInsertedStatus.set(false);
+        showResultStatus.set(false);
     }
 
     public void startLoading(String text) {
-        isWaiting.set(false);
         isLoading.set(true);
         loadingText.set(text);
-        if (isD70Device()) {
-            handleD70Loading();
-        }
-    }
-
-    private void handleD70Loading() {
-        isD70.set(false);
-        cardsInsertedStatus.set(false);
-        showResultStatus.set(true);
-    }
-
-    private boolean isD70Device() {
-        return "D70".equalsIgnoreCase(DeviceUtils.getPhoneModel());
     }
 
     public void stopLoading() {
         isLoading.set(false);
-        isWaiting.set(false);
         loadingText.set("");
     }
 

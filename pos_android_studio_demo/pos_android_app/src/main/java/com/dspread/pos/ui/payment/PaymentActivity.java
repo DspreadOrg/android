@@ -11,6 +11,8 @@ import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import androidx.databinding.DataBindingUtil;
+
 import com.dspread.pos.posAPI.ConnectionServiceCallback;
 import com.dspread.pos.posAPI.POSManager;
 import com.dspread.pos.posAPI.PaymentServiceCallback;
@@ -29,7 +31,9 @@ import com.dspread.pos.utils.TLVParser;
 import com.dspread.pos.utils.TRACE;
 import com.dspread.pos_android_app.BR;
 import com.dspread.pos_android_app.R;
-import com.dspread.pos_android_app.databinding.ActivityPaymentBinding;
+import com.dspread.pos_android_app.databinding.ActivityPaymentCommonBinding;
+import com.dspread.pos_android_app.databinding.ActivityPaymentD35D50Binding;
+import com.dspread.pos_android_app.databinding.ActivityPaymentD70Binding;
 import com.dspread.xpos.QPOSService;
 
 import java.text.SimpleDateFormat;
@@ -42,13 +46,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.utils.ToastUtils;
 
-public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, PaymentViewModel> implements PaymentServiceCallback {
+public class PaymentActivity extends BaseActivity<ActivityPaymentCommonBinding, PaymentViewModel> implements PaymentServiceCallback {
 
     private String amount;
     private String deviceAddress;
     private KeyboardUtil keyboardUtil;
     public PinPadDialog pinPadDialog;
-    private boolean isPinBack = false;//去掉
+    private boolean isPinBack = false;//
     private PaymentServiceCallback paymentServiceCallback;
     private String terminalTime;
     private String maskedPAN;
@@ -59,12 +63,22 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
     private AtomicBoolean isStarting = new AtomicBoolean(false);
     private final int[] imageResources = {R.mipmap.ic_insert_new_d70, R.mipmap.ic_tap_new_d70, R.mipmap.ic_swipe_new_d70};
     private final String[] textResources = {"<span style='color:red'>Insert</span><span style='color:black'>, tap or swipe</span>", "<span style='color:black'>Insert, </span><span style='color:red'>tap</span> <span style='color:black'>or swipe</span>", "<span style='color:black'>Insert, tap or </span><span style='color:red'>swipe</span>"};
+    private Object binding;
+    private ActivityPaymentCommonBinding commonBinding;
+    private ActivityPaymentD70Binding d70Binding;
+    private ActivityPaymentD35D50Binding d35d50Binding;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-//        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-        return R.layout.activity_payment;
+        if(DeviceUtils.isD70(this)){
+            return R.layout.activity_payment_d70;
+        } else if (DeviceUtils.isD35D50()) {
+            return R.layout.activity_payment_d35_d50;
+        }else {
+            return R.layout.activity_payment_common;
+        }
+//        return R.layout.activity_payment;
     }
 
     @Override
@@ -78,8 +92,22 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
      */
     @Override
     public void initData() {
-        binding.setVariable(BR.viewModel, viewModel);
-        binding.pinpadEditText.setText("");
+        if(DeviceUtils.isD70(this)){
+            d70Binding = DataBindingUtil.setContentView(this, R.layout.activity_payment_d70);
+            binding = d70Binding;
+            d70Binding.setViewModel(viewModel);
+            initD70UI();
+        } else if (DeviceUtils.isD35D50()) {
+            d35d50Binding = DataBindingUtil.setContentView(this, R.layout.activity_payment_d35_d50);
+            binding = d35d50Binding;
+            d35d50Binding.setViewModel(viewModel);
+            initD35D50UI();
+        }else {
+            commonBinding = DataBindingUtil.setContentView(this, R.layout.activity_payment_common);
+            binding = commonBinding;
+            commonBinding.setViewModel(viewModel);
+            initCommonUI();
+        }
         viewModel.titleText.set("Paymenting");
 
         paymentServiceCallback = new PaymentCallback();
@@ -90,7 +118,6 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
         initConnectionCallback();
         TRACE.i("start Transaction -===");
         startTransaction();
-        showCardImage();
     }
 
     @Override
@@ -107,20 +134,37 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
         });
     }
 
-    private void showCardImage() {
-        if ("D70".equals(DeviceUtils.getPhoneModel())) {
-            ViewGroup.LayoutParams params = binding.ivCloseBlackD70.getLayoutParams();
-            params.width = 26;
-            params.height = 26;
-            binding.ivCloseBlackD70.setLayoutParams(params);
-            binding.ivCloseBlackD70.setImageResource(R.mipmap.btn_close_black);
-            binding.ivCloseBlackD70.setVisibility(View.VISIBLE);
-            binding.ivCloseBlack.setVisibility(View.GONE);
+    private void initCommonUI() {
+        if (commonBinding != null) {
+            commonBinding.pinpadEditText.setText("");
+            setupCommonAnimation();
+        }
+    }
+
+    private void initD70UI() {
+        if (d70Binding != null) {
             setupImageSwitcher();
-        } else {
-            setupAnimationBasedOnDeviceModel();
-            binding.ivCloseBlackD70.setVisibility(View.GONE);
-            binding.ivCloseBlack.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void initD35D50UI() {
+        if (d35d50Binding != null) {
+            setupD35D50Animation();
+        }
+    }
+
+    private void setupD35D50Animation() {
+        if (d35d50Binding != null) {
+            String deviceModel = DeviceUtils.getPhoneModel();
+            if ("D35".equals(deviceModel)) {
+                if (d35d50Binding.ivCardGuide != null) {
+                    d35d50Binding.ivCardGuide.setImageResource(R.drawable.ic_payguide_d35);
+                }
+            } else if ("D50".equals(deviceModel)) {
+                if (d35d50Binding.ivCardGuide != null) {
+                    d35d50Binding.ivCardGuide.setImageResource(R.mipmap.ic_payguide_d50);
+                }
+            }
         }
     }
 
@@ -130,41 +174,47 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
             @Override
             public void run() {
                 currentIndex = (currentIndex + 1) % imageResources.length;
-                updateContent();
+                updateD70Content();
                 handler.postDelayed(this, 2000);
             }
         };
 
-        updateContent();
+        updateD70Content();
         handler.postDelayed(runnable, 2000);
     }
 
-    private void updateContent() {
-        binding.d70ImageView.setImageResource(imageResources[currentIndex]);
-        binding.txtWaitInsertTapCard.setText(Html.fromHtml(textResources[currentIndex], Html.FROM_HTML_MODE_COMPACT));
+    private void updateD70Content() {
+        if (d70Binding != null) {
+            d70Binding.d70ImageView.setImageResource(imageResources[currentIndex]);
+            d70Binding.txtWaitInsertTapCard.setText(Html.fromHtml(textResources[currentIndex], Html.FROM_HTML_MODE_COMPACT));
+        }
     }
+
+
 
     /**
      * Dynamically set Lottie animations according to the device model
      */
-    private void setupAnimationBasedOnDeviceModel() {
+    private void setupCommonAnimation() {
         String deviceModel = DeviceUtils.getPhoneModel();
         TRACE.d("model:" + deviceModel);
-        if ("D20".equals(deviceModel)) {
-            binding.animationView.setAnimation("D20_checkCardImg.json");
-            binding.animationView.setImageAssetsFolder("D20_images/");
-        } else if ("D80".equals(deviceModel)) {
-            binding.animationView.setAnimation("D80_checkCard.json");
-            binding.animationView.setImageAssetsFolder("D80_images/");
-        } else if ("D60".equals(deviceModel)) {
-            binding.animationView.setAnimation("D60_checkCard.json");
-            binding.animationView.setImageAssetsFolder("D60_images/");
-        } else {//D30
-            binding.animationView.setAnimation("D30_checkCard.json");
-            binding.animationView.setImageAssetsFolder("D30_images/");
+        if(commonBinding != null) {
+            if ("D20".equals(deviceModel)) {
+                commonBinding.animationView.setAnimation("D20_checkCardImg.json");
+                commonBinding.animationView.setImageAssetsFolder("D20_images/");
+            } else if ("D80".equals(deviceModel)) {
+                commonBinding.animationView.setAnimation("D80_checkCard.json");
+                commonBinding.animationView.setImageAssetsFolder("D80_images/");
+            } else if ("D60".equals(deviceModel)) {
+                commonBinding.animationView.setAnimation("D60_checkCard.json");
+                commonBinding.animationView.setImageAssetsFolder("D60_images/");
+            } else {//D30
+                commonBinding.animationView.setAnimation("D30_checkCard.json");
+                commonBinding.animationView.setImageAssetsFolder("D30_images/");
+            }
         }
-        binding.animationView.loop(true);
-        binding.animationView.playAnimation();
+        commonBinding.animationView.loop(true);
+        commonBinding.animationView.playAnimation();
     }
 
     private void initConnectionCallback() {
@@ -186,6 +236,16 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
                 finish();
             }
         };
+    }
+
+    private android.widget.EditText getPinpadEditText() {
+        if(DeviceUtils.isD70(this)){
+            return d70Binding != null ? d70Binding.pinpadEditText : null;
+        } else if (DeviceUtils.isD35D50()) {
+            return d35d50Binding != null ? d35d50Binding.pinpadEditText : null;
+        }else {
+            return commonBinding != null ? commonBinding.pinpadEditText : null;
+        }
     }
 
     /**
@@ -261,15 +321,15 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
                     keyboardUtil.hide();
                 }
             }
-            binding.pinpadEditText.setText("");
+            getPinpadEditText().setText("");
             MyKeyboardView.setKeyBoardListener(value -> {
                 if (POSManager.getInstance().isDeviceConnected()) {
                     POSManager.getInstance().pinMapSync(value, 20);
                 }
             });
             if (POSManager.getInstance().isDeviceConnected()) {
-                keyboardUtil = new KeyboardUtil(PaymentActivity.this, binding.relSaleDetails, dataList);
-                keyboardUtil.initKeyboard(MyKeyboardView.KEYBOARDTYPE_Only_Num_Pwd, binding.pinpadEditText);//Random keyboard
+                keyboardUtil = new KeyboardUtil(PaymentActivity.this, getRootLayout(), dataList);
+                keyboardUtil.initKeyboard(MyKeyboardView.KEYBOARDTYPE_Only_Num_Pwd, getPinpadEditText());//Random keyboard
             }
         }
 
@@ -322,14 +382,13 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
                 TRACE.d("onRequestDisplay(Display displayMsg):pin input" + displayMsg.toString());
                 viewModel.stopLoading();
                 viewModel.clearErrorState();
-                viewModel.showPinpad.set(true);
-                binding.animationView.pauseAnimation();
+                pauseAnimation();
             } else {
                 msg = HandleTxnsResultUtils.getDisplayMessage(displayMsg, PaymentActivity.this);
                 if (handler != null && runnable != null) {
                     handler.removeCallbacks(runnable);
                 }
-                binding.animationView.pauseAnimation();
+                pauseAnimation();
                 viewModel.startLoading(msg);
             }
         }
@@ -348,12 +407,12 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
 
                 paymentResult.setAmount(amount);
                 HandleTxnsResultUtils.handleDoTradeResult(paymentResult, decodeData, viewModel);
-                binding.animationView.pauseAnimation();
+                pauseAnimation();
                 maskedPAN = paymentResult.getMaskedPAN();
             } else if (result == QPOSService.DoTradeResult.MCR) {
                 paymentResult.setAmount(amount);
                 HandleTxnsResultUtils.handleDoTradeResult(paymentResult, decodeData, viewModel);
-                binding.animationView.pauseAnimation();
+                pauseAnimation();
                 maskedPAN = paymentResult.getMaskedPAN();
             } else if (result == QPOSService.DoTradeResult.PLS_SEE_PHONE) {
                 viewModel.showPinpad.set(false);
@@ -375,7 +434,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
         public void onTransactionResult(PaymentResult result) {
             viewModel.startLoading("processing");
             if (result.getStatus() != null && result.getStatus().equals(QPOSService.TransactionResult.APPROVED.name())) {
-                binding.animationView.pauseAnimation();
+                pauseAnimation();
                 result.setAmount(amount);
                 if (result.getTlv() != null) {
                     String content = getString(R.string.batch_data);
@@ -431,13 +490,13 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
         public void onReturnGetPinInputResult(int num, QPOSService.PinError error, int minLen, int maxLen) {
             TRACE.i("onReturnGetPinInputResult  ===" + num);
             StringBuilder s = new StringBuilder();
+            android.widget.EditText pinpadEditText = getPinpadEditText();
+
+            if (pinpadEditText == null) return;
             if (num == -1) {
                 isPinBack = false;
-                binding.pinpadEditText.setText("");
+                pinpadEditText.setText("");
                 viewModel.onPinInputCompleted();
-                binding.d70ImageView.setVisibility(View.GONE);
-                binding.llPaymentGuideD35.setVisibility(View.INVISIBLE);
-                binding.llPaymentGuideD50.setVisibility(View.INVISIBLE);
                 if (keyboardUtil != null) {
                     keyboardUtil.hide();
                 }
@@ -445,7 +504,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
                 for (int i = 0; i < num; i++) {
                     s.append("*");
                 }
-                binding.pinpadEditText.setText(s.toString());
+                pinpadEditText.setText(s.toString());
             }
         }
     }
@@ -469,7 +528,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
     }
 
     private void paymentStatus(String amount, String maskedPAN, String terminalTime, String errorMsg) {
-        binding.d70ImageView.setVisibility(View.GONE);
+//        binding.d70ImageView.setVisibility(View.GONE);
         if (isStarting.compareAndSet(false, true)) {
             try {
                 Intent intent = new Intent(PaymentActivity.this, PaymentStatusActivity.class);
@@ -492,6 +551,32 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentBinding, Paymen
             } finally {
                 new Handler().postDelayed(() -> isStarting.set(false), 500);
             }
+        }
+    }
+
+    private com.airbnb.lottie.LottieAnimationView getAnimationView() {
+        if(DeviceUtils.isD35D50()){
+            return d35d50Binding != null ? d35d50Binding.animationView : null;
+        }else {
+            return commonBinding != null ? commonBinding.animationView : null;
+        }
+    }
+
+    private View getRootLayout() {
+        if(DeviceUtils.isD35D50()){
+            return d35d50Binding != null ? d35d50Binding.getRoot() : null;
+        } else if (DeviceUtils.isD70(this)) {
+            return d70Binding != null ? d70Binding.getRoot() : null;
+        }else {
+            return commonBinding != null ? commonBinding.getRoot() : null;
+        }
+    }
+
+    // pause animation
+    private void pauseAnimation() {
+        com.airbnb.lottie.LottieAnimationView animationView = getAnimationView();
+        if (animationView != null) {
+            animationView.pauseAnimation();
         }
     }
 
