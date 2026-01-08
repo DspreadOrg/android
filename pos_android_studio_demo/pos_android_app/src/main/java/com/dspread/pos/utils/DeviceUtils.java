@@ -6,12 +6,10 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
-import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
 
 import com.dspread.pos.common.enums.POS_TYPE;
-import com.dspread.xpos.utils.DeviceModelUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -172,17 +170,12 @@ public class DeviceUtils {
         return false;
     }
 
-    public static boolean isD70(Context context) {
-        return "D70".equals(Build.MODEL) || isScreenSizeLessThan3Inches(context);
-    }
 
-    public static boolean isD35D50() {
+    public static boolean isFrontNFCDevices() {
         return "D35".equals(Build.MODEL) || "D50".equals(Build.MODEL);
     }
 
-
-
-    private static boolean isScreenSizeLessThan3Inches(Context context) {
+    public static double getScreenSize(Context context) {
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         DisplayMetrics dm = new DisplayMetrics();
         wm.getDefaultDisplay().getMetrics(dm);
@@ -190,8 +183,8 @@ public class DeviceUtils {
         float widthInches = dm.widthPixels / dm.xdpi;
         float heightInches = dm.heightPixels / dm.ydpi;
         double diagonalInches = Math.sqrt(Math.pow(widthInches, 2) + Math.pow(heightInches, 2));
-
-        return diagonalInches <= 3.0;
+        TRACE.i("device size = "+diagonalInches);
+        return diagonalInches;
     }
 
     /**

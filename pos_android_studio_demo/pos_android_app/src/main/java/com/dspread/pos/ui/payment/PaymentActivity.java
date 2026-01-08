@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.Html;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -31,9 +30,9 @@ import com.dspread.pos.utils.TLVParser;
 import com.dspread.pos.utils.TRACE;
 import com.dspread.pos_android_app.BR;
 import com.dspread.pos_android_app.R;
-import com.dspread.pos_android_app.databinding.ActivityPaymentCommonBinding;
-import com.dspread.pos_android_app.databinding.ActivityPaymentD35D50Binding;
-import com.dspread.pos_android_app.databinding.ActivityPaymentD70Binding;
+import com.dspread.pos_android_app.databinding.ActivityPaymentDefaultBinding;
+import com.dspread.pos_android_app.databinding.ActivityPaymentFrontNfcBinding;
+import com.dspread.pos_android_app.databinding.ActivityPaymentSmallScreenBinding;
 import com.dspread.xpos.QPOSService;
 
 import java.text.SimpleDateFormat;
@@ -46,7 +45,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.utils.ToastUtils;
 
-public class PaymentActivity extends BaseActivity<ActivityPaymentCommonBinding, PaymentViewModel> implements PaymentServiceCallback {
+public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding, PaymentViewModel> implements PaymentServiceCallback {
 
     private String amount;
     private String deviceAddress;
@@ -63,22 +62,20 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentCommonBinding, 
     private AtomicBoolean isStarting = new AtomicBoolean(false);
     private final int[] imageResources = {R.mipmap.ic_insert_new_d70, R.mipmap.ic_tap_new_d70, R.mipmap.ic_swipe_new_d70};
     private final String[] textResources = {"<span style='color:red'>Insert</span><span style='color:black'>, tap or swipe</span>", "<span style='color:black'>Insert, </span><span style='color:red'>tap</span> <span style='color:black'>or swipe</span>", "<span style='color:black'>Insert, tap or </span><span style='color:red'>swipe</span>"};
-    private Object binding;
-    private ActivityPaymentCommonBinding commonBinding;
-    private ActivityPaymentD70Binding d70Binding;
-    private ActivityPaymentD35D50Binding d35d50Binding;
+    private ActivityPaymentDefaultBinding defaultBinding;
+    private ActivityPaymentSmallScreenBinding smallScreenBinding;
+    private ActivityPaymentFrontNfcBinding frontNfcBinding;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        if(DeviceUtils.isD70(this)){
-            return R.layout.activity_payment_d70;
-        } else if (DeviceUtils.isD35D50()) {
-            return R.layout.activity_payment_d35_d50;
+        if(DeviceUtils.getScreenSize(this) <=3.0){
+            return R.layout.activity_payment_small_screen;//todo 名字
+        } else if (DeviceUtils.isFrontNFCDevices()) {
+            return R.layout.activity_payment_front_nfc;//todo
         }else {
-            return R.layout.activity_payment_common;
+            return R.layout.activity_payment_default;
         }
-//        return R.layout.activity_payment;
     }
 
     @Override
@@ -92,20 +89,17 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentCommonBinding, 
      */
     @Override
     public void initData() {
-        if(DeviceUtils.isD70(this)){
-            d70Binding = DataBindingUtil.setContentView(this, R.layout.activity_payment_d70);
-            binding = d70Binding;
-            d70Binding.setViewModel(viewModel);
-            initD70UI();
-        } else if (DeviceUtils.isD35D50()) {
-            d35d50Binding = DataBindingUtil.setContentView(this, R.layout.activity_payment_d35_d50);
-            binding = d35d50Binding;
-            d35d50Binding.setViewModel(viewModel);
-            initD35D50UI();
+        if(DeviceUtils.getScreenSize(this) <=3.0){
+            smallScreenBinding = DataBindingUtil.setContentView(this, R.layout.activity_payment_small_screen);
+            smallScreenBinding.setViewModel(viewModel);
+            initSmallScreenUI();
+        } else if (DeviceUtils.isFrontNFCDevices()) {
+            frontNfcBinding = DataBindingUtil.setContentView(this, R.layout.activity_payment_front_nfc);
+            frontNfcBinding.setViewModel(viewModel);
+            initFrontNFCUI();
         }else {
-            commonBinding = DataBindingUtil.setContentView(this, R.layout.activity_payment_common);
-            binding = commonBinding;
-            commonBinding.setViewModel(viewModel);
+            defaultBinding = DataBindingUtil.setContentView(this, R.layout.activity_payment_default);
+            defaultBinding.setViewModel(viewModel);
             initCommonUI();
         }
         viewModel.titleText.set("Paymenting");
@@ -135,34 +129,34 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentCommonBinding, 
     }
 
     private void initCommonUI() {
-        if (commonBinding != null) {
-            commonBinding.pinpadEditText.setText("");
+        if (defaultBinding != null) {
+            defaultBinding.pinpadEditText.setText("");
             setupCommonAnimation();
         }
     }
 
-    private void initD70UI() {
-        if (d70Binding != null) {
+    private void initSmallScreenUI() {
+        if (smallScreenBinding != null) {
             setupImageSwitcher();
         }
     }
 
-    private void initD35D50UI() {
-        if (d35d50Binding != null) {
-            setupD35D50Animation();
+    private void initFrontNFCUI() {
+        if (frontNfcBinding != null) {
+            setupFrontNFCAnimation();
         }
     }
 
-    private void setupD35D50Animation() {
-        if (d35d50Binding != null) {
+    private void setupFrontNFCAnimation() {
+        if (frontNfcBinding != null) {
             String deviceModel = DeviceUtils.getPhoneModel();
             if ("D35".equals(deviceModel)) {
-                if (d35d50Binding.ivCardGuide != null) {
-                    d35d50Binding.ivCardGuide.setImageResource(R.drawable.ic_payguide_d35);
+                if (frontNfcBinding.ivCardGuide != null) {
+                    frontNfcBinding.ivCardGuide.setImageResource(R.drawable.ic_payguide_d35);
                 }
             } else if ("D50".equals(deviceModel)) {
-                if (d35d50Binding.ivCardGuide != null) {
-                    d35d50Binding.ivCardGuide.setImageResource(R.mipmap.ic_payguide_d50);
+                if (frontNfcBinding.ivCardGuide != null) {
+                    frontNfcBinding.ivCardGuide.setImageResource(R.mipmap.ic_payguide_d50);
                 }
             }
         }
@@ -174,23 +168,21 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentCommonBinding, 
             @Override
             public void run() {
                 currentIndex = (currentIndex + 1) % imageResources.length;
-                updateD70Content();
+                updateSmallScreenContent();
                 handler.postDelayed(this, 2000);
             }
         };
 
-        updateD70Content();
+        updateSmallScreenContent();
         handler.postDelayed(runnable, 2000);
     }
 
-    private void updateD70Content() {
-        if (d70Binding != null) {
-            d70Binding.d70ImageView.setImageResource(imageResources[currentIndex]);
-            d70Binding.txtWaitInsertTapCard.setText(Html.fromHtml(textResources[currentIndex], Html.FROM_HTML_MODE_COMPACT));
+    private void updateSmallScreenContent() {
+        if (smallScreenBinding != null) {
+            smallScreenBinding.guideImageView.setImageResource(imageResources[currentIndex]);
+            smallScreenBinding.txtWaitInsertTapCard.setText(Html.fromHtml(textResources[currentIndex], Html.FROM_HTML_MODE_COMPACT));
         }
     }
-
-
 
     /**
      * Dynamically set Lottie animations according to the device model
@@ -198,23 +190,23 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentCommonBinding, 
     private void setupCommonAnimation() {
         String deviceModel = DeviceUtils.getPhoneModel();
         TRACE.d("model:" + deviceModel);
-        if(commonBinding != null) {
+        if(defaultBinding != null) {
             if ("D20".equals(deviceModel)) {
-                commonBinding.animationView.setAnimation("D20_checkCardImg.json");
-                commonBinding.animationView.setImageAssetsFolder("D20_images/");
+                defaultBinding.animationView.setAnimation("D20_checkCardImg.json");
+                defaultBinding.animationView.setImageAssetsFolder("D20_images/");
             } else if ("D80".equals(deviceModel)) {
-                commonBinding.animationView.setAnimation("D80_checkCard.json");
-                commonBinding.animationView.setImageAssetsFolder("D80_images/");
+                defaultBinding.animationView.setAnimation("D80_checkCard.json");
+                defaultBinding.animationView.setImageAssetsFolder("D80_images/");
             } else if ("D60".equals(deviceModel)) {
-                commonBinding.animationView.setAnimation("D60_checkCard.json");
-                commonBinding.animationView.setImageAssetsFolder("D60_images/");
+                defaultBinding.animationView.setAnimation("D60_checkCard.json");
+                defaultBinding.animationView.setImageAssetsFolder("D60_images/");
             } else {//D30
-                commonBinding.animationView.setAnimation("D30_checkCard.json");
-                commonBinding.animationView.setImageAssetsFolder("D30_images/");
+                defaultBinding.animationView.setAnimation("D30_checkCard.json");
+                defaultBinding.animationView.setImageAssetsFolder("D30_images/");
             }
+            defaultBinding.animationView.loop(true);
+            defaultBinding.animationView.playAnimation();
         }
-        commonBinding.animationView.loop(true);
-        commonBinding.animationView.playAnimation();
     }
 
     private void initConnectionCallback() {
@@ -239,12 +231,12 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentCommonBinding, 
     }
 
     private android.widget.EditText getPinpadEditText() {
-        if(DeviceUtils.isD70(this)){
-            return d70Binding != null ? d70Binding.pinpadEditText : null;
-        } else if (DeviceUtils.isD35D50()) {
-            return d35d50Binding != null ? d35d50Binding.pinpadEditText : null;
+        if(DeviceUtils.getScreenSize(this) <=3.0){
+            return smallScreenBinding != null ? smallScreenBinding.pinpadEditText : null;
+        } else if (DeviceUtils.isFrontNFCDevices()) {
+            return frontNfcBinding != null ? frontNfcBinding.pinpadEditText : null;
         }else {
-            return commonBinding != null ? commonBinding.pinpadEditText : null;
+            return defaultBinding != null ? defaultBinding.pinpadEditText : null;
         }
     }
 
@@ -528,7 +520,6 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentCommonBinding, 
     }
 
     private void paymentStatus(String amount, String maskedPAN, String terminalTime, String errorMsg) {
-//        binding.d70ImageView.setVisibility(View.GONE);
         if (isStarting.compareAndSet(false, true)) {
             try {
                 Intent intent = new Intent(PaymentActivity.this, PaymentStatusActivity.class);
@@ -555,20 +546,20 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentCommonBinding, 
     }
 
     private com.airbnb.lottie.LottieAnimationView getAnimationView() {
-        if(DeviceUtils.isD35D50()){
-            return d35d50Binding != null ? d35d50Binding.animationView : null;
+        if(DeviceUtils.isFrontNFCDevices()){
+            return frontNfcBinding != null ? frontNfcBinding.animationView : null;
         }else {
-            return commonBinding != null ? commonBinding.animationView : null;
+            return defaultBinding != null ? defaultBinding.animationView : null;
         }
     }
 
     private View getRootLayout() {
-        if(DeviceUtils.isD35D50()){
-            return d35d50Binding != null ? d35d50Binding.getRoot() : null;
-        } else if (DeviceUtils.isD70(this)) {
-            return d70Binding != null ? d70Binding.getRoot() : null;
+        if(DeviceUtils.isFrontNFCDevices()){
+            return frontNfcBinding != null ? frontNfcBinding.getRoot() : null;
+        } else if (DeviceUtils.getScreenSize(this) <=3.0) {
+            return smallScreenBinding != null ? smallScreenBinding.getRoot() : null;
         }else {
-            return commonBinding != null ? commonBinding.getRoot() : null;
+            return defaultBinding != null ? defaultBinding.getRoot() : null;
         }
     }
 
