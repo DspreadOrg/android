@@ -69,11 +69,11 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
     @Override
     public int initContentView(Bundle savedInstanceState) {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        if(DeviceUtils.getScreenSize(this) <=3.0){
+        if (DeviceUtils.getScreenSize(this) <= 3.0) {
             return R.layout.activity_payment_small_screen;//todo 名字
         } else if (DeviceUtils.isFrontNFCDevices()) {
             return R.layout.activity_payment_front_nfc;//todo
-        }else {
+        } else {
             return R.layout.activity_payment_default;
         }
     }
@@ -89,7 +89,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
      */
     @Override
     public void initData() {
-        if(DeviceUtils.getScreenSize(this) <=3.0){
+        if (DeviceUtils.getScreenSize(this) <= 3.0) {
             smallScreenBinding = DataBindingUtil.setContentView(this, R.layout.activity_payment_small_screen);
             smallScreenBinding.setViewModel(viewModel);
             initSmallScreenUI();
@@ -97,7 +97,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
             frontNfcBinding = DataBindingUtil.setContentView(this, R.layout.activity_payment_front_nfc);
             frontNfcBinding.setViewModel(viewModel);
             initFrontNFCUI();
-        }else {
+        } else {
             defaultBinding = DataBindingUtil.setContentView(this, R.layout.activity_payment_default);
             defaultBinding.setViewModel(viewModel);
             initCommonUI();
@@ -190,7 +190,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
     private void setupCommonAnimation() {
         String deviceModel = DeviceUtils.getPhoneModel();
         TRACE.d("model:" + deviceModel);
-        if(defaultBinding != null) {
+        if (defaultBinding != null) {
             if ("D20".equals(deviceModel)) {
                 defaultBinding.animationView.setAnimation("D20_checkCardImg.json");
                 defaultBinding.animationView.setImageAssetsFolder("D20_images/");
@@ -231,11 +231,11 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
     }
 
     private android.widget.EditText getPinpadEditText() {
-        if(DeviceUtils.getScreenSize(this) <=3.0){
+        if (DeviceUtils.getScreenSize(this) <= 3.0) {
             return smallScreenBinding != null ? smallScreenBinding.pinpadEditText : null;
         } else if (DeviceUtils.isFrontNFCDevices()) {
             return frontNfcBinding != null ? frontNfcBinding.pinpadEditText : null;
-        }else {
+        } else {
             return defaultBinding != null ? defaultBinding.pinpadEditText : null;
         }
     }
@@ -398,11 +398,13 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
                 TRACE.i("NFC Batch data: " + tlv);
 
                 paymentResult.setAmount(amount);
+                viewModel.saveTransactionTime(terminalTime);
                 HandleTxnsResultUtils.handleDoTradeResult(paymentResult, decodeData, viewModel);
                 pauseAnimation();
                 maskedPAN = paymentResult.getMaskedPAN();
             } else if (result == QPOSService.DoTradeResult.MCR) {
                 paymentResult.setAmount(amount);
+                viewModel.saveTransactionTime(terminalTime);
                 HandleTxnsResultUtils.handleDoTradeResult(paymentResult, decodeData, viewModel);
                 pauseAnimation();
                 maskedPAN = paymentResult.getMaskedPAN();
@@ -412,7 +414,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
                     keyboardUtil.hide();
                 }
                 viewModel.titleText.set(getString(R.string.pls_see_phone));
-            }else {//NFC DECLINED
+            } else {//NFC DECLINED
                 viewModel.showPinpad.set(false);
                 if (keyboardUtil != null) {
                     keyboardUtil.hide();
@@ -475,6 +477,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
             cardOrg = AdvancedBinDetector.detectCardType(cardNo).getDisplayName();
             paymentModel.setCardNo(cardNo);
             paymentModel.setCardOrg(cardOrg);
+            viewModel.saveTransactionTime(terminalTime);
             viewModel.requestOnlineAuth(true, paymentModel);
         }
 
@@ -546,19 +549,19 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
     }
 
     private com.airbnb.lottie.LottieAnimationView getAnimationView() {
-        if(DeviceUtils.isFrontNFCDevices()){
+        if (DeviceUtils.isFrontNFCDevices()) {
             return frontNfcBinding != null ? frontNfcBinding.animationView : null;
-        }else {
+        } else {
             return defaultBinding != null ? defaultBinding.animationView : null;
         }
     }
 
     private View getRootLayout() {
-        if(DeviceUtils.isFrontNFCDevices()){
+        if (DeviceUtils.isFrontNFCDevices()) {
             return frontNfcBinding != null ? frontNfcBinding.getRoot() : null;
-        } else if (DeviceUtils.getScreenSize(this) <=3.0) {
+        } else if (DeviceUtils.getScreenSize(this) <= 3.0) {
             return smallScreenBinding != null ? smallScreenBinding.getRoot() : null;
-        }else {
+        } else {
             return defaultBinding != null ? defaultBinding.getRoot() : null;
         }
     }

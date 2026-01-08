@@ -1,6 +1,7 @@
 package com.dspread.pos.ui.payment;
 
 import android.app.Application;
+import android.text.TextUtils;
 
 import com.dspread.pos.common.base.BaseAppViewModel;
 import com.dspread.pos.common.room.TransactionRecord;
@@ -11,7 +12,11 @@ import com.dspread.pos.utils.TLV;
 import com.dspread.pos.utils.TLVParser;
 import com.dspread.pos.utils.TRACE;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.ObservableBoolean;
@@ -32,6 +37,7 @@ public class PaymentViewModel extends BaseAppViewModel {
     public ObservableBoolean showPinpad = new ObservableBoolean(false);
     public ObservableBoolean showResultStatus = new ObservableBoolean(false);
     public ObservableBoolean cardsInsertedStatus = new ObservableBoolean(false);
+    private String mTransactionTime;
 
     public PaymentViewModel(@NonNull Application application) {
         super(application);
@@ -117,6 +123,10 @@ public class PaymentViewModel extends BaseAppViewModel {
         loadingText.set("");
     }
 
+    public void saveTransactionTime(String transactionTime) {
+        this.mTransactionTime = transactionTime;
+    }
+
     public BindingCommand cancleTxnsCommand = new BindingCommand(() -> {
         startLoading("processing...");
         new Thread(() -> {
@@ -161,13 +171,23 @@ public class PaymentViewModel extends BaseAppViewModel {
             transactionRecord.setPayType("Card");
             transactionRecord.setTransResult("Paid");
             transactionRecord.setDeviceDate(DeviceUtils.getDeviceDate());
-            transactionRecord.setDeviceTime(DeviceUtils.getDeviceTime());
+            transactionRecord.setDeviceTime(formatDateTime(mTransactionTime));
             transactionRecordRepository.insertAsync(transactionRecord, callback);
         } catch (Exception e) {
             TRACE.e("Failed to save transaction record: " + e.getMessage());
             if (callback != null) {
                 callback.onInserted(-1);
             }
+        }
+    }
+
+    private String formatDateTime(String dateTimeStr) {
+        try {
+            return dateTimeStr == null || dateTimeStr.isEmpty() ? "" :
+                    new SimpleDateFormat("HH:mm:ss")
+                            .format(new SimpleDateFormat("yyyyMMddHHmmss").parse(dateTimeStr));
+        } catch (Exception e) {
+            return dateTimeStr == null ? "" : dateTimeStr;
         }
     }
 }
