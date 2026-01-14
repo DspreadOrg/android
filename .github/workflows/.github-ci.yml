@@ -174,8 +174,14 @@ jobs:
         run: |
             POS_SDK=$(ls pos_android_studio_demo/pos_android_app/libs/dspread_pos_sdk_*.aar)
             PRINT_SDK=$(ls pos_android_studio_demo/pos_android_app/libs/dspread_print_sdk-*.aar)
-            echo "POS_SDK=$POS_SDK" >> $GITHUB_OUTPUT
-            echo "PRINT_SDK=$PRINT_SDK" >> $GITHUB_OUTPUT
+            {
+              echo "POS_SDKS<<EOF"
+              echo "$POS_SDKS"
+              echo "EOF"
+              echo "PRINT_SDKS<<EOF"
+              echo "$PRINT_SDKS"
+              echo "EOF"
+            } >> "$GITHUB_OUTPUT"
 
       - name: Get commit message
         if: env.RELEASE_EXISTS == 'false'
@@ -223,4 +229,5 @@ jobs:
         run: |
           echo "Deploying APK or other artifacts"
           # 可以根据需要替换为实际的部署步骤，例如上传到服务器或云平台等 
+
 
