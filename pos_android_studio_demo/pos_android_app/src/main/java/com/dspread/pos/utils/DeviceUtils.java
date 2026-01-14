@@ -119,6 +119,10 @@ public class DeviceUtils {
         return "Brand:" + DeviceUtils.getPhoneBrand() + " || Name:" + DeviceUtils.getDeviceName() + " || Model:" + DeviceUtils.getPhoneModel() + " || Version:" + DeviceUtils.getVersionRelease();
     }
 
+    public static int dpToPx(Context context,int dp) {
+        return (int) (dp * context.getResources().getDisplayMetrics().density);
+    }
+
     public static String convertAmountToCents(String original) {
         System.out.println("convertAmountToCents:" + original);
         String result = "";

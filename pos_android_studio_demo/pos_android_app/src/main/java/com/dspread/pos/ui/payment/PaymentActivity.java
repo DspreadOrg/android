@@ -10,6 +10,7 @@ import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.databinding.DataBindingUtil;
 
 import com.dspread.pos.posAPI.ConnectionServiceCallback;
@@ -69,11 +70,11 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
     @Override
     public int initContentView(Bundle savedInstanceState) {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        if (DeviceUtils.getScreenSize(this) <= 3.0) {
-            return R.layout.activity_payment_small_screen;//todo 名字
+        if(DeviceUtils.getScreenSize(this) <=3.0){
+            return R.layout.activity_payment_small_screen;
         } else if (DeviceUtils.isFrontNFCDevices()) {
-            return R.layout.activity_payment_front_nfc;//todo
-        } else {
+            return R.layout.activity_payment_front_nfc;
+        }else {
             return R.layout.activity_payment_default;
         }
     }
@@ -149,12 +150,16 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
 
     private void setupFrontNFCAnimation() {
         if (frontNfcBinding != null) {
+            ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams)
+                    frontNfcBinding.animationView.getLayoutParams();
             String deviceModel = DeviceUtils.getPhoneModel();
             if ("D35".equals(deviceModel)) {
+                params.topMargin = DeviceUtils.dpToPx(this,25);//50.25mm
                 if (frontNfcBinding.ivCardGuide != null) {
                     frontNfcBinding.ivCardGuide.setImageResource(R.drawable.ic_payguide_d35);
                 }
             } else if ("D50".equals(deviceModel)) {
+                params.topMargin = DeviceUtils.dpToPx(this,0);//40.7mm
                 if (frontNfcBinding.ivCardGuide != null) {
                     frontNfcBinding.ivCardGuide.setImageResource(R.mipmap.ic_payguide_d50);
                 }
