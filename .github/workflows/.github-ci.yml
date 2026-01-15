@@ -260,7 +260,7 @@ jobs:
                 <configuration>
                   <httpHeaders>
                     <property>
-                      <name>Deploy-Token</name>
+                      <name>Private-Token</name>
                       <value>'${{ secrets.GITLAB_DEPLOY_TOKEN }}'</value>
                     </property>
                   </httpHeaders>
@@ -297,18 +297,20 @@ jobs:
             
             # 提取版本号和变体信息
             if [[ "$name" =~ ^dspread_pos_sdk_([0-9]+\.[0-9]+\.[0-9]+)(-min)?$ ]]; then
-              version="${BASH_REMATCH[1]}"
+              base_version="${BASH_REMATCH[1]}"
               suffix="${BASH_REMATCH[2]:-}"
               
               groupId="com.dspread.library"
               
               if [ -n "$suffix" ]; then
                 artifactId="dspread_pos_sdk"
-                version="${BASH_REMATCH[1]}-min" 
-                echo "🎯 检测到 POS SDK 精简版: version=$version"
+                version="${base_version}"         # 版本号还是 8.2.7
+                classifier="min"                  # 添加分类器
+                echo "🎯 检测到 POS SDK 精简版: version=$version, classifier=$classifier"
               else
                 artifactId="dspread_pos_sdk"
-                version="${BASH_REMATCH[1]}"
+                version="${base_version}"        # 版本号 8.2.7
+                classifier=""                    # 无分类器
                 echo "🎯 检测到 POS SDK 完整版: version=$version"
               fi
               
@@ -316,6 +318,9 @@ jobs:
               echo "  groupId: $groupId"
               echo "  artifactId: $artifactId"
               echo "  version: $version"
+              if [ -n "$classifier" ]; then
+                echo "  classifier: $classifier"
+              fi
               
               # 验证必要信息
               if [ -z "$GITLAB_MAVEN_URL" ]; then
@@ -328,21 +333,51 @@ jobs:
               # 使用 Maven deploy 命令
               echo "🚀 使用 Maven deploy 上传..."
               
-              mvn deploy:deploy-file \
-                -Dfile="$aar_file" \
-                -DgroupId="$groupId" \
-                -DartifactId="$artifactId" \
-                -Dversion="$version" \
-                -Dpackaging="aar" \
-                -DrepositoryId="gitlab-maven" \
-                -Durl="$GITLAB_MAVEN_URL" \
-                -DgeneratePom=true \
-                -s ~/.m2/settings.xml
+              # 构建 Maven 命令
+              MAVEN_CMD="mvn deploy:deploy-file \
+                -Dfile='$aar_file' \
+                -DgroupId='$groupId' \
+                -DartifactId='$artifactId' \
+                -Dversion='$version' \
+                -Dpackaging='aar' \
+                -DrepositoryId='gitlab-maven' \
+                -Durl='$GITLAB_MAVEN_URL' \
+                -DgeneratePom=true"
+              
+              # 如果有分类器，添加分类器参数
+              if [ -n "$classifier" ]; then
+                MAVEN_CMD="$MAVEN_CMD -Dclassifier='$classifier'"
+              fi
+              
+              # 执行 Maven 命令
+              eval $MAVEN_CMD -s ~/.m2/settings.xml
               
               if [ $? -eq 0 ]; then
                 echo "✅ 上传成功: $filename"
               else
                 echo "❌ 上传失败: $filename"
+                echo "⚠️  尝试使用 curl 直接上传..."
+                
+                # 构建上传文件名
+                if [ -n "$classifier" ]; then
+                  upload_filename="${artifactId}-${version}-${classifier}.aar"
+                else
+                  upload_filename="${artifactId}-${version}.aar"
+                fi
+                
+                # 使用 curl 直接上传
+                echo "🔄 尝试 curl 上传 $upload_filename..."
+                curl -v --fail --location --request POST \
+                  "$GITLAB_MAVEN_URL/$groupId/$artifactId/$version/$upload_filename" \
+                  --header "Private-Token: $GITLAB_DEPLOY_TOKEN" \
+                  --header "Content-Type: multipart/form-data" \
+                  --form "file=@$aar_file"
+                
+                if [ $? -eq 0 ]; then
+                  echo "✅ curl 上传成功"
+                else
+                  echo "❌ curl 上传失败"
+                fi
               fi
               
               echo "---"
@@ -357,6 +392,14 @@ jobs:
             echo "⚠️  警告: 未找到 dspread_pos_sdk_*.aar 文件"
           else
             echo "🎉 处理完成，共 $file_count 个文件"
+            echo ""
+            echo "📋 生成的 Maven 依赖:"
+            echo ""
+            echo "完整版依赖:"
+            echo "implementation 'com.dspread.library:dspread_pos_sdk:8.2.7'"
+            echo ""
+            echo "精简版依赖:"
+            echo "implementation 'com.dspread.library:dspread_pos_sdk_min:8.2.7'"
           fi
           
   deploy:
