@@ -236,7 +236,7 @@ jobs:
 
   upload-to-gitlab-maven:
     runs-on: ubuntu-latest
-    # needs: [build]  # 依赖于 build 作业成功
+    needs: [build]  # 依赖于 build 作业成功
     # if: github.event_name == 'push' && github.ref == 'refs/heads/master'  # 仅当推送到 master 分支时执行
     
     steps:
@@ -252,23 +252,24 @@ jobs:
       - name: Configure Maven for GitLab
         run: |
           mkdir -p ~/.m2
-          cat > ~/.m2/settings.xml <<EOF
-          <settings>
-            <servers>
-              <server>
-                <id>gitlab-maven</id>
-                <configuration>
-                  <httpHeaders>
-                    <property>
-                      <name>Deploy-Token</name>
-                      <value>${{ secrets.GITLAB_DEPLOY_TOKEN }}</value>
-                    </property>
-                  </httpHeaders>
-                </configuration>
-              </server>
-            </servers>
-          </settings>
-          EOF
+          cat > ~/.m2/settings.xml << 'SETTINGS_XML'
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+  <servers>
+    <server>
+      <id>gitlab-maven</id>
+      <configuration>
+        <httpHeaders>
+          <property>
+            <name>Deploy-Token</name>
+            <value>${{ secrets.GITLAB_DEPLOY_TOKEN }}</value>
+          </property>
+        </httpHeaders>
+      </configuration>
+    </server>
+  </servers>
+</settings>
+SETTINGS_XML
           
       - name: Upload POS SDK AARs to GitLab Maven
         env:
@@ -362,20 +363,23 @@ jobs:
                 # 方法2: 使用 curl 作为备用方案
                 echo "🔄 尝试使用 curl 上传..."
                 
-                # 创建临时 pom.xml
-                cat > /tmp/temp.pom << 'EOF'
-                <?xml version="1.0" encoding="UTF-8"?>
-                <project xmlns="http://maven.apache.org/POM/4.0.0"
-                        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
-                        http://maven.apache.org/xsd/maven-4.0.0.xsd">
-                  <modelVersion>4.0.0</modelVersion>
-                  <groupId>$groupId</groupId>
-                  <artifactId>$artifactId</artifactId>
-                  <version>$version</version>
-                  <packaging>aar</packaging>
-                </project>
-                EOF
+                # 使用 echo 创建临时 pom.xml，避免 heredoc
+                echo '<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>REPLACE_GROUPID</groupId>
+  <artifactId>REPLACE_ARTIFACTID</artifactId>
+  <version>REPLACE_VERSION</version>
+  <packaging>aar</packaging>
+</project>' > /tmp/temp.pom
+                
+                # 替换变量
+                sed -i "s/REPLACE_GROUPID/$groupId/g" /tmp/temp.pom
+                sed -i "s/REPLACE_ARTIFACTID/$artifactId/g" /tmp/temp.pom
+                sed -i "s/REPLACE_VERSION/$version/g" /tmp/temp.pom
                 
                 # 上传 AAR 文件
                 echo "📤 上传 AAR 文件..."
