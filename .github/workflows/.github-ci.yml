@@ -3,10 +3,10 @@ name: Android CI/CD
 on:
   push:
     branches:
-      - master  # 触发 CI/CD 的分支
+      # - master  # 触发 CI/CD 的分支
   pull_request:
     branches:
-      - master  # 监听到 PR 到 main 分支时触发 CI/CD
+      # - master  # 监听到 PR 到 main 分支时触发 CI/CD
 
 jobs:
   lint:
@@ -235,199 +235,199 @@ jobs:
           echo "💡 If you want to create a new release, please update versionCode and versionName in build.gradle"
 
   upload-to-gitlab-maven:
-  runs-on: ubuntu-latest
-  needs: [build]  # 依赖于 build 作业成功
-  # if: github.event_name == 'push' && github.ref == 'refs/heads/master'  # 仅当推送到 master 分支时执行
-  
-  steps:
-    - name: Check out repository
-      uses: actions/checkout@v3
-      
-    - name: Set up Maven
-      uses: actions/setup-java@v3
-      with:
-        java-version: '17'
-        distribution: 'temurin'
+    runs-on: ubuntu-latest
+    # needs: [build]  # 依赖于 build 作业成功
+    # if: github.event_name == 'push' && github.ref == 'refs/heads/master'  # 仅当推送到 master 分支时执行
+    
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
         
-    - name: Configure Maven for GitLab
-      run: |
-        mkdir -p ~/.m2
-        cat > ~/.m2/settings.xml <<EOF
-        <settings>
-          <servers>
-            <server>
-              <id>gitlab-maven</id>
-              <configuration>
-                <httpHeaders>
-                  <property>
-                    <name>Deploy-Token</name>
-                    <value>${{ secrets.GITLAB_DEPLOY_TOKEN }}</value>
-                  </property>
-                </httpHeaders>
-              </configuration>
-            </server>
-          </servers>
-        </settings>
-        EOF
-        
-    - name: Upload POS SDK AARs to GitLab Maven
-      env:
-        GITLAB_MAVEN_URL: ${{ secrets.GITLAB_MAVEN_URL }}
-        GITLAB_DEPLOY_TOKEN: ${{ secrets.GITLAB_DEPLOY_TOKEN }}
-      run: |
-        # 设置工作目录
-        AAR_DIR="pos_android_studio_demo/pos_android_app/libs"
-        
-        echo "🔍 查找 POS SDK AAR 文件..."
-        
-        # 只上传匹配 dspread_pos_sdk_*.aar 的文件
-        for aar_file in "$AAR_DIR"/dspread_pos_sdk_*.aar; do
-          if [ ! -f "$aar_file" ]; then
-            echo "⚠️  未找到匹配的 POS SDK AAR 文件"
-            continue
-          fi
+      - name: Set up Maven
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
           
-          echo "📦 处理文件: $aar_file"
+      - name: Configure Maven for GitLab
+        run: |
+          mkdir -p ~/.m2
+          cat > ~/.m2/settings.xml <<EOF
+          <settings>
+            <servers>
+              <server>
+                <id>gitlab-maven</id>
+                <configuration>
+                  <httpHeaders>
+                    <property>
+                      <name>Deploy-Token</name>
+                      <value>${{ secrets.GITLAB_DEPLOY_TOKEN }}</value>
+                    </property>
+                  </httpHeaders>
+                </configuration>
+              </server>
+            </servers>
+          </settings>
+          EOF
           
-          # 提取文件名和基本信息
-          filename=$(basename "$aar_file")
-          name="${filename%.*}"  # 去掉 .aar 后缀
+      - name: Upload POS SDK AARs to GitLab Maven
+        env:
+          GITLAB_MAVEN_URL: ${{ secrets.GITLAB_MAVEN_URL }}
+          GITLAB_DEPLOY_TOKEN: ${{ secrets.GITLAB_DEPLOY_TOKEN }}
+        run: |
+          # 设置工作目录
+          AAR_DIR="pos_android_studio_demo/pos_android_app/libs"
           
-          echo "📄 文件名: $filename"
-          echo "🆔 名称: $name"
+          echo "🔍 查找 POS SDK AAR 文件..."
           
-          # 提取版本号和变体信息
-          # 匹配模式: dspread_pos_sdk_8.2.7.aar 或 dspread_pos_sdk_8.2.7-min.aar
-          if [[ "$name" =~ ^dspread_pos_sdk_([0-9]+\.[0-9]+\.[0-9]+)(-min)?$ ]]; then
-            version="${BASH_REMATCH[1]}"      # 8.2.7
-            suffix="${BASH_REMATCH[2]:-}"     # -min 或空
-            
-            # 设置 Maven 坐标
-            groupId="com.dspread.library"
-            
-            if [ -n "$suffix" ]; then
-              # 如果有 -min 后缀
-              artifactId="dspread_pos_sdk"
-              version="${BASH_REMATCH[1]}-min" 
-              echo "🎯 检测到 POS SDK 精简版: version=$version"
-            else
-              # 完整版
-              artifactId="dspread_pos_sdk"
-              version="${BASH_REMATCH[1]}"
-              echo "🎯 检测到 POS SDK 完整版: version=$version"
+          # 只上传匹配 dspread_pos_sdk_*.aar 的文件
+          for aar_file in "$AAR_DIR"/dspread_pos_sdk_*.aar; do
+            if [ ! -f "$aar_file" ]; then
+              echo "⚠️  未找到匹配的 POS SDK AAR 文件"
+              continue
             fi
             
-            echo "📦 Maven 坐标:"
-            echo "  groupId: $groupId"
-            echo "  artifactId: $artifactId"
-            echo "  version: $version"
-            echo "  packaging: aar"
+            echo "📦 处理文件: $aar_file"
             
-            # 验证必要信息
-            if [ -z "$GITLAB_MAVEN_URL" ]; then
-              echo "❌ 错误: GITLAB_MAVEN_URL 未设置"
-              exit 1
-            fi
+            # 提取文件名和基本信息
+            filename=$(basename "$aar_file")
+            name="${filename%.*}"  # 去掉 .aar 后缀
             
-            if [ -z "$GITLAB_DEPLOY_TOKEN" ]; then
-              echo "❌ 错误: GITLAB_DEPLOY_TOKEN 未设置"
-              exit 1
-            fi
+            echo "📄 文件名: $filename"
+            echo "🆔 名称: $name"
             
-            echo "🌐 GitLab Maven URL: $GITLAB_MAVEN_URL"
-            
-            # 方法1: 使用 Maven deploy 命令（推荐）
-            echo "🚀 使用 Maven deploy 上传..."
-            
-            mvn deploy:deploy-file \
-              -Dfile="$aar_file" \
-              -DgroupId="$groupId" \
-              -DartifactId="$artifactId" \
-              -Dversion="$version" \
-              -Dpackaging="aar" \
-              -DrepositoryId="gitlab-maven" \
-              -Durl="$GITLAB_MAVEN_URL" \
-              -DgeneratePom=true \
-              -Dpom.groupId="$groupId" \
-              -Dpom.artifactId="$artifactId" \
-              -Dpom.version="$version" \
-              -s ~/.m2/settings.xml
-            
-            if [ $? -eq 0 ]; then
-              echo "✅ 上传成功: $filename"
-            else
-              echo "❌ 上传失败: $filename"
-              echo "⚠️  尝试备用上传方法..."
+            # 提取版本号和变体信息
+            # 匹配模式: dspread_pos_sdk_8.2.7.aar 或 dspread_pos_sdk_8.2.7-min.aar
+            if [[ "$name" =~ ^dspread_pos_sdk_([0-9]+\.[0-9]+\.[0-9]+)(-min)?$ ]]; then
+              version="${BASH_REMATCH[1]}"      # 8.2.7
+              suffix="${BASH_REMATCH[2]:-}"     # -min 或空
               
-              # 方法2: 使用 curl 作为备用方案
-              echo "🔄 尝试使用 curl 上传..."
+              # 设置 Maven 坐标
+              groupId="com.dspread.library"
               
-              # 创建临时 pom.xml
-              cat > /tmp/temp.pom <<EOF
-              <?xml version="1.0" encoding="UTF-8"?>
-              <project xmlns="http://maven.apache.org/POM/4.0.0"
-                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                      xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
-                      http://maven.apache.org/xsd/maven-4.0.0.xsd">
-                <modelVersion>4.0.0</modelVersion>
-                <groupId>$groupId</groupId>
-                <artifactId>$artifactId</artifactId>
-                <version>$version</version>
-                <packaging>aar</packaging>
-              </project>
-              EOF
+              if [ -n "$suffix" ]; then
+                # 如果有 -min 后缀
+                artifactId="dspread_pos_sdk"
+                version="${BASH_REMATCH[1]}-min" 
+                echo "🎯 检测到 POS SDK 精简版: version=$version"
+              else
+                # 完整版
+                artifactId="dspread_pos_sdk"
+                version="${BASH_REMATCH[1]}"
+                echo "🎯 检测到 POS SDK 完整版: version=$version"
+              fi
               
-              # 上传 AAR 文件
-              echo "📤 上传 AAR 文件..."
-              curl --silent --show-error --fail --location --request POST \
-                "$GITLAB_MAVEN_URL/$groupId/$artifactId/$version/$artifactId-$version.aar" \
-                --header "Deploy-Token: $GITLAB_DEPLOY_TOKEN" \
-                --header "Content-Type: multipart/form-data" \
-                --form "file=@$aar_file"
+              echo "📦 Maven 坐标:"
+              echo "  groupId: $groupId"
+              echo "  artifactId: $artifactId"
+              echo "  version: $version"
+              echo "  packaging: aar"
+              
+              # 验证必要信息
+              if [ -z "$GITLAB_MAVEN_URL" ]; then
+                echo "❌ 错误: GITLAB_MAVEN_URL 未设置"
+                exit 1
+              fi
+              
+              if [ -z "$GITLAB_DEPLOY_TOKEN" ]; then
+                echo "❌ 错误: GITLAB_DEPLOY_TOKEN 未设置"
+                exit 1
+              fi
+              
+              echo "🌐 GitLab Maven URL: $GITLAB_MAVEN_URL"
+              
+              # 方法1: 使用 Maven deploy 命令（推荐）
+              echo "🚀 使用 Maven deploy 上传..."
+              
+              mvn deploy:deploy-file \
+                -Dfile="$aar_file" \
+                -DgroupId="$groupId" \
+                -DartifactId="$artifactId" \
+                -Dversion="$version" \
+                -Dpackaging="aar" \
+                -DrepositoryId="gitlab-maven" \
+                -Durl="$GITLAB_MAVEN_URL" \
+                -DgeneratePom=true \
+                -Dpom.groupId="$groupId" \
+                -Dpom.artifactId="$artifactId" \
+                -Dpom.version="$version" \
+                -s ~/.m2/settings.xml
               
               if [ $? -eq 0 ]; then
-                echo "✅ AAR 上传成功"
+                echo "✅ 上传成功: $filename"
+              else
+                echo "❌ 上传失败: $filename"
+                echo "⚠️  尝试备用上传方法..."
                 
-                # 上传 POM 文件
-                echo "📤 上传 POM 文件..."
+                # 方法2: 使用 curl 作为备用方案
+                echo "🔄 尝试使用 curl 上传..."
+                
+                # 创建临时 pom.xml
+                cat > /tmp/temp.pom <<EOF
+                <?xml version="1.0" encoding="UTF-8"?>
+                <project xmlns="http://maven.apache.org/POM/4.0.0"
+                        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+                        http://maven.apache.org/xsd/maven-4.0.0.xsd">
+                  <modelVersion>4.0.0</modelVersion>
+                  <groupId>$groupId</groupId>
+                  <artifactId>$artifactId</artifactId>
+                  <version>$version</version>
+                  <packaging>aar</packaging>
+                </project>
+                EOF
+                
+                # 上传 AAR 文件
+                echo "📤 上传 AAR 文件..."
                 curl --silent --show-error --fail --location --request POST \
-                  "$GITLAB_MAVEN_URL/$groupId/$artifactId/$version/$artifactId-$version.pom" \
+                  "$GITLAB_MAVEN_URL/$groupId/$artifactId/$version/$artifactId-$version.aar" \
                   --header "Deploy-Token: $GITLAB_DEPLOY_TOKEN" \
                   --header "Content-Type: multipart/form-data" \
-                  --form "file=@/tmp/temp.pom"
+                  --form "file=@$aar_file"
                 
                 if [ $? -eq 0 ]; then
-                  echo "✅ POM 上传成功"
+                  echo "✅ AAR 上传成功"
+                  
+                  # 上传 POM 文件
+                  echo "📤 上传 POM 文件..."
+                  curl --silent --show-error --fail --location --request POST \
+                    "$GITLAB_MAVEN_URL/$groupId/$artifactId/$version/$artifactId-$version.pom" \
+                    --header "Deploy-Token: $GITLAB_DEPLOY_TOKEN" \
+                    --header "Content-Type: multipart/form-data" \
+                    --form "file=@/tmp/temp.pom"
+                  
+                  if [ $? -eq 0 ]; then
+                    echo "✅ POM 上传成功"
+                  else
+                    echo "⚠️  POM 上传失败（可能已存在）"
+                  fi
+                  
+                  # 清理临时文件
+                  rm -f /tmp/temp.pom
                 else
-                  echo "⚠️  POM 上传失败（可能已存在）"
+                  echo "❌ curl 上传也失败"
                 fi
-                
-                # 清理临时文件
-                rm -f /tmp/temp.pom
-              else
-                echo "❌ curl 上传也失败"
               fi
+              
+              echo "---"
+              
+            else
+              echo "⚠️  跳过不匹配的文件: $filename (文件名格式不正确)"
+              echo "期望格式: dspread_pos_sdk_版本号.aar 或 dspread_pos_sdk_版本号-min.aar"
+              echo "实际格式: $name"
             fi
-            
-            echo "---"
-            
+          done
+          
+          # 检查是否处理了任何文件
+          file_count=$(ls "$AAR_DIR"/dspread_pos_sdk_*.aar 2>/dev/null | wc -l)
+          if [ "$file_count" -eq 0 ]; then
+            echo "⚠️  警告: 在 $AAR_DIR 目录下未找到 dspread_pos_sdk_*.aar 文件"
+            echo "当前目录内容:"
+            ls -la "$AAR_DIR"/
           else
-            echo "⚠️  跳过不匹配的文件: $filename (文件名格式不正确)"
-            echo "期望格式: dspread_pos_sdk_版本号.aar 或 dspread_pos_sdk_版本号-min.aar"
-            echo "实际格式: $name"
+            echo "🎉 POS SDK AAR 文件处理完成"
+            echo "📊 总共找到并处理了 $file_count 个文件"
           fi
-        done
-        
-        # 检查是否处理了任何文件
-        file_count=$(ls "$AAR_DIR"/dspread_pos_sdk_*.aar 2>/dev/null | wc -l)
-        if [ "$file_count" -eq 0 ]; then
-          echo "⚠️  警告: 在 $AAR_DIR 目录下未找到 dspread_pos_sdk_*.aar 文件"
-          echo "当前目录内容:"
-          ls -la "$AAR_DIR"/
-        else
-          echo "🎉 POS SDK AAR 文件处理完成"
-          echo "📊 总共找到并处理了 $file_count 个文件"
-        fi
           
   deploy:
     runs-on: ubuntu-latest  # 使用 Ubuntu 作为运行环境
