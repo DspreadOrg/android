@@ -172,16 +172,32 @@ jobs:
         if: env.RELEASE_EXISTS == 'false'
         id: verify-sdk
         run: |
-            POS_SDK=$(ls pos_android_studio_demo/pos_android_app/libs/dspread_pos_sdk_*.aar)
-            PRINT_SDK=$(ls pos_android_studio_demo/pos_android_app/libs/dspread_print_sdk-*.aar)
-            {
-              echo "POS_SDKS<<EOF"
-              echo "$POS_SDKS"
-              echo "EOF"
-              echo "PRINT_SDKS<<EOF"
-              echo "$PRINT_SDKS"
-              echo "EOF"
-            } >> "$GITHUB_OUTPUT"
+             POS_SDKS=$(find pos_android_studio_demo/pos_android_app/libs -name "dspread_pos_sdk_*.aar" -type f | tr '\n' ' ')
+             PRINT_SDKS=$(find pos_android_studio_demo/pos_android_app/libs -name "dspread_print_sdk-*.aar" -type f | tr '\n' ' ')
+            
+             # 打印验证结果
+             echo "Found POS SDK files: $POS_SDKS"
+             echo "Found PRINT SDK files: $PRINT_SDKS"
+            
+             # 检查是否找到文件
+             if [ -z "$POS_SDKS" ]; then
+               echo "WARNING: No POS SDK files found!"
+             else
+               # 统计找到的文件数量
+               POS_COUNT=$(echo "$POS_SDKS" | wc -w)
+               echo "Found $POS_COUNT POS SDK file(s)"
+             fi
+            
+             if [ -z "$PRINT_SDKS" ]; then
+               echo "WARNING: No PRINT SDK files found!"
+             else
+               PRINT_COUNT=$(echo "$PRINT_SDKS" | wc -w)
+               echo "Found $PRINT_COUNT PRINT SDK file(s)"
+             fi
+            
+             # 设置输出变量（注意：每个输出变量都要单独设置）
+             echo "pos_sdks=$POS_SDKS" >> $GITHUB_OUTPUT
+             echo "print_sdks=$PRINT_SDKS" >> $GITHUB_OUTPUT
 
       - name: Get commit message
         if: env.RELEASE_EXISTS == 'false'
@@ -207,8 +223,8 @@ jobs:
           prerelease: false
           files: |
             pos_android_studio_demo/pos_android_app/build/outputs/apk/release/pos_android_app-release.apk
-            ${{ steps.verify-sdk.outputs.POS_SDK }}
-            ${{ steps.verify-sdk.outputs.PRINT_SDK }}
+            ${{ steps.verify-sdk.outputs.pos_sdks }}
+            ${{ steps.verify-sdk.outputs.print_sdks }}
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Skip release creation
