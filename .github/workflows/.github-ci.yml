@@ -233,6 +233,173 @@ jobs:
           echo "🚫 Release ${{ env.TAG_NAME }} already exists!"
           echo "📋 Existing Release: ${{ env.EXISTING_RELEASE_NAME }}"
           echo "💡 If you want to create a new release, please update versionCode and versionName in build.gradle"
+
+  upload-to-gitlab-maven:
+    runs-on: ubuntu-latest
+    needs: [build]
+    
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+        
+      - name: Set up Maven
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          
+      - name: Configure Maven for GitLab
+        run: |
+          mkdir -p ~/.m2
+          # 使用简单的echo命令，避免heredoc问题
+          echo '<?xml version="1.0" encoding="UTF-8"?>
+          <settings>
+            <servers>
+              <server>
+                <id>gitlab-maven</id>
+                <configuration>
+                  <httpHeaders>
+                    <property>
+                      <name>Private-Token</name>
+                      <value>'${{ secrets.GITLAB_DEPLOY_TOKEN }}'</value>
+                    </property>
+                  </httpHeaders>
+                </configuration>
+              </server>
+            </servers>
+          </settings>' > ~/.m2/settings.xml
+          
+      - name: Upload POS SDK AARs to GitLab Maven
+        env:
+          GITLAB_MAVEN_URL: ${{ secrets.GITLAB_MAVEN_URL }}
+          GITLAB_DEPLOY_TOKEN: ${{ secrets.GITLAB_DEPLOY_TOKEN }}
+        run: |
+          # 设置工作目录
+          AAR_DIR="pos_android_studio_demo/pos_android_app/libs"
+          
+          echo "🔍 查找 POS SDK AAR 文件..."
+          
+          # 只上传匹配 dspread_pos_sdk_*.aar 的文件
+          for aar_file in "$AAR_DIR"/dspread_pos_sdk_*.aar; do
+            if [ ! -f "$aar_file" ]; then
+              echo "⚠️  未找到匹配的 POS SDK AAR 文件"
+              continue
+            fi
+            
+            echo "📦 处理文件: $aar_file"
+            
+            # 提取文件名和基本信息
+            filename=$(basename "$aar_file")
+            name="${filename%.*}"  # 去掉 .aar 后缀
+            
+            echo "📄 文件名: $filename"
+            echo "🆔 名称: $name"
+            
+            # 提取版本号和变体信息
+            if [[ "$name" =~ ^dspread_pos_sdk_([0-9]+\.[0-9]+\.[0-9]+)(-min)?$ ]]; then
+              base_version="${BASH_REMATCH[1]}"
+              suffix="${BASH_REMATCH[2]:-}"
+              
+              groupId="com.dspread.library"
+              
+              if [ -n "$suffix" ]; then
+                artifactId="dspread_pos_sdk"
+                version="${base_version}-min"        # 版本号还是 8.2.7
+                echo "🎯 检测到 POS SDK 精简版: version=$version"
+              else
+                artifactId="dspread_pos_sdk"
+                version="${base_version}"        # 版本号 8.2.7
+                classifier=""                    # 无分类器
+                echo "🎯 检测到 POS SDK 完整版: version=$version"
+              fi
+              
+              echo "📦 Maven 坐标:"
+              echo "  groupId: $groupId"
+              echo "  artifactId: $artifactId"
+              echo "  version: $version"
+              if [ -n "$classifier" ]; then
+                echo "  classifier: $classifier"
+              fi
+              
+              # 验证必要信息
+              if [ -z "$GITLAB_MAVEN_URL" ]; then
+                echo "❌ 错误: GITLAB_MAVEN_URL 未设置"
+                exit 1
+              fi
+              
+              echo "🌐 GitLab Maven URL: $GITLAB_MAVEN_URL"
+              
+              # 使用 Maven deploy 命令
+              echo "🚀 使用 Maven deploy 上传..."
+              
+              # 构建 Maven 命令
+              MAVEN_CMD="mvn deploy:deploy-file \
+                -Dfile='$aar_file' \
+                -DgroupId='$groupId' \
+                -DartifactId='$artifactId' \
+                -Dversion='$version' \
+                -Dpackaging='aar' \
+                -DrepositoryId='gitlab-maven' \
+                -Durl='$GITLAB_MAVEN_URL' \
+                -DgeneratePom=true"
+              
+              # 如果有分类器，添加分类器参数
+              if [ -n "$classifier" ]; then
+                MAVEN_CMD="$MAVEN_CMD -Dclassifier='$classifier'"
+              fi
+              
+              # 执行 Maven 命令
+              eval $MAVEN_CMD -s ~/.m2/settings.xml
+              
+              if [ $? -eq 0 ]; then
+                echo "✅ 上传成功: $filename"
+              else
+                echo "❌ 上传失败: $filename"
+                echo "⚠️  尝试使用 curl 直接上传..."
+                
+                # 构建上传文件名
+                if [ -n "$classifier" ]; then
+                  upload_filename="${artifactId}-${version}-${classifier}.aar"
+                else
+                  upload_filename="${artifactId}-${version}.aar"
+                fi
+                
+                # 使用 curl 直接上传
+                echo "🔄 尝试 curl 上传 $upload_filename..."
+                curl -v --fail --location --request POST \
+                  "$GITLAB_MAVEN_URL/$groupId/$artifactId/$version/$upload_filename" \
+                  --header "Private-Token: $GITLAB_DEPLOY_TOKEN" \
+                  --header "Content-Type: multipart/form-data" \
+                  --form "file=@$aar_file"
+                
+                if [ $? -eq 0 ]; then
+                  echo "✅ curl 上传成功"
+                else
+                  echo "❌ curl 上传失败"
+                fi
+              fi
+              
+              echo "---"
+            else
+              echo "⚠️  跳过不匹配的文件: $filename"
+            fi
+          done
+          
+          # 检查是否处理了任何文件
+          file_count=$(ls "$AAR_DIR"/dspread_pos_sdk_*.aar 2>/dev/null | wc -l)
+          if [ "$file_count" -eq 0 ]; then
+            echo "⚠️  警告: 未找到 dspread_pos_sdk_*.aar 文件"
+          else
+            echo "🎉 处理完成，共 $file_count 个文件"
+            echo ""
+            echo "📋 生成的 Maven 依赖:"
+            echo ""
+            echo "完整版依赖:"
+            echo "implementation 'com.dspread.library:dspread_pos_sdk:x.x.x'"
+            echo ""
+            echo "精简版依赖:"
+            echo "implementation 'implementation 'com.dspread.library:dspread_pos_sdk:x.x.x-min'"
+          fi
           
   deploy:
     runs-on: ubuntu-latest  # 使用 Ubuntu 作为运行环境
@@ -245,5 +412,6 @@ jobs:
         run: |
           echo "Deploying APK or other artifacts"
           # 可以根据需要替换为实际的部署步骤，例如上传到服务器或云平台等 
+
 
 

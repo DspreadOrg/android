@@ -321,7 +321,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
             getPinpadEditText().setText("");
             MyKeyboardView.setKeyBoardListener(value -> {
                 if (POSManager.getInstance().isDeviceConnected()) {
-                    POSManager.getInstance().pinMapSync(value, 20);
+                    POSManager.getInstance().pinMapSync(value, 60);
                 }
             });
             if (POSManager.getInstance().isDeviceConnected()) {
