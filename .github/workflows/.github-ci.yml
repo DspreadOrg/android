@@ -304,9 +304,8 @@ jobs:
               
               if [ -n "$suffix" ]; then
                 artifactId="dspread_pos_sdk"
-                version="${base_version}"         # 版本号还是 8.2.7
-                classifier="min"                  # 添加分类器
-                echo "🎯 检测到 POS SDK 精简版: version=$version, classifier=$classifier"
+                version="${base_version}-min"        # 版本号还是 8.2.7
+                echo "🎯 检测到 POS SDK 精简版: version=$version"
               else
                 artifactId="dspread_pos_sdk"
                 version="${base_version}"        # 版本号 8.2.7
