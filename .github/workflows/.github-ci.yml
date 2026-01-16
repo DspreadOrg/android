@@ -223,8 +223,8 @@ jobs:
           prerelease: false
           files: |
             pos_android_studio_demo/pos_android_app/build/outputs/apk/release/pos_android_app-release.apk
-            ${{ steps.verify-sdk.outputs.pos_sdks }}
-            ${{ steps.verify-sdk.outputs.print_sdks }}
+            pos_android_studio_demo/pos_android_app/libs/dspread_pos_sdk_*.aar
+            pos_android_studio_demo/pos_android_app/libs/dspread_print_sdk-*.aar
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Skip release creation
