@@ -358,6 +358,8 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
                     String pinBlock = QPOSUtil.buildISO4PinBlock(POSManager.getInstance().getIsoFormat4PinBlockParams(), password);// build the ISO format4 pin block
                     if (pinBlock != null && !pinBlock.isEmpty()) {
                         POSManager.getInstance().sendCvmPin(pinBlock, true);
+                    } else {
+                        POSManager.getInstance().cancelTransaction();
                     }
                     pinPadDialog.dismiss();
                 }

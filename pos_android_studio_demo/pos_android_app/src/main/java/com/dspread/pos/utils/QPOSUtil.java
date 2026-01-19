@@ -416,7 +416,7 @@ public class QPOSUtil {
             ToastUtils.showLong("PIN params can't be null");
             return null;
         }
-        if (userPin == null || !userPin.matches("\\d{4,12}")) {
+        if (userPin == null || userPin.length()<4 || userPin.length()>12) {
             ToastUtils.showLong("PIN length must be 4-12");
             return null;
         }
