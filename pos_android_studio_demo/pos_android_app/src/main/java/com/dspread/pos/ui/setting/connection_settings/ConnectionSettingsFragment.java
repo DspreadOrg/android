@@ -20,8 +20,10 @@ import com.dspread.pos.common.enums.POS_TYPE;
 import com.dspread.pos.TitleProviderListener;
 import com.dspread.pos.posAPI.POSManager;
 import com.dspread.pos.ui.setting.device_config.DeviceConfigActivity;
+import com.dspread.pos.ui.setting.device_config.DeviceConfigItem;
 import com.dspread.pos.ui.setting.device_selection.DeviceSelectionActivity;
 import com.dspread.pos.utils.DevUtils;
+import com.dspread.pos.utils.DeviceUtils;
 import com.dspread.pos.utils.TRACE;
 import com.dspread.pos.utils.USBClass;
 import com.dspread.pos_android_app.BR;
@@ -58,8 +60,10 @@ public class ConnectionSettingsFragment extends BaseFragment<FragmentConnectionS
         super.initData();
         // Setup event listeners
         setupEventListeners();
-
         initAppVersion();
+        if (DeviceUtils.isSmartDevices()) {
+            selectUart();
+        }
     }
 
     private void initAppVersion() {
@@ -85,15 +89,7 @@ public class ConnectionSettingsFragment extends BaseFragment<FragmentConnectionS
 
         viewModel.selectUartEvent.observe(this, v -> {
             POSManager.getInstance().close();
-            hideAllView();
-            viewModel.isShowUartImageView.set(true);
-            viewModel.isShowUartTextView.set(true);
-            viewModel.deviceConnected.set(true);
-            SPUtils.getInstance().put("deviceAddress", "");
-            SPUtils.getInstance().put("bluetoothName", "");
-            SPUtils.getInstance().put("bluetoothAddress", "");
-            SPUtils.getInstance().put("isSelectUartSuccess", true);
-            SPUtils.getInstance().put("isSelectUsbSuccess", false);
+            selectUart();
         });
 
 
@@ -126,6 +122,17 @@ public class ConnectionSettingsFragment extends BaseFragment<FragmentConnectionS
                     DeviceConfigActivity.TYPE_CURRENCY);
             startActivityForResult(intent, REQUEST_CODE_CURRENCY);
         });
+    }
+    private void selectUart() {
+        hideAllView();
+        viewModel.isShowUartImageView.set(true);
+        viewModel.isShowUartTextView.set(true);
+        viewModel.deviceConnected.set(true);
+        SPUtils.getInstance().put("deviceAddress", "");
+        SPUtils.getInstance().put("bluetoothName", "");
+        SPUtils.getInstance().put("bluetoothAddress", "");
+        SPUtils.getInstance().put("isSelectUartSuccess", true);
+        SPUtils.getInstance().put("isSelectUsbSuccess", false);
     }
 
     /**
