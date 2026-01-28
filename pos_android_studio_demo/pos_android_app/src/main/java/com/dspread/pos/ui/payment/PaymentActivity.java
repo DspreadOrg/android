@@ -262,7 +262,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
                 POSManager.getInstance().registerConnectionCallback(connectionCallback);
             }
             TRACE.i("start Transaction now===");
-            POSManager.getInstance().getDeviceId();
+
             POSManager.getInstance().startTransaction(amount, paymentServiceCallback);
         }).start();
     }
@@ -325,7 +325,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
             getPinpadEditText().setText("");
             MyKeyboardView.setKeyBoardListener(value -> {
                 if (POSManager.getInstance().isDeviceConnected()) {
-                    POSManager.getInstance().pinMapSync(value, 20);
+                    POSManager.getInstance().pinMapSync(value, 60);
                 }
             });
             if (POSManager.getInstance().isDeviceConnected()) {
