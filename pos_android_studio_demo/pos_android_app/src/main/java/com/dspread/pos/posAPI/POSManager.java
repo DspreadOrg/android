@@ -406,9 +406,10 @@ public class POSManager {
 
         @Override
         public void onRequestQposConnected() {
-            connectLatch.countDown();
+            POSManager.getInstance().getDeviceId();
             SPUtils.getInstance().put("device_type",posType.name());
             SPUtils.getInstance().put("isConnected",true);
+            connectLatch.countDown();
             notifyConnectionCallbacks(cb -> cb.onRequestQposConnected());
         }
 

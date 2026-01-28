@@ -129,9 +129,13 @@ public class PaymentViewModel extends BaseAppViewModel {
 
     public BindingCommand cancleTxnsCommand = new BindingCommand(() -> {
         startLoading("processing...");
-        new Thread(() -> {
-            POSManager.getInstance().cancelTransaction();
-        }).start();
+        if(POSManager.getInstance().isDeviceConnected()) {
+            new Thread(() -> {
+                POSManager.getInstance().cancelTransaction();
+            }).start();
+        }else {
+            finish();
+        }
     });
 
     public void requestOnlineAuth(boolean isICC, PaymentModel paymentModel) {

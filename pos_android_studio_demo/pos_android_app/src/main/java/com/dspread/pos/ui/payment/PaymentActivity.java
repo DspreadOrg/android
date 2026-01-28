@@ -258,7 +258,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
                 POSManager.getInstance().registerConnectionCallback(connectionCallback);
             }
             TRACE.i("start Transaction now===");
-            POSManager.getInstance().getDeviceId();
+
             POSManager.getInstance().startTransaction(amount, paymentServiceCallback);
         }).start();
     }
