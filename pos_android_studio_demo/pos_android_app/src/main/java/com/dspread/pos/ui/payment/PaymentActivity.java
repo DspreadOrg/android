@@ -529,7 +529,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
     protected void onDestroy() {
         super.onDestroy();
         LogFileConfig.getInstance(this).readLog();
-        PrinterHelper.getInstance().close();
+       // PrinterHelper.getInstance().close();
         POSManager.getInstance().unregisterCallbacks();
     }
 
