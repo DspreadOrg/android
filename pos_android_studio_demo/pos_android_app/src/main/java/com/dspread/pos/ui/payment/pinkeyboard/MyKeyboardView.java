@@ -3,6 +3,7 @@ package com.dspread.pos.ui.payment.pinkeyboard;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
@@ -123,7 +124,13 @@ public class MyKeyboardView extends KeyboardView {
                 if (keyboardOnlyNumPwd == null) {
                     keyboardOnlyNumPwd = new Keyboard(getContext(), R.xml.keyboard_number_ui);
                 }
-                randomKey(keyboardOnlyNumPwd);
+//                randomKey(keyboardOnlyNumPwd);
+                postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        randomKey(keyboardOnlyNumPwd);
+                    }
+                }, 100);
                 setKeyboard(keyboardOnlyNumPwd);
                 break;
         }
@@ -253,13 +260,14 @@ public class MyKeyboardView extends KeyboardView {
      */
     public void randomKey(Keyboard pLatinKeyboard) {
         String keyBoardValue = getKeyBoardLocation(pLatinKeyboard);
+        System.out.println("pinpad keyboard location is: "+keyBoardValue);
         keyBoardNumInterface.getNumberValue(keyBoardValue);
     }
 
     private String getKeyBoardLocation(Keyboard pLatinKeyboard){
         List<Integer> keyboardValues;
         if(dataList.isEmpty()){
-            keyboardValues = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, -3, 0, -4, -5);
+            keyboardValues = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 0x0D, 0, 0x0E, 0x0F);
         }else {
             keyboardValues = new ArrayList<>();
             for (String hex : dataList) {
@@ -268,17 +276,27 @@ public class MyKeyboardView extends KeyboardView {
         }
 
         List<Keyboard.Key> keyList = pLatinKeyboard.getKeys();
-        int screenBottomY = mHeightPixels - pLatinKeyboard.getHeight();
+//        int screenBottomY = mHeightPixels - pLatinKeyboard.getHeight();
+
+        int[] keyboardViewLocation = new int[2];
+        this.getLocationOnScreen(keyboardViewLocation);
+        int keyboardViewX = keyboardViewLocation[0];
+        int keyboardViewY = keyboardViewLocation[1];
+
+//        System.out.println("屏幕高: "+screenBottomY+","+mHeightPixels +" 键盘高度="+pLatinKeyboard.getHeight());
+//        System.out.println("KeyboardView屏幕位置: x=" + keyboardViewX + ", y=" + keyboardViewY);
+//        System.out.println("屏幕高度: " + mHeightPixels);
         Map<Integer, KeyPositionInfo> codeToPositionMap = new HashMap<>();
 
         for (Keyboard.Key key : keyList) {
             int originalCode = key.codes[0];
-
-            int y = screenBottomY + key.y;
-            int x = key.x;
+            int x = keyboardViewX + key.x;
+            int y = keyboardViewY + key.y;
+//            int y = screenBottomY + key.y;
+//            int x = key.x;
             int right = x + key.width;
             int bottom = y + key.height;
-
+            System.out.println("当前y高度: "+key.y+",x "+key.x +"  键值宽高度"+key.width+ ","+key.height);
             KeyPositionInfo info = new KeyPositionInfo(
                     originalCode,
                     x, y, right, bottom,
@@ -325,6 +343,10 @@ public class MyKeyboardView extends KeyboardView {
 
             KeyPositionInfo positionInfo = codeToPositionMap.get(keyCode);
             if (positionInfo != null) {
+                System.out.println("keyValue1 : "+keyValue);
+                System.out.println("keyValue2: "+QPOSUtil.byteArray2Hex(QPOSUtil.intToByteArray(keyValue)));
+                System.out.println("左上角x y: "+positionInfo.x+","+positionInfo.y);
+                System.out.println("右下角x y: "+positionInfo.right+","+positionInfo.bottom);
                 String locationStr =
                         QPOSUtil.byteArray2Hex(QPOSUtil.intToByteArray(keyValue)) +
                                 QPOSUtil.byteArray2Hex(QPOSUtil.intToByteArray(positionInfo.x)) +
