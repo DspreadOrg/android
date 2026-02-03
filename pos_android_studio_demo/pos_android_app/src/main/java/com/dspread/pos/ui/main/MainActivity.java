@@ -19,6 +19,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.dspread.pos.common.manager.FragmentCacheManager;
 import com.dspread.pos.posAPI.POSManager;
@@ -50,6 +51,10 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     private TextView tvAppVersion;
     ActionBarDrawerToggle toggle;
     private HomeFragment homeFragment;
+    
+    // ViewPager2 and Adapter
+    private ViewPager2 viewPager;
+    private MainFragmentAdapter mainFragmentAdapter;
 
     @Override
     public void initParam() {
@@ -75,7 +80,6 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     @Override
     public void initData() {
         super.initData();
-        viewModel.handleNavigationItemClick(R.id.nav_home);
         drawerLayout = binding.drawerLayout;
         navigationView = binding.navView;
         navigationView.setItemIconTintList(null);
@@ -90,6 +94,19 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
+
+        // Initialize ViewPager2 and Adapter
+        viewPager = binding.navHostFragment;
+        mainFragmentAdapter = new MainFragmentAdapter(this);
+        viewPager.setAdapter(mainFragmentAdapter);
+        viewPager.setOffscreenPageLimit(2); // Preload adjacent 2 fragments
+        viewPager.setUserInputEnabled(false); // Disable user swiping because we use navigation menu to switch fragments
+        
+        // Pass ViewPager2 to ViewModel
+        viewModel.setViewPager(viewPager, mainFragmentAdapter);
+        
+        // Default show HomeFragment
+        viewModel.handleNavigationItemClick(R.id.nav_home);
 
         //shiply update app
         UpgradeManager.getInstance().checkUpgrade(false, null, new DefaultUpgradeStrategyRequestCallback());
@@ -135,6 +152,12 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     protected void onDestroy() {
         super.onDestroy();
         TRACE.i("main is onDestroy");
+        
+        // Clear ViewModel resources to avoid memory leaks
+        if (viewModel != null) {
+            viewModel.clearResources();
+        }
+        
         POSManager.getInstance().close();
         SPUtils.getInstance().put("isConnected", false);
         SPUtils.getInstance().put("device_type", "");
@@ -142,6 +165,14 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         SPUtils.getInstance().put("bluetoothAddress", "");
         SPUtils.getInstance().put("isSelectUartSuccess", false);
         SPUtils.getInstance().put("isSelectUsbSuccess", false);
+        
+        // Clear ViewPager2 and Adapter resources
+        if (mainFragmentAdapter != null) {
+            mainFragmentAdapter = null;
+        }
+        if (viewPager != null) {
+            viewPager = null;
+        }
     }
 
     @Override

@@ -11,20 +11,20 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * 交易日期过滤工具类
- * 提供根据日期过滤交易数据的功能
+ * Transaction date filter utility class
+ * Provides functionality to filter transaction data by date
  */
 public class TransactionDateFilter {
 
     private TransactionDateFilter() {
-        // 私有构造方法，防止实例化
+        // Private constructor to prevent instantiation
     }
 
     /**
-     * 根据第一笔交易的日期过滤出当日所有交易数据
+     * Filter out all transactions for the current day based on the date of the first transaction
      *
-     * @param transactions 交易列表
-     * @return 当日交易列表，如果输入为空则返回空列表
+     * @param transactions Transaction list
+     * @return Today's transaction list, returns empty list if input is empty
      */
     public static List<Transaction> getTodayTransactions(List<Transaction> transactions) {
         if (transactions == null || transactions.isEmpty()) {
@@ -33,7 +33,7 @@ public class TransactionDateFilter {
 
         List<Transaction> todayTransactions = new ArrayList<>();
 
-        // 获取今天的Calendar实例
+        // Get today's Calendar instance
         Calendar today = Calendar.getInstance();
         int todayYear = today.get(Calendar.YEAR);
         int todayMonth = today.get(Calendar.MONTH);
@@ -48,7 +48,7 @@ public class TransactionDateFilter {
                 int transactionMonth = transactionCalendar.get(Calendar.MONTH);
                 int transactionDay = transactionCalendar.get(Calendar.DAY_OF_MONTH);
 
-                // 比较年月日是否相同
+                // Compare if year, month, and day are the same
                 if (todayYear == transactionYear &&
                         todayMonth == transactionMonth &&
                         todayDay == transactionDay) {

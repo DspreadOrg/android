@@ -82,9 +82,9 @@ public class FileUtils {
 
 
     /**
-     * 获取指定目录内所有文件路径
+     * Get all file paths in the specified directory
      *
-     * @param dirPath 需要查询的文件目录
+     * @param dirPath The directory to query
      */
     public static List<String> getAllFiles(String dirPath) {
         File f = new File(dirPath);

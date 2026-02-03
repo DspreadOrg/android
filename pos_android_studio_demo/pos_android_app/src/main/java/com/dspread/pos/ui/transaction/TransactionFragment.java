@@ -16,7 +16,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
 import com.dspread.pos.TitleProviderListener;
-import com.dspread.pos.common.base.BaseFragment;
+import com.dspread.pos.common.base.BaseFragmentWithViewCache;
 import com.dspread.pos.ui.transaction.details.TransactionDetailActivity;
 import com.dspread.pos.ui.transaction.filter.TransactionFilterActivity;
 import com.dspread.pos.utils.DeviceUtils;
@@ -29,6 +29,9 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import android.util.Log;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -39,7 +42,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import me.goldze.mvvmhabit.utils.SPUtils;
 
-public class TransactionFragment extends BaseFragment<FragmentTransactionBinding, TransactionViewModel> implements TitleProviderListener {
+public class TransactionFragment extends BaseFragmentWithViewCache<FragmentTransactionBinding, TransactionViewModel> implements TitleProviderListener {
     private String filter = "all";
     private boolean isSmallScreenDevice = false;
     private final Handler handler = new Handler(Looper.getMainLooper());
@@ -73,7 +76,7 @@ public class TransactionFragment extends BaseFragment<FragmentTransactionBinding
     public void initData() {
         super.initData();
 
-        // init the Runnable instance
+        // init the Runnable instance (lightweight operation, execute immediately)
         refreshRunnable = new Runnable() {
             @Override
             public void run() {
@@ -83,9 +86,8 @@ public class TransactionFragment extends BaseFragment<FragmentTransactionBinding
             }
         };
 
-        // Setup recycler view
+        // Setup recycler view (lightweight operation, execute immediately)
         binding.paymentsRecycler.setLayoutManager(new LinearLayoutManager(getActivity()));
-        viewModel.init();
 
         DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
         int widthPx = displayMetrics.widthPixels;
@@ -97,6 +99,21 @@ public class TransactionFragment extends BaseFragment<FragmentTransactionBinding
             viewModel.isTransactionViewAll.set(false);
         }
 
+        // Setup observers and listeners (lightweight operation, execute immediately)
+        setupObserversAndListeners();
+
+        // Delay execution of potentially time-consuming operations
+        new Handler().postDelayed(() -> {
+            if (getActivity() != null && !getActivity().isFinishing()) {
+                viewModel.init();
+            }
+        }, 100);
+    }
+
+    /**
+     * Setup observers and listeners
+     */
+    private void setupObserversAndListeners() {
         viewModel.transactionList.observe(getViewLifecycleOwner(), new Observer<List<Transaction>>() {
             @Override
             public void onChanged(List<Transaction> transactions) {
@@ -166,6 +183,10 @@ public class TransactionFragment extends BaseFragment<FragmentTransactionBinding
     public void onResume() {
         super.onResume();
         TRACE.d("TransactionFragment onResume");
+        
+        // Refresh data list when fragment resumes from background
+        handler.removeCallbacks(refreshRunnable);
+        handler.postDelayed(refreshRunnable, 300);
     }
 
     @Override
@@ -181,6 +202,32 @@ public class TransactionFragment extends BaseFragment<FragmentTransactionBinding
         // Clean up Handler and Runnable
         handler.removeCallbacksAndMessages(null);
         refreshRunnable = null;
+    }
+    
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        
+        // Clear thread pool resources to avoid memory leaks
+        try {
+            if (asyncExecutor != null && !asyncExecutor.isShutdown()) {
+                asyncExecutor.shutdownNow();
+            }
+        } catch (Exception e) {
+            Log.e("TransactionFragment", "Failed to close thread pool: " + e.getMessage());
+        }
+        
+        // Clear other resources
+        if (adapter != null) {
+            adapter = null;
+        }
+        if (paymentList != null) {
+            paymentList.clear();
+            paymentList = null;
+        }
+        if (cacheArrayList != null) {
+            cacheArrayList.clear();
+        }
     }
 
     @Override
@@ -245,20 +292,47 @@ public class TransactionFragment extends BaseFragment<FragmentTransactionBinding
         }
     }
 
+    // Thread pool for executing asynchronous operations
+    private static final ExecutorService asyncExecutor = Executors.newSingleThreadExecutor();
+
     private void handleList(List<Transaction> transactions) {
         this.paymentList = transactions;
 
-        showTransationListUI(transactions);
+        // Use asynchronous loading to handle transaction list data, avoid executing too many operations in the main thread
+        asyncExecutor.execute(() -> {
+            try {
+                // Calculate total amount and prepare UI data (execute in sub-thread)
+                final double[] totalAmount = {0};
+                if (transactions != null && !transactions.isEmpty()) {
+                    for (Transaction transaction : transactions) {
+                        totalAmount[0] += transaction.getAmount();
+                    }
+                }
 
-        adapter = new PaymentsAdapter(transactions, new PaymentsAdapter.OnItemClickListener() {
-            @Override
-            public void OnItemClickListener(Transaction transaction) {
-                Intent intent = new Intent(getActivity(), TransactionDetailActivity.class);
-                intent.putExtra("transaction", (Serializable) transaction);
-                getActivity().startActivity(intent);
+                // Create adapter (execute in sub-thread)
+                final PaymentsAdapter finalAdapter = new PaymentsAdapter(transactions, new PaymentsAdapter.OnItemClickListener() {
+                    @Override
+                    public void OnItemClickListener(Transaction transaction) {
+                        Intent intent = new Intent(getActivity(), TransactionDetailActivity.class);
+                        intent.putExtra("transaction", (Serializable) transaction);
+                        getActivity().startActivity(intent);
+                    }
+                });
+
+                // Update UI in main thread
+                new Handler(Looper.getMainLooper()).post(() -> {
+                    if (getActivity() != null && !getActivity().isFinishing()) {
+                        // Update UI
+                        showTransationListUI(transactions);
+                        // Set adapter
+                        binding.paymentsRecycler.setAdapter(finalAdapter);
+                        adapter = finalAdapter;
+                    }
+                });
+            } catch (Exception e) {
+                Log.e("TransactionFragment", "Failed to handle transaction list: " + e.getMessage());
             }
         });
-        binding.paymentsRecycler.setAdapter(adapter);
     }
 
     private void showTransationListUI(List<Transaction> transactions) {

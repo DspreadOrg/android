@@ -35,7 +35,7 @@ public class QPOSUtil {
         return hex.toString();
     }
 
-    //根据n和e获取公钥
+    // Get public key based on n and e
     public static RSAPublicKey getPublicKey(String modulus, String publicExponent) {
         BigInteger m = new BigInteger(modulus, 16);
         BigInteger e = new BigInteger(publicExponent, 16);
@@ -293,13 +293,13 @@ public class QPOSUtil {
             if (((src[i] & 0xF0) >> 4) <= 9) {
                 results[2 * i] = (byte) (((src[i] & 0xF0) >> 4) + 0x30);
             } else {
-                results[2 * i] = (byte) (((src[i] & 0xF0) >> 4) + 0x37); // 大写A~F
+                results[2 * i] = (byte) (((src[i] & 0xF0) >> 4) + 0x37); // Uppercase A~F
             }
             // low Nibble conversion
             if ((src[i] & 0x0F) <= 9) {
                 results[2 * i + 1] = (byte) ((src[i] & 0x0F) + 0x30);
             } else {
-                results[2 * i + 1] = (byte) ((src[i] & 0x0F) + 0x37); // 大写A~F
+                results[2 * i + 1] = (byte) ((src[i] & 0x0F) + 0x37); // Uppercase A~F
             }
         }
         return results;

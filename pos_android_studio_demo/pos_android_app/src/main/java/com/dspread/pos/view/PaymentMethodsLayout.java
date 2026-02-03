@@ -30,16 +30,16 @@ public class PaymentMethodsLayout extends LinearLayout {
     private int cellHeight = 0;
     private int lastWidth = 0;
     private int lastHeight = 0;
-    // 减少间距以适应小屏幕
+    // Reduce spacing to fit small screens
     private final int spacing = dpToPx(8);
     private final int innerPadding = dpToPx(6);
     private GridLayout gridLayout;
-    // 屏幕尺寸相关常量
+    // Screen size related constants
     private final int SMALL_SCREEN_WIDTH = 320;
     private final int SMALL_SCREEN_HEIGHT = 240;
     private boolean isSmallScreen = false;
 
-    // 屏幕尺寸相关常量
+    // Screen size related constants
     private final int MIN_SCREEN_WIDTH = 320;
     private final int MIN_SCREEN_HEIGHT = 480;
 
@@ -105,26 +105,26 @@ public class PaymentMethodsLayout extends LinearLayout {
         int parentWidth = MeasureSpec.getSize(widthMeasureSpec);
         int parentHeight = MeasureSpec.getSize(heightMeasureSpec);
 
-        // 检测是否为小屏幕
+        // Detect if it's a small screen
         isSmallScreen = parentWidth <= SMALL_SCREEN_WIDTH && parentHeight <= SMALL_SCREEN_HEIGHT;
 
-        // 计算单元格大小
+        // Calculate cell size
         calculateCellSize(parentWidth, parentHeight);
 
-        // 计算网格所需宽度和高度
+        // Calculate required width and height for grid
         int gridWidth, gridHeight;
         if (isSmallScreen) {
-            // 小屏幕：2行2列，宽度大于高度
+            // Small screen: 2 rows x 2 columns, width greater than height
             gridWidth = cellWidth * 2 + spacing;
             gridHeight = cellHeight * 2 + spacing;
         } else {
-            // 正常屏幕：保持正方形
+            // Normal screen: keep square
 
             gridWidth = cellWidth * 2 + spacing;
             gridHeight = cellWidth * 2 + spacing;
 
             if (parentWidth <= MIN_SCREEN_WIDTH && parentHeight <= MIN_SCREEN_HEIGHT) {
-                // 小屏幕再减少一些高度
+                // Reduce height a bit more for small screens
                 gridHeight = (int) (gridHeight * 0.95);
             }
 
@@ -142,7 +142,7 @@ public class PaymentMethodsLayout extends LinearLayout {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        // 当宽高变化明显时才更新布局
+        // Only update layout when width/height changes significantly
         if (isLayoutInitialized &&
                 (Math.abs(w - lastWidth) > dpToPx(10) || Math.abs(h - lastHeight) > dpToPx(10))) {
             lastWidth = w;
@@ -159,19 +159,19 @@ public class PaymentMethodsLayout extends LinearLayout {
         isLayoutInitialized = true;
     }
 
-    // 计算单元格大小，针对小屏幕特殊处理
+    // Calculate cell size, with special handling for small screens
     private void calculateCellSize(int parentWidth, int parentHeight) {
         if (parentWidth <= 0 || parentHeight <= 0) return;
 
-        // 留出边距
+        // Reserve margins
         int maxAvailableWidth = parentWidth - dpToPx(16);
         int maxAvailableHeight = parentHeight - dpToPx(20);
 
         if (isSmallScreen) {
-            // 小屏幕特殊处理：宽度大于高度 (2:1 比例)
+            // Small screen special handling: width greater than height (2:1 ratio)
             cellWidth = (maxAvailableWidth - spacing) / 2;
             cellHeight = Math.min(cellWidth / 2, (maxAvailableHeight - spacing) / 2);
-            // 设置最小限制
+            // Set minimum limits
             int minCellWidth = dpToPx(140);
             int minCellHeight = dpToPx(70);
             int maxCellWidth = dpToPx(180);
@@ -181,19 +181,19 @@ public class PaymentMethodsLayout extends LinearLayout {
             cellHeight = Math.max(minCellHeight, Math.min(cellHeight, maxCellHeight)); //53
 
         } else {
-            // 正常屏幕：保持正方形
+            // Normal screen: keep square
             int widthBasedCellSize = (maxAvailableWidth - spacing) / 2;
             int heightBasedCellSize = (maxAvailableHeight - spacing) / 2;
 
             cellWidth = Math.min(widthBasedCellSize, heightBasedCellSize);
             cellHeight = cellWidth;
 
-            // 设置正常屏幕的尺寸限制
+            // Set size limits for normal screens
             int minCellSize = dpToPx(120);
             int maxCellSize = dpToPx(180);
 
             if (parentWidth <= MIN_SCREEN_WIDTH && parentHeight <= MIN_SCREEN_HEIGHT) {
-                // 小屏幕使用更小的尺寸范围
+                // Use smaller size range for small screens
                 minCellSize = dpToPx(80);
                 maxCellSize = dpToPx(140);
             }
@@ -218,11 +218,11 @@ public class PaymentMethodsLayout extends LinearLayout {
     private void addPaymentOption(PaymentOption option, int position) {
         LinearLayout container = new LinearLayout(getContext());
         if (isSmallScreen) {
-            // 小屏幕:垂直布局
+            // Small screen: vertical layout
             container.setOrientation(LinearLayout.VERTICAL);
             container.setGravity(Gravity.CENTER);
         } else {
-            // 正常屏幕：垂直布局
+            // Normal screen: vertical layout
             container.setOrientation(LinearLayout.VERTICAL);
             container.setGravity(Gravity.CENTER);
         }
@@ -244,19 +244,19 @@ public class PaymentMethodsLayout extends LinearLayout {
         params.columnSpec = GridLayout.spec(position % 2);
         container.setLayoutParams(params);
 
-        // 图标
+        // Icon
         ImageView imageView = new ImageView(getContext());
         int iconSize;
         LayoutParams ivParams;
 
         if (isSmallScreen) {
-            // 小屏幕：图标较小
+            // Small screen: smaller icon
             iconSize = (int) (Math.min(cellWidth, cellHeight) * 0.3f);
             ivParams = new LayoutParams(iconSize, iconSize);
-            //ivParams.rightMargin = dpToPx(4); // 图标和文字之间的间距
+            //ivParams.rightMargin = dpToPx(4); // Spacing between icon and text
             ivParams.gravity = Gravity.CENTER;
         } else {
-            // 正常屏幕：图标较大，放在上方
+            // Normal screen: larger icon, placed at the top
             float iconRatio = getResources().getDisplayMetrics().widthPixels <= MIN_SCREEN_WIDTH ? 0.35f : 0.4f;
             iconSize = (int) (cellWidth * iconRatio);
             ivParams = new LayoutParams(iconSize, iconSize);
@@ -267,19 +267,19 @@ public class PaymentMethodsLayout extends LinearLayout {
         imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
         imageView.setImageResource(option.iconRes);
 
-        // 文本
+        // Text
         TextView textView = new TextView(getContext());
         LayoutParams tvParams;
 
         if (isSmallScreen) {
-            // 小屏幕：
+            // Small screen:
             tvParams = new LayoutParams(
                     ViewGroup.LayoutParams.WRAP_CONTENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT);
             tvParams.gravity = Gravity.CENTER;
             textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
         } else {
-            // 正常屏幕：文字在图标下方
+            // Normal screen: text below icon
             tvParams = new LayoutParams(
                     ViewGroup.LayoutParams.WRAP_CONTENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -295,7 +295,7 @@ public class PaymentMethodsLayout extends LinearLayout {
         textView.setSingleLine(true);
         textView.setEllipsize(android.text.TextUtils.TruncateAt.END);
 
-        // 设置文字最大宽度
+        // Set maximum text width
         if (isSmallScreen) {
             textView.setMaxWidth((int) (cellWidth * 0.5f));
         } else {
@@ -315,7 +315,7 @@ public class PaymentMethodsLayout extends LinearLayout {
     }
 
     private void updateChildSizes() {
-        // 重新检测屏幕尺寸
+        // Re-detect screen size
         isSmallScreen = getWidth() <= SMALL_SCREEN_WIDTH && getHeight() <= SMALL_SCREEN_HEIGHT;
 
         for (int i = 0; i < gridLayout.getChildCount(); i++) {
