@@ -17,6 +17,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
@@ -190,8 +191,13 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
             return true;
         } else {
             if (action == KeyEvent.ACTION_UP) {
-                TRACE.i("---- = " + viewModel.homeFragment);
-                return viewModel.onKeyDownInHome(keyCode, event);
+                // Get current fragment from ViewPager2
+                Fragment currentFragment = getSupportFragmentManager().findFragmentByTag("f" + viewPager.getCurrentItem());
+                if (currentFragment instanceof HomeFragment) {
+                    homeFragment = (HomeFragment) currentFragment;
+                    return homeFragment.onKeyDown(keyCode, event);
+                }
+                return false;
             }
 
             return super.dispatchKeyEvent(event);
