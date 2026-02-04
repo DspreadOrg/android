@@ -28,7 +28,7 @@ public class ReceiptGenerator {
         result.append("<tt>");  // Use equal width font labels
         result.append(label);
 
-        // 计算需要的空格数
+        // Calculate required number of spaces
         int spaces = 30 - label.length();  // The total width can be adjusted as needed
         for (int i = 0; i < spaces; i++) {
             result.append(" ");  // Use regular spaces

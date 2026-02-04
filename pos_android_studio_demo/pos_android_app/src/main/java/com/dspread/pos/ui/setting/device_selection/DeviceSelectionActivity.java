@@ -53,7 +53,7 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
     private ActivityResultLauncher<Intent> bluetoothEnableLauncher;
     private BluetoothAdapter bluetoothAdapter;
 
-    // 添加扫描状态跟踪和设备列表
+    // Add scanning state tracking and device list
     private boolean isScanning = false;
     private List<BluetoothDevice> discoveredDevices = new ArrayList<>();
     private Handler handler = new Handler();
@@ -128,7 +128,7 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
     private boolean initBluetooth() {
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (bluetoothAdapter == null) {
-            // 设备不支持蓝牙
+            // Device doesn't support Bluetooth
             ToastUtils.showLong("The device doesn't support the bluetooth!");
             return false;
         }
@@ -149,7 +149,7 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
             binding.tvBluetoothSelectedName.setText(device.getName());
             isSelectBuletooth = true;
 
-            //保存选中的蓝牙名称与MAC地址
+            //Save selected Bluetooth name and MAC address
 
             SPUtils.getInstance().put("bluetoothName", device.getName());
             SPUtils.getInstance().put("bluetoothAddress", device.getAddress());
@@ -225,7 +225,7 @@ public class DeviceSelectionActivity extends BaseActivity<ActivityDeviceSelectio
                     @Override
                     public void onActivityResult(ActivityResult result) {
                         TRACE.i("open setting---");
-                        // 用户从设置返回后重新检查位置服务
+                        // Recheck location service after user returns from settings
                         checkLocationAndRequestPermissions(posType);
                     }
                 });

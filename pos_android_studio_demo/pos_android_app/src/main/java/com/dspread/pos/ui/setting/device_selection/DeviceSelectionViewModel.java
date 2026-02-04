@@ -95,7 +95,7 @@ public class DeviceSelectionViewModel extends BaseViewModel {
             } else if (connectionMethods[2].equals(radioText)) {
                 selectedIndex.setValue(2);
                 showUsbDeviceDialogEvent.call();
-                setShowDeviceSelectionList(false); // 隐藏蓝牙列表视图
+                setShowDeviceSelectionList(false); // Hide Bluetooth list view
                 SPUtils.getInstance().put("device_type", "USB");
             } else {
                 selectedIndex.setValue(-1);

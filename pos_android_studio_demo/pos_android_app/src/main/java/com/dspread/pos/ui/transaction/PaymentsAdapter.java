@@ -60,10 +60,10 @@ public class PaymentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private void buildListItems(List<Transaction> payments, boolean categorized) {
         items.clear();
         if (categorized) {
-            // 按月份分类显示，同时计算每个月的总金额
+            // Display by month category, and calculate total amount for each month
             Map<String, MonthSummary> paymentsByMonth = new LinkedHashMap<>();
 
-            // 分组支付记录按月份并计算总金额
+            // Group payment records by month and calculate total amount
             for (Transaction payment : payments) {
                 String date = payment.getTransactionDate();
                 String month = extractMonthFromDate(date);
@@ -75,7 +75,7 @@ public class PaymentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 MonthSummary monthSummary = paymentsByMonth.get(month);
                 monthSummary.getTransactions().add(payment);
 
-                // 累加金额（假设金额为正数，如果是负数需要特殊处理）
+                // Accumulate amount (assuming amount is positive, special handling needed for negative values)
                 try {
                     BigDecimal amount = new BigDecimal(payment.getAmount());
                     monthSummary.setTotalAmount(monthSummary.getTotalAmount().add(amount));
@@ -84,17 +84,17 @@ public class PaymentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 }
             }
 
-            // 构建带标题的列表
+            // Build list with headers
             for (Map.Entry<String, MonthSummary> entry : paymentsByMonth.entrySet()) {
                 MonthSummary monthSummary = entry.getValue();
-                items.add(new ListItem(monthSummary.getMonth(), monthSummary.getTotalAmount())); // 添加月份标题和总金额
+                items.add(new ListItem(monthSummary.getMonth(), monthSummary.getTotalAmount())); // Add month header and total amount
 
                 for (Transaction payment : monthSummary.getTransactions()) {
-                    items.add(new ListItem(payment)); // 添加支付记录
+                    items.add(new ListItem(payment)); // Add payment record
                 }
             }
         } else {
-            // 默认显示所有支付记录，无标题
+            // Default: show all payment records, no headers
             for (Transaction payment : payments) {
                 items.add(new ListItem(payment));
             }

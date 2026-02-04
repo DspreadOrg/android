@@ -20,7 +20,7 @@ public class PrintDialogUtils {
     }
 
     /**
-     * 显示自定义弹窗
+     * Show custom dialog
      */
     public static Dialog showCustomDialog(Context context, int iconResId, String message, String failMeaasge,
                                           long duration, boolean showCountdown,
@@ -33,7 +33,7 @@ public class PrintDialogUtils {
     }
 
     /**
-     * 显示默认的成功弹窗
+     * Show default success dialog
      */
     public static Dialog showSuccessDialog(Context context, String message, String failMessage,
                                            DialogDismissListener dismissListener) {
@@ -50,7 +50,7 @@ public class PrintDialogUtils {
     }
 
     /**
-     * 自定义Dialog类
+     * Custom Dialog class
      */
     private static class CustomDialog extends Dialog {
         private final int iconResId;
@@ -102,23 +102,23 @@ public class PrintDialogUtils {
             tvTimer = findViewById(R.id.tvTimer);
             btnClose = findViewById(R.id.btnClose);
 
-            // 设置图标
+            // Set icon
             if (iconResId != 0) {
                 ivIcon.setVisibility(View.VISIBLE);
                 ivIcon.setImageResource(iconResId);
             }
 
-            // 设置消息
+            // Set message
             tvMessage.setText(message);
 
-            // 设置倒计时
+            // Set countdown
             if (showCountdown) {
                 tvTimer.setVisibility(View.VISIBLE);
                 long initialSeconds = duration / 1000;
                 tvTimer.setText("(" + initialSeconds + "s)");
             }
 
-            // 设置关闭按钮
+            // Set close button
             if (showCloseButton) {
                 btnClose.setVisibility(View.VISIBLE);
                 tvFailMessage.setVisibility(View.VISIBLE);
@@ -135,7 +135,7 @@ public class PrintDialogUtils {
         private void setupWindow() {
             if (getWindow() != null) {
                 getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-                // 添加动画效果
+                // Add animation effect
                 getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
             }
         }
@@ -171,7 +171,7 @@ public class PrintDialogUtils {
         @Override
         public void dismiss() {
             try {
-                // 取消倒计时
+                // Cancel countdown
                 if (countDownTimer != null) {
                     countDownTimer.cancel();
                     countDownTimer = null;
@@ -179,7 +179,7 @@ public class PrintDialogUtils {
 
                 super.dismiss();
 
-                // 回调监听器
+                // Callback listener
                 if (dismissListener != null) {
                     dismissListener.onDismiss();
                 }
@@ -189,14 +189,14 @@ public class PrintDialogUtils {
         }
 
         /**
-         * 手动关闭弹窗（外部调用）
+         * Manually close dialog (external call)
          */
         public void closeDialog() {
             dismiss();
         }
 
         /**
-         * 更新倒计时显示
+         * Update countdown display
          */
         public void updateTimerText(String text) {
             if (tvTimer != null && tvTimer.getVisibility() == View.VISIBLE) {
@@ -205,7 +205,7 @@ public class PrintDialogUtils {
         }
 
         /**
-         * 更新消息内容
+         * Update message content
          */
         public void updateMessage(String newMessage) {
             TextView tvMessage = findViewById(R.id.tvMessage);

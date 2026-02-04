@@ -7,7 +7,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-import com.dspread.pos.common.base.BaseFragment;
+import com.dspread.pos.common.base.BaseFragmentWithViewCache;
 import com.dspread.pos.TitleProviderListener;
 import com.dspread.pos.ui.payment.PaymentMethodActivity;
 import com.dspread.pos.utils.TRACE;
@@ -18,7 +18,7 @@ import com.dspread.pos_android_app.databinding.FragmentHomeBinding;
 import me.goldze.mvvmhabit.utils.SPUtils;
 
 
-public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewModel> implements TitleProviderListener {
+public class HomeFragment extends BaseFragmentWithViewCache<FragmentHomeBinding, HomeViewModel> implements TitleProviderListener {
     private boolean canshow = true;
     private CountDownTimer showTimer;
 

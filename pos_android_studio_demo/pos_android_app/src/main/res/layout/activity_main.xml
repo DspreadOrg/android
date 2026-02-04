@@ -40,8 +40,8 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <!-- 替换 NavHostFragment 为 FrameLayout -->
-        <FrameLayout
+        <!-- 替换 FrameLayout 为 ViewPager2 -->
+        <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/nav_host_fragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />

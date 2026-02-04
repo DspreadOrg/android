@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.hardware.usb.UsbDevice;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -32,10 +34,13 @@ import com.dspread.pos_android_app.databinding.FragmentConnectionSettingsBinding
 
 import java.util.ArrayList;
 
-import me.goldze.mvvmhabit.base.BaseFragment;
+import com.dspread.pos.common.base.BaseFragmentWithViewCache;
+
 import me.goldze.mvvmhabit.utils.SPUtils;
 
-public class ConnectionSettingsFragment extends BaseFragment<FragmentConnectionSettingsBinding, ConnectionSettingsViewModel> implements TitleProviderListener {
+import android.util.Log;
+
+public class ConnectionSettingsFragment extends BaseFragmentWithViewCache<FragmentConnectionSettingsBinding, ConnectionSettingsViewModel> implements TitleProviderListener {
     private final int REQUEST_CODE_CURRENCY = 1000;
     private final int REQUEST_TRANSACTION_TYPE = 1001;
     private final int REQUEST_CARD_MODE = 1002;
@@ -58,12 +63,18 @@ public class ConnectionSettingsFragment extends BaseFragment<FragmentConnectionS
     @Override
     public void initData() {
         super.initData();
-        // Setup event listeners
+        // Setup event listeners (lightweight operation, execute immediately)
         setupEventListeners();
         initAppVersion();
-        if (DeviceUtils.isSmartDevices()) {
-            selectUart();
-        }
+
+        // Delay execution of potentially time-consuming operations
+        new Handler().postDelayed(() -> {
+            if (getActivity() != null && !getActivity().isFinishing()) {
+                if (DeviceUtils.isSmartDevices()) {
+                    selectUart();
+                }
+            }
+        }, 100);
     }
 
     private void initAppVersion() {
@@ -123,6 +134,7 @@ public class ConnectionSettingsFragment extends BaseFragment<FragmentConnectionS
             startActivityForResult(intent, REQUEST_CODE_CURRENCY);
         });
     }
+
     private void selectUart() {
         hideAllView();
         viewModel.isShowUartImageView.set(true);
@@ -153,7 +165,7 @@ public class ConnectionSettingsFragment extends BaseFragment<FragmentConnectionS
                 String bluetoothName = SPUtils.getInstance().getString("bluetoothName");
                 String bluetoothAddress = SPUtils.getInstance().getString("bluetoothAddress");
                 boolean isBluetoothStates = data.getBooleanExtra("isBluetoothStates", false);
-                // 更新UI
+                // Update UI
                 if (isBluetoothStates || (!TextUtils.isEmpty(bluetoothName)) && !TextUtils.isEmpty(bluetoothAddress)) {
                     hideAllView();
                     showBlutetoothSelectView(bluetoothAddress);
@@ -200,14 +212,24 @@ public class ConnectionSettingsFragment extends BaseFragment<FragmentConnectionS
     }
 
 
-    private void showUsbDeviceDialog() {
+    // Thread pool for executing asynchronous operations
+    private static final java.util.concurrent.ExecutorService asyncExecutor = java.util.concurrent.Executors.newSingleThreadExecutor();
 
+    private void showUsbDeviceDialog() {
         USBClass usb = new USBClass();
         usb.setUsbPermissionListener(new USBClass.UsbPermissionListener() {
             @Override
             public void onPermissionGranted(UsbDevice device) {
-                ArrayList<String> deviceList = usb.GetUSBDevices(getActivity());
-                openUsbDeviceDialog(deviceList);
+                // Get USB device list in sub-thread
+                asyncExecutor.execute(() -> {
+                    ArrayList<String> deviceList = usb.GetUSBDevices(getActivity());
+                    // Update UI in main thread, using main thread's Looper
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                        if (getActivity() != null && !getActivity().isFinishing()) {
+                            openUsbDeviceDialog(deviceList);
+                        }
+                    });
+                });
             }
 
             @Override
@@ -216,10 +238,18 @@ public class ConnectionSettingsFragment extends BaseFragment<FragmentConnectionS
             }
         });
 
-        ArrayList<String> deviceList = usb.GetUSBDevices(getActivity());
-        if (deviceList != null) {
-            openUsbDeviceDialog(deviceList);
-        }
+        // Get USB device list in sub-thread
+        asyncExecutor.execute(() -> {
+            ArrayList<String> deviceList = usb.GetUSBDevices(getActivity());
+            // Update UI in main thread, using main thread's Looper
+            new Handler(Looper.getMainLooper()).post(() -> {
+                if (getActivity() != null && !getActivity().isFinishing()) {
+                    if (deviceList != null) {
+                        openUsbDeviceDialog(deviceList);
+                    }
+                }
+            });
+        });
     }
 
     private void openUsbDeviceDialog(ArrayList<String> deviceList) {
@@ -268,6 +298,20 @@ public class ConnectionSettingsFragment extends BaseFragment<FragmentConnectionS
                 positiveButton.setTextSize(16);
                 positiveButton.setTypeface(null, Typeface.BOLD);
             }
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        // Clean up thread pool resources to avoid memory leaks
+        try {
+            if (asyncExecutor != null && !asyncExecutor.isShutdown()) {
+                asyncExecutor.shutdownNow();
+            }
+        } catch (Exception e) {
+            Log.e("ConnectionSettingsFragment", "关闭线程池失败: " + e.getMessage());
         }
     }
 
