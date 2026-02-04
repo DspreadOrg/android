@@ -473,10 +473,6 @@ public class POSManager {
         public void onError(QPOSService.Error errorState) {
             TRACE.i("onError = "+errorState);
             paymentResult.setStatus(errorState.name());
-            if(errorState == QPOSService.Error.BAD_SWIPE){
-                ToastUtils.showLong(context.getString(R.string.bad_swipe));
-                return;
-            }
             notifyTransactionCallbacks(cb -> cb.onTransactionResult(paymentResult));
         }
 

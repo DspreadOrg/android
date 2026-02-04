@@ -454,6 +454,11 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
                 if (keyboardUtil != null) {
                     keyboardUtil.hide();
                 }
+                if(result.getStatus() != null && result.getStatus().equals(QPOSService.Error.BAD_SWIPE.name())){
+                    viewModel.startLoading("Bad swipe, pls try again");
+                    return;
+                }
+
                 if (result.getStatus() != null && !result.getStatus().isEmpty()) {
                     paymentStatus("", "", "", result.getStatus());
                     viewModel.setTransactionFailed(result.getStatus());
