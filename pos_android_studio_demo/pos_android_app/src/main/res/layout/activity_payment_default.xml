@@ -41,7 +41,7 @@
                         android:id="@+id/txt_total"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
+                        android:layout_marginTop="5dp"
                         android:text="@string/total"
                         android:textColor="@color/text_color"
                         android:textSize="@dimen/common_total_text_size" />
@@ -63,6 +63,15 @@
                         android:text="@string/prompt_user_to_tap_card"
                         android:textColor="@color/red_color"
                         android:textSize="@dimen/common_prompt_text_size"
+                        />
+                    <TextView
+                        android:id="@+id/txt_device_info"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/prompt_user_to_tap_card"
+                        android:gravity="center_horizontal"
+                        android:textColor="@color/background_color"
+                        android:textSize="15sp"
                         />
                 </LinearLayout>
 

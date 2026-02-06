@@ -159,6 +159,14 @@
                     android:text="@string/prompt_user_to_tap_card_d35"
                     android:textColor="@color/red_color"
                     android:textSize="@dimen/d35_guide_text_size" />
+                <TextView
+                    android:id="@+id/txt_device_info"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/prompt_user_to_tap_card_d35"
+                    android:textColor="@color/background_color"
+                    android:textSize="16sp" />
             </LinearLayout>
         </LinearLayout>
 

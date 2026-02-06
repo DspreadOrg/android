@@ -22,6 +22,7 @@ import com.dspread.pos.utils.USBClass;
 import com.dspread.pos_android_app.R;
 import com.dspread.xpos.CQPOSService;
 import com.dspread.xpos.QPOSService;
+import com.dspread.xpos.SyncUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -230,6 +231,16 @@ public class POSManager {
         }
     }
 
+    public void getDeviceInfo(){
+        if (pos != null) {
+            Hashtable<String, Object> posInfoTable = pos.syncGetQposInfo(5);
+            Hashtable<String, String> msg = (Hashtable<String, String>) posInfoTable.get(SyncUtil.CONTENT);
+            String firmwareVersion = msg.get("firmwareVersion") == null ? "" : msg.get("firmwareVersion");
+            SPUtils.getInstance().put("firmwareVersion", firmwareVersion);
+            TRACE.i("firmwareVersion :" + SPUtils.getInstance().getString("firmwareVersion"));
+        }
+    }
+
     /**
      * Cancel ongoing transaction
      */
@@ -407,6 +418,7 @@ public class POSManager {
         @Override
         public void onRequestQposConnected() {
             POSManager.getInstance().getDeviceId();
+            POSManager.getInstance().getDeviceInfo();
             SPUtils.getInstance().put("device_type",posType.name());
             SPUtils.getInstance().put("isConnected",true);
             connectLatch.countDown();
