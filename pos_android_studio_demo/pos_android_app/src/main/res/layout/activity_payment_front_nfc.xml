@@ -28,7 +28,7 @@
             app:layout_constraintTop_toTopOf="parent"
             binding:onClickCommand="@{viewModel.cancleTxnsCommand}" />
 
-        <!-- LottieAnimationView - height 350dp -->
+        <!-- LottieAnimationView - 减小高度 -->
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/animation_view"
             android:layout_width="0dp"
@@ -43,12 +43,12 @@
             app:lottie_imageAssetsFolder="images/"
             app:lottie_loop="true" />
 
-        <!-- card brands -->
+        <!-- card brands - 固定在底部，但添加顶部约束 -->
         <LinearLayout
             android:id="@+id/card_brand_container"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="16dp"
             android:gravity="center"
             android:orientation="horizontal"
             android:visibility="@{viewModel.showPinpad ? View.GONE : View.VISIBLE}"
@@ -58,68 +58,76 @@
 
             <ImageView
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="8dp"
+                android:layout_height="20dp"
+                android:layout_marginHorizontal="6dp"
                 android:layout_weight="1"
-                android:src="@mipmap/ic_visa" />
+                android:src="@mipmap/ic_visa"
+                android:scaleType="fitCenter" />
 
             <ImageView
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="8dp"
+                android:layout_height="20dp"
+                android:layout_marginHorizontal="6dp"
                 android:layout_weight="1"
-                android:src="@mipmap/ic_master" />
+                android:src="@mipmap/ic_master"
+                android:scaleType="fitCenter" />
 
             <ImageView
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="8dp"
+                android:layout_height="20dp"
+                android:layout_marginHorizontal="6dp"
                 android:layout_weight="1"
-                android:src="@mipmap/ic_amex" />
+                android:src="@mipmap/ic_amex"
+                android:scaleType="fitCenter" />
 
             <ImageView
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="8dp"
+                android:layout_height="20dp"
+                android:layout_marginHorizontal="6dp"
                 android:layout_weight="1"
-                android:src="@mipmap/ic_dc" />
+                android:src="@mipmap/ic_dc"
+                android:scaleType="fitCenter" />
 
             <ImageView
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="8dp"
+                android:layout_height="20dp"
+                android:layout_marginHorizontal="6dp"
                 android:layout_weight="1"
-                android:src="@mipmap/ic_jcb" />
+                android:src="@mipmap/ic_jcb"
+                android:scaleType="fitCenter" />
         </LinearLayout>
 
-        <!-- amount and guide -->
-        <LinearLayout
+        <!-- amount and guide - 使用链式约束确保空间分配 -->
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/center_content_container"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:gravity="center"
-            android:orientation="vertical"
             android:visibility="@{viewModel.showPinpad ? View.GONE : View.VISIBLE}"
             app:layout_constraintBottom_toTopOf="@id/card_brand_container"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/animation_view">
 
-            <!-- 金额显示区域 -->
+            <!-- 金额显示区域 - 顶部对齐 -->
             <LinearLayout
                 android:id="@+id/amount_container"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
                 android:gravity="center"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                app:layout_constraintBottom_toTopOf="@id/guide_container"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed"
+                app:layout_constraintVertical_bias="0.3">
 
                 <TextView
                     android:id="@+id/txt_total"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/total"
+                    android:layout_marginTop="5dp"
                     android:textColor="@color/text_color"
                     android:textSize="@dimen/d35_total_text_size" />
 
@@ -134,20 +142,22 @@
                     android:textStyle="bold" />
             </LinearLayout>
 
-            <!-- 支付引导区域 -->
+            <!-- 支付引导区域 - 居中显示 -->
             <LinearLayout
                 android:id="@+id/guide_container"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
                 android:gravity="center"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/amount_container">
 
                 <ImageView
                     android:id="@+id/iv_card_guide"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="120dp"
+                    android:layout_height="50dp"
                     android:scaleType="centerInside"
                     android:src="@drawable/ic_payguide_d35" />
 
@@ -155,20 +165,24 @@
                     android:id="@+id/txt_wait_insert_tap_card"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
                     android:text="@string/prompt_user_to_tap_card_d35"
                     android:textColor="@color/red_color"
-                    android:textSize="@dimen/d35_guide_text_size" />
+                    android:textSize="13sp"
+                    android:gravity="center"
+                 />
+
                 <TextView
                     android:id="@+id/txt_device_info"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
                     android:text="@string/prompt_user_to_tap_card_d35"
                     android:textColor="@color/background_color"
-                    android:textSize="16sp" />
+                    android:textSize="12sp"
+                    android:gravity="center"
+                    android:minHeight="34dp"/>
             </LinearLayout>
-        </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <!-- PIN -->
         <LinearLayout
@@ -187,7 +201,7 @@
 
             <!-- PIN amount showed -->
             <LinearLayout
-                android:layout_marginTop="50dp"
+                android:layout_marginTop="30dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
@@ -199,33 +213,33 @@
                     android:layout_height="wrap_content"
                     android:text="Total"
                     android:textColor="@color/black"
-                    android:textSize="22dp"
+                    android:textSize="18dp"
                     android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_8"
+                    android:layout_marginLeft="8dp"
                     android:text="@{viewModel.amount}"
                     android:textColor="@color/black"
-                    android:textSize="22dp"
+                    android:textSize="18dp"
                     android:textStyle="bold" />
             </LinearLayout>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="16dp"
                 android:text="@string/enter_pin_text"
                 android:textColor="@color/black"
-                android:textSize="22dp"
+                android:textSize="18dp"
                 android:textStyle="bold" />
 
             <EditText
                 android:id="@+id/pinpadEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="20dp"
                 android:background="@drawable/edittext_no_cursor"
                 android:clickable="false"
                 android:cursorVisible="false"
@@ -234,7 +248,7 @@
                 android:gravity="center"
                 android:longClickable="false"
                 android:textCursorDrawable="@null"
-                android:textSize="40dp"
+                android:textSize="30dp"
                 android:textStyle="bold" />
         </LinearLayout>
 

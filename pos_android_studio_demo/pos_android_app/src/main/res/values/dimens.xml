@@ -451,6 +451,6 @@
 
     <!-- D35/D50 size -->
     <dimen name="d35_total_text_size">18sp</dimen>
-    <dimen name="d35_amount_text_size">38sp</dimen>
+    <dimen name="d35_amount_text_size">36sp</dimen>
     <dimen name="d35_guide_text_size">18sp</dimen>
 </resources>

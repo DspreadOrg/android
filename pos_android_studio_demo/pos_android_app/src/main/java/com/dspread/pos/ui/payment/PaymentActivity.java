@@ -158,12 +158,18 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
             ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) frontNfcBinding.animationView.getLayoutParams();
             String deviceModel = DeviceUtils.getPhoneModel();
             if ("D35".equals(deviceModel)) {
+                frontNfcBinding.ivCardGuide.setMinimumHeight(50);
+                frontNfcBinding.txtWaitInsertTapCard.setTextSize(13);
+                frontNfcBinding.txtDeviceInfo.setTextSize(12);
                 params.topMargin = DeviceUtils.dpToPx(this, 25);//50.25mm
                 if (frontNfcBinding.ivCardGuide != null) {
                     frontNfcBinding.ivCardGuide.setImageResource(R.drawable.ic_payguide_d35);
                 }
             } else if ("D50".equals(deviceModel)) {
                 if (DeviceUtils.isAppInstalled(getApplicationContext(), DeviceUtils.UART_AIDL_SERVICE_APP_PACKAGE_NAME)) {
+                    frontNfcBinding.ivCardGuide.setMinimumHeight(80);
+                    frontNfcBinding.txtWaitInsertTapCard.setTextSize(18);
+                    frontNfcBinding.txtDeviceInfo.setTextSize(16);
                     params.topMargin = DeviceUtils.dpToPx(this, 125);//57.53mm
                     params.rightMargin = DeviceUtils.dpToPx(this, 10);//36.55mm
                 } else {
