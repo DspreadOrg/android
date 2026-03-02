@@ -334,6 +334,10 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
                 }
             });
             if (POSManager.getInstance().isDeviceConnected()) {
+                for(String i : dataList){
+                    TRACE.i("ddd = "+i);
+                }
+
                 keyboardUtil = new KeyboardUtil(PaymentActivity.this, getRootLayout(), dataList);
                 keyboardUtil.initKeyboard(MyKeyboardView.KEYBOARDTYPE_Only_Num_Pwd, getPinpadEditText());//Random keyboard
             }

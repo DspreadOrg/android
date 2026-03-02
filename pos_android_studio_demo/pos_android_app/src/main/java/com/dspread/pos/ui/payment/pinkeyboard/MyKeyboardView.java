@@ -129,9 +129,10 @@ public class MyKeyboardView extends KeyboardView {
                     @Override
                     public void run() {
                         randomKey(keyboardOnlyNumPwd);
+                        setKeyboard(keyboardOnlyNumPwd);
                     }
                 }, 100);
-                setKeyboard(keyboardOnlyNumPwd);
+
                 break;
         }
     }
@@ -276,27 +277,17 @@ public class MyKeyboardView extends KeyboardView {
         }
 
         List<Keyboard.Key> keyList = pLatinKeyboard.getKeys();
-//        int screenBottomY = mHeightPixels - pLatinKeyboard.getHeight();
-
-        int[] keyboardViewLocation = new int[2];
-        this.getLocationOnScreen(keyboardViewLocation);
-        int keyboardViewX = keyboardViewLocation[0];
-        int keyboardViewY = keyboardViewLocation[1];
-
-//        System.out.println("屏幕高: "+screenBottomY+","+mHeightPixels +" 键盘高度="+pLatinKeyboard.getHeight());
-//        System.out.println("KeyboardView屏幕位置: x=" + keyboardViewX + ", y=" + keyboardViewY);
-//        System.out.println("屏幕高度: " + mHeightPixels);
+        int screenBottomY = mHeightPixels - pLatinKeyboard.getHeight();
         Map<Integer, KeyPositionInfo> codeToPositionMap = new HashMap<>();
 
         for (Keyboard.Key key : keyList) {
             int originalCode = key.codes[0];
-            int x = keyboardViewX + key.x;
-            int y = keyboardViewY + key.y;
-//            int y = screenBottomY + key.y;
-//            int x = key.x;
+
+            int y = screenBottomY + key.y;
+            int x = key.x;
             int right = x + key.width;
             int bottom = y + key.height;
-            System.out.println("当前y高度: "+key.y+",x "+key.x +"  键值宽高度"+key.width+ ","+key.height);
+
             KeyPositionInfo info = new KeyPositionInfo(
                     originalCode,
                     x, y, right, bottom,
@@ -315,6 +306,7 @@ public class MyKeyboardView extends KeyboardView {
                 }
             }
         }
+//        randomNumbers.addAll(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 0));
         Map<Integer, Integer> displayMapping = new HashMap<>();
         int numberIndex = 0;
 
@@ -415,7 +407,7 @@ public class MyKeyboardView extends KeyboardView {
     @Override
     public void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        if (keyBoardType == KEYBOARDTYPE_Only_Num_Pwd) {//only number keyboard
+        if (keyBoardType == KEYBOARDTYPE_Only_Num_Pwd && getKeyboard() != null) {//only number keyboard
             List<Keyboard.Key> keys = getKeyboard().getKeys();
             for (Keyboard.Key key : keys) {
                 if (key.codes[0] == -5) {//delete button
