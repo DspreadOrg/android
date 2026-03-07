@@ -224,7 +224,7 @@ public class PrinterHelper {
         mPrinter.addText(" ACQ 48873110");
         mPrinter.addText(" CARD number.");
         mPrinter.addPrintLintStyle(new PrintLineStyle(PrintStyle.FontStyle.NORMAL, PrintLine.LEFT, 10));
-        mPrinter.addText((!map.get("maskedPAN").equals("") ? " " + map.get("maskedPAN").replace("f", "*") : "6228 48******8 116  S"));
+        mPrinter.addText((!map.get("maskedPAN").equals("") ? " " + map.get("maskedPAN").replaceAll("[fFxX]", "*") : "622848******8116"));
         mPrinter.addText(" TYPE Of Transaction(TXN TYPE)");
         mPrinter.addText(" SALE");
         mPrinter.addPrintLintStyle(new PrintLineStyle(PrintStyle.FontStyle.NORMAL, PrintLine.CENTER, 10));

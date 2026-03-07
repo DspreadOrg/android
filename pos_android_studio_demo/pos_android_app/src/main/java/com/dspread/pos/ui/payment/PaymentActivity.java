@@ -126,6 +126,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
         viewModel.isOnlineSuccess.observe(this, aBoolean -> {
             if (aBoolean) {
                 viewModel.setTransactionSuccess();
+                TRACE.d("initViewObservable maskedPAN:"+maskedPAN);
                 paymentStatus(amount, maskedPAN, terminalTime, "");
             } else {
                 viewModel.setTransactionFailed("Transaction failed because of the network!");
@@ -425,15 +426,17 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
 
                 paymentResult.setAmount(amount);
                 viewModel.saveTransactionTime(terminalTime);
+                paymentResult.setMaskedPAN(decodeData.get("maskedPAN") == null ? "" : decodeData.get("maskedPAN"));
+                maskedPAN = paymentResult.getMaskedPAN();
                 HandleTxnsResultUtils.handleDoTradeResult(paymentResult, decodeData, viewModel);
                 pauseAnimation();
-                maskedPAN = paymentResult.getMaskedPAN();
             } else if (result == QPOSService.DoTradeResult.MCR) {
                 paymentResult.setAmount(amount);
                 viewModel.saveTransactionTime(terminalTime);
+                paymentResult.setMaskedPAN(decodeData.get("maskedPAN") == null ? "" : decodeData.get("maskedPAN"));
+                maskedPAN = paymentResult.getMaskedPAN();
                 HandleTxnsResultUtils.handleDoTradeResult(paymentResult, decodeData, viewModel);
                 pauseAnimation();
-                maskedPAN = paymentResult.getMaskedPAN();
             } else if (result == QPOSService.DoTradeResult.PLS_SEE_PHONE) {
                 viewModel.showPinpad.set(false);
                 if (keyboardUtil != null) {
@@ -503,7 +506,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
                 List<TLV> tlvList = TLVParser.parse(tlv);
                 TLV cardNoTlv = TLVParser.searchTLV(tlvList, "C4");
                 cardNo = cardNoTlv == null ? "" : cardNoTlv.value;
-                cardNo = cardNo.substring(0, cardNo.length() - 1);
+                //cardNo = cardNo.substring(0, cardNo.length() - 1);
             }
             cardOrg = AdvancedBinDetector.detectCardType(cardNo).getDisplayName();
             paymentModel.setCardNo(cardNo);
@@ -554,6 +557,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
     }
 
     private void paymentStatus(String amount, String maskedPAN, String terminalTime, String errorMsg) {
+        TRACE.d("paymentStatus maskedPAN:"+maskedPAN);
         if (isStarting.compareAndSet(false, true)) {
             try {
                 Intent intent = new Intent(PaymentActivity.this, PaymentStatusActivity.class);

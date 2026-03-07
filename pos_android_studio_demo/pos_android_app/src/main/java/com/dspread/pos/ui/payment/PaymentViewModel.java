@@ -63,6 +63,7 @@ public class PaymentViewModel extends BaseAppViewModel {
         TLV tvrTlv = TLVParser.searchTLV(tlvList, "95");
         TLV cvmReusltTlv = TLVParser.searchTLV(tlvList, "9F34");
         TLV cidTlv = TLVParser.searchTLV(tlvList, "9F27");
+        TLV cardNo = TLVParser.searchTLV(tlvList, "C4");
 
         paymentModel.setDate(dateTlv.value);
         paymentModel.setTransCurrencyCode(transCurrencyCodeTlv == null ? "" : transCurrencyCodeTlv.value);
@@ -70,6 +71,7 @@ public class PaymentViewModel extends BaseAppViewModel {
         paymentModel.setTvr(tvrTlv == null ? "" : tvrTlv.value);
         paymentModel.setCvmResults(cvmReusltTlv == null ? "" : cvmReusltTlv.value);
         paymentModel.setCidData(cidTlv == null ? "" : cidTlv.value);
+        paymentModel.setCardNo(cardNo==null?"":cardNo.value);
 
         TRACE.i("Transaction success: " + paymentModel.getAmount());
         return paymentModel;
