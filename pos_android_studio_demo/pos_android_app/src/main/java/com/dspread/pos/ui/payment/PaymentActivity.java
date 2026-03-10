@@ -91,21 +91,21 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
      */
     @Override
     public void initData() {
-        TRACE.i("SN: "+ SPUtils.getInstance().getString("posID")+" POSINFO: "+SPUtils.getInstance().getString("firmwareVersion"));
+        TRACE.i("SN: " + SPUtils.getInstance().getString("posID") + " POSINFO: " + SPUtils.getInstance().getString("firmwareVersion"));
         if (DeviceUtils.getScreenSize(this) <= 3.0) {
             smallScreenBinding = DataBindingUtil.setContentView(this, R.layout.activity_payment_small_screen);
             smallScreenBinding.setViewModel(viewModel);
-            smallScreenBinding.txtDeviceInfo.setText("POSINFO: "+ SPUtils.getInstance().getString("firmwareVersion")+" SN: "+SPUtils.getInstance().getString("posID"));
+            smallScreenBinding.txtDeviceInfo.setText("POSINFO: " + SPUtils.getInstance().getString("firmwareVersion") + " SN: " + SPUtils.getInstance().getString("posID"));
             initSmallScreenUI();
         } else if (DeviceUtils.isFrontNFCDevices()) {
             frontNfcBinding = DataBindingUtil.setContentView(this, R.layout.activity_payment_front_nfc);
             frontNfcBinding.setViewModel(viewModel);
-            frontNfcBinding.txtDeviceInfo.setText("POSINFO: "+ SPUtils.getInstance().getString("firmwareVersion")+" SN: "+SPUtils.getInstance().getString("posID"));
+            frontNfcBinding.txtDeviceInfo.setText("POSINFO: " + SPUtils.getInstance().getString("firmwareVersion") + " SN: " + SPUtils.getInstance().getString("posID"));
             initFrontNFCUI();
         } else {
             defaultBinding = DataBindingUtil.setContentView(this, R.layout.activity_payment_default);
             defaultBinding.setViewModel(viewModel);
-            defaultBinding.txtDeviceInfo.setText("POSINFO: "+ SPUtils.getInstance().getString("firmwareVersion")+"\nSN: "+SPUtils.getInstance().getString("posID"));
+            defaultBinding.txtDeviceInfo.setText("POSINFO: " + SPUtils.getInstance().getString("firmwareVersion") + "\nSN: " + SPUtils.getInstance().getString("posID"));
             initCommonUI();
         }
         viewModel.titleText.set("Paymenting");
@@ -126,7 +126,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
         viewModel.isOnlineSuccess.observe(this, aBoolean -> {
             if (aBoolean) {
                 viewModel.setTransactionSuccess();
-                TRACE.d("initViewObservable maskedPAN:"+maskedPAN);
+                TRACE.d("initViewObservable maskedPAN:" + maskedPAN);
                 paymentStatus(amount, maskedPAN, terminalTime, "");
             } else {
                 viewModel.setTransactionFailed("Transaction failed because of the network!");
@@ -341,8 +341,8 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
                 }
             });
             if (POSManager.getInstance().isDeviceConnected()) {
-                for(String i : dataList){
-                    TRACE.i("ddd = "+i);
+                for (String i : dataList) {
+                    TRACE.i("ddd = " + i);
                 }
 
                 keyboardUtil = new KeyboardUtil(PaymentActivity.this, getRootLayout(), dataList);
@@ -360,7 +360,6 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
             viewModel.titleText.set(getString(R.string.input_pin));
             pinPadDialog = new PinPadDialog(PaymentActivity.this);
             pinPadDialog.getPayViewPass().setRandomNumber(true).setPayClickListener(POSManager.getInstance().getQPOSService(), new PinPadView.OnPayClickListener() {
-
                 @Override
                 public void onCencel() {
                     POSManager.getInstance().cancelPin();
@@ -472,7 +471,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
                 if (keyboardUtil != null) {
                     keyboardUtil.hide();
                 }
-                if(result.getStatus() != null && result.getStatus().equals(QPOSService.Error.BAD_SWIPE.name())){
+                if (result.getStatus() != null && result.getStatus().equals(QPOSService.Error.BAD_SWIPE.name())) {
                     viewModel.startLoading("Bad swipe, pls try again");
                     return;
                 }
@@ -552,12 +551,12 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
     protected void onDestroy() {
         super.onDestroy();
         LogFileConfig.getInstance(this).readLog();
-       // PrinterHelper.getInstance().close();
+        // PrinterHelper.getInstance().close();
         POSManager.getInstance().unregisterCallbacks();
     }
 
     private void paymentStatus(String amount, String maskedPAN, String terminalTime, String errorMsg) {
-        TRACE.d("paymentStatus maskedPAN:"+maskedPAN);
+        TRACE.d("paymentStatus maskedPAN:" + maskedPAN);
         if (isStarting.compareAndSet(false, true)) {
             try {
                 Intent intent = new Intent(PaymentActivity.this, PaymentStatusActivity.class);

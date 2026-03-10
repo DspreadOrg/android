@@ -403,10 +403,28 @@ public class PaymentMethodsLayout extends LinearLayout {
         pressedDrawable.setStroke(dpToPx(1), Color.parseColor("#ffe47579"));
         pressedDrawable.setColor(Color.parseColor("#ffffe9e9"));
 
+        GradientDrawable selectedDrawable = new GradientDrawable();
+        selectedDrawable.setShape(GradientDrawable.RECTANGLE);
+        selectedDrawable.setCornerRadius(dpToPx(isSmallScreen ? 16 : 26));
+        selectedDrawable.setStroke(dpToPx(1), Color.parseColor("#ffe47579"));
+        selectedDrawable.setColor(Color.parseColor("#ffffe9e9"));
+
         StateListDrawable states = new StateListDrawable();
         states.addState(new int[]{android.R.attr.state_pressed}, pressedDrawable);
+        states.addState(new int[]{android.R.attr.state_selected}, selectedDrawable);
         states.addState(new int[]{}, normalDrawable);
         return states;
+    }
+    
+    /**
+     * Set the selected payment method
+     * @param index The index of the payment method to select
+     */
+    public void setSelectedPaymentMethod(int index) {
+        for (int i = 0; i < gridLayout.getChildCount(); i++) {
+            View child = gridLayout.getChildAt(i);
+            child.setSelected(i == index);
+        }
     }
 
     private int dpToPx(int dp) {

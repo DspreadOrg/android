@@ -8,7 +8,10 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.KeyEvent;
 
+import com.dspread.pos.common.manager.FragmentCacheManager;
+import com.dspread.pos.ui.home.HomeFragment;
 import com.dspread.pos.utils.DeviceUtils;
 import com.dspread.pos.utils.TRACE;
 import com.dspread.pos_android_app.BR;
@@ -17,6 +20,7 @@ import com.dspread.pos_android_app.databinding.ActivityPaymentMetholdBinding;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.fragment.app.Fragment;
 import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.utils.ToastUtils;
 
@@ -28,6 +32,8 @@ public class PaymentMethodActivity extends BaseActivity<ActivityPaymentMetholdBi
     private String cls;
     private boolean canshow = true;
     private ActivityResultLauncher<Intent> scanLauncher;
+    private int currentMethodIndex = 0; // 当前选中的支付方式索引
+    private com.dspread.pos.view.PaymentMethodsLayout paymentMethodsLayout;
 
     @Override
     public int initContentView(Bundle bundle) {
@@ -45,6 +51,9 @@ public class PaymentMethodActivity extends BaseActivity<ActivityPaymentMetholdBi
         deviceAddress = getIntent().getStringExtra("deviceAddress");
         binding.setVariable(BR.viewModel, viewModel);
         binding.paymentMethodsLayout.setViewModel(viewModel);
+        paymentMethodsLayout = binding.paymentMethodsLayout;
+        // Initialize with first payment method selected
+        paymentMethodsLayout.setSelectedPaymentMethod(currentMethodIndex);
         viewModel.getSelectedPaymentMethod().observe(this, methodIndex -> {
             if (methodIndex != null) {
                 handlePaymentMethodSelection(methodIndex);
@@ -173,4 +182,43 @@ public class PaymentMethodActivity extends BaseActivity<ActivityPaymentMetholdBi
         startActivity(intent);
     }
 
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        int action = event.getAction();
+        int keyCode = event.getKeyCode();
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (action == KeyEvent.ACTION_UP) {
+                finish();
+            }
+            return true;
+        } else {
+            if (action == KeyEvent.ACTION_UP) {
+                TRACE.i("payment method on keydown = " + keyCode);
+                switch (keyCode) {
+                    case KeyEvent.KEYCODE_DPAD_UP:
+                        currentMethodIndex = (currentMethodIndex - 1 + 4) % 4;
+                        TRACE.i("Selected payment method: " + currentMethodIndex);
+                        // Update UI to show selected payment method
+                        if (paymentMethodsLayout != null) {
+                            paymentMethodsLayout.setSelectedPaymentMethod(currentMethodIndex);
+                        }
+                        return true;
+                    case KeyEvent.KEYCODE_DPAD_DOWN:
+                        currentMethodIndex = (currentMethodIndex + 1) % 4;
+                        TRACE.i("Selected payment method: " + currentMethodIndex);
+                        // Update UI to show selected payment method
+                        if (paymentMethodsLayout != null) {
+                            paymentMethodsLayout.setSelectedPaymentMethod(currentMethodIndex);
+                        }
+                        return true;
+                    case KeyEvent.KEYCODE_ENTER:
+                        handlePaymentMethodSelection(currentMethodIndex);
+                        return true;
+                }
+                return false;
+            }
+            return super.dispatchKeyEvent(event);
+        }
+    }
 }
