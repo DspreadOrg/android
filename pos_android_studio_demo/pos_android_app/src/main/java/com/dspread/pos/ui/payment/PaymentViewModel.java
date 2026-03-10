@@ -17,6 +17,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.atomic.AtomicLong;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.ObservableBoolean;
@@ -129,14 +130,20 @@ public class PaymentViewModel extends BaseAppViewModel {
         this.mTransactionTime = transactionTime;
     }
 
+    private AtomicLong lastClickTimeForCancel = new AtomicLong(0);
+    private static final long CLICK_INTERVAL = 500;
     public BindingCommand cancleTxnsCommand = new BindingCommand(() -> {
-        startLoading("processing...");
-        if(POSManager.getInstance().isDeviceConnected()) {
-            new Thread(() -> {
-                POSManager.getInstance().cancelTransaction();
-            }).start();
-        }else {
-            finish();
+        long currentTime = System.currentTimeMillis();
+        if (currentTime - lastClickTimeForCancel.get() > CLICK_INTERVAL) {
+            lastClickTimeForCancel.set(currentTime);
+            startLoading("processing...");
+            if (POSManager.getInstance().isDeviceConnected()) {
+                new Thread(() -> {
+                    POSManager.getInstance().cancelTransaction();
+                }).start();
+            } else {
+                finish();
+            }
         }
     });
 
