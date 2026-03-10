@@ -58,7 +58,7 @@
         <item name="materialButtonStyle">@style/ModernNumberButton</item>
 
         <!-- 背景颜色 -->
-        <item name="android:windowBackground">@color/main_theme_backend</item>
+        <item name="android:windowBackground">@drawable/splash_background</item>
     </style>
 
     <style name="Theme.Despreaddemo2" parent="Theme.MaterialComponents.Light.NoActionBar">

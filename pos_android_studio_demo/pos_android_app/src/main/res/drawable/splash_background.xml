@@ -1,0 +1,13 @@
+<!-- res/drawable/splash_background.xml -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 背景色（建议和App主色调一致） -->
+    <item android:drawable="@color/white" />
+    <!-- 居中的logo（可选） -->
+    <item>
+        <bitmap
+            android:gravity="center"
+            android:src="@mipmap/ic_dspread_logo"
+
+            />
+    </item>
+</layer-list>
