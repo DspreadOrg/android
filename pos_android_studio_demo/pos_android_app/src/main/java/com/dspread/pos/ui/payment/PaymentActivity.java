@@ -92,22 +92,8 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
     @Override
     public void initData() {
         TRACE.i("SN: " + SPUtils.getInstance().getString("posID") + " POSINFO: " + SPUtils.getInstance().getString("firmwareVersion"));
-        if (DeviceUtils.getScreenSize(this) <= 3.0) {
-            smallScreenBinding = DataBindingUtil.setContentView(this, R.layout.activity_payment_small_screen);
-            smallScreenBinding.setViewModel(viewModel);
-            smallScreenBinding.txtDeviceInfo.setText("POSINFO: " + SPUtils.getInstance().getString("firmwareVersion") + " SN: " + SPUtils.getInstance().getString("posID"));
-            initSmallScreenUI();
-        } else if (DeviceUtils.isFrontNFCDevices()) {
-            frontNfcBinding = DataBindingUtil.setContentView(this, R.layout.activity_payment_front_nfc);
-            frontNfcBinding.setViewModel(viewModel);
-            frontNfcBinding.txtDeviceInfo.setText("POSINFO: " + SPUtils.getInstance().getString("firmwareVersion") + " SN: " + SPUtils.getInstance().getString("posID"));
-            initFrontNFCUI();
-        } else {
-            defaultBinding = DataBindingUtil.setContentView(this, R.layout.activity_payment_default);
-            defaultBinding.setViewModel(viewModel);
-            defaultBinding.txtDeviceInfo.setText("POSINFO: " + SPUtils.getInstance().getString("firmwareVersion") + "\nSN: " + SPUtils.getInstance().getString("posID"));
-            initCommonUI();
-        }
+        updateDeviceInfoUI();
+        
         viewModel.titleText.set("Paymenting");
 
         paymentServiceCallback = new PaymentCallback();
@@ -240,7 +226,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
             @Override
             public void onRequestQposConnected() {
                 ToastUtils.showLong("Device connected");
-
+                updateDeviceInfoUI();
             }
 
             @Override
@@ -249,6 +235,27 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
                 finish();
             }
         };
+    }
+
+    private void updateDeviceInfoUI() {
+        String firmwareVersion = SPUtils.getInstance().getString("firmwareVersion");
+        String posID = SPUtils.getInstance().getString("posID");
+        if (DeviceUtils.getScreenSize(this) <= 3.0) {
+            smallScreenBinding = DataBindingUtil.setContentView(this, R.layout.activity_payment_small_screen);
+            smallScreenBinding.setViewModel(viewModel);
+            smallScreenBinding.txtDeviceInfo.setText("POSINFO: " + firmwareVersion + " SN: " + posID);
+            initSmallScreenUI();
+        } else if (DeviceUtils.isFrontNFCDevices()) {
+            frontNfcBinding = DataBindingUtil.setContentView(this, R.layout.activity_payment_front_nfc);
+            frontNfcBinding.setViewModel(viewModel);
+            frontNfcBinding.txtDeviceInfo.setText("POSINFO: " + firmwareVersion + " SN: " + posID);
+            initFrontNFCUI();
+        } else {
+            defaultBinding = DataBindingUtil.setContentView(this, R.layout.activity_payment_default);
+            defaultBinding.setViewModel(viewModel);
+            defaultBinding.txtDeviceInfo.setText("POSINFO: " + firmwareVersion + "\nSN: " + posID);
+            initCommonUI();
+        }
     }
 
     private android.widget.EditText getPinpadEditText() {
