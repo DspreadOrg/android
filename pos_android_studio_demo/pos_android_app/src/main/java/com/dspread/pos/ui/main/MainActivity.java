@@ -184,9 +184,20 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
             if (action == KeyEvent.ACTION_UP) {
                 toolbar.setTitle(getString(R.string.menu_payment));
                 drawerLayout.close();
-                viewModel.handleNavigationItemClick(R.id.nav_home);
-                FragmentCacheManager.getInstance().clearCache();
-                exit();
+                
+                // Get current fragment from ViewPager2
+                Fragment currentFragment = getSupportFragmentManager().findFragmentByTag("f" + viewPager.getCurrentItem());
+                
+                if (currentFragment instanceof HomeFragment) {
+                    // Only exit when current fragment is HomeFragment
+                    FragmentCacheManager.getInstance().clearCache();
+                    TRACE.d("back run from HomeFragment");
+                    exit();
+                } else {
+                    // Navigate back to HomeFragment if current fragment is not HomeFragment
+                    TRACE.d("back run from other fragment, navigating to HomeFragment");
+                    viewModel.handleNavigationItemClick(R.id.nav_home);
+                }
             }
             return true;
         } else {
