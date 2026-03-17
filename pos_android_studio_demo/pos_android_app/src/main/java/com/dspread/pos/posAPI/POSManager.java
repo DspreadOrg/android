@@ -518,10 +518,10 @@ public class POSManager {
             notifyTransactionCallbacks(cb -> cb.onReturnGetPinInputResult(num,error,minLen,maxLen));
         }
 
-//        @Override
-//        public void onQposRequestPinResult(List<String> dataList, int offlineTime) {
-//            notifyTransactionCallbacks(cb -> cb.onQposRequestPinResult(dataList, offlineTime));
-//        }
+        @Override
+        public void onQposRequestPinResult(List<String> dataList, int offlineTime) {
+            notifyTransactionCallbacks(cb -> cb.onQposRequestPinResult(dataList, offlineTime));
+        }
 
         @Override
         public void onTradeCancelled() {
