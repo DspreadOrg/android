@@ -268,7 +268,7 @@ public class MyKeyboardView extends KeyboardView {
     private String getKeyBoardLocation(Keyboard pLatinKeyboard){
         List<Integer> keyboardValues;
         if(dataList.isEmpty()){
-            keyboardValues = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 0x0D, 0, 0x0E, 0x0F);
+            keyboardValues = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 0x0D, 0, 0x0F, 0x0E);
         }else {
             keyboardValues = new ArrayList<>();
             for (String hex : dataList) {

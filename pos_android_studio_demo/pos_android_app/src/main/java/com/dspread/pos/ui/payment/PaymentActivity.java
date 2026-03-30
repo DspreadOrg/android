@@ -73,7 +73,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         if (DeviceUtils.getScreenSize(this) <= 3.0) {
             return R.layout.activity_payment_small_screen;
-        } else if (DeviceUtils.isFrontNFCDevices()) {
+        } else if (DeviceUtils.isFrontNFCDevices()) {//改成尺寸判断
             return R.layout.activity_payment_front_nfc;
         } else {
             return R.layout.activity_payment_default;
@@ -246,11 +246,13 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
             smallScreenBinding.txtDeviceInfo.setText("POSINFO: " + firmwareVersion + " SN: " + posID);
             initSmallScreenUI();
         } else if (DeviceUtils.isFrontNFCDevices()) {
+            TRACE.i("is FrontNFCDevices");
             frontNfcBinding = DataBindingUtil.setContentView(this, R.layout.activity_payment_front_nfc);
             frontNfcBinding.setViewModel(viewModel);
             frontNfcBinding.txtDeviceInfo.setText("POSINFO: " + firmwareVersion + " SN: " + posID);
             initFrontNFCUI();
         } else {
+            TRACE.i("is d20");
             defaultBinding = DataBindingUtil.setContentView(this, R.layout.activity_payment_default);
             defaultBinding.setViewModel(viewModel);
             defaultBinding.txtDeviceInfo.setText("POSINFO: " + firmwareVersion + "\nSN: " + posID);
@@ -333,28 +335,18 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
         @Override
         public void onQposRequestPinResult(List<String> dataList, int offlineTime) {
             TRACE.d("onQposRequestPinResult = " + dataList + "\nofflineTime: " + offlineTime);
-            if (POSManager.getInstance().isDeviceConnected()) {
-                viewModel.stopLoading();
-                viewModel.clearErrorState();
-                viewModel.showPinpad.set(true);
-                if (keyboardUtil != null) {
-                    keyboardUtil.hide();
-                }
+            viewModel.stopLoading();
+            viewModel.clearErrorState();
+            viewModel.showPinpad.set(true);//todo youhua
+            if (keyboardUtil != null) {
+                keyboardUtil.hide();
             }
             getPinpadEditText().setText("");
-            MyKeyboardView.setKeyBoardListener(value -> {
-                if (POSManager.getInstance().isDeviceConnected()) {
-                    POSManager.getInstance().pinMapSync(value, 60);
-                }
+            MyKeyboardView.setKeyBoardListener(value -> {//todo  change name
+                POSManager.getInstance().pinMapSync(value, 60);
             });
-            if (POSManager.getInstance().isDeviceConnected()) {
-                for (String i : dataList) {
-                    TRACE.i("ddd = " + i);
-                }
-
-                keyboardUtil = new KeyboardUtil(PaymentActivity.this, getRootLayout(), dataList);
-                keyboardUtil.initKeyboard(MyKeyboardView.KEYBOARDTYPE_Only_Num_Pwd, getPinpadEditText());//Random keyboard
-            }
+            keyboardUtil = new KeyboardUtil(PaymentActivity.this, getRootLayout(), dataList);
+            keyboardUtil.initKeyboard(MyKeyboardView.KEYBOARDTYPE_Only_Num_Pwd, getPinpadEditText());//Random keyboard  优化键盘绘制完成回调逻辑
         }
 
         @Override
@@ -421,6 +413,9 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
         @Override
         public void onDoTradeResult(QPOSService.DoTradeResult result, Hashtable<String, String> decodeData) {
             TRACE.i("onDoTradeResult = " + result);
+            if(decodeData != null){
+                TRACE.i("decodeData = " + decodeData);
+            }
             PaymentResult paymentResult = new PaymentResult();
             if (result == QPOSService.DoTradeResult.ICC) {
                 viewModel.cardInsertedState();
@@ -526,8 +521,9 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
             TRACE.i("onReturnGetPinInputResult  ===" + num);
             StringBuilder s = new StringBuilder();
             android.widget.EditText pinpadEditText = getPinpadEditText();
-
+            TRACE.i("pinpadEditText  ===");
             if (pinpadEditText == null) return;
+            TRACE.i("pinpadEditText  go here===");
             if (num == -1) {
                 isPinBack = false;
                 pinpadEditText.setText("");
