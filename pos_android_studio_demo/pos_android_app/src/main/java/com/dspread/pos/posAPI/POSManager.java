@@ -225,8 +225,13 @@ public class POSManager {
     public void getDeviceId() {
         if (pos != null) {
             Hashtable<String, Object> posIdTable = pos.syncGetQposId(5);
-            String posId = posIdTable.get("posId") == null ? "" : (String) posIdTable.get("posId");
-            SPUtils.getInstance().put("posID", posId);
+            if(posIdTable != null) {
+                String posId = posIdTable.get("posId") == null ? "" : (String) posIdTable.get("posId");
+                SPUtils.getInstance().put("posID", posId);
+            } else {
+                SPUtils.getInstance().put("posID", "");
+            }
+
             TRACE.i("posid :" + SPUtils.getInstance().getString("posID"));
         }
     }
@@ -234,9 +239,15 @@ public class POSManager {
     public void getDeviceInfo(){
         if (pos != null) {
             Hashtable<String, Object> posInfoTable = pos.syncGetQposInfo(5);
-            Hashtable<String, String> msg = (Hashtable<String, String>) posInfoTable.get(SyncUtil.CONTENT);
-            String firmwareVersion = msg.get("firmwareVersion") == null ? "" : msg.get("firmwareVersion");
-            SPUtils.getInstance().put("firmwareVersion", firmwareVersion);
+            if (posInfoTable != null) {
+                Hashtable<String, String> msg = (Hashtable<String, String>) posInfoTable.get(SyncUtil.CONTENT);
+                String firmwareVersion = msg.get("firmwareVersion") == null ? "" : msg.get("firmwareVersion");
+                SPUtils.getInstance().put("firmwareVersion", firmwareVersion);
+            } else {
+                SPUtils.getInstance().put("firmwareVersion", "");
+
+            }
+
             TRACE.i("firmwareVersion :" + SPUtils.getInstance().getString("firmwareVersion"));
         }
     }
