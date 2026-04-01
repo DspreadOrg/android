@@ -337,16 +337,22 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
             TRACE.d("onQposRequestPinResult = " + dataList + "\nofflineTime: " + offlineTime);
             viewModel.stopLoading();
             viewModel.clearErrorState();
-            viewModel.showPinpad.set(true);//todo youhua
+//            viewModel.showPinpad.set(true);//todo youhua
             if (keyboardUtil != null) {
                 keyboardUtil.hide();
             }
-            getPinpadEditText().setText("");
-            MyKeyboardView.setKeyBoardListener(value -> {//todo  change name
-                POSManager.getInstance().pinMapSync(value, 60);
-            });
-            keyboardUtil = new KeyboardUtil(PaymentActivity.this, getRootLayout(), dataList);
-            keyboardUtil.initKeyboard(MyKeyboardView.KEYBOARDTYPE_Only_Num_Pwd, getPinpadEditText());//Random keyboard  优化键盘绘制完成回调逻辑
+            if (POSManager.getInstance().isDeviceConnected()) {
+                for (String i : dataList) {
+                    TRACE.i("ddd = " + i);
+                }
+
+                keyboardUtil = new KeyboardUtil(PaymentActivity.this, getRootLayout(), dataList);
+                keyboardUtil.initKeyboard(MyKeyboardView.KEYBOARDTYPE_Only_Num_Pwd, value -> {
+                    if (POSManager.getInstance().isDeviceConnected()) {
+                        POSManager.getInstance().pinMapSync(value, 60);
+                    }
+                });//Random keyboard with listener
+            }
         }
 
         @Override
@@ -520,13 +526,11 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
         public void onReturnGetPinInputResult(int num, QPOSService.PinError error, int minLen, int maxLen) {
             TRACE.i("onReturnGetPinInputResult  ===" + num);
             StringBuilder s = new StringBuilder();
-            android.widget.EditText pinpadEditText = getPinpadEditText();
-            TRACE.i("pinpadEditText  ===");
-            if (pinpadEditText == null) return;
-            TRACE.i("pinpadEditText  go here===");
             if (num == -1) {
                 isPinBack = false;
-                pinpadEditText.setText("");
+                if (keyboardUtil != null) {
+                    keyboardUtil.updateValue("");
+                }
                 viewModel.onPinInputCompleted();
                 if (keyboardUtil != null) {
                     keyboardUtil.hide();
@@ -535,7 +539,9 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
                 for (int i = 0; i < num; i++) {
                     s.append("*");
                 }
-                pinpadEditText.setText(s.toString());
+                if (keyboardUtil != null) {
+                    keyboardUtil.updateValue(s.toString());
+                }
             }
         }
     }

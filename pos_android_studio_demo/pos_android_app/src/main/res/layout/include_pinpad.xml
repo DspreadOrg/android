@@ -1,44 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:background="#e5e5e5"
-    android:padding="8dp"
     android:orientation="vertical">
 
-    <RelativeLayout
-        android:id="@+id/keyboard_top_rl"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="#FFFFFF"
+        android:padding="8dp"
+        android:layout_marginBottom="6dp"
+        android:orientation="vertical">
 
-<!--        <TextView-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_centerInParent="true"-->
-<!--            android:text="SECURE PIN PAD"-->
-<!--            android:textColor="#666666"-->
-<!--            android:textSize="18dp"-->
-<!--            android:textStyle="bold" />-->
+        <RelativeLayout
+            android:id="@+id/keyboard_top_rl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-<!--        <TextView-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_alignParentEnd="true"-->
-<!--            android:layout_alignParentRight="true"-->
-<!--            android:layout_centerVertical="true"-->
-<!--            android:padding="10dp"-->
-<!--            android:text="Cancel"-->
-<!--            android:textStyle="bold"-->
-<!--            android:textSize="16dp"-->
-<!--            android:textColor="#0080f3"/>-->
-    </RelativeLayout>
-    <EditText
-        android:id="@+id/pinpadEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textSize="20sp"
-        />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center|bottom">
+            <TextView
+                android:id="@+id/txt_enter_pin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/enter_pin_text"
+                android:textColor="@color/black"
+                android:textSize="22dp"
+                android:textStyle="bold"
+                android:paddingBottom="8dp"
+                android:paddingTop="8dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="3"
+            >
+            <EditText
+                android:id="@+id/pinpadEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/keyboard_keybg_white"
+                android:clickable="false"
+                android:cursorVisible="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:textCursorDrawable="@null"
+                android:longClickable="false"
+                android:textStyle="bold"
+                android:textSize="36sp"
+                />
+        </LinearLayout>
+    </LinearLayout>
+
     <com.dspread.pos.ui.payment.pinkeyboard.MyKeyboardView
         android:id="@+id/keyboard_view"
         android:layout_width="match_parent"

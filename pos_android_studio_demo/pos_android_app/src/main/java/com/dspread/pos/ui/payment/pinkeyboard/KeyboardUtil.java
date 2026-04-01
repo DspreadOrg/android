@@ -30,6 +30,7 @@ public class KeyboardUtil {
 
     private PopupWindow mWindow;
     private MyKeyboardView mKeyboardView;
+    private EditText mPinpadEditText;
     private boolean needInit;
     private boolean mScrollTo = false;//whether the interface moves up
     //    private int mEditTextHeight;//edit text height 44dp
@@ -42,10 +43,11 @@ public class KeyboardUtil {
         this.dataList = dataList;
         this.mActivity = context;
         this.mParent = parent;
-        LinearLayout mIncludeKeyboardview = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.include_keyboardview, null);
-//        RelativeLayout mKeyboardTopView = (RelativeLayout) mIncludeKeyboardview.findViewById(R.id.keyboard_top_rl);
+        LinearLayout mIncludeKeyboardview = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.include_pinpad, null);
+        mPinpadEditText = (EditText) mIncludeKeyboardview.findViewById(R.id.pinpadEditText);
+        pinpadEditText = mPinpadEditText; // keep backward compatibility if other code reads it
         mKeyboardView = (MyKeyboardView) mIncludeKeyboardview.findViewById(R.id.keyboard_view);
-        mWindow = new PopupWindow(mIncludeKeyboardview, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, false);
+        mWindow = new PopupWindow(mIncludeKeyboardview, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, false);
         mWindow.setAnimationStyle(R.style.AnimBottom);   //Animation style
         mWindow.setOnDismissListener(mOnDismissListener);
         mWindow.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);//prevent being blocked by the bottom toolbar
@@ -64,8 +66,34 @@ public class KeyboardUtil {
      * init keyboard
      *
      * @param keyBoardType keyboard type
-     * @param editTexts    edit text
      */
+    @SuppressWarnings("all")
+    public void initKeyboard(final int keyBoardType) {
+        if (mPinpadEditText == null) return;
+        hideSystemSofeKeyboard(mPinpadEditText);
+        show(keyBoardType, mPinpadEditText);
+    }
+
+    /**
+     * init keyboard with key board listener
+     *
+     * @param keyBoardType keyboard type
+     * @param keyBoardNumInterface key board number interface
+     */
+    @SuppressWarnings("all")
+    public void initKeyboard(final int keyBoardType, KeyBoardNumInterface keyBoardNumInterface) {
+        if (mPinpadEditText == null) return;
+        // Set the key board listener
+        MyKeyboardView.setKeyBoardListener(keyBoardNumInterface);
+        hideSystemSofeKeyboard(mPinpadEditText);
+        show(keyBoardType, mPinpadEditText);
+    }
+
+    /**
+     * Backward compatible signature.
+     * This keyboard display editText is managed internally now.
+     */
+    @Deprecated
     @SuppressWarnings("all")
     public void initKeyboard(final int keyBoardType, EditText... editTexts) {
         for (final EditText editText : editTexts) {
@@ -82,6 +110,17 @@ public class KeyboardUtil {
 //                }
 //            });
         }
+    }
+
+    /**
+     * Update the displayed input value on the keyboard's internal EditText.
+     */
+    public void updateValue(String value) {
+        if (mPinpadEditText == null) return;
+        String v = value == null ? "" : value;
+        mPinpadEditText.setText(v);
+        // Keep caret at the end so MyKeyboardView can insert/delete correctly.
+        mPinpadEditText.setSelection(v.length());
     }
 
     /**
