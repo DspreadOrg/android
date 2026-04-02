@@ -351,7 +351,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
                     if (POSManager.getInstance().isDeviceConnected()) {
                         POSManager.getInstance().pinMapSync(value, 60);
                     }
-                });//Random keyboard with listener
+                }, getPinpadEditText());//Random keyboard with listener
             }
         }
 
@@ -526,11 +526,14 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
         public void onReturnGetPinInputResult(int num, QPOSService.PinError error, int minLen, int maxLen) {
             TRACE.i("onReturnGetPinInputResult  ===" + num);
             StringBuilder s = new StringBuilder();
+            android.widget.EditText pinpadEditText = getPinpadEditText();
+            TRACE.d("pinpadEditText ===");
+            if (pinpadEditText == null) return;
+            TRACE.d("pinpadEditText go here===");
+
             if (num == -1) {
                 isPinBack = false;
-                if (keyboardUtil != null) {
-                    keyboardUtil.updateValue("");
-                }
+                pinpadEditText.setText("");
                 viewModel.onPinInputCompleted();
                 if (keyboardUtil != null) {
                     keyboardUtil.hide();
@@ -539,9 +542,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
                 for (int i = 0; i < num; i++) {
                     s.append("*");
                 }
-                if (keyboardUtil != null) {
-                    keyboardUtil.updateValue(s.toString());
-                }
+                pinpadEditText.setText(s.toString());
             }
         }
     }
