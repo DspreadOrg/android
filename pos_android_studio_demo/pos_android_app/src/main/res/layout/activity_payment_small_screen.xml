@@ -103,7 +103,7 @@
 
         <!-- ============ PIN input ============ -->
         <LinearLayout
-            android:visibility="gone"
+            android:visibility="@{viewModel.showPinpad ? View.VISIBLE : View.GONE}"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
@@ -166,7 +166,6 @@
                     android:gravity="center"
                     android:longClickable="false"
                     android:textCursorDrawable="@null"
-                    android:visibility="gone"
                     android:textSize="36sp"
                     android:textStyle="bold" />
             </LinearLayout>
