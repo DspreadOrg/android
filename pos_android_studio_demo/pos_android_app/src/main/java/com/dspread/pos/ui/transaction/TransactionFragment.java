@@ -268,7 +268,7 @@ public class TransactionFragment extends BaseFragmentWithViewCache<FragmentTrans
             if (cacheArrayList != null && cacheArrayList.size() > 0) {
                 for (int i = 0; i < cacheArrayList.size(); i++) {
                     Transaction transaction = cacheArrayList.get(i);
-                    if ((transaction.getId() + "").contains(query)) {
+                    if ((transaction.getMaskPan() + "").contains(query)) {
                         transactionsList.add(transaction);
                     }
                 }

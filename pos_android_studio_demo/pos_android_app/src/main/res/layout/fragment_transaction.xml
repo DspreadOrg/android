@@ -45,12 +45,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/search_edittext_bg"
-                    android:hint="Search by number or ID"
+                    android:hint="Search by CardNumber"
                     android:imeOptions="actionSearch"
                     android:inputType="text"
-                    android:padding="12dp"
+                    android:padding="2dp"
                     android:textColor="@color/search_hint"
-                    android:textSize="16sp" />
+                    android:textCursorDrawable="@drawable/black_cursor"
+                    android:textSize="12sp" />
 
             </com.google.android.material.textfield.TextInputLayout>
 

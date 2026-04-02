@@ -167,7 +167,7 @@ public class PaymentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             if (payment.getCardOrg().equalsIgnoreCase("masterCard")) {
                 paymentHolder.cardIcon.setImageResource(mipmapImageIds.get(1));
             }
-            if (payment.getCardOrg().equalsIgnoreCase("amex")) {
+            if (payment.getCardOrg().equalsIgnoreCase("American Express")) {
                 paymentHolder.cardIcon.setImageResource(mipmapImageIds.get(2));
             }
             if (payment.getCardOrg().equalsIgnoreCase("discover")) {
