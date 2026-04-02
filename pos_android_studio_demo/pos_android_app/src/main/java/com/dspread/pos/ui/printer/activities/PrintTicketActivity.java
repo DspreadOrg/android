@@ -92,7 +92,7 @@ public class PrintTicketActivity extends PrinterBaseActivity<ActivityPrinterBase
 
         //Generate receipt bitmap and process the result
         // viewModel.generateReceiptBitmap(map);
-        
+
         generateReceiptInBackground(map);
 
         // observeReceiptBitmap();
@@ -100,7 +100,7 @@ public class PrintTicketActivity extends PrinterBaseActivity<ActivityPrinterBase
     }
 
     /**
-     *Clean up old bitmap resources
+     * Clean up old bitmap resources
      */
     private void cleanupBitmap() {
         if (mBitmap != null && !mBitmap.isRecycled()) {
@@ -110,7 +110,7 @@ public class PrintTicketActivity extends PrinterBaseActivity<ActivityPrinterBase
     }
 
     /**
-     *Build parameter mapping
+     * Build parameter mapping
      */
     private Map<String, String> buildParameterMap() {
         Map<String, String> map = new HashMap<>();
@@ -127,7 +127,7 @@ public class PrintTicketActivity extends PrinterBaseActivity<ActivityPrinterBase
     }
 
     /**
-     *Build terminal time string
+     * Build terminal time string
      */
     private String buildTerminalTimeString() {
         if (TextUtils.isEmpty(terminalTime)) {
@@ -144,7 +144,7 @@ public class PrintTicketActivity extends PrinterBaseActivity<ActivityPrinterBase
     }
 
     /**
-     *Format date and time
+     * Format date and time
      */
     private String formatDateTime(String dateTimeStr) {
         if (TextUtils.isEmpty(dateTimeStr)) {
@@ -169,13 +169,28 @@ public class PrintTicketActivity extends PrinterBaseActivity<ActivityPrinterBase
     private void observeReceiptBitmap() {
         viewModel.getReceiptBitmap().observe(this, bitmap -> {
             if (bitmap == null) return;
-
             this.mBitmap = bitmap;
-
             if (isSmallDevices) {
                 viewModel.printTicket(bitmap);
             } else {
-                contentBinding.receiptImage.setImageBitmap(bitmap);
+                // Get screen resolution
+                DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+                int screenWidth = displayMetrics.widthPixels;
+                int screenHeight = displayMetrics.heightPixels;
+                // For 480x808 resolution, scale down the bitmap for better appearance
+                if (screenWidth == 480 && screenHeight == 800) {
+                    // Calculate scale factor (0.8 means 80% of original size)
+                    float scaleFactor = 0.8f;
+                    int scaledWidth = (int) (bitmap.getWidth() * scaleFactor);
+                    int scaledHeight = (int) (bitmap.getHeight() * scaleFactor);
+
+                    // Create scaled bitmap
+                    Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, scaledWidth, scaledHeight, true);
+                    contentBinding.receiptImage.setImageBitmap(scaledBitmap);
+                } else {
+                    // For other resolutions, use original bitmap
+                    contentBinding.receiptImage.setImageBitmap(bitmap);
+                }
             }
         });
     }
@@ -332,6 +347,7 @@ public class PrintTicketActivity extends PrinterBaseActivity<ActivityPrinterBase
             }
         });
     }
+
     private void regenerateReceipt() {
         runOnUiThread(() -> {
 

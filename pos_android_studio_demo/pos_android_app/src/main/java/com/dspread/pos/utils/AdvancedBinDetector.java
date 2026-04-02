@@ -59,8 +59,8 @@ public class AdvancedBinDetector {
         if (isVisa(bin1, bin4, bin6)) return CardType.VISA;
         if (isMastercard(bin2, bin4, bin6)) return CardType.MASTERCARD;
         if (isAmex(bin2)) return CardType.AMEX;
-        if (isDiscover(bin2, bin3, bin4, bin6)) return CardType.DISCOVER;
         if (isUnionPay(bin2, bin3)) return CardType.UNIONPAY;
+        if (isDiscover(bin2, bin3, bin4, bin6)) return CardType.DISCOVER;
         if (isJCB(bin2, bin3)) return CardType.JCB;
         if (isDinersClub(bin2, bin3, bin4)) return CardType.DINERS_CLUB;
         if (isChinaTUnion(bin2)) return CardType.CHINA_TUION;
