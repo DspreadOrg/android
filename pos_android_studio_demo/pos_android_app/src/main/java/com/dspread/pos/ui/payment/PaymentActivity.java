@@ -16,7 +16,6 @@ import androidx.databinding.DataBindingUtil;
 import com.dspread.pos.posAPI.ConnectionServiceCallback;
 import com.dspread.pos.posAPI.POSManager;
 import com.dspread.pos.posAPI.PaymentServiceCallback;
-import com.dspread.pos.printerAPI.PrinterHelper;
 import com.dspread.pos.ui.payment.pinkeyboard.KeyboardUtil;
 import com.dspread.pos.ui.payment.pinkeyboard.MyKeyboardView;
 import com.dspread.pos.ui.payment.pinkeyboard.PinPadDialog;
@@ -95,7 +94,6 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
         updateDeviceInfoUI();
         
         viewModel.titleText.set("Paymenting");
-
         paymentServiceCallback = new PaymentCallback();
         amount = getIntent().getStringExtra("amount");
         deviceAddress = getIntent().getStringExtra("deviceAddress");
@@ -337,31 +335,22 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
             TRACE.d("onQposRequestPinResult = " + dataList + "\nofflineTime: " + offlineTime);
             viewModel.stopLoading();
             viewModel.clearErrorState();
-//            viewModel.showPinpad.set(true);//todo youhua
+//            viewModel.showPinpad.set(true);
             if (keyboardUtil != null) {
                 keyboardUtil.hide();
             }
-            if (POSManager.getInstance().isDeviceConnected()) {
-                for (String i : dataList) {
-                    TRACE.i("ddd = " + i);
-                }
-
-                keyboardUtil = new KeyboardUtil(PaymentActivity.this, getRootLayout(), dataList);
-                keyboardUtil.initKeyboard(MyKeyboardView.KEYBOARDTYPE_Only_Num_Pwd, value -> {
-                    if (POSManager.getInstance().isDeviceConnected()) {
-                        POSManager.getInstance().pinMapSync(value, 60);
-                    }
-                }, getPinpadEditText());//Random keyboard with listener
-            }
+            keyboardUtil = new KeyboardUtil(PaymentActivity.this, getRootLayout(), dataList);
+            keyboardUtil.initKeyboard(MyKeyboardView.KEYBOARDTYPE_Only_Num_Pwd, value -> {
+                POSManager.getInstance().pinMapSync(value, 60);
+            }, getPinpadEditText());//Random keyboard with listener
         }
 
         @Override
-        public void onRequestSetPin() {
+        public void onRequestSetPin() {//CR100 devices
             TRACE.i("onRequestSetPin()");
             isPinBack = true;
             // Clear previous error state when entering PIN input
             viewModel.clearErrorState();
-            //CR100 devices
             viewModel.titleText.set(getString(R.string.input_pin));
             pinPadDialog = new PinPadDialog(PaymentActivity.this);
             pinPadDialog.getPayViewPass().setRandomNumber(true).setPayClickListener(POSManager.getInstance().getQPOSService(), new PinPadView.OnPayClickListener() {
@@ -561,7 +550,6 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
     protected void onDestroy() {
         super.onDestroy();
         LogFileConfig.getInstance(this).readLog();
-        // PrinterHelper.getInstance().close();
         POSManager.getInstance().unregisterCallbacks();
     }
 
