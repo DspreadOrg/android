@@ -119,7 +119,7 @@ public class DeviceUtils {
         return "Brand:" + DeviceUtils.getPhoneBrand() + " || Name:" + DeviceUtils.getDeviceName() + " || Model:" + DeviceUtils.getPhoneModel() + " || Version:" + DeviceUtils.getVersionRelease();
     }
 
-    public static int dpToPx(Context context,int dp) {
+    public static int dpToPx(Context context, int dp) {
         return (int) (dp * context.getResources().getDisplayMetrics().density);
     }
 
@@ -167,11 +167,12 @@ public class DeviceUtils {
     }
 
     public static boolean isPrinterDevices() {
-        if ("D30".equals(Build.MODEL) || "D60".equals(Build.MODEL)
+       /* if ("D30".equals(Build.MODEL) || "D60".equals(Build.MODEL)
                 || "D70".equals(Build.MODEL) || "D30M".equals(Build.MODEL) || "D80".equals(Build.MODEL) || "D80K".equals(Build.MODEL) || "M60".equals(Build.MODEL) || "M20".equals(Build.MODEL) || "M70".equals(Build.MODEL)) {
             return true;
         }
-        return false;
+        return false;*/
+        return DeviceModelUtils.getPrinterPosModel();
     }
 
 
@@ -187,7 +188,7 @@ public class DeviceUtils {
         float widthInches = dm.widthPixels / dm.xdpi;
         float heightInches = dm.heightPixels / dm.ydpi;
         double diagonalInches = Math.sqrt(Math.pow(widthInches, 2) + Math.pow(heightInches, 2));
-        TRACE.i("device size = "+diagonalInches);
+        TRACE.i("device size = " + diagonalInches);
         return diagonalInches;
     }
 

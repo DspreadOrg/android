@@ -32,7 +32,7 @@ android {
         minSdk 24
         targetSdk 34
         versionCode 135
-        versionName "8.4.1-2604031650"
+        versionName "8.4.1-2604031930"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         ndk {
             // Set up supported SO library architecture
@@ -128,4 +128,5 @@ dependencies {
     implementation 'androidx.viewpager2:viewpager2:1.0.0'
     implementation "androidx.room:room-runtime:2.5.0"
     annotationProcessor "androidx.room:room-compiler:2.5.0"
+    compileOnly files('libs/runtime/android_internal.jar')
 }
