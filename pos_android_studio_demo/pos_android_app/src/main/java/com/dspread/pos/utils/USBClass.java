@@ -78,13 +78,14 @@ public class USBClass {
             mPermissionIntent = PendingIntent.getBroadcast(context, 0, usbIntent, PendingIntent.FLAG_MUTABLE);
         } else {
             mPermissionIntent = PendingIntent.getBroadcast(context, 0, new Intent(
-                    ACTION_USB_PERMISSION), 0);
+                            ACTION_USB_PERMISSION),
+                    PendingIntent.FLAG_IMMUTABLE);
         }
         IntentFilter filter = new IntentFilter(ACTION_USB_PERMISSION);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             context.registerReceiver(mUsbReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
         } else {
-            context.registerReceiver(mUsbReceiver, filter);
+            context.registerReceiver(mUsbReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
         }
         /*
          * check for existing devices
