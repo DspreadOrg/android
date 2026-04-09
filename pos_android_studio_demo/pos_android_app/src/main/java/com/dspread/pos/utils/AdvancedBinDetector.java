@@ -56,10 +56,10 @@ public class AdvancedBinDetector {
         // 按优先级检测（从最精确的匹配开始）
         if (isVisaElectron(bin4, bin6)) return CardType.VISA_ELECTRON;
         if (isMaestro(bin4, bin6)) return CardType.MAESTRO;
-        if (isVisa(bin1, bin4, bin6)) return CardType.VISA;
-        if (isMastercard(bin2, bin4, bin6)) return CardType.MASTERCARD;
         if (isAmex(bin2)) return CardType.AMEX;
         if (isUnionPay(bin2, bin3)) return CardType.UNIONPAY;
+        if (isVisa(bin1, bin4, bin6)) return CardType.VISA;
+        if (isMastercard(bin2, bin4, bin6)) return CardType.MASTERCARD;
         if (isDiscover(bin2, bin3, bin4, bin6)) return CardType.DISCOVER;
         if (isJCB(bin2, bin3)) return CardType.JCB;
         if (isDinersClub(bin2, bin3, bin4)) return CardType.DINERS_CLUB;
@@ -138,15 +138,8 @@ public class AdvancedBinDetector {
             return true;
         }
 
-        // 622126-622925 (China UnionPay co-branded)
-        try {
-            int binValue = Integer.parseInt(bin6.substring(0, 6));
-            if (binValue >= 622126 && binValue <= 622925) {
-                return true;
-            }
-        } catch (NumberFormatException e) {
-            // 忽略转换错误
-        }
+        // 注意：622126-622925 范围已移除，这些BIN属于UnionPay
+        // 不再将此范围识别为Discover，避免与UnionPay冲突
 
         return false;
     }
