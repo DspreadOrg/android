@@ -31,8 +31,8 @@ android {
         applicationId "com.dspread.pos_android_app"
         minSdk 24
         targetSdk 34
-        versionCode 135
-        versionName "8.4.1-2604031650"
+        versionCode 136
+        versionName "8.4.1-2604091718"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         ndk {
             // Set up supported SO library architecture
@@ -56,6 +56,9 @@ android {
     //Important: Disable modern packaging formats (otherwise a generic APK will be generated)
     packagingOptions {
         doNotStrip '**/lib/*.so' // 保留所有SO文件
+    }
+    buildFeatures {
+        buildConfig(true)
     }
 }
 
@@ -128,4 +131,5 @@ dependencies {
     implementation 'androidx.viewpager2:viewpager2:1.0.0'
     implementation "androidx.room:room-runtime:2.5.0"
     annotationProcessor "androidx.room:room-compiler:2.5.0"
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.20")
 }

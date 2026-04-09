@@ -111,10 +111,10 @@ public class PinPadView extends RelativeLayout {
                     listNumber.add(9, 10);
                 }
             }
-            listNumber.add(R.mipmap.ic_pay_del0);
-            listNumber.add(R.mipmap.ic_pay_del0);
-            listNumber.add(R.mipmap.ic_pay_del0);
-            listNumber.add(R.mipmap.ic_pay_del0);
+            listNumber.add(R.mipmap.icon_delete);
+            listNumber.add(R.mipmap.icon_delete);
+            listNumber.add(R.mipmap.icon_delete);
+            listNumber.add(R.mipmap.icon_delete);
         } else {
             listNumber = new ArrayList<>();
             listNumber.clear();
@@ -123,7 +123,7 @@ public class PinPadView extends RelativeLayout {
             }
             listNumber.add(10);
             listNumber.add(0);
-            listNumber.add(R.mipmap.ic_pay_del0);
+            listNumber.add(R.mipmap.icon_delete);
 
         }
         mGridView.setAdapter(adapter);
@@ -200,13 +200,13 @@ public class PinPadView extends RelativeLayout {
                         if (position == 11) {
                             switch (event.getAction()) {
                                 case MotionEvent.ACTION_DOWN:
-                                    holder.btnNumber.setBackgroundResource(R.mipmap.ic_pay_del1);
+                                    holder.btnNumber.setBackgroundResource(R.mipmap.icon_delete_1);
                                     break;
                                 case MotionEvent.ACTION_MOVE:
-                                    holder.btnNumber.setBackgroundResource(R.mipmap.ic_pay_del1);
+                                    holder.btnNumber.setBackgroundResource(R.mipmap.icon_delete_1);
                                     break;
                                 case MotionEvent.ACTION_UP:
-                                    holder.btnNumber.setBackgroundResource(R.mipmap.ic_pay_del0);
+                                    holder.btnNumber.setBackgroundResource(R.mipmap.icon_delete_1);
                                     break;
                             }
                         }
