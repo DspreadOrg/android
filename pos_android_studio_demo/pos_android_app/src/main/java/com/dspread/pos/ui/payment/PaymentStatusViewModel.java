@@ -28,6 +28,11 @@ public class PaymentStatusViewModel extends BaseAppViewModel {
     private String maskedPAN;
     private String terminalTime;
 
+    // Anti-shake protection for rapid clicks
+    private static final long CLICK_INTERVAL = 500; // Minimum interval between clicks (milliseconds)
+    private long lastClickTime = 0;
+    private boolean isNavigating = false;
+
     public ObservableBoolean isSuccess = new ObservableBoolean(false);
     public ObservableField<String> amount = new ObservableField<>("");
     public ObservableBoolean isPrinting = new ObservableBoolean(false);
@@ -62,18 +67,57 @@ public class PaymentStatusViewModel extends BaseAppViewModel {
         terminalTime = map.get("terminalTime");
     }
 
-    public BindingCommand continueTxnsCommand = new BindingCommand(() -> finish());
-    public BindingCommand sendReceiptCommand = new BindingCommand(new BindingAction() {
-        @Override
-        public void call() {
-            Intent intent = new Intent(context, PrintTicketActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.putExtra("terAmount", terAmount);
-            intent.putExtra("maskedPAN", maskedPAN);
-            intent.putExtra("terminalTime", terminalTime);
-            context.startActivity(intent);
+    // Intent extras keys
+    private static final String EXTRA_TER_AMOUNT = "terAmount";
+    private static final String EXTRA_MASKED_PAN = "maskedPAN";
+    private static final String EXTRA_TERMINAL_TIME = "terminalTime";
+
+    public BindingCommand continueTxnsCommand = new BindingCommand(() -> {
+        // Anti-shake for continue button
+        if (isClickValid()) {
             finish();
         }
     });
+
+    public BindingCommand sendReceiptCommand = new BindingCommand(new BindingAction() {
+        @Override
+        public void call() {
+            if (!isClickValid()) {
+                TRACE.d("Ignored rapid click on send receipt button");
+                return;
+            }
+            try {
+                Intent intent = new Intent(context, PrintTicketActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                // Use default empty string if value is null to prevent NullPointerException
+                intent.putExtra(EXTRA_TER_AMOUNT, terAmount != null ? terAmount : "");
+                intent.putExtra(EXTRA_MASKED_PAN, maskedPAN != null ? maskedPAN : "");
+                intent.putExtra(EXTRA_TERMINAL_TIME, terminalTime != null ? terminalTime : "");
+                context.startActivity(intent);
+                finish();
+            } catch (Exception e) {
+                TRACE.e("Failed to start PrintTicketActivity: " + e.getMessage());
+                try {
+                    finish();
+                } catch (Exception ex) {
+                    TRACE.e("Failed to finish activity: " + ex.getMessage());
+                }
+            }
+        }
+    });
+
+    /**
+     * Check if the click is valid (anti-shake)
+     *
+     * @return true if the click interval is sufficient, false otherwise
+     */
+    private boolean isClickValid() {
+        long currentTime = System.currentTimeMillis();
+        if (currentTime - lastClickTime < CLICK_INTERVAL) {
+            return false;
+        }
+        lastClickTime = currentTime;
+        return true;
+    }
 
 }
