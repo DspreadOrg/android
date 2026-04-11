@@ -309,4 +309,9 @@
         <item name="android:padding">8dp</item>
     </style>
 
+    <style name="dialogOpenAnimation" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/dialog_payview_in</item>
+        <item name="android:windowExitAnimation">@anim/dialog_payview_out</item>
+    </style>
+
 </resources>
