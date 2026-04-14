@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.text.Html;
 import android.view.View;
 import android.view.WindowManager;
@@ -113,8 +114,8 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
                 TRACE.d("initViewObservable maskedPAN:" + maskedPAN);
                 paymentStatus(amount, maskedPAN, terminalTime, "");
             } else {
-                viewModel.setTransactionFailed("Transaction failed because of the network!");
-                paymentStatus("", "", "", "Transaction failed because of the network!");
+                viewModel.setTransactionFailed(getString(R.string.network_error_msg));
+                paymentStatus("", "", "", getString(R.string.network_error_msg));
             }
         });
     }
@@ -142,6 +143,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
         if (frontNfcBinding != null) {
             ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) frontNfcBinding.animationView.getLayoutParams();
             String deviceModel = DeviceUtils.getPhoneModel();
+
             if ("D35".equals(deviceModel)) {
                 frontNfcBinding.ivCardGuide.setMinimumHeight(50);
                 frontNfcBinding.txtWaitInsertTapCard.setTextSize(13);
@@ -238,16 +240,17 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
     private void updateDeviceInfoUI() {
         String firmwareVersion = SPUtils.getInstance().getString("firmwareVersion");
         String posID = SPUtils.getInstance().getString("posID");
+        String deviceInfo = "POSINFO: " + firmwareVersion + " SN: " + posID;
         if (DeviceUtils.getScreenSize(this) <= 3.0) {
             smallScreenBinding = DataBindingUtil.setContentView(this, R.layout.activity_payment_small_screen);
             smallScreenBinding.setViewModel(viewModel);
-            smallScreenBinding.txtDeviceInfo.setText("POSINFO: " + firmwareVersion + " SN: " + posID);
+            smallScreenBinding.txtDeviceInfo.setText(deviceInfo);
             initSmallScreenUI();
         } else if (DeviceUtils.isFrontNFCDevices()) {
             TRACE.i("is FrontNFCDevices");
             frontNfcBinding = DataBindingUtil.setContentView(this, R.layout.activity_payment_front_nfc);
             frontNfcBinding.setViewModel(viewModel);
-            frontNfcBinding.txtDeviceInfo.setText("POSINFO: " + firmwareVersion + " SN: " + posID);
+            frontNfcBinding.txtDeviceInfo.setText(deviceInfo);
             initFrontNFCUI();
         } else {
             TRACE.i("is d20");
@@ -416,23 +419,9 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
                 viewModel.cardInsertedState();
                 POSManager.getInstance().doEmvAPP();
             } else if (result == QPOSService.DoTradeResult.NFC_ONLINE || result == QPOSService.DoTradeResult.NFC_OFFLINE) {
-                Hashtable<String, String> batchData = POSManager.getInstance().getNFCBatchData();
-                String tlv = batchData.get("tlv");
-                TRACE.i("NFC Batch data: " + tlv);
-
-                paymentResult.setAmount(amount);
-                viewModel.saveTransactionTime(terminalTime);
-                paymentResult.setMaskedPAN(decodeData.get("maskedPAN") == null ? "" : decodeData.get("maskedPAN"));
-                maskedPAN = paymentResult.getMaskedPAN();
-                HandleTxnsResultUtils.handleDoTradeResult(paymentResult, decodeData, viewModel);
-                pauseAnimation();
+                handleNFCTransaction(decodeData, paymentResult);
             } else if (result == QPOSService.DoTradeResult.MCR) {
-                paymentResult.setAmount(amount);
-                viewModel.saveTransactionTime(terminalTime);
-                paymentResult.setMaskedPAN(decodeData.get("maskedPAN") == null ? "" : decodeData.get("maskedPAN"));
-                maskedPAN = paymentResult.getMaskedPAN();
-                HandleTxnsResultUtils.handleDoTradeResult(paymentResult, decodeData, viewModel);
-                pauseAnimation();
+                handleMCRTransaction(decodeData, paymentResult);
             } else if (result == QPOSService.DoTradeResult.PLS_SEE_PHONE) {
                 viewModel.showPinpad.set(false);
                 if (keyboardUtil != null) {
@@ -440,12 +429,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
                 }
                 viewModel.titleText.set(getString(R.string.pls_see_phone));
             } else {//NFC DECLINED
-                viewModel.showPinpad.set(false);
-                if (keyboardUtil != null) {
-                    keyboardUtil.hide();
-                }
-                paymentStatus("", "", "", "NFC Declined");
-                viewModel.setTransactionFailed("NFC Declined");
+                handleNFCCDeclined();
             }
         }
 
@@ -491,20 +475,14 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
             TRACE.d("onRequestOnlineProcess" + tlv);
             viewModel.showPinpad.set(false);
             viewModel.startLoading(getString(R.string.online_process_requested));
+
             Hashtable<String, String> decodeData = POSManager.getInstance().anlysEmvIccData(tlv);
             PaymentModel paymentModel = new PaymentModel();
             paymentModel.setAmount(amount);
-            String cardNo = "";
-            String cardOrg = "";
-            if ("32".equals(decodeData.get("formatID"))) {
-                cardNo = decodeData.get("maskedPAN");
-            } else {
-                List<TLV> tlvList = TLVParser.parse(tlv);
-                TLV cardNoTlv = TLVParser.searchTLV(tlvList, "C4");
-                cardNo = cardNoTlv == null ? "" : cardNoTlv.value;
-                //cardNo = cardNo.substring(0, cardNo.length() - 1);
-            }
-            cardOrg = AdvancedBinDetector.detectCardType(cardNo).getDisplayName();
+
+            String cardNo = extractCardNo(decodeData, tlv);
+            String cardOrg = AdvancedBinDetector.detectCardType(cardNo).getDisplayName();
+
             paymentModel.setCardNo(cardNo);
             paymentModel.setCardOrg(cardOrg);
             viewModel.saveTransactionTime(terminalTime);
@@ -514,11 +492,8 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
         @Override
         public void onReturnGetPinInputResult(int num, QPOSService.PinError error, int minLen, int maxLen) {
             TRACE.i("onReturnGetPinInputResult  ===" + num);
-            StringBuilder s = new StringBuilder();
             android.widget.EditText pinpadEditText = getPinpadEditText();
-            TRACE.d("pinpadEditText ===");
             if (pinpadEditText == null) return;
-            TRACE.d("pinpadEditText go here===");
 
             if (num == -1) {
                 isPinBack = false;
@@ -528,6 +503,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
                     keyboardUtil.hide();
                 }
             } else {
+                StringBuilder s = new StringBuilder();
                 for (int i = 0; i < num; i++) {
                     s.append("*");
                 }
@@ -541,7 +517,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
         if (!isPinBack) {
             new Thread(() -> {
                 POSManager.getInstance().cancelTransaction();
-                runOnUiThread(() -> finish());
+                runOnUiThread(this::finish);
             }).start();
         }
     }
@@ -551,11 +527,69 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
         super.onDestroy();
         LogFileConfig.getInstance(this).readLog();
         POSManager.getInstance().unregisterCallbacks();
+        cleanupHandler();
+        if (keyboardUtil != null) {
+            keyboardUtil.hide();
+            keyboardUtil = null;
+        }
+    }
+
+    private void cleanupHandler() {
+        if (handler != null && runnable != null) {
+            handler.removeCallbacks(runnable);
+            handler = null;
+            runnable = null;
+        }
+    }
+
+    private String extractCardNo(Hashtable<String, String> decodeData, String tlv) {
+        if ("32".equals(decodeData.get("formatID"))) {
+            return decodeData.get("maskedPAN") != null ? decodeData.get("maskedPAN") : "";
+        } else {
+            List<TLV> tlvList = TLVParser.parse(tlv);
+            TLV cardNoTlv = TLVParser.searchTLV(tlvList, "C4");
+            return cardNoTlv != null ? cardNoTlv.value : "";
+        }
+    }
+
+    private void handleNFCTransaction(Hashtable<String, String> decodeData, PaymentResult paymentResult) {
+        Hashtable<String, String> batchData = POSManager.getInstance().getNFCBatchData();
+        String tlv = batchData.get("tlv");
+        TRACE.i("NFC Batch data: " + tlv);
+
+        paymentResult.setAmount(amount);
+        viewModel.saveTransactionTime(terminalTime);
+        paymentResult.setMaskedPAN(decodeData != null && decodeData.get("maskedPAN") != null
+                ? decodeData.get("maskedPAN") : "");
+        maskedPAN = paymentResult.getMaskedPAN();
+        HandleTxnsResultUtils.handleDoTradeResult(paymentResult, decodeData, viewModel);
+        pauseAnimation();
+    }
+
+    private void handleMCRTransaction(Hashtable<String, String> decodeData, PaymentResult paymentResult) {
+        paymentResult.setAmount(amount);
+        viewModel.saveTransactionTime(terminalTime);
+        paymentResult.setMaskedPAN(decodeData != null && decodeData.get("maskedPAN") != null
+                ? decodeData.get("maskedPAN") : "");
+        maskedPAN = paymentResult.getMaskedPAN();
+        HandleTxnsResultUtils.handleDoTradeResult(paymentResult, decodeData, viewModel);
+        pauseAnimation();
+    }
+
+    private void handleNFCCDeclined() {
+        viewModel.showPinpad.set(false);
+        if (keyboardUtil != null) {
+            keyboardUtil.hide();
+        }
+        String errorMsg = "NFC Declined";
+        paymentStatus("", "", "", errorMsg);
+        viewModel.setTransactionFailed(errorMsg);
     }
 
     private void paymentStatus(String amount, String maskedPAN, String terminalTime, String errorMsg) {
         TRACE.d("paymentStatus maskedPAN:" + maskedPAN);
         if (isStarting.compareAndSet(false, true)) {
+            Handler mainHandler = new Handler(Looper.getMainLooper());
             try {
                 Intent intent = new Intent(PaymentActivity.this, PaymentStatusActivity.class);
                 if (amount != null && !amount.isEmpty()) {
@@ -568,14 +602,15 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
                 getWindow().setBackgroundDrawableResource(android.R.color.transparent);
                 startActivity(intent);
                 overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                new Handler().postDelayed(() -> {
+
+                mainHandler.postDelayed(() -> {
                     if (!isFinishing()) {
                         finish();
                         overridePendingTransition(0, 0);
                     }
                 }, 400);
             } finally {
-                new Handler().postDelayed(() -> isStarting.set(false), 500);
+                mainHandler.postDelayed(() -> isStarting.set(false), 500);
             }
         }
     }

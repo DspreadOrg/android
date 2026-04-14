@@ -28,7 +28,26 @@ import me.goldze.mvvmhabit.utils.SPUtils;
 
 
 public class PaymentViewModel extends BaseAppViewModel {
+    private static final String TAG = "PaymentViewModel";
+    
+    private static final String LOADING_TEXT_PROCESSING = "processing...";
+    private static final String CURRENCY_SYMBOL = "$";
+    private static final String ONLINE_AUTH_RESULT = "8A023030";
+    private static final long CLICK_INTERVAL = 500;
+    
+    private static final String TLV_TAG_DATE = "9A";
+    private static final String TLV_TAG_CURRENCY = "5F2A";
+    private static final String TLV_TAG_AMOUNT = "9F02";
+    private static final String TLV_TAG_TVR = "95";
+    private static final String TLV_TAG_CVM = "9F34";
+    private static final String TLV_TAG_CID = "9F27";
+    private static final String TLV_TAG_CARD_NO = "C4";
+    
+    private static final SimpleDateFormat INPUT_DATE_FORMAT = new SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault());
+    private static final SimpleDateFormat OUTPUT_TIME_FORMAT = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
+
     private TransactionRecordRepository transactionRecordRepository;
+    private SPUtils spUtils;
 
     public ObservableField<String> loadingText = new ObservableField<>("");
     public ObservableField<Boolean> isLoading = new ObservableField<>(false);
@@ -43,38 +62,51 @@ public class PaymentViewModel extends BaseAppViewModel {
     public PaymentViewModel(@NonNull Application application) {
         super(application);
         transactionRecordRepository = TransactionRecordRepository.getInstance(application);
+        spUtils = SPUtils.getInstance();
     }
 
     public PaymentModel setTransactionSuccess(String message) {
         setTransactionSuccess();
-        message = message.substring(message.indexOf(":") + 2);
+        
+        if (TextUtils.isEmpty(message)) {
+            TRACE.e("Transaction success message is empty");
+            return new PaymentModel();
+        }
 
+        int colonIndex = message.indexOf(":");
+        if (colonIndex < 0 || colonIndex >= message.length() - 1) {
+            TRACE.e("Invalid transaction success message format: " + message);
+            return new PaymentModel();
+        }
+        
+        String tlvData = message.substring(colonIndex + 2);
         PaymentModel paymentModel = new PaymentModel();
-        String transType = SPUtils.getInstance().getString("transactionType");
+        String transType = spUtils.getString("transactionType");
         paymentModel.setTransType(transType);
 
-        List<TLV> tlvList = TLVParser.parse(message);
-        if (tlvList == null || tlvList.size() == 0) {
+        List<TLV> tlvList = TLVParser.parse(tlvData);
+        if (tlvList == null || tlvList.isEmpty()) {
+            TRACE.w("No TLV data parsed from message");
             return paymentModel;
         }
 
-        TLV dateTlv = TLVParser.searchTLV(tlvList, "9A");
-        TLV transCurrencyCodeTlv = TLVParser.searchTLV(tlvList, "5F2A");
-        TLV transAmountTlv = TLVParser.searchTLV(tlvList, "9F02");
-        TLV tvrTlv = TLVParser.searchTLV(tlvList, "95");
-        TLV cvmReusltTlv = TLVParser.searchTLV(tlvList, "9F34");
-        TLV cidTlv = TLVParser.searchTLV(tlvList, "9F27");
-        TLV cardNo = TLVParser.searchTLV(tlvList, "C4");
+        TLV dateTlv = TLVParser.searchTLV(tlvList, TLV_TAG_DATE);
+        TLV transCurrencyCodeTlv = TLVParser.searchTLV(tlvList, TLV_TAG_CURRENCY);
+        TLV transAmountTlv = TLVParser.searchTLV(tlvList, TLV_TAG_AMOUNT);
+        TLV tvrTlv = TLVParser.searchTLV(tlvList, TLV_TAG_TVR);
+        TLV cvmReusltTlv = TLVParser.searchTLV(tlvList, TLV_TAG_CVM);
+        TLV cidTlv = TLVParser.searchTLV(tlvList, TLV_TAG_CID);
+        TLV cardNo = TLVParser.searchTLV(tlvList, TLV_TAG_CARD_NO);
 
-        paymentModel.setDate(dateTlv.value);
-        paymentModel.setTransCurrencyCode(transCurrencyCodeTlv == null ? "" : transCurrencyCodeTlv.value);
-        paymentModel.setAmount(transAmountTlv == null ? "" : transAmountTlv.value);
-        paymentModel.setTvr(tvrTlv == null ? "" : tvrTlv.value);
-        paymentModel.setCvmResults(cvmReusltTlv == null ? "" : cvmReusltTlv.value);
-        paymentModel.setCidData(cidTlv == null ? "" : cidTlv.value);
-        paymentModel.setCardNo(cardNo==null?"":cardNo.value);
+        paymentModel.setDate(dateTlv != null ? dateTlv.value : "");
+        paymentModel.setTransCurrencyCode(transCurrencyCodeTlv != null ? transCurrencyCodeTlv.value : "");
+        paymentModel.setAmount(transAmountTlv != null ? transAmountTlv.value : "");
+        paymentModel.setTvr(tvrTlv != null ? tvrTlv.value : "");
+        paymentModel.setCvmResults(cvmReusltTlv != null ? cvmReusltTlv.value : "");
+        paymentModel.setCidData(cidTlv != null ? cidTlv.value : "");
+        paymentModel.setCardNo(cardNo != null ? cardNo.value : "");
 
-        TRACE.i("Transaction success: " + paymentModel.getAmount());
+        TRACE.i("Transaction success, amount: " + paymentModel.getAmount());
         return paymentModel;
     }
 
@@ -96,7 +128,7 @@ public class PaymentViewModel extends BaseAppViewModel {
 
     public void onPinInputCompleted() {
         showPinpad.set(false);
-        startLoading("processing...");
+        startLoading(LOADING_TEXT_PROCESSING);
         showResultStatus.set(false);
     }
 
@@ -106,7 +138,9 @@ public class PaymentViewModel extends BaseAppViewModel {
     }
 
     public void displayAmount(String newAmount) {
-        amount.set("$" + newAmount);
+        if (newAmount != null) {
+            amount.set(CURRENCY_SYMBOL + newAmount);
+        }
     }
 
     public void setTransactionSuccess() {
@@ -118,7 +152,7 @@ public class PaymentViewModel extends BaseAppViewModel {
 
     public void startLoading(String text) {
         isLoading.set(true);
-        loadingText.set(text);
+        loadingText.set(text != null ? text : "");
     }
 
     public void stopLoading() {
@@ -131,12 +165,12 @@ public class PaymentViewModel extends BaseAppViewModel {
     }
 
     private AtomicLong lastClickTimeForCancel = new AtomicLong(0);
-    private static final long CLICK_INTERVAL = 500;
+    
     public BindingCommand cancleTxnsCommand = new BindingCommand(() -> {
         long currentTime = System.currentTimeMillis();
         if (currentTime - lastClickTimeForCancel.get() > CLICK_INTERVAL) {
             lastClickTimeForCancel.set(currentTime);
-            startLoading("processing...");
+            startLoading(LOADING_TEXT_PROCESSING);
             if (POSManager.getInstance().isDeviceConnected()) {
                 new Thread(() -> {
                     POSManager.getInstance().cancelTransaction();
@@ -148,8 +182,6 @@ public class PaymentViewModel extends BaseAppViewModel {
     });
 
     public void requestOnlineAuth(boolean isICC, PaymentModel paymentModel) {
-        // AuthRequest authRequest = createAuthRequest(paymentModel);
-        // Save transaction records to the ROOM database
         sendOnlineAuthRequest(isICC);
         saveTransactionRecordToDatabase(paymentModel, new TransactionRecordRepository.InsertCallback() {
             @Override
@@ -166,7 +198,7 @@ public class PaymentViewModel extends BaseAppViewModel {
     private void handleAuthResponse(boolean isICC) {
         TRACE.i("Online auth response received");
         if (isICC) {
-            POSManager.getInstance().sendOnlineProcessResult("8A023030");
+            POSManager.getInstance().sendOnlineProcessResult(ONLINE_AUTH_RESULT);
         } else {
             isOnlineSuccess.setValue(true);
         }
@@ -174,10 +206,18 @@ public class PaymentViewModel extends BaseAppViewModel {
 
     private void saveTransactionRecordToDatabase(PaymentModel paymentModel,
                                                  TransactionRecordRepository.InsertCallback callback) {
+        if (paymentModel == null) {
+            TRACE.w("PaymentModel is null, skip saving transaction record");
+            if (callback != null) {
+                callback.onInserted(-1);
+            }
+            return;
+        }
+
         try {
             TransactionRecord transactionRecord = new TransactionRecord();
-            transactionRecord.setDeviceSn(SPUtils.getInstance().getString("posID", ""));
-            transactionRecord.setTransactionType(SPUtils.getInstance().getString("transactionType", ""));
+            transactionRecord.setDeviceSn(spUtils.getString("posID", ""));
+            transactionRecord.setTransactionType(spUtils.getString("transactionType", ""));
             transactionRecord.setAmount(paymentModel.getAmount());
             transactionRecord.setMaskPan(paymentModel.getCardNo());
             transactionRecord.setCardOrg(paymentModel.getCardOrg());
@@ -195,12 +235,18 @@ public class PaymentViewModel extends BaseAppViewModel {
     }
 
     private String formatDateTime(String dateTimeStr) {
-        try {
-            return dateTimeStr == null || dateTimeStr.isEmpty() ? "" :
-                    new SimpleDateFormat("HH:mm:ss")
-                            .format(new SimpleDateFormat("yyyyMMddHHmmss").parse(dateTimeStr));
-        } catch (Exception e) {
-            return dateTimeStr == null ? "" : dateTimeStr;
+        if (TextUtils.isEmpty(dateTimeStr)) {
+            return "";
+        }
+        
+        synchronized (this) {
+            try {
+                Date date = INPUT_DATE_FORMAT.parse(dateTimeStr);
+                return date != null ? OUTPUT_TIME_FORMAT.format(date) : dateTimeStr;
+            } catch (ParseException e) {
+                TRACE.w("Failed to parse date time: " + dateTimeStr + ", error: " + e.getMessage());
+                return dateTimeStr;
+            }
         }
     }
 }

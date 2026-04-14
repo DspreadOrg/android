@@ -554,4 +554,6 @@
     <!--    pin input-->
     <string name="enter_pin_text">Enter Your PIN</string>
     <string name="pls_see_phone">PLS SEE PHONE, and pls wait for cardholder to confirm, then to try again</string>
+
+    <string name="network_error_msg">Transaction failed because of the network!</string>
 </resources>
