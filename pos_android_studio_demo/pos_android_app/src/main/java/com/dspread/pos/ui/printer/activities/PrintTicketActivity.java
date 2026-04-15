@@ -178,7 +178,7 @@ public class PrintTicketActivity extends PrinterBaseActivity<ActivityPrinterBase
                 int screenWidth = displayMetrics.widthPixels;
                 int screenHeight = displayMetrics.heightPixels;
                 // For 480x808 resolution, scale down the bitmap for better appearance
-                if (screenWidth == 480 && screenHeight == 800) {
+                if (screenWidth == 480 && screenHeight <=800) {
                     // Calculate scale factor (0.8 means 80% of original size)
                     float scaleFactor = 0.8f;
                     int scaledWidth = (int) (bitmap.getWidth() * scaleFactor);
