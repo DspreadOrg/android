@@ -241,8 +241,10 @@ public class POSManager {
             Hashtable<String, Object> posInfoTable = pos.syncGetQposInfo(5);
             if (posInfoTable != null) {
                 Hashtable<String, String> msg = (Hashtable<String, String>) posInfoTable.get(SyncUtil.CONTENT);
-                String firmwareVersion = msg.get("firmwareVersion") == null ? "" : msg.get("firmwareVersion");
-                SPUtils.getInstance().put("firmwareVersion", firmwareVersion);
+                if(msg != null) {
+                    String firmwareVersion = msg.get("firmwareVersion") == null ? "" : msg.get("firmwareVersion");
+                    SPUtils.getInstance().put("firmwareVersion", firmwareVersion);
+                }
             } else {
                 SPUtils.getInstance().put("firmwareVersion", "");
 
