@@ -49,13 +49,13 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     DrawerLayout drawerLayout;
     NavigationView navigationView;
     Toolbar toolbar;
-    private TextView tvAppVersion;
     ActionBarDrawerToggle toggle;
     private HomeFragment homeFragment;
     
     // ViewPager2 and Adapter
     private ViewPager2 viewPager;
     private MainFragmentAdapter mainFragmentAdapter;
+    private boolean isShowingExitDialog = false;
 
     @Override
     public void initParam() {
@@ -216,16 +216,33 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     }
 
     private void exit() {
+        // If the dialog box is already displayed, do not create it again.
+        if (isShowingExitDialog && Mydialog.manualExitDialog != null && Mydialog.manualExitDialog.isShowing()) {
+            return;
+        }
+
+        // First, close any existing old dialog boxes
+        if (Mydialog.manualExitDialog != null && Mydialog.manualExitDialog.isShowing()) {
+            Mydialog.manualExitDialog.dismiss();
+        }
+
+        isShowingExitDialog = true;
         Mydialog.manualExitDialog(MainActivity.this, getString(R.string.msg_exit), new Mydialog.OnMyClickListener() {
             @Override
             public void onCancel() {
-                Mydialog.manualExitDialog.dismiss();
+                isShowingExitDialog = false;
+                if (Mydialog.manualExitDialog != null && Mydialog.manualExitDialog.isShowing()) {
+                    Mydialog.manualExitDialog.dismiss();
+                }
             }
 
             @Override
             public void onConfirm() {
+                isShowingExitDialog = false;
+                if (Mydialog.manualExitDialog != null && Mydialog.manualExitDialog.isShowing()) {
+                    Mydialog.manualExitDialog.dismiss();
+                }
                 finish();
-                Mydialog.manualExitDialog.dismiss();
             }
         });
     }
