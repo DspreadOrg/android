@@ -62,6 +62,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
     private Runnable runnable;
     private int currentIndex = 0;
     private AtomicBoolean isStarting = new AtomicBoolean(false);
+    private volatile boolean isImageSwitcherActive = false;
     private final int[] imageResources = {R.mipmap.ic_insert_new_d70, R.mipmap.ic_tap_new_d70, R.mipmap.ic_swipe_new_d70};
     private final String[] textResources = {"<span style='color:red'>Insert</span><span style='color:black'>, tap or swipe</span>", "<span style='color:black'>Insert, </span><span style='color:red'>tap</span> <span style='color:black'>or swipe</span>", "<span style='color:black'>Insert, tap or </span><span style='color:red'>swipe</span>"};
     private ActivityPaymentDefaultBinding defaultBinding;
@@ -93,7 +94,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
     public void initData() {
         TRACE.i("SN: " + SPUtils.getInstance().getString("posID") + " POSINFO: " + SPUtils.getInstance().getString("firmwareVersion"));
         updateDeviceInfoUI();
-        
+
         viewModel.titleText.set("Paymenting");
         paymentServiceCallback = new PaymentCallback();
         amount = getIntent().getStringExtra("amount");
@@ -170,13 +171,19 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
     }
 
     private void setupImageSwitcher() {
-        handler = new Handler();
+        isImageSwitcherActive = true;
+        handler = new Handler(Looper.getMainLooper());
         runnable = new Runnable() {
             @Override
             public void run() {
+                if (!isImageSwitcherActive) {
+                    return;
+                }
                 currentIndex = (currentIndex + 1) % imageResources.length;
                 updateSmallScreenContent();
-                handler.postDelayed(this, 2000);
+                if (handler != null && isImageSwitcherActive) {
+                    handler.postDelayed(this, 2000);
+                }
             }
         };
 
@@ -535,6 +542,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
     }
 
     private void cleanupHandler() {
+        isImageSwitcherActive = false;
         if (handler != null && runnable != null) {
             handler.removeCallbacks(runnable);
             handler = null;
