@@ -343,6 +343,8 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
         @Override
         public void onQposRequestPinResult(List<String> dataList, int offlineTime) {
             TRACE.d("onQposRequestPinResult = " + dataList + "\nofflineTime: " + offlineTime);
+            //When users call api pos.setPinPadType(QPOSService.PinPadType.INTERNAL) before doTrade,
+            // the sdk won't call here and show a internal keyboard instead.
             viewModel.stopLoading();
             viewModel.clearErrorState();
 //            viewModel.showPinpad.set(true);
@@ -380,7 +382,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
                 public void onConfirm(String password) {
                     String pinBlock = QPOSUtil.buildISO4PinBlock(POSManager.getInstance().getIsoFormat4PinBlockParams(), password);// build the ISO format4 pin block
                     if (pinBlock != null && !pinBlock.isEmpty()) {
-                        POSManager.getInstance().sendCvmPin(pinBlock, true);
+                        POSManager.getInstance().sendCvmPin(pinBlock.getBytes(), true);
                     } else {
                         POSManager.getInstance().cancelTransaction();
                     }

@@ -39,7 +39,7 @@ public abstract class BaseFragmentWithViewCache<V extends ViewDataBinding, VM ex
     @Override
     public void onDestroyView() {
         // Don't call super.onDestroyView() to avoid view destruction
-        // super.onDestroyView();
+         super.onDestroyView();
         
         // Keep view cache, don't destroy view
         // Note: This method will increase memory usage, but it can improve fragment switching smoothness

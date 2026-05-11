@@ -218,6 +218,7 @@ public class POSManager {
 
         int currencyCode = SPUtils.getInstance().getInt("currencyCode", 156);
         pos.setCardTradeMode(getCardTradeMode());
+        pos.setPinPadType(QPOSService.PinPadType.INTERNAL);
         pos.setAmount(amount, "", String.valueOf(currencyCode), getTransType());
         pos.doTrade(60);
     }
@@ -309,7 +310,7 @@ public class POSManager {
         }
     }
 
-    public void sendCvmPin(String pinBlock, boolean isEncrypted) {
+    public void sendCvmPin(byte[] pinBlock, boolean isEncrypted) {
         if (pos != null) {
             pos.sendCvmPin(pinBlock, isEncrypted);
         }
