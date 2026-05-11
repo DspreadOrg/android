@@ -32,7 +32,7 @@ android {
         minSdk 24
         targetSdk 34
         versionCode 138
-        versionName "8.4.4-2605111500"
+        versionName "8.4.4-2605111630"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         ndk {
             // Set up supported SO library architecture

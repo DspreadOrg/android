@@ -420,7 +420,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
         @Override
         public void onDoTradeResult(QPOSService.DoTradeResult result, Hashtable<String, String> decodeData) {
             TRACE.i("onDoTradeResult = " + result);
-            if(decodeData != null){
+            if (decodeData != null) {
                 TRACE.i("decodeData = " + decodeData);
             }
             PaymentResult paymentResult = new PaymentResult();
@@ -558,7 +558,14 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
         } else {
             List<TLV> tlvList = TLVParser.parse(tlv);
             TLV cardNoTlv = TLVParser.searchTLV(tlvList, "C4");
-            return cardNoTlv != null ? cardNoTlv.value : "";
+            if (cardNoTlv == null || cardNoTlv.value == null) {
+                return "";
+            }
+            String cardNo = cardNoTlv.value;
+            if (cardNo.endsWith("f")) {
+                cardNo = cardNo.substring(0, cardNo.length() - 1);
+            }
+            return cardNo;
         }
     }
 
@@ -569,8 +576,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
 
         paymentResult.setAmount(amount);
         viewModel.saveTransactionTime(terminalTime);
-        paymentResult.setMaskedPAN(decodeData != null && decodeData.get("maskedPAN") != null
-                ? decodeData.get("maskedPAN") : "");
+        paymentResult.setMaskedPAN(decodeData != null && decodeData.get("maskedPAN") != null ? decodeData.get("maskedPAN") : "");
         maskedPAN = paymentResult.getMaskedPAN();
         HandleTxnsResultUtils.handleDoTradeResult(paymentResult, decodeData, viewModel);
         pauseAnimation();
@@ -579,8 +585,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
     private void handleMCRTransaction(Hashtable<String, String> decodeData, PaymentResult paymentResult) {
         paymentResult.setAmount(amount);
         viewModel.saveTransactionTime(terminalTime);
-        paymentResult.setMaskedPAN(decodeData != null && decodeData.get("maskedPAN") != null
-                ? decodeData.get("maskedPAN") : "");
+        paymentResult.setMaskedPAN(decodeData != null && decodeData.get("maskedPAN") != null ? decodeData.get("maskedPAN") : "");
         maskedPAN = paymentResult.getMaskedPAN();
         HandleTxnsResultUtils.handleDoTradeResult(paymentResult, decodeData, viewModel);
         pauseAnimation();

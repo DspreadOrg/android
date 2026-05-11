@@ -31,6 +31,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
+
 import android.util.Log;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -202,21 +204,15 @@ public class TransactionFragment extends BaseFragmentWithViewCache<FragmentTrans
         // Clean up Handler and Runnable
         handler.removeCallbacksAndMessages(null);
         refreshRunnable = null;
+        // Shutdown the executor to prevent new tasks and cancel pending tasks
+        if (asyncExecutor != null && !asyncExecutor.isShutdown()) {
+            asyncExecutor.shutdownNow();
+        }
     }
     
     @Override
     public void onDestroy() {
         super.onDestroy();
-        
-        // Clear thread pool resources to avoid memory leaks
-        try {
-            if (asyncExecutor != null && !asyncExecutor.isShutdown()) {
-                asyncExecutor.shutdownNow();
-            }
-        } catch (Exception e) {
-            Log.e("TransactionFragment", "Failed to close thread pool: " + e.getMessage());
-        }
-        
         // Clear other resources
         if (adapter != null) {
             adapter = null;
@@ -292,47 +288,57 @@ public class TransactionFragment extends BaseFragmentWithViewCache<FragmentTrans
         }
     }
 
-    // Thread pool for executing asynchronous operations
-    private static final ExecutorService asyncExecutor = Executors.newSingleThreadExecutor();
+    // Thread pool for executing asynchronous operations (instance-level, not shared)
+    private ExecutorService asyncExecutor = Executors.newSingleThreadExecutor();
 
     private void handleList(List<Transaction> transactions) {
         this.paymentList = transactions;
 
+        // Check if executor is still available before submitting task
+        if (asyncExecutor == null || asyncExecutor.isShutdown() || asyncExecutor.isTerminated()) {
+            Log.w("TransactionFragment", "Executor is shut down, cannot execute task");
+            return;
+        }
+
         // Use asynchronous loading to handle transaction list data, avoid executing too many operations in the main thread
-        asyncExecutor.execute(() -> {
-            try {
-                // Calculate total amount and prepare UI data (execute in sub-thread)
-                final double[] totalAmount = {0};
-                if (transactions != null && !transactions.isEmpty()) {
-                    for (Transaction transaction : transactions) {
-                        totalAmount[0] += transaction.getAmount();
+        try {
+            asyncExecutor.execute(() -> {
+                try {
+                    // Calculate total amount and prepare UI data (execute in sub-thread)
+                    final double[] totalAmount = {0};
+                    if (transactions != null && !transactions.isEmpty()) {
+                        for (Transaction transaction : transactions) {
+                            totalAmount[0] += transaction.getAmount();
+                        }
                     }
+
+                    // Create adapter (execute in sub-thread)
+                    final PaymentsAdapter finalAdapter = new PaymentsAdapter(transactions, new PaymentsAdapter.OnItemClickListener() {
+                        @Override
+                        public void OnItemClickListener(Transaction transaction) {
+                            Intent intent = new Intent(getActivity(), TransactionDetailActivity.class);
+                            intent.putExtra("transaction", (Serializable) transaction);
+                            getActivity().startActivity(intent);
+                        }
+                    });
+
+                    // Update UI in main thread
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                        if (getActivity() != null && !getActivity().isFinishing()) {
+                            // Update UI
+                            showTransationListUI(transactions);
+                            // Set adapter
+                            binding.paymentsRecycler.setAdapter(finalAdapter);
+                            adapter = finalAdapter;
+                        }
+                    });
+                } catch (Exception e) {
+                    Log.e("TransactionFragment", "Failed to handle transaction list: " + e.getMessage());
                 }
-
-                // Create adapter (execute in sub-thread)
-                final PaymentsAdapter finalAdapter = new PaymentsAdapter(transactions, new PaymentsAdapter.OnItemClickListener() {
-                    @Override
-                    public void OnItemClickListener(Transaction transaction) {
-                        Intent intent = new Intent(getActivity(), TransactionDetailActivity.class);
-                        intent.putExtra("transaction", (Serializable) transaction);
-                        getActivity().startActivity(intent);
-                    }
-                });
-
-                // Update UI in main thread
-                new Handler(Looper.getMainLooper()).post(() -> {
-                    if (getActivity() != null && !getActivity().isFinishing()) {
-                        // Update UI
-                        showTransationListUI(transactions);
-                        // Set adapter
-                        binding.paymentsRecycler.setAdapter(finalAdapter);
-                        adapter = finalAdapter;
-                    }
-                });
-            } catch (Exception e) {
-                Log.e("TransactionFragment", "Failed to handle transaction list: " + e.getMessage());
-            }
-        });
+            });
+        } catch (RejectedExecutionException e) {
+            Log.e("TransactionFragment", "Task rejected by executor: " + e.getMessage());
+        }
     }
 
     private void showTransationListUI(List<Transaction> transactions) {
