@@ -32,7 +32,7 @@ android {
         minSdk 24
         targetSdk 34
         versionCode 138
-        versionName "8.4.4-2605111630"
+        versionName "8.4.4-2605211125"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         ndk {
             // Set up supported SO library architecture
@@ -118,12 +118,10 @@ dependencies {
     implementation 'com.tencent.bugly:crashreport:4.1.9'
     implementation 'com.tencent.bugly:nativecrashreport:3.9.2'
     implementation 'com.alibaba:fastjson:1.2.83'
-
     implementation("com.tencent.shiply:upgrade:2.2.0")
     implementation("com.tencent.shiply:upgrade-ui:2.2.0")
     // Pop up UI related, if the business side customizes their own pop ups, they can not rely on this library
     implementation 'com.github.midorikocak:currency-picker-android:1.2.1'
-
     implementation 'com.journeyapps:zxing-android-embedded:4.3.0'
     implementation 'com.google.zxing:core:3.5.1'
     implementation 'com.airbnb.android:lottie:6.1.0'
