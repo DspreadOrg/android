@@ -8,6 +8,7 @@ import android.os.Environment;
 import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
+import com.posthog.PostHog;
 import com.tencent.bugly.crashreport.BuglyLog;
 import com.tencent.bugly.crashreport.CrashReport;
 
@@ -116,41 +117,29 @@ public class LogFileConfig {
                 result.append(temp);
             }
 
-//            int maxLength = 512; // Bugly has a limit on the length of each data segment
-//            int segments = (result.length() + maxLength - 1) / maxLength;
+//            BuglyLog.e(
+//                    file.getName(),
+//                    result.toString());
+//            CrashReport.putUserData(mContext,"POSID", SPUtils.getInstance().getString("posID"));
 //
-//            for (int i = 0; i < segments; i++) {
-//                int start = i * maxLength;
-//                int end = Math.min((i + 1) * maxLength, result.length());
-//                String segment = result.substring(start, end);
-//
-//                // Upload log fragments
-//                Map<String, String> map = new HashMap<>();
-//                map.put("logFileName", file.getName());
-//                map.put("segmentIndex", String.valueOf(i));
-//                map.put("totalSegments", String.valueOf(segments));
-//                map.put("logContent", segment);
-//
-////                CrashReport.putUserData(mContext,
-////                        "customLog_" + SPUtils.getInstance().getString("posID")+"_"+file.getName() + "_" + i,
-////                        JSON.toJSONString(map));
-//            }
-            BuglyLog.e(
-                    file.getName(),
-                    result.toString());
-            CrashReport.putUserData(mContext,"POSID", SPUtils.getInstance().getString("posID"));
-
-            // 2. 设置日志文件路径（Bugly会在崩溃时自动上传）
-            // Set scene labels when payment
-            CrashReport.setUserSceneTag(mContext, 90001);
+//            // 2. 设置日志文件路径（Bugly会在崩溃时自动上传）
+//            // Set scene labels when payment
+//            CrashReport.setUserSceneTag(mContext, 90001);
             String uniqueID = java.util.UUID.randomUUID().toString() + "_"+ file.getName() + "_" + System.currentTimeMillis();
-            TRACE.i( "uniqueID:" + uniqueID);
-            CrashReport.putUserData(mContext, "log_uuid", uniqueID);
-            // Trigger upload
-            CrashReport.postCatchedException(
-                        new BuglyCustomLogException("CustomLog: " +uniqueID));
-            //  info 级别日志，Bugly 控制台能看到独立的日志记录
+//            TRACE.i( "uniqueID:" + uniqueID);
+//            CrashReport.putUserData(mContext, "log_uuid", uniqueID);
+//            // Trigger upload
+//            CrashReport.postCatchedException(
+//                        new BuglyCustomLogException("CustomLog: " +uniqueID));
+//            //  info 级别日志，Bugly 控制台能看到独立的日志记录
             TRACE.i( "result:" + result);
+
+            Map<String, Object> props = new HashMap<>();
+            props.put("pos_id", SPUtils.getInstance().getString("posID"));
+            props.put("transaction_result", result);
+
+            PostHog.Companion.capture("payment_complete",uniqueID, props, null, null,null,new Date());
+//            PostHog.Companion.captureException(new Throwable(),props);
             deleteDir(file);
             return result.toString();
         } catch (Exception e) {
