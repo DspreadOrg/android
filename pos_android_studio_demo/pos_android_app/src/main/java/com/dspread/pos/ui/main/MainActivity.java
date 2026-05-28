@@ -194,11 +194,15 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             if (action == KeyEvent.ACTION_UP) {
                 toolbar.setTitle(getString(R.string.menu_payment));
-                drawerLayout.close();
-                
+
+                if (drawerLayout.isDrawerOpen(navigationView)) {
+                    drawerLayout.close();
+                    return true;
+                }
+                        
                 // Get current fragment from ViewPager2
                 Fragment currentFragment = getSupportFragmentManager().findFragmentByTag("f" + viewPager.getCurrentItem());
-                
+                        
                 if (currentFragment instanceof HomeFragment) {
                     // Only exit when current fragment is HomeFragment
                     FragmentCacheManager.getInstance().clearCache();
