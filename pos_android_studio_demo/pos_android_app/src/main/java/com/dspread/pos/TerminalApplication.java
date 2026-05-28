@@ -5,13 +5,13 @@ import android.os.Build;
 
 
 import com.dspread.pos.common.manager.FragmentCacheManager;
-import com.dspread.pos.common.room.TransactionRecordRepository;
 import com.dspread.pos.posAPI.POSManager;
 import com.dspread.pos.ui.main.MainActivity;
 import com.dspread.pos.utils.DevUtils;
 import com.dspread.pos.utils.TRACE;
 import com.dspread.pos_android_app.BuildConfig;
 import com.dspread.pos_android_app.R;
+import com.posthog.PersonProfiles;
 import com.posthog.android.PostHogAndroid;
 import com.posthog.android.PostHogAndroidConfig;
 import com.posthog.android.replay.PostHogSessionReplayConfig;
@@ -118,6 +118,8 @@ public class TerminalApplication extends BaseApplication {
         config.setSessionReplay(true);
         config.setSessionReplayConfig(replayConfig);
         config.setDebug(true);
+
+        config.setPersonProfiles(PersonProfiles.IDENTIFIED_ONLY);
         PostHogAndroid.Companion.setup(this,config);
     }
 }

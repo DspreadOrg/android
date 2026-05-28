@@ -2,6 +2,7 @@ package com.dspread.pos.ui.main;
 
 import android.content.pm.ActivityInfo;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -33,8 +34,12 @@ import com.dspread.pos_android_app.BR;
 import com.dspread.pos_android_app.R;
 import com.dspread.pos_android_app.databinding.ActivityMainBinding;
 import com.google.android.material.navigation.NavigationView;
+import com.posthog.PostHog;
 import com.tencent.upgrade.core.DefaultUpgradeStrategyRequestCallback;
 import com.tencent.upgrade.core.UpgradeManager;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.utils.SPUtils;
@@ -108,6 +113,12 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         
         // Default show HomeFragment
         viewModel.handleNavigationItemClick(R.id.nav_home);
+        Map<String, Object> props = new HashMap<>();
+        props.put("name", Build.MODEL);
+        props.put("login_time", System.currentTimeMillis());
+
+        // 关键：调用 identify
+        PostHog.Companion.identify(Build.MODEL, props, null);
 
         //shiply update app
         UpgradeManager.getInstance().checkUpgrade(false, null, new DefaultUpgradeStrategyRequestCallback());

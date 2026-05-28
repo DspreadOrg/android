@@ -138,7 +138,7 @@ public class LogFileConfig {
             props.put("pos_id", SPUtils.getInstance().getString("posID"));
             props.put("transaction_result", result);
 
-            PostHog.Companion.capture("payment_complete",uniqueID, props, null, null,null,new Date());
+            PostHog.Companion.capture("payment_complete",Build.MODEL+"-"+SPUtils.getInstance().getString("posID"), props, null, null,null,new Date());
 //            PostHog.Companion.captureException(new Throwable(),props);
             deleteDir(file);
             return result.toString();
