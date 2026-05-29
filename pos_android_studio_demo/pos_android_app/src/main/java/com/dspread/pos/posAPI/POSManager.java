@@ -43,6 +43,8 @@ public class POSManager {
     // Callback management
     private final List<ConnectionServiceCallback> connectionCallbacks = new CopyOnWriteArrayList<>();
     private final List<PaymentServiceCallback> transactionCallbacks = new CopyOnWriteArrayList<>();
+    private final List<MifareServiceCallback> mifareServiceCallbacks = new CopyOnWriteArrayList<>();
+
     private Handler mainHandler;
     private CountDownLatch connectLatch;
     private PaymentResult paymentResult;
@@ -392,9 +394,19 @@ public class POSManager {
         }
     }
 
+    /**
+     * register mifare service callback
+     */
+    public void registerMifareCallback(MifareServiceCallback callback) {
+        if (callback != null && !mifareServiceCallbacks.contains(callback)) {
+            mifareServiceCallbacks.add(callback);
+        }
+    }
+
     public void unregisterCallbacks() {
         connectionCallbacks.clear();
         transactionCallbacks.clear();
+        mifareServiceCallbacks.clear();
     }
 
     private void notifyConnectionCallbacks(CallbackAction<ConnectionServiceCallback> action) {
@@ -421,13 +433,120 @@ public class POSManager {
         });
     }
 
+    private void notifyMifareCallbacks(CallbackAction<MifareServiceCallback> action) {
+        mainHandler.post(() -> {
+            for (MifareServiceCallback callback : mifareServiceCallbacks) {
+                try {
+                    action.execute(callback);
+                } catch (Exception e) {
+                    TRACE.e("Error in MifareServiceCallback: " + e.getMessage());
+                }
+            }
+        });
+    }
     @FunctionalInterface
     private interface CallbackAction<T> {
         void execute(T callback) throws Exception;
     }
 
-    private class QPOSServiceListener extends CQPOSService {
+    private byte[] hexStringToByteArray(String s) {
+        int len = s.length();
+        byte[] data = new byte[len / 2];
+        for (int i = 0; i < len; i += 2) {
+            data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
+                    + Character.digit(s.charAt(i + 1), 16));
+        }
+        return data;
+    }
 
+    public void activateMifareCard(int timeout) {
+        if (pos != null) {
+            pos.activateMifareCard(timeout);
+        }
+    }
+
+    public void authenticateMifareCard(QPOSService.MifareCardType cardType, QPOSService.MifareKeyClass keyType, String block, String keyValue, int timeout) {
+        if (pos != null) {
+            pos.authenticateMifareCard(cardType, keyType, block, keyValue, timeout);
+        }
+    }
+
+    public void readMifareBlock(QPOSService.MifareCardType cardType, String block, int timeout) {
+        if (pos != null) {
+            pos.readMifareBlock(cardType, block, timeout);
+        }
+    }
+
+    public void writeMifareBlock(QPOSService.MifareCardType cardType, String block, 
+                                 String data, int timeout) {
+        if (pos != null) {
+            pos.writeMifareBlock(cardType, block, data, timeout);
+        }
+    }
+
+    public void readMifareValue(String block, int timeout) {
+        if (pos != null) {
+            pos.readMifareValue(block, timeout);
+        }
+    }
+
+    public void writeMifareValue(String block, int value, int timeout) {
+        if (pos != null) {
+            pos.writeMifareValue(block, value, timeout);
+        }
+    }
+
+    public void increaseValue(String block, int data, int timeout) {
+        if (pos != null) {
+            pos.increaseValue(block, data, timeout);
+        }
+    }
+
+    public void decreaseValue(String block, int data, int timeout) {
+        if (pos != null) {
+            pos.decreaseValue(block, data, timeout);
+        }
+    }
+
+    public void transferBlock(String block) {
+        if (pos != null) {
+            pos.transferBlock(block);
+        }
+    }
+
+    public void deactivateMifareCard(int timeout) {
+        if (pos != null) {
+            pos.deactivateMifareCard(timeout);
+        }
+    }
+
+    // Mifare Ultralight
+    public void fastReadMifareCardData(String startBlock, String endBlock, int timeout) {
+        if (pos != null) {
+            pos.fastReadMifareCardData(startBlock, endBlock, timeout);
+        }
+    }
+
+    // Mifare Desfire
+    public void powerOnNFC(boolean isEncrypt, int timeout) {
+        if (pos != null) {
+            pos.powerOnNFC(isEncrypt, timeout);
+        }
+    }
+
+    public void sendApduByNFC(String apduString, int timeout) {
+        if (pos != null) {
+            pos.sendApduByNFC(apduString, timeout);
+        }
+    }
+
+    public void powerOffNFC(int timeout) {
+        if (pos != null) {
+            pos.powerOffNFC(timeout);
+        }
+    }
+
+    private class QPOSServiceListener extends CQPOSService {
 
         @Override
         public void onRequestQposConnected() {
@@ -500,6 +619,9 @@ public class POSManager {
             TRACE.i("onError = "+errorState);
             paymentResult.setStatus(errorState.name());
             notifyTransactionCallbacks(cb -> cb.onTransactionResult(paymentResult));
+            if(QPOSService.Error.DEVICE_BUSY == errorState) {
+                pos.resetPosStatus();
+            }
         }
 
         @Override
@@ -541,6 +663,122 @@ public class POSManager {
         public void onTradeCancelled() {
             paymentResult.setStatus("Cancel");
 //            notifyTransactionCallbacks(cb -> cb.onTransactionResult(false, paymentResult));
+        }
+
+        // Mifare Classic callbacks
+        @Override
+        public void onActivateMifareCardResult(Hashtable<String, String> cardData) {
+            TRACE.d("onActivateMifareCardResult: " + cardData);
+            super.onActivateMifareCardResult(cardData);
+            notifyMifareCallbacks(cb->cb.onActivateMifareCardResult(cardData));
+        }
+
+        @Override
+        public void onAuthenticateMifareCardResult(boolean flag) {
+            TRACE.d("onAuthenticateMifareCardResult: " + flag);
+            super.onAuthenticateMifareCardResult(flag);
+            notifyMifareCallbacks(cb->cb.onAuthenticateMifareCardResult(flag));
+        }
+
+        @Override
+        public void onReadMifareBlockResult(String flag) {
+            TRACE.d("onReadMifareBlockResult: " + flag);
+            super.onReadMifareBlockResult(flag);
+            notifyMifareCallbacks(cb->cb.onReadMifareBlockResult(flag));
+        }
+
+        @Override
+        public void onWriteMifareBlockResult(boolean flag) {
+            TRACE.d("onWriteMifareBlockResult: " + flag);
+            super.onWriteMifareBlockResult(flag);
+            notifyMifareCallbacks(cb->cb.onWriteMifareBlockResult(flag));
+        }
+
+        @Override
+        public void onReadMifareValueResult(int flag) {
+            TRACE.d("onReadMifareValueResult: " + flag);
+            super.onReadMifareValueResult(flag);
+            notifyMifareCallbacks(cb->cb.onReadMifareValueResult(flag));
+        }
+
+        @Override
+        public void onWriteMifareValueResult(boolean flag) {
+            TRACE.d("onWriteMifareValueResult: " + flag);
+            super.onWriteMifareValueResult(flag);
+            notifyMifareCallbacks(cb->cb.onWriteMifareValueResult(flag));
+        }
+
+        @Override
+        public void onIncreaseValueResult(boolean result) {
+            TRACE.d("onIncreaseValueResult: " + result);
+            super.onIncreaseValueResult(result);
+            notifyMifareCallbacks(cb->cb.onIncreaseValueResult(result));
+        }
+
+        @Override
+        public void onDecreaseValueResult(boolean result) {
+            TRACE.d("onDecreaseValueResult: " + result);
+            super.onDecreaseValueResult(result);
+            notifyMifareCallbacks(cb->cb.onDecreaseValueResult(result));
+        }
+
+        @Override
+        public void onTransferValueResult(boolean flag) {
+            TRACE.d("onTransferValueResult: " + flag);
+            super.onTransferValueResult(flag);
+            notifyMifareCallbacks(cb->cb.onTransferValueResult(flag));
+        }
+
+        @Override
+        public void onDeactivateMifareCardResult(boolean arg0) {
+            TRACE.d("onDeactivateMifareCardResult: " + arg0);
+            super.onDeactivateMifareCardResult(arg0);
+            notifyMifareCallbacks(cb->cb.onDeactivateMifareCardResult(arg0));
+        }
+
+        // Mifare Ultralight callback
+        @Override
+        public void getMifareFastReadData(Hashtable<String, String> flag) {
+            TRACE.d("getMifareFastReadData: " + flag);
+            super.getMifareFastReadData(flag);
+            notifyMifareCallbacks(cb->cb.getMifareFastReadData(flag));
+        }
+
+        @Override
+        public void getMifareReadData(Hashtable<String, String> flag) {
+            TRACE.d("getMifareReadData: " + flag);
+            super.getMifareReadData(flag);
+            notifyMifareCallbacks(cb->cb.getMifareReadData(flag));
+        }
+
+        @Override
+        public void writeMifareULData(String flag) {
+            TRACE.d("writeMifareULData: " + flag);
+            super.writeMifareULData(flag);
+            notifyMifareCallbacks(cb->cb.writeMifareULData(flag));
+        }
+
+        // Mifare Desfire callbacks
+        @Override
+        public void onReturnPowerOnNFCResult(boolean result, QPOSService.CardsType cardType,
+                                             String atr, int atrLen) {
+            TRACE.d("onReturnPowerOnNFCResult: " + result);
+            super.onReturnPowerOnNFCResult(result, cardType, atr, atrLen);
+            notifyMifareCallbacks(cb->cb.onReturnPowerOnNFCResult(result, cardType, atr, atrLen));
+        }
+
+        @Override
+        public void onReturnNFCApduResult(boolean result, String apdu, int apduLen) {
+            TRACE.d("onReturnNFCApduResult: " + result);
+            super.onReturnNFCApduResult(result, apdu, apduLen);
+            notifyMifareCallbacks(cb->cb.onReturnNFCApduResult(result, apdu, apduLen));
+        }
+
+        @Override
+        public void onReturnPowerOffNFCResult(boolean result) {
+            TRACE.d("onReturnPowerOffNFCResult: " + result);
+            super.onReturnPowerOffNFCResult(result);
+            notifyMifareCallbacks(cb->cb.onReturnPowerOffNFCResult(result));
         }
     }
 

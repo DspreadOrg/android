@@ -556,4 +556,8 @@
     <string name="pls_see_phone">PLS SEE PHONE, and pls wait for cardholder to confirm, then to try again</string>
 
     <string name="network_error_msg">Transaction failed because of the network!</string>
+
+    <!-- mifare -->
+    <string name="mifare_active">Activate</string>
+    <string name="mifare_deactive">Dectivate</string>
 </resources>

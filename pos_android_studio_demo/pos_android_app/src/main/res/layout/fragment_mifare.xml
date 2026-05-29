@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable
+            name="viewModel"
+            type="com.dspread.pos.ui.mifare.MifareViewModel" />
+    </data>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/white">
+
+        <!-- Card Type Selection - TabLayout -->
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/cardTypeTabLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            app:tabMode="fixed"
+            app:tabGravity="fill"
+            app:tabSelectedTextColor="@color/red_color"
+            app:tabTextColor="@color/black"
+            app:tabIndicatorColor="@color/red_color"
+            app:tabIndicatorHeight="3dp"
+            app:tabTextAppearance="@style/CustomTabTextAppearance" />
+
+        <!-- ViewPager2 for card type pages -->
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/cardTypeViewPager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
+</layout>

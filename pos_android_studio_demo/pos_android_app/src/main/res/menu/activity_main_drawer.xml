@@ -51,6 +51,15 @@
             android:title="@string/menu_setting"></item>
 
     </group>
+
+    <group
+        android:id="@+id/group_mifare"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_mifare"
+            android:icon="@mipmap/menu_setting"
+            android:title="@string/menu_mifareCards"></item>
+    </group>
     <!--    <group-->
     <!--        android:id="@+id/test"-->
     <!--        android:checkableBehavior="single">-->
