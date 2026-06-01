@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.dspread.pos.TitleProviderListener;
+import com.dspread.pos.common.base.BaseFragmentWithViewCache;
 import com.dspread.pos.posAPI.ConnectionServiceCallback;
 import com.dspread.pos.posAPI.POSManager;
 import com.dspread.pos.utils.TRACE;
@@ -23,7 +24,7 @@ import com.google.android.material.tabs.TabLayoutMediator;
 
 import me.goldze.mvvmhabit.utils.ToastUtils;
 
-public class MifareFragment extends BaseFragment<FragmentMifareBinding, MifareViewModel> implements TitleProviderListener {
+public class MifareFragment extends BaseFragmentWithViewCache<FragmentMifareBinding, MifareViewModel> implements TitleProviderListener {
 
     private ConnectionServiceCallback connectionCallback;
     private ViewPager2 viewPager;
@@ -109,7 +110,7 @@ public class MifareFragment extends BaseFragment<FragmentMifareBinding, MifareVi
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
                 TRACE.i("ViewPager page selected: " + position + ", previous: " + currentPosition);
-                
+
                 if (currentPosition != position) {
                     deactivateCurrentCard(currentPosition);
                     currentPosition = position;
@@ -122,7 +123,7 @@ public class MifareFragment extends BaseFragment<FragmentMifareBinding, MifareVi
 
     private void deactivateCurrentCard(int position) {
         TRACE.i("Deactivating card for position: " + position);
-        
+
         Fragment fragment = pagerAdapter.getFragment(position);
         if (fragment instanceof BaseCardFragment) {
             BaseCardFragment cardFragment = (BaseCardFragment) fragment;

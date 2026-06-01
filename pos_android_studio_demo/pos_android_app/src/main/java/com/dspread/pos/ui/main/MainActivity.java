@@ -108,11 +108,24 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         viewPager.setOffscreenPageLimit(2); // Preload adjacent 2 fragments
         viewPager.setUserInputEnabled(false); // Disable user swiping because we use navigation menu to switch fragments
         
+        // Add page change callback to sync navigation menu selection
+        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                TRACE.d("ViewPager2 page changed to position: " + position);
+                // Update navigation menu selected state based on current page
+                updateNavigationMenuSelection(position);
+            }
+        });
+        
         // Pass ViewPager2 to ViewModel
         viewModel.setViewPager(viewPager, mainFragmentAdapter);
         
-        // Default show HomeFragment
-        viewModel.handleNavigationItemClick(R.id.nav_home);
+        // Default show HomeFragment (position 0)
+        viewPager.setCurrentItem(MainFragmentAdapter.FRAGMENT_HOME, false);
+        // Manually trigger the initial selection update
+        updateNavigationMenuSelection(MainFragmentAdapter.FRAGMENT_HOME);
         Map<String, Object> props = new HashMap<>();
         props.put("name", Build.MODEL);
         props.put("login_time", System.currentTimeMillis());
@@ -260,6 +273,67 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                 finish();
             }
         });
+    }
+    
+    /**
+     * Update navigation menu selection and toolbar title based on current page position
+     * @param position the current ViewPager2 page position
+     */
+    public void updateNavigationMenuSelection(int position) {
+        if (navigationView == null || mainFragmentAdapter == null) {
+            TRACE.w("Navigation view or adapter is null, cannot update selection");
+            return;
+        }
+        
+        try {
+            // Get corresponding menu item ID from position
+            int menuItemId = mainFragmentAdapter.getIdByPosition(position);
+            
+            // Update navigation menu checked state
+            navigationView.setCheckedItem(menuItemId);
+            TRACE.d("Navigation menu updated to item: " + menuItemId);
+            
+            // Update toolbar title based on position
+            String title = getTitleByPosition(position);
+            if (title != null) {
+                setToolbarTitle(title);
+                TRACE.d("Toolbar title updated to: " + title);
+            } else {
+                TRACE.w("Could not get title for position: " + position);
+            }
+        } catch (Exception e) {
+            TRACE.e("Error updating navigation menu selection: " + e.getMessage());
+        }
+    }
+    
+    /**
+     * Get title by fragment position
+     * @param position the fragment position
+     * @return the title string, or null if not found
+     */
+    private String getTitleByPosition(int position) {
+        String title;
+        switch (position) {
+            case MainFragmentAdapter.FRAGMENT_HOME:
+                title = getString(R.string.menu_payment); // "Sale"
+                //TRACE.d("getTitleByPosition: position=" + position + " -> title='" + title + "'");
+                return title;
+            case MainFragmentAdapter.FRAGMENT_TRANSACTION:
+                title = getString(R.string.transaction); // "Transaction"
+               // TRACE.d("getTitleByPosition: position=" + position + " -> title='" + title + "'");
+                return title;
+            case MainFragmentAdapter.FRAGMENT_SETTINGS:
+                title = getString(R.string.menu_setting); // "Setting"
+               // TRACE.d("getTitleByPosition: position=" + position + " -> title='" + title + "'");
+                return title;
+            case MainFragmentAdapter.FRAGMENT_MIFARE:
+                title = getString(R.string.menu_mifareCards); // "Mifare Cards"
+               // TRACE.d("getTitleByPosition: position=" + position + " -> title='" + title + "'");
+                return title;
+            default:
+                TRACE.w("Unknown position: " + position);
+                return null;
+        }
     }
 }
 

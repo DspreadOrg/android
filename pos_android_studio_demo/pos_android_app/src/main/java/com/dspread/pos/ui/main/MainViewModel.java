@@ -148,17 +148,15 @@ public class MainViewModel extends BaseViewModel {
         // Use ViewPager2 to switch fragments
         if (viewPager != null && mainFragmentAdapter != null) {
             int position = mainFragmentAdapter.getPositionById(itemId);
+            TRACE.d("Switching to fragment position: " + position + " for item: " + itemId);
             viewPager.setCurrentItem(position, false); // false means disable smooth animation to avoid middle fragment flashing issue
             
-            // Get corresponding fragment
-            Fragment targetFragment = getFragmentByPosition(position);
-            
-            // set fragment title
-            if (targetFragment instanceof TitleProviderListener) {
-                activity.setTitle(((TitleProviderListener) targetFragment).getTitle());
-            }
+            // Directly update navigation menu and title to ensure immediate update
+            // This is necessary because onPageSelected callback may not be triggered immediately
+            activity.updateNavigationMenuSelection(position);
         } else {
             // Fallback solution: use original fragment switching method
+            TRACE.w("ViewPager2 not initialized, using fallback fragment switching");
             Fragment targetFragment;
             // get Fragment from cache
             if (FragmentCacheManager.getInstance().hasFragment(itemId)) {
