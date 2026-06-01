@@ -57,7 +57,7 @@
         android:checkableBehavior="single">
         <item
             android:id="@+id/nav_mifare"
-            android:icon="@mipmap/menu_setting"
+            android:icon="@mipmap/menu_mifare"
             android:title="@string/menu_mifareCards"></item>
     </group>
     <!--    <group-->

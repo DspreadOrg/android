@@ -31,6 +31,7 @@ public class MifareFragment extends BaseFragmentWithViewCache<FragmentMifareBind
     private TabLayout tabLayout;
     private CardTypePagerAdapter pagerAdapter;
     private int currentPosition = 0;
+    private boolean isViewPagerSetup = false;
 
     @Override
     public String getTitle() {
@@ -81,7 +82,25 @@ public class MifareFragment extends BaseFragmentWithViewCache<FragmentMifareBind
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setupViewPager();
+        
+        // Show loading indicator
+        if (binding != null && binding.loadingProgress != null) {
+            binding.loadingProgress.setVisibility(View.VISIBLE);
+        }
+        
+        // Delay ViewPager setup to avoid blocking UI thread during fragment creation
+        // This makes the initial navigation to Mifare Cards smoother
+        view.postDelayed(() -> {
+            if (isAdded() && getView() != null && !isViewPagerSetup) {
+                setupViewPager();
+                isViewPagerSetup = true;
+                
+                // Hide loading indicator
+                if (binding != null && binding.loadingProgress != null) {
+                    binding.loadingProgress.setVisibility(View.GONE);
+                }
+            }
+        }, 50); // Small delay to let fragment transition complete first
     }
 
     private void setupViewPager() {
@@ -90,6 +109,9 @@ public class MifareFragment extends BaseFragmentWithViewCache<FragmentMifareBind
 
         pagerAdapter = new CardTypePagerAdapter(this);
         viewPager.setAdapter(pagerAdapter);
+        
+        // Preload all 3 tabs to avoid lag when switching between card types
+        viewPager.setOffscreenPageLimit(3);
 
         new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
             switch (position) {

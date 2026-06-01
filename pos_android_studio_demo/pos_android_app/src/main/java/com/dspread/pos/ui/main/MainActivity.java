@@ -88,44 +88,64 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         super.initData();
         drawerLayout = binding.drawerLayout;
         navigationView = binding.navView;
-        navigationView.setItemIconTintList(null);
+        
+        // Null check for navigationView and its children
+        if (navigationView != null) {
+            navigationView.setItemIconTintList(null);
+            View headerView = navigationView.getHeaderView(0);
+            if (headerView != null) {
+                ImageView closeImage = headerView.findViewById(R.id.image_black);
+                if (closeImage != null && viewModel != null) {
+                    closeImage.setOnClickListener(v -> viewModel.closeDrawer());
+                }
+            }
+            navigationView.bringToFront();
+        }
+        
         toolbar = binding.toolbar;
-        View headerView = navigationView.getHeaderView(0);
-//        tvAppVersion = headerView.findViewById(R.id.tv_appversion);
-
-        ImageView closeImage = headerView.findViewById(R.id.image_black);
-        closeImage.setOnClickListener(v -> viewModel.closeDrawer());
-        setSupportActionBar(toolbar);
-        navigationView.bringToFront();
+        if (toolbar != null) {
+            setSupportActionBar(toolbar);
+        }
+        
         toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawerLayout.addDrawerListener(toggle);
+        if (drawerLayout != null) {
+            drawerLayout.addDrawerListener(toggle);
+        }
         toggle.syncState();
 
-        // Initialize ViewPager2 and Adapter
+        // Initialize ViewPager2 and Adapter with null check
         viewPager = binding.navHostFragment;
-        mainFragmentAdapter = new MainFragmentAdapter(this);
-        viewPager.setAdapter(mainFragmentAdapter);
-        viewPager.setOffscreenPageLimit(2); // Preload adjacent 2 fragments
-        viewPager.setUserInputEnabled(false); // Disable user swiping because we use navigation menu to switch fragments
-        
-        // Add page change callback to sync navigation menu selection
-        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
-            @Override
-            public void onPageSelected(int position) {
-                super.onPageSelected(position);
-                TRACE.d("ViewPager2 page changed to position: " + position);
-                // Update navigation menu selected state based on current page
-                updateNavigationMenuSelection(position);
+        if (viewPager != null) {
+            mainFragmentAdapter = new MainFragmentAdapter(this);
+            viewPager.setAdapter(mainFragmentAdapter);
+            // Increase offscreen limit to 3 to preload MifareFragment (position 3)
+            // This prevents lag when first clicking Mifare Cards
+            viewPager.setOffscreenPageLimit(3);
+            viewPager.setUserInputEnabled(false); // Disable user swiping because we use navigation menu to switch fragments
+            
+            // Add page change callback to sync navigation menu selection
+            viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+                @Override
+                public void onPageSelected(int position) {
+                    super.onPageSelected(position);
+                    TRACE.d("ViewPager2 page changed to position: " + position);
+                    // Update navigation menu selected state based on current page
+                    updateNavigationMenuSelection(position);
+                }
+            });
+            
+            // Pass ViewPager2 to ViewModel with null check
+            if (viewModel != null) {
+                viewModel.setViewPager(viewPager, mainFragmentAdapter);
             }
-        });
-        
-        // Pass ViewPager2 to ViewModel
-        viewModel.setViewPager(viewPager, mainFragmentAdapter);
-        
-        // Default show HomeFragment (position 0)
-        viewPager.setCurrentItem(MainFragmentAdapter.FRAGMENT_HOME, false);
-        // Manually trigger the initial selection update
-        updateNavigationMenuSelection(MainFragmentAdapter.FRAGMENT_HOME);
+            
+            // Default show HomeFragment (position 0)
+            viewPager.setCurrentItem(MainFragmentAdapter.FRAGMENT_HOME, false);
+            // Manually trigger the initial selection update
+            updateNavigationMenuSelection(MainFragmentAdapter.FRAGMENT_HOME);
+        } else {
+            TRACE.e("ViewPager2 is null, cannot initialize fragments");
+        }
         Map<String, Object> props = new HashMap<>();
         props.put("name", Build.MODEL);
         props.put("login_time", System.currentTimeMillis());
@@ -150,7 +170,9 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         viewModel.fragmentChangeEvent.observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(@Nullable Integer fragmentIndex) {
-                drawerLayout.close();
+                if (drawerLayout != null) {
+                    drawerLayout.close();
+                }
             }
         });
         viewModel.changeDrawerLayout.observe(this, new Observer<View>() {
@@ -164,7 +186,9 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         });
 
         viewModel.closeDrawerCommand.observe(this, unused -> {
-            drawerLayout.close();
+            if (drawerLayout != null) {
+                drawerLayout.close();
+            }
         });
 
     }
@@ -206,14 +230,22 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         int keyCode = event.getKeyCode();
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             if (action == KeyEvent.ACTION_UP) {
-                toolbar.setTitle(getString(R.string.menu_payment));
+                // Set toolbar title with null check
+                if (toolbar != null) {
+                    toolbar.setTitle(getString(R.string.menu_payment));
+                }
 
-                if (drawerLayout.isDrawerOpen(navigationView)) {
+                // Close drawer with null checks
+                if (drawerLayout != null && navigationView != null && drawerLayout.isDrawerOpen(navigationView)) {
                     drawerLayout.close();
                     return true;
                 }
                         
-                // Get current fragment from ViewPager2
+                // Get current fragment from ViewPager2 with null check
+                if (viewPager == null) {
+                    TRACE.w("ViewPager2 is null in dispatchKeyEvent");
+                    return super.dispatchKeyEvent(event);
+                }
                 Fragment currentFragment = getSupportFragmentManager().findFragmentByTag("f" + viewPager.getCurrentItem());
                         
                 if (currentFragment instanceof HomeFragment) {
@@ -224,17 +256,26 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                 } else {
                     // Navigate back to HomeFragment if current fragment is not HomeFragment
                     TRACE.d("back run from other fragment, navigating to HomeFragment");
-                    viewModel.handleNavigationItemClick(R.id.nav_home);
+                    if (viewModel != null) {
+                        viewModel.handleNavigationItemClick(R.id.nav_home);
+                    } else {
+                        TRACE.e("ViewModel is null, cannot navigate to home");
+                    }
                 }
             }
             return true;
         } else {
             if (action == KeyEvent.ACTION_UP) {
-                // Get current fragment from ViewPager2
+                // Get current fragment from ViewPager2 with null check
+                if (viewPager == null) {
+                    return super.dispatchKeyEvent(event);
+                }
                 Fragment currentFragment = getSupportFragmentManager().findFragmentByTag("f" + viewPager.getCurrentItem());
                 if (currentFragment instanceof HomeFragment) {
                     homeFragment = (HomeFragment) currentFragment;
-                    return homeFragment.onKeyDown(keyCode, event);
+                    if (homeFragment != null) {
+                        return homeFragment.onKeyDown(keyCode, event);
+                    }
                 }
                 return false;
             }
