@@ -32,7 +32,7 @@ android {
         minSdk 24
         targetSdk 34
         versionCode 140
-        versionName "8.4.5-2606011900"
+        versionName "8.4.5-2606031700"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         ndk {
             // Set up supported SO library architecture
@@ -131,6 +131,5 @@ dependencies {
     annotationProcessor "androidx.room:room-compiler:2.5.0"
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.20")
     compileOnly files('libs/runtime/android_internal.jar')
-
     implementation 'com.posthog:posthog-android:3.32.+'
 }
