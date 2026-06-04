@@ -436,7 +436,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
                 if (keyboardUtil != null) {
                     keyboardUtil.hide();
                 }
-                viewModel.titleText.set(getString(R.string.pls_see_phone));
+                viewModel.startLoading(getString(R.string.pls_see_phone));
             } else {//NFC DECLINED
                 handleNFCCDeclined();
             }
