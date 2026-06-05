@@ -414,4 +414,118 @@ jobs:
           # 可以根据需要替换为实际的部署步骤，例如上传到服务器或云平台等 
 
 
+  notify-upload-to-shiply:
+    runs-on: ubuntu-latest
+    needs: [ release ]
+    if: success()
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Get version information
+        run: |
+          VERSION_CODE=$(grep versionCode pos_android_studio_demo/pos_android_app/build.gradle | head -n 1 | sed 's/.*versionCode\s*\([0-9]\+\).*/\1/')
+          VERSION_NAME=$(grep versionName pos_android_studio_demo/pos_android_app/build.gradle | head -n 1 | sed 's/.*versionName\s*"\([^"]\+\)".*/\1/')
+
+          echo "VERSION_CODE=$VERSION_CODE" >> $GITHUB_ENV
+          echo "VERSION_NAME=$VERSION_NAME" >> $GITHUB_ENV
+          echo "TAG_NAME=v$VERSION_NAME" >> $GITHUB_ENV
+          echo "RELEASE_DATE=$(date '+%Y-%m-%d')" >> $GITHUB_ENV
+
+      - name: Get commit message
+        run: |
+          COMMIT_MESSAGE=$(git log -1 --pretty=%B)
+          COMMIT_MESSAGE=$(echo "$COMMIT_MESSAGE" | tr -d '\n')
+
+          echo "COMMIT_MESSAGE<<EOF" >> $GITHUB_ENV
+          echo "$COMMIT_MESSAGE" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      - name: Send Shiply Notification Email
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.exmail.qq.com
+          server_port: 465
+          secure: true
+
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+
+          subject: "[Android POS Demo] Shiply Upload Required - ${{ env.TAG_NAME }}"
+
+          to: chenqianmeng@mail.dspread.com,mamengqiu@mail.dspread.com,wangwenluo@mail.dspread.com
+
+          from: GitHub CI/CD Bot <${{ secrets.EMAIL_USERNAME }}>
+
+          body: |
+
+            各位同事：
+
+            新的 Release 版本已发布并打包完成，请及时将 APK 文件上传至 Shiply 应用分发平台，以便进行版本发布和分发。
+            
+            【版本信息】
+            产品名称：Android POS Demo
+            版本号：${{ env.TAG_NAME }}
+            Version Code：${{ env.VERSION_CODE }}
+            发布时间：${{ env.RELEASE_DATE }}
+
+            【本次更新内容】
+            ${{ env.COMMIT_MESSAGE }}
+
+            【需要执行的操作】
+            请登录 Shiply 平台并完成 APK 上传及发布。
+
+            Shiply 信息：
+            - Project ID：16678131
+            - App ID：13009
+            - Shiply 平台：https://shiply.tds.qq.com/config/list?projectId=16678131&homeFlag=true&appId=13009&scope=2&envId=110406
+
+            GitHub Release：
+            https://github.com/${{ github.repository }}/releases/tag/${{ env.TAG_NAME }}
+
+            最新 Release：
+            https://github.com/${{ github.repository }}/releases/latest
+
+            ------------------------------------------------------------
+            此邮件由 GitHub Actions 自动发送，请勿直接回复。
+            ------------------------------------------------------------
+
+
+            Dear Team,
+
+            A new Release version has been published and packaged successfully. Please upload the APK file to the Shiply application distribution platform promptly for version release and distribution.
+            
+            Release Information:
+            - Product: Android POS Demo
+            - Version: ${{ env.TAG_NAME }}
+            - Version Code: ${{ env.VERSION_CODE }}
+            - Release Date: ${{ env.RELEASE_DATE }}
+
+            Changes:
+            ${{ env.COMMIT_MESSAGE }}
+
+            Action Required:
+            Please upload the APK to Shiply and complete the release process.
+
+            Shiply Information:
+            - Project ID: 16678131
+            - App ID: 13009
+            - Shiply Platform：https://shiply.tds.qq.com/config/list?projectId=16678131&homeFlag=true&appId=13009&scope=2&envId=110406
+
+
+            GitHub Release:
+            https://github.com/${{ github.repository }}/releases/tag/${{ env.TAG_NAME }}
+
+            Latest Release:
+            https://github.com/${{ github.repository }}/releases/latest
+
+
+            ------------------------------------------------------------
+            This email was generated automatically by GitHub Actions.
+            Please do not reply directly.
+            ------------------------------------------------------------
+
+
+
 

@@ -314,4 +314,5 @@
         <item name="android:windowExitAnimation">@anim/dialog_payview_out</item>
     </style>
 
+
 </resources>

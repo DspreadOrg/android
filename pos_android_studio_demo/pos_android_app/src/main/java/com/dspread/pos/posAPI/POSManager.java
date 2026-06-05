@@ -43,6 +43,7 @@ public class POSManager {
     // Callback management
     private final List<ConnectionServiceCallback> connectionCallbacks = new CopyOnWriteArrayList<>();
     private final List<PaymentServiceCallback> transactionCallbacks = new CopyOnWriteArrayList<>();
+
     private Handler mainHandler;
     private CountDownLatch connectLatch;
     private PaymentResult paymentResult;
@@ -421,13 +422,23 @@ public class POSManager {
         });
     }
 
+
     @FunctionalInterface
     private interface CallbackAction<T> {
         void execute(T callback) throws Exception;
     }
 
-    private class QPOSServiceListener extends CQPOSService {
+    private byte[] hexStringToByteArray(String s) {
+        int len = s.length();
+        byte[] data = new byte[len / 2];
+        for (int i = 0; i < len; i += 2) {
+            data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
+                    + Character.digit(s.charAt(i + 1), 16));
+        }
+        return data;
+    }
 
+    private class QPOSServiceListener extends CQPOSService {
 
         @Override
         public void onRequestQposConnected() {
@@ -500,6 +511,9 @@ public class POSManager {
             TRACE.i("onError = "+errorState);
             paymentResult.setStatus(errorState.name());
             notifyTransactionCallbacks(cb -> cb.onTransactionResult(paymentResult));
+            if(QPOSService.Error.DEVICE_BUSY == errorState) {
+                pos.resetPosStatus();
+            }
         }
 
         @Override

@@ -5,13 +5,17 @@ import android.os.Build;
 
 
 import com.dspread.pos.common.manager.FragmentCacheManager;
-import com.dspread.pos.common.room.TransactionRecordRepository;
 import com.dspread.pos.posAPI.POSManager;
 import com.dspread.pos.ui.main.MainActivity;
 import com.dspread.pos.utils.DevUtils;
 import com.dspread.pos.utils.TRACE;
 import com.dspread.pos_android_app.BuildConfig;
 import com.dspread.pos_android_app.R;
+import com.posthog.PersonProfiles;
+import com.posthog.android.PostHogAndroid;
+import com.posthog.android.PostHogAndroidConfig;
+import com.posthog.android.replay.PostHogSessionReplayConfig;
+import com.posthog.errortracking.PostHogErrorTrackingConfig;
 import com.tencent.bugly.crashreport.BuglyLog;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.tencent.upgrade.bean.UpgradeConfig;
@@ -29,12 +33,13 @@ public class TerminalApplication extends BaseApplication {
     public void onCreate() {
         super.onCreate();
         initCrash();
-        initBugly();
+//        initBugly();
         initShiply();
         // Initialize Fragment Cache
         FragmentCacheManager.getInstance();
         TRACE.setContext(this);
         POSManager.init(this);
+        initPostHog();
     }
     private void initCrash() {
         CaocConfig.Builder.create()
@@ -93,5 +98,28 @@ public class TerminalApplication extends BaseApplication {
 //                .customLogger(new TRACE());// Log implementation interface, it is recommended to connect to the log interface of the business side for easy troubleshooting
         builder.cacheExpireTime(1000 * 60 * 60 * 6)
                 .customLogger(new TRACE());
+    }
+
+    private void initPostHog(){
+        // 1. config error
+        PostHogErrorTrackingConfig errorConfig = new PostHogErrorTrackingConfig();
+        errorConfig.setAutoCapture(true);
+
+        // 2. config session and get Logcat
+        PostHogSessionReplayConfig replayConfig = new PostHogSessionReplayConfig();
+        replayConfig.setCaptureLogcat(true);
+
+        PostHogAndroidConfig config = new PostHogAndroidConfig(
+                "phc_vp5VEjsSRji7wuHdYGHhHYdSvpvmsLB6odp4Mwi5agwx",
+                "https://us.i.posthog.com"
+        );
+
+        config.getErrorTrackingConfig().setAutoCapture(true);
+        config.setSessionReplay(true);
+        config.setSessionReplayConfig(replayConfig);
+        config.setDebug(true);
+
+        config.setPersonProfiles(PersonProfiles.IDENTIFIED_ONLY);
+        PostHogAndroid.Companion.setup(this,config);
     }
 }

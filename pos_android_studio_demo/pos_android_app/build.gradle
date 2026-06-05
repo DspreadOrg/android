@@ -31,8 +31,8 @@ android {
         applicationId "com.dspread.pos_android_app"
         minSdk 24
         targetSdk 34
-        versionCode 138
-        versionName "8.4.4-2605211125"
+        versionCode 141
+        versionName "8.4.6-2606051505"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         ndk {
             // Set up supported SO library architecture
@@ -131,4 +131,5 @@ dependencies {
     annotationProcessor "androidx.room:room-compiler:2.5.0"
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.20")
     compileOnly files('libs/runtime/android_internal.jar')
+    implementation 'com.posthog:posthog-android:3.32.+'
 }

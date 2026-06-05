@@ -2,6 +2,7 @@ package com.dspread.pos.ui.main;
 
 import android.content.pm.ActivityInfo;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -33,8 +34,12 @@ import com.dspread.pos_android_app.BR;
 import com.dspread.pos_android_app.R;
 import com.dspread.pos_android_app.databinding.ActivityMainBinding;
 import com.google.android.material.navigation.NavigationView;
+import com.posthog.PostHog;
 import com.tencent.upgrade.core.DefaultUpgradeStrategyRequestCallback;
 import com.tencent.upgrade.core.UpgradeManager;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.utils.SPUtils;
@@ -83,31 +88,69 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         super.initData();
         drawerLayout = binding.drawerLayout;
         navigationView = binding.navView;
-        navigationView.setItemIconTintList(null);
+        
+        // Null check for navigationView and its children
+        if (navigationView != null) {
+            navigationView.setItemIconTintList(null);
+            View headerView = navigationView.getHeaderView(0);
+            if (headerView != null) {
+                ImageView closeImage = headerView.findViewById(R.id.image_black);
+                if (closeImage != null && viewModel != null) {
+                    closeImage.setOnClickListener(v -> viewModel.closeDrawer());
+                }
+            }
+            navigationView.bringToFront();
+        }
+        
         toolbar = binding.toolbar;
-        View headerView = navigationView.getHeaderView(0);
-//        tvAppVersion = headerView.findViewById(R.id.tv_appversion);
-
-        ImageView closeImage = headerView.findViewById(R.id.image_black);
-        closeImage.setOnClickListener(v -> viewModel.closeDrawer());
-        setSupportActionBar(toolbar);
-        navigationView.bringToFront();
+        if (toolbar != null) {
+            setSupportActionBar(toolbar);
+        }
+        
         toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawerLayout.addDrawerListener(toggle);
+        if (drawerLayout != null) {
+            drawerLayout.addDrawerListener(toggle);
+        }
         toggle.syncState();
 
-        // Initialize ViewPager2 and Adapter
+        // Initialize ViewPager2 and Adapter with null check
         viewPager = binding.navHostFragment;
-        mainFragmentAdapter = new MainFragmentAdapter(this);
-        viewPager.setAdapter(mainFragmentAdapter);
-        viewPager.setOffscreenPageLimit(2); // Preload adjacent 2 fragments
-        viewPager.setUserInputEnabled(false); // Disable user swiping because we use navigation menu to switch fragments
-        
-        // Pass ViewPager2 to ViewModel
-        viewModel.setViewPager(viewPager, mainFragmentAdapter);
-        
-        // Default show HomeFragment
-        viewModel.handleNavigationItemClick(R.id.nav_home);
+        if (viewPager != null) {
+            mainFragmentAdapter = new MainFragmentAdapter(this);
+            viewPager.setAdapter(mainFragmentAdapter);
+            // Set offscreen limit to 2 to preload adjacent fragments
+            viewPager.setOffscreenPageLimit(2);
+            viewPager.setUserInputEnabled(false); // Disable user swiping because we use navigation menu to switch fragments
+            
+            // Add page change callback to sync navigation menu selection
+            viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+                @Override
+                public void onPageSelected(int position) {
+                    super.onPageSelected(position);
+                    TRACE.d("ViewPager2 page changed to position: " + position);
+                    // Update navigation menu selected state based on current page
+                    updateNavigationMenuSelection(position);
+                }
+            });
+            
+            // Pass ViewPager2 to ViewModel with null check
+            if (viewModel != null) {
+                viewModel.setViewPager(viewPager, mainFragmentAdapter);
+            }
+            
+            // Default show HomeFragment (position 0)
+            viewPager.setCurrentItem(MainFragmentAdapter.FRAGMENT_HOME, false);
+            // Manually trigger the initial selection update
+            updateNavigationMenuSelection(MainFragmentAdapter.FRAGMENT_HOME);
+        } else {
+            TRACE.e("ViewPager2 is null, cannot initialize fragments");
+        }
+        Map<String, Object> props = new HashMap<>();
+        props.put("name", Build.MODEL);
+        props.put("login_time", System.currentTimeMillis());
+
+        // 关键：调用 identify
+        PostHog.Companion.identify(Build.MODEL, props, null);
 
         //shiply update app
         UpgradeManager.getInstance().checkUpgrade(false, null, new DefaultUpgradeStrategyRequestCallback());
@@ -126,7 +169,9 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         viewModel.fragmentChangeEvent.observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(@Nullable Integer fragmentIndex) {
-                drawerLayout.close();
+                if (drawerLayout != null) {
+                    drawerLayout.close();
+                }
             }
         });
         viewModel.changeDrawerLayout.observe(this, new Observer<View>() {
@@ -140,7 +185,9 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         });
 
         viewModel.closeDrawerCommand.observe(this, unused -> {
-            drawerLayout.close();
+            if (drawerLayout != null) {
+                drawerLayout.close();
+            }
         });
 
     }
@@ -182,12 +229,24 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         int keyCode = event.getKeyCode();
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             if (action == KeyEvent.ACTION_UP) {
-                toolbar.setTitle(getString(R.string.menu_payment));
-                drawerLayout.close();
-                
-                // Get current fragment from ViewPager2
+                // Set toolbar title with null check
+                if (toolbar != null) {
+                    toolbar.setTitle(getString(R.string.menu_payment));
+                }
+
+                // Close drawer with null checks
+                if (drawerLayout != null && navigationView != null && drawerLayout.isDrawerOpen(navigationView)) {
+                    drawerLayout.close();
+                    return true;
+                }
+                        
+                // Get current fragment from ViewPager2 with null check
+                if (viewPager == null) {
+                    TRACE.w("ViewPager2 is null in dispatchKeyEvent");
+                    return super.dispatchKeyEvent(event);
+                }
                 Fragment currentFragment = getSupportFragmentManager().findFragmentByTag("f" + viewPager.getCurrentItem());
-                
+                        
                 if (currentFragment instanceof HomeFragment) {
                     // Only exit when current fragment is HomeFragment
                     FragmentCacheManager.getInstance().clearCache();
@@ -196,17 +255,26 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                 } else {
                     // Navigate back to HomeFragment if current fragment is not HomeFragment
                     TRACE.d("back run from other fragment, navigating to HomeFragment");
-                    viewModel.handleNavigationItemClick(R.id.nav_home);
+                    if (viewModel != null) {
+                        viewModel.handleNavigationItemClick(R.id.nav_home);
+                    } else {
+                        TRACE.e("ViewModel is null, cannot navigate to home");
+                    }
                 }
             }
             return true;
         } else {
             if (action == KeyEvent.ACTION_UP) {
-                // Get current fragment from ViewPager2
+                // Get current fragment from ViewPager2 with null check
+                if (viewPager == null) {
+                    return super.dispatchKeyEvent(event);
+                }
                 Fragment currentFragment = getSupportFragmentManager().findFragmentByTag("f" + viewPager.getCurrentItem());
                 if (currentFragment instanceof HomeFragment) {
                     homeFragment = (HomeFragment) currentFragment;
-                    return homeFragment.onKeyDown(keyCode, event);
+                    if (homeFragment != null) {
+                        return homeFragment.onKeyDown(keyCode, event);
+                    }
                 }
                 return false;
             }
@@ -245,6 +313,63 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                 finish();
             }
         });
+    }
+    
+    /**
+     * Update navigation menu selection and toolbar title based on current page position
+     * @param position the current ViewPager2 page position
+     */
+    public void updateNavigationMenuSelection(int position) {
+        if (navigationView == null || mainFragmentAdapter == null) {
+            TRACE.w("Navigation view or adapter is null, cannot update selection");
+            return;
+        }
+        
+        try {
+            // Get corresponding menu item ID from position
+            int menuItemId = mainFragmentAdapter.getIdByPosition(position);
+            
+            // Update navigation menu checked state
+            navigationView.setCheckedItem(menuItemId);
+            TRACE.d("Navigation menu updated to item: " + menuItemId);
+            
+            // Update toolbar title based on position
+            String title = getTitleByPosition(position);
+            if (title != null) {
+                setToolbarTitle(title);
+                TRACE.d("Toolbar title updated to: " + title);
+            } else {
+                TRACE.w("Could not get title for position: " + position);
+            }
+        } catch (Exception e) {
+            TRACE.e("Error updating navigation menu selection: " + e.getMessage());
+        }
+    }
+    
+    /**
+     * Get title by fragment position
+     * @param position the fragment position
+     * @return the title string, or null if not found
+     */
+    private String getTitleByPosition(int position) {
+        String title;
+        switch (position) {
+            case MainFragmentAdapter.FRAGMENT_HOME:
+                title = getString(R.string.menu_payment); // "Sale"
+                //TRACE.d("getTitleByPosition: position=" + position + " -> title='" + title + "'");
+                return title;
+            case MainFragmentAdapter.FRAGMENT_TRANSACTION:
+                title = getString(R.string.transaction); // "Transaction"
+               // TRACE.d("getTitleByPosition: position=" + position + " -> title='" + title + "'");
+                return title;
+            case MainFragmentAdapter.FRAGMENT_SETTINGS:
+                title = getString(R.string.menu_setting); // "Setting"
+               // TRACE.d("getTitleByPosition: position=" + position + " -> title='" + title + "'");
+                return title;
+            default:
+                TRACE.w("Unknown position: " + position);
+                return null;
+        }
     }
 }
 

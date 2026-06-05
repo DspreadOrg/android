@@ -7,13 +7,10 @@ import android.os.RemoteException;
 import com.dspread.pos.printerAPI.PrinterHelper;
 import com.dspread.pos.ui.printer.activities.base.BasePrinterViewModel;
 
-import androidx.annotation.NonNull;
-import androidx.databinding.ObservableField;
-import androidx.lifecycle.MutableLiveData;
-
 import java.util.Map;
 
-import me.goldze.mvvmhabit.binding.command.BindingCommand;
+import androidx.annotation.NonNull;
+import androidx.lifecycle.MutableLiveData;
 
 
 public class PrintTicketViewModel extends BasePrinterViewModel {
@@ -40,7 +37,7 @@ public class PrintTicketViewModel extends BasePrinterViewModel {
     public void printTicket(Bitmap mBitmap) {
         try {
             if (getPrinter() != null) {
-                PrinterHelper.getInstance().printBitmap(getApplication(),mBitmap);
+                PrinterHelper.getInstance().printBitmap(getApplication(), mBitmap);
             }
         } catch (RemoteException e) {
             e.printStackTrace();
@@ -54,9 +51,10 @@ public class PrintTicketViewModel extends BasePrinterViewModel {
     public MutableLiveData<Bitmap> getReceiptBitmap() {
         return receiptBitmap;
     }
-    public void generateReceiptBitmap(Map<String,String> map) {
+
+    public void generateReceiptBitmap(Map<String, String> map) {
         try {
-            Bitmap ticketBitmap = PrinterHelper.getInstance().getTicketBitmap(getApplication(),map);
+            Bitmap ticketBitmap = PrinterHelper.getInstance().getTicketBitmap(getApplication(), map);
             receiptBitmap.postValue(ticketBitmap);
         } catch (RemoteException e) {
             throw new RuntimeException(e);
