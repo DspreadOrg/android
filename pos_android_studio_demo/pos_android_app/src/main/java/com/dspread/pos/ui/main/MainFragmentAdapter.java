@@ -6,7 +6,6 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import com.dspread.pos.ui.home.HomeFragment;
-import com.dspread.pos.ui.mifare.MifareFragment;
 import com.dspread.pos.ui.setting.connection_settings.ConnectionSettingsFragment;
 import com.dspread.pos.ui.transaction.TransactionFragment;
 import com.dspread.pos_android_app.R;
@@ -21,10 +20,9 @@ public class MainFragmentAdapter extends FragmentStateAdapter {
     public static final int FRAGMENT_HOME = 0;
     public static final int FRAGMENT_TRANSACTION = 1;
     public static final int FRAGMENT_SETTINGS = 2;
-    public static final int FRAGMENT_MIFARE = 3;
 
     // Number of fragments
-    private static final int FRAGMENT_COUNT = 4;
+    private static final int FRAGMENT_COUNT = 3;
 
     public MainFragmentAdapter(@NonNull FragmentActivity fragmentActivity) {
         super(fragmentActivity);
@@ -41,8 +39,6 @@ public class MainFragmentAdapter extends FragmentStateAdapter {
                 return new TransactionFragment();
             case FRAGMENT_SETTINGS:
                 return new ConnectionSettingsFragment();
-            case FRAGMENT_MIFARE:
-                return new MifareFragment();
             default:
                 return new HomeFragment();
         }
@@ -64,8 +60,6 @@ public class MainFragmentAdapter extends FragmentStateAdapter {
                 return FRAGMENT_TRANSACTION;
             case R.id.nav_setting:
                 return FRAGMENT_SETTINGS;
-            case R.id.nav_mifare:
-                return FRAGMENT_MIFARE;
             default:
                 return FRAGMENT_HOME;
         }
@@ -82,8 +76,6 @@ public class MainFragmentAdapter extends FragmentStateAdapter {
                 return R.id.nav_transaction;
             case FRAGMENT_SETTINGS:
                 return R.id.nav_setting;
-            case FRAGMENT_MIFARE:
-                return R.id.nav_mifare;
             default:
                 return R.id.nav_home;
         }

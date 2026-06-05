@@ -12,7 +12,6 @@ import android.view.View;
 import com.dspread.pos.TitleProviderListener;
 import com.dspread.pos.common.manager.FragmentCacheManager;
 import com.dspread.pos.ui.home.HomeFragment;
-import com.dspread.pos.ui.mifare.MifareFragment;
 import com.dspread.pos.ui.setting.connection_settings.ConnectionSettingsFragment;
 import com.dspread.pos.ui.transaction.TransactionFragment;
 import com.dspread.pos.utils.TRACE;
@@ -206,8 +205,6 @@ public class MainViewModel extends BaseViewModel {
                 return new ConnectionSettingsFragment();
             case R.id.nav_transaction:
                 return new TransactionFragment();
-            case R.id.group_mifare:
-                return new MifareFragment();
         }
 
         return null;

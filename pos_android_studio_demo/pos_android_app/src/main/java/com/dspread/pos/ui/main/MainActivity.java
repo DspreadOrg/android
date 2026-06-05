@@ -118,9 +118,8 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         if (viewPager != null) {
             mainFragmentAdapter = new MainFragmentAdapter(this);
             viewPager.setAdapter(mainFragmentAdapter);
-            // Increase offscreen limit to 3 to preload MifareFragment (position 3)
-            // This prevents lag when first clicking Mifare Cards
-            viewPager.setOffscreenPageLimit(3);
+            // Set offscreen limit to 2 to preload adjacent fragments
+            viewPager.setOffscreenPageLimit(2);
             viewPager.setUserInputEnabled(false); // Disable user swiping because we use navigation menu to switch fragments
             
             // Add page change callback to sync navigation menu selection
@@ -365,10 +364,6 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                 return title;
             case MainFragmentAdapter.FRAGMENT_SETTINGS:
                 title = getString(R.string.menu_setting); // "Setting"
-               // TRACE.d("getTitleByPosition: position=" + position + " -> title='" + title + "'");
-                return title;
-            case MainFragmentAdapter.FRAGMENT_MIFARE:
-                title = getString(R.string.menu_mifareCards); // "Mifare Cards"
                // TRACE.d("getTitleByPosition: position=" + position + " -> title='" + title + "'");
                 return title;
             default:

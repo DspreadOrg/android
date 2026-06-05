@@ -1,5 +1,9 @@
 ## Mifare Card Operation
 
+To check the mifare operation code sample, please refer to the [mifare_card branch](https://github.com/DspreadOrg/android/tree/mifare_card).
+
+
+
 Blow introduce how to transmit datas on the different mifare cards and pos.There are three typr mifare card - Mifare Classic, Mifare Ultralight, Mifare Desfire.
 
 **1.Mifare Classic**
