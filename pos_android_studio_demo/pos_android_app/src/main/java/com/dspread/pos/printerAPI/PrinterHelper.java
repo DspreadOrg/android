@@ -224,7 +224,10 @@ public class PrinterHelper {
             maskedPan = maskedPan.replaceAll("\\*+$", "");
         }
         mPrinter.addText(" " + maskedPan);
+        mPrinter.addPrintLintStyle(new PrintLineStyle(PrintStyle.FontStyle.NORMAL, PrintLine.LEFT, baseFontSize,true,false));
         mPrinter.addText(" TYPE Of Transaction(TXN TYPE)");
+        mPrinter.feedLines(10);
+        mPrinter.addPrintLintStyle(new PrintLineStyle(PrintStyle.FontStyle.NORMAL, PrintLine.CENTER, baseFontSize,false,true));
         mPrinter.addText(" SALE");
         mPrinter.addPrintLintStyle(new PrintLineStyle(PrintStyle.FontStyle.NORMAL, PrintLine.CENTER, baseFontSize));
         mPrinter.addText("- - - - - - - - - - - - - - - - - - - - - - - - - - ");
