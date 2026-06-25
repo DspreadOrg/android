@@ -23,6 +23,8 @@ import com.tencent.upgrade.core.UpgradeManager;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -36,6 +38,8 @@ import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.utils.SPUtils;
 
 public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewModel> {
+    private final ExecutorService backgroundExecutor = Executors.newSingleThreadExecutor();
+
     public void setToolbarTitle(String title) {
         if (toolbar != null) {
             toolbar.setTitle(title);
@@ -138,13 +142,17 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         } else {
             TRACE.e("ViewPager2 is null, cannot initialize fragments");
         }
-        Map<String, Object> props = new HashMap<>();
-        props.put("name", Build.MODEL);
-        props.put("login_time", System.currentTimeMillis());
-        // 关键：调用 identify
-        PostHog.Companion.identify(Build.MODEL, props, null);
-        //shiply update app
-        UpgradeManager.getInstance().checkUpgrade(false, null, new CustomUpgradeCallback(this));
+
+        // Delay non-critical operations to background
+        backgroundExecutor.execute(() -> {
+            Map<String, Object> props = new HashMap<>();
+            props.put("name", Build.MODEL);
+            props.put("login_time", System.currentTimeMillis());
+            // 关键：调用 identify
+            PostHog.Companion.identify(Build.MODEL, props, null);
+            //shiply update app
+            UpgradeManager.getInstance().checkUpgrade(false, null, new CustomUpgradeCallback(this));
+        });
     }
 
     @Override
@@ -198,7 +206,9 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         if (viewModel != null) {
             viewModel.clearResources();
         }
-        POSManager.getInstance().close();
+        if (POSManager.getInstance() != null) {
+            POSManager.getInstance().close();
+        }
         SPUtils.getInstance().put("isConnected", false);
         SPUtils.getInstance().put("device_type", "");
         SPUtils.getInstance().put("bluetoothName", "");
@@ -213,6 +223,9 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         if (viewPager != null) {
             viewPager = null;
         }
+
+        // Shutdown background executor
+        backgroundExecutor.shutdown();
     }
 
     @Override

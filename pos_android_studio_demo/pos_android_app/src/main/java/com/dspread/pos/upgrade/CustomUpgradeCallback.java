@@ -28,11 +28,6 @@ public class CustomUpgradeCallback implements UpgradeStrategyRequestCallback {
     private final Handler mMainHandler;
 
     private AlertDialog mUpgradeDialog;
-    private AlertDialog mDownloadDialog;
-    private ProgressBar mProgressBar;
-    private TextView mProgressText;
-    private TextView mProgressPercent;
-    private boolean mIsDownloading = false;
 
     public CustomUpgradeCallback(Context context) {
         this.mContext = context;
@@ -140,8 +135,6 @@ public class CustomUpgradeCallback implements UpgradeStrategyRequestCallback {
     }
 
     private void handleDownloadError(String errorMsg) {
-        mIsDownloading = false;
-        dismissDownloadDialog();
         TRACE.e("Download error: " + errorMsg);
         showErrorDialog("Download failed: " + errorMsg);
     }
@@ -153,17 +146,9 @@ public class CustomUpgradeCallback implements UpgradeStrategyRequestCallback {
                 .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
                 .show();
     }
-
     private void dismissUpgradeDialog() {
         if (mUpgradeDialog != null && mUpgradeDialog.isShowing()) {
             mUpgradeDialog.dismiss();
         }
     }
-
-    private void dismissDownloadDialog() {
-        if (mDownloadDialog != null && mDownloadDialog.isShowing()) {
-            mDownloadDialog.dismiss();
-        }
-    }
-
 }

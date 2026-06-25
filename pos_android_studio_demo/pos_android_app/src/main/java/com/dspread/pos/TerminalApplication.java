@@ -3,7 +3,6 @@ package com.dspread.pos;
 import android.content.Context;
 import android.os.Build;
 
-
 import com.dspread.pos.common.manager.FragmentCacheManager;
 import com.dspread.pos.posAPI.POSManager;
 import com.dspread.pos.ui.main.MainActivity;
@@ -21,6 +20,9 @@ import com.tencent.bugly.crashreport.CrashReport;
 import com.tencent.upgrade.bean.UpgradeConfig;
 import com.tencent.upgrade.core.UpgradeManager;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import me.goldze.mvvmhabit.base.BaseApplication;
 import me.goldze.mvvmhabit.crash.CaocConfig;
 
@@ -29,18 +31,23 @@ import me.goldze.mvvmhabit.crash.CaocConfig;
  * @author user
  */
 public class TerminalApplication extends BaseApplication {
+    private final ExecutorService backgroundExecutor = Executors.newSingleThreadExecutor();
+
     @Override
     public void onCreate() {
         super.onCreate();
-        initCrash();
-//        initBugly();
-        initShiply();
-        // Initialize Fragment Cache
+        // Critical initialization on main thread
         FragmentCacheManager.getInstance();
-        TRACE.setContext(this);
         POSManager.init(this);
-        initPostHog();
+        TRACE.setContext(this);
+        // Delay non-critical initializations to background
+        backgroundExecutor.execute(() -> {
+            initCrash();
+            initShiply();
+            initPostHog();
+        });
     }
+
     private void initCrash() {
         CaocConfig.Builder.create()
                 .backgroundMode(CaocConfig.BACKGROUND_MODE_SILENT) //Background mode, activate immersive mode
@@ -100,7 +107,7 @@ public class TerminalApplication extends BaseApplication {
                 .customLogger(new TRACE());
     }
 
-    private void initPostHog(){
+    private void initPostHog() {
         // 1. config error
         PostHogErrorTrackingConfig errorConfig = new PostHogErrorTrackingConfig();
         errorConfig.setAutoCapture(true);
@@ -120,6 +127,6 @@ public class TerminalApplication extends BaseApplication {
         config.setDebug(true);
 
         config.setPersonProfiles(PersonProfiles.IDENTIFIED_ONLY);
-        PostHogAndroid.Companion.setup(this,config);
+        PostHogAndroid.Companion.setup(this, config);
     }
 }
