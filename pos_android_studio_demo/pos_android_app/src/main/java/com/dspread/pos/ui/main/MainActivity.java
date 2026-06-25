@@ -1,33 +1,17 @@
 package com.dspread.pos.ui.main;
 
 import android.content.pm.ActivityInfo;
-
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
 import android.view.KeyEvent;
-
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextView;
-
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-
-import androidx.appcompat.widget.Toolbar;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.viewpager2.widget.ViewPager2;
 
 import com.dspread.pos.common.manager.FragmentCacheManager;
 import com.dspread.pos.posAPI.POSManager;
 import com.dspread.pos.ui.home.HomeFragment;
 import com.dspread.pos.ui.transaction.SerachKeyboardUtils;
-import com.dspread.pos.utils.DevUtils;
+import com.dspread.pos.upgrade.CustomUpgradeCallback;
 import com.dspread.pos.utils.Mydialog;
 import com.dspread.pos.utils.TRACE;
 import com.dspread.pos_android_app.BR;
@@ -35,12 +19,19 @@ import com.dspread.pos_android_app.R;
 import com.dspread.pos_android_app.databinding.ActivityMainBinding;
 import com.google.android.material.navigation.NavigationView;
 import com.posthog.PostHog;
-import com.tencent.upgrade.core.DefaultUpgradeStrategyRequestCallback;
 import com.tencent.upgrade.core.UpgradeManager;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.viewpager2.widget.ViewPager2;
 import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.utils.SPUtils;
 
@@ -56,7 +47,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     Toolbar toolbar;
     ActionBarDrawerToggle toggle;
     private HomeFragment homeFragment;
-    
+
     // ViewPager2 and Adapter
     private ViewPager2 viewPager;
     private MainFragmentAdapter mainFragmentAdapter;
@@ -86,9 +77,12 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     @Override
     public void initData() {
         super.initData();
+        // Reset update dialog shown flag on app start
+        SPUtils.getInstance().put("update_dialog_shown", false);
+        
         drawerLayout = binding.drawerLayout;
         navigationView = binding.navView;
-        
+
         // Null check for navigationView and its children
         if (navigationView != null) {
             navigationView.setItemIconTintList(null);
@@ -101,12 +95,12 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
             }
             navigationView.bringToFront();
         }
-        
+
         toolbar = binding.toolbar;
         if (toolbar != null) {
             setSupportActionBar(toolbar);
         }
-        
+
         toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         if (drawerLayout != null) {
             drawerLayout.addDrawerListener(toggle);
@@ -121,7 +115,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
             // Set offscreen limit to 2 to preload adjacent fragments
             viewPager.setOffscreenPageLimit(2);
             viewPager.setUserInputEnabled(false); // Disable user swiping because we use navigation menu to switch fragments
-            
+
             // Add page change callback to sync navigation menu selection
             viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
                 @Override
@@ -132,12 +126,11 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                     updateNavigationMenuSelection(position);
                 }
             });
-            
+
             // Pass ViewPager2 to ViewModel with null check
             if (viewModel != null) {
                 viewModel.setViewPager(viewPager, mainFragmentAdapter);
             }
-            
             // Default show HomeFragment (position 0)
             viewPager.setCurrentItem(MainFragmentAdapter.FRAGMENT_HOME, false);
             // Manually trigger the initial selection update
@@ -148,12 +141,10 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         Map<String, Object> props = new HashMap<>();
         props.put("name", Build.MODEL);
         props.put("login_time", System.currentTimeMillis());
-
         // 关键：调用 identify
         PostHog.Companion.identify(Build.MODEL, props, null);
-
         //shiply update app
-        UpgradeManager.getInstance().checkUpgrade(false, null, new DefaultUpgradeStrategyRequestCallback());
+        UpgradeManager.getInstance().checkUpgrade(false, null, new CustomUpgradeCallback(this));
     }
 
     @Override
@@ -193,19 +184,20 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     }
 
     private void checkUpdate() {
-        UpgradeManager.getInstance().checkUpgrade(true, null, new DefaultUpgradeStrategyRequestCallback());
+        boolean dialogShown = SPUtils.getInstance().getBoolean("update_dialog_shown", false);
+        if (!dialogShown) {
+            UpgradeManager.getInstance().checkUpgrade(true, null, new CustomUpgradeCallback(this));
+        }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         TRACE.i("main is onDestroy");
-        
         // Clear ViewModel resources to avoid memory leaks
         if (viewModel != null) {
             viewModel.clearResources();
         }
-        
         POSManager.getInstance().close();
         SPUtils.getInstance().put("isConnected", false);
         SPUtils.getInstance().put("device_type", "");
@@ -213,7 +205,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         SPUtils.getInstance().put("bluetoothAddress", "");
         SPUtils.getInstance().put("isSelectUartSuccess", false);
         SPUtils.getInstance().put("isSelectUsbSuccess", false);
-        
+
         // Clear ViewPager2 and Adapter resources
         if (mainFragmentAdapter != null) {
             mainFragmentAdapter = null;
@@ -239,14 +231,14 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                     drawerLayout.close();
                     return true;
                 }
-                        
+
                 // Get current fragment from ViewPager2 with null check
                 if (viewPager == null) {
                     TRACE.w("ViewPager2 is null in dispatchKeyEvent");
                     return super.dispatchKeyEvent(event);
                 }
                 Fragment currentFragment = getSupportFragmentManager().findFragmentByTag("f" + viewPager.getCurrentItem());
-                        
+
                 if (currentFragment instanceof HomeFragment) {
                     // Only exit when current fragment is HomeFragment
                     FragmentCacheManager.getInstance().clearCache();
@@ -314,9 +306,10 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
             }
         });
     }
-    
+
     /**
      * Update navigation menu selection and toolbar title based on current page position
+     *
      * @param position the current ViewPager2 page position
      */
     public void updateNavigationMenuSelection(int position) {
@@ -324,15 +317,15 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
             TRACE.w("Navigation view or adapter is null, cannot update selection");
             return;
         }
-        
+
         try {
             // Get corresponding menu item ID from position
             int menuItemId = mainFragmentAdapter.getIdByPosition(position);
-            
+
             // Update navigation menu checked state
             navigationView.setCheckedItem(menuItemId);
             TRACE.d("Navigation menu updated to item: " + menuItemId);
-            
+
             // Update toolbar title based on position
             String title = getTitleByPosition(position);
             if (title != null) {
@@ -345,9 +338,10 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
             TRACE.e("Error updating navigation menu selection: " + e.getMessage());
         }
     }
-    
+
     /**
      * Get title by fragment position
+     *
      * @param position the fragment position
      * @return the title string, or null if not found
      */
@@ -360,11 +354,11 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                 return title;
             case MainFragmentAdapter.FRAGMENT_TRANSACTION:
                 title = getString(R.string.transaction); // "Transaction"
-               // TRACE.d("getTitleByPosition: position=" + position + " -> title='" + title + "'");
+                // TRACE.d("getTitleByPosition: position=" + position + " -> title='" + title + "'");
                 return title;
             case MainFragmentAdapter.FRAGMENT_SETTINGS:
                 title = getString(R.string.menu_setting); // "Setting"
-               // TRACE.d("getTitleByPosition: position=" + position + " -> title='" + title + "'");
+                // TRACE.d("getTitleByPosition: position=" + position + " -> title='" + title + "'");
                 return title;
             default:
                 TRACE.w("Unknown position: " + position);
