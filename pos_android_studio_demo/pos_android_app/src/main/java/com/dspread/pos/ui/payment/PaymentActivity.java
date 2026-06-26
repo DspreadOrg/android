@@ -205,7 +205,12 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
         String deviceModel = DeviceUtils.getPhoneModel();
         TRACE.d("model:" + deviceModel);
         if (defaultBinding != null) {
-            if ("D20".equals(deviceModel)) {
+            String deviceType = SPUtils.getInstance().getString("device_type", "");
+            
+            if ("BLUETOOTH".equals(deviceType) || "USB".equals(deviceType) || "BLUETOOTH_BLE".equals(deviceType)) {
+                defaultBinding.animationView.setAnimation("QPosCute_checkCard.json");
+                defaultBinding.animationView.setImageAssetsFolder("QPosCute_images/");
+            } else if ("D20".equals(deviceModel)) {
                 defaultBinding.animationView.setAnimation("D20_checkCardImg.json");
                 defaultBinding.animationView.setImageAssetsFolder("D20_images/");
             } else if ("D80".equals(deviceModel)) {
