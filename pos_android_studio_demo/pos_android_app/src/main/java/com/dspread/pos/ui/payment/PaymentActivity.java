@@ -22,6 +22,7 @@ import com.dspread.pos.ui.payment.pinkeyboard.MyKeyboardView;
 import com.dspread.pos.ui.payment.pinkeyboard.PinPadDialog;
 import com.dspread.pos.ui.payment.pinkeyboard.PinPadView;
 import com.dspread.pos.utils.AdvancedBinDetector;
+import com.dspread.pos.utils.DeviceModelUtils;
 import com.dspread.pos.utils.DeviceUtils;
 import com.dspread.pos.utils.HandleTxnsResultUtils;
 import com.dspread.pos.utils.LogFileConfig;
@@ -139,13 +140,10 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
             setupFrontNFCAnimation();
         }
     }
-
     private void setupFrontNFCAnimation() {
         if (frontNfcBinding != null) {
             ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) frontNfcBinding.animationView.getLayoutParams();
-            String deviceModel = DeviceUtils.getPhoneModel();
-
-            if ("D35".equals(deviceModel)) {
+            if (DeviceModelUtils.isD35()){
                 frontNfcBinding.ivCardGuide.setMinimumHeight(50);
                 frontNfcBinding.txtWaitInsertTapCard.setTextSize(13);
                 frontNfcBinding.txtDeviceInfo.setTextSize(12);
@@ -153,7 +151,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
                 if (frontNfcBinding.ivCardGuide != null) {
                     frontNfcBinding.ivCardGuide.setImageResource(R.drawable.ic_payguide_d35);
                 }
-            } else if ("D50".equals(deviceModel)) {
+            } else if ("D50".equals(DeviceUtils.getPhoneModel())) {
                 if (DeviceUtils.isAppInstalled(getApplicationContext(), DeviceUtils.UART_AIDL_SERVICE_APP_PACKAGE_NAME)) {
                     frontNfcBinding.ivCardGuide.setMinimumHeight(80);
                     frontNfcBinding.txtWaitInsertTapCard.setTextSize(18);
