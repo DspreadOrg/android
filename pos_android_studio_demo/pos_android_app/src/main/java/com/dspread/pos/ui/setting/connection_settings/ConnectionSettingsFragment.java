@@ -261,6 +261,7 @@ public class ConnectionSettingsFragment extends BaseFragmentWithViewCache<Fragme
             SPUtils.getInstance().put("bluetoothAddress", "");
             SPUtils.getInstance().put("isSelectUsbSuccess", true);
             SPUtils.getInstance().put("isSelectUartSuccess", false);
+            SPUtils.getInstance().put("device_type", "USB");
             hideAllView();
             viewModel.isShowUSBImageView.set(true);
             viewModel.isShowUsbTextView.set(true);
@@ -284,6 +285,7 @@ public class ConnectionSettingsFragment extends BaseFragmentWithViewCache<Fragme
                     dialog.dismiss();
                     SPUtils.getInstance().put("deviceAddress", selectedDevice);
                     SPUtils.getInstance().put("isSelectUsbSuccess", true);
+                    SPUtils.getInstance().put("device_type", "USB");
 
                 }
             });

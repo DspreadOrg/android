@@ -177,7 +177,7 @@ public class DeviceUtils {
 
 
     public static boolean isFrontNFCDevices() {
-        return "D35".equals(Build.MODEL) || "D50".equals(Build.MODEL);
+        return DeviceModelUtils.isD35() || DeviceModelUtils.isD50();
     }
 
     public static double getScreenSize(Context context) {

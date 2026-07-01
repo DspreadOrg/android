@@ -80,10 +80,10 @@ public class PaymentMethodActivity extends BaseActivity<ActivityPaymentMetholdBi
                         scanData = amount;
                         gotoPaymentstatusActivity(scanData);
                         finish();
-                    } else {
-                        gotoPaymentstatusActivity("");
-                        finish();
-                    }
+                    } /*else {
+                       gotoPaymentstatusActivity("");
+                       finish();
+                    }*/
                 }
         );
     }

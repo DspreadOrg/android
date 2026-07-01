@@ -219,7 +219,7 @@ public class POSManager {
 
         int currencyCode = SPUtils.getInstance().getInt("currencyCode", 156);
         pos.setCardTradeMode(getCardTradeMode());
-        pos.setPinPadType(QPOSService.PinPadType.INTERNAL);
+        pos.setPinPadType(QPOSService.PinPadType.INTERNAL,4,6,false);
         pos.setAmount(amount, "", String.valueOf(currencyCode), getTransType());
         pos.doTrade(60);
     }

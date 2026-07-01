@@ -224,40 +224,19 @@ public class PrinterHelper {
             maskedPan = maskedPan.replaceAll("\\*+$", "");
         }
         mPrinter.addText(" " + maskedPan);
+        mPrinter.addPrintLintStyle(new PrintLineStyle(PrintStyle.FontStyle.NORMAL, PrintLine.LEFT, baseFontSize, true, false));
         mPrinter.addText(" TYPE Of Transaction(TXN TYPE)");
+        mPrinter.feedLines(10);
+        mPrinter.addPrintLintStyle(new PrintLineStyle(PrintStyle.FontStyle.NORMAL, PrintLine.CENTER, baseFontSize, false, false));
         mPrinter.addText(" SALE");
         mPrinter.addPrintLintStyle(new PrintLineStyle(PrintStyle.FontStyle.NORMAL, PrintLine.CENTER, baseFontSize));
         mPrinter.addText("- - - - - - - - - - - - - - - - - - - - - - - - - - ");
-        mPrinter.addTexts(
-                new String[]{"BATCH NO", "000043"},
-                new int[]{5, 5},
-                new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.CENTER},
-                new int[]{PrintStyle.FontStyle.NORMAL, PrintStyle.FontStyle.NORMAL}, baseFontSize);
-        mPrinter.addTexts(
-                new String[]{"VOUCHER NO", "000509"},
-                new int[]{5, 5},
-                new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.CENTER},
-                new int[]{PrintStyle.FontStyle.NORMAL, PrintStyle.FontStyle.NORMAL}, baseFontSize);
-        mPrinter.addTexts(
-                new String[]{"AUTH NO", "000786"},
-                new int[]{5, 5},
-                new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.CENTER},
-                new int[]{PrintStyle.FontStyle.NORMAL, PrintStyle.FontStyle.NORMAL}, baseFontSize);
-        mPrinter.addTexts(
-                new String[]{"DATE/TIME", map.get("terminalTime")},
-                new int[]{5, 5},
-                new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.CENTER},
-                new int[]{PrintStyle.FontStyle.NORMAL, PrintStyle.FontStyle.NORMAL}, baseFontSize);
-        mPrinter.addTexts(
-                new String[]{"REF NO", "000001595276"},
-                new int[]{5, 5},
-                new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.CENTER},
-                new int[]{PrintStyle.FontStyle.NORMAL, PrintStyle.FontStyle.NORMAL}, baseFontSize);
-        mPrinter.addTexts(
-                new String[]{"AMOUNT:", ""},
-                new int[]{5, 5},
-                new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.CENTER},
-                new int[]{PrintStyle.FontStyle.NORMAL, PrintStyle.FontStyle.NORMAL}, baseFontSize);
+        mPrinter.addTexts(new String[]{"BATCH NO", "000043"}, new int[]{5, 5}, new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.CENTER}, new int[]{PrintStyle.FontStyle.NORMAL, PrintStyle.FontStyle.NORMAL}, baseFontSize);
+        mPrinter.addTexts(new String[]{"VOUCHER NO", "000509"}, new int[]{5, 5}, new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.CENTER}, new int[]{PrintStyle.FontStyle.NORMAL, PrintStyle.FontStyle.NORMAL}, baseFontSize);
+        mPrinter.addTexts(new String[]{"AUTH NO", "000786"}, new int[]{5, 5}, new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.CENTER}, new int[]{PrintStyle.FontStyle.NORMAL, PrintStyle.FontStyle.NORMAL}, baseFontSize);
+        mPrinter.addTexts(new String[]{"DATE/TIME", map.get("terminalTime")}, new int[]{5, 5}, new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.CENTER}, new int[]{PrintStyle.FontStyle.NORMAL, PrintStyle.FontStyle.NORMAL}, baseFontSize);
+        mPrinter.addTexts(new String[]{"REF NO", "000001595276"}, new int[]{5, 5}, new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.CENTER}, new int[]{PrintStyle.FontStyle.NORMAL, PrintStyle.FontStyle.NORMAL}, baseFontSize);
+        mPrinter.addTexts(new String[]{"AMOUNT:", ""}, new int[]{5, 5}, new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.CENTER}, new int[]{PrintStyle.FontStyle.NORMAL, PrintStyle.FontStyle.NORMAL}, baseFontSize);
         mPrinter.addPrintLintStyle(new PrintLineStyle(PrintStyle.FontStyle.BOLD, PrintLine.CENTER, amountFontSize));
         mPrinter.addText("$: " + map.get("terAmount"));
         mPrinter.feedLines(120);
