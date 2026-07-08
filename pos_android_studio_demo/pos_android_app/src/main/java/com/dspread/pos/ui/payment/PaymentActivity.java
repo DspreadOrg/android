@@ -214,6 +214,9 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
             } else if ("D80".equals(deviceModel)) {
                 defaultBinding.animationView.setAnimation("D80_checkCard.json");
                 defaultBinding.animationView.setImageAssetsFolder("D80_images/");
+            } else if ("D80K".equals(deviceModel)) {
+                defaultBinding.animationView.setAnimation("D80_checkCard.json");
+                defaultBinding.animationView.setImageAssetsFolder("D80K_images/");
             } else if ("D60".equals(deviceModel)) {
                 defaultBinding.animationView.setAnimation("D60_checkCard.json");
                 defaultBinding.animationView.setImageAssetsFolder("D60_images/");
