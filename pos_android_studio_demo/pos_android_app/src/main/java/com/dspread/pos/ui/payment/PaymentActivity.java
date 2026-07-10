@@ -208,13 +208,16 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
             if ("BLUETOOTH".equals(deviceType) || "USB".equals(deviceType) || "BLUETOOTH_BLE".equals(deviceType)) {
                 defaultBinding.animationView.setAnimation("QPosCute_checkCard.json");
                 defaultBinding.animationView.setImageAssetsFolder("QPosCute_images/");
-            } else if ("D20".equals(deviceModel)) {
+            } else if (DeviceModelUtils.isD20()) {
                 defaultBinding.animationView.setAnimation("D20_checkCardImg.json");
                 defaultBinding.animationView.setImageAssetsFolder("D20_images/");
-            } else if ("D80".equals(deviceModel)) {
+            } else if (DeviceModelUtils.isD80()) {
                 defaultBinding.animationView.setAnimation("D80_checkCard.json");
                 defaultBinding.animationView.setImageAssetsFolder("D80_images/");
-            } else if ("D60".equals(deviceModel)) {
+            } else if (DeviceModelUtils.isD80K()) {
+                defaultBinding.animationView.setAnimation("D80_checkCard.json");
+                defaultBinding.animationView.setImageAssetsFolder("D80K_images/");
+            } else if (DeviceModelUtils.isD60()) {
                 defaultBinding.animationView.setAnimation("D60_checkCard.json");
                 defaultBinding.animationView.setImageAssetsFolder("D60_images/");
             } else {//D30
