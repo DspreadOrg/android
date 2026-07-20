@@ -37,41 +37,6 @@ public class PaymentMethodViewModel extends BaseAppViewModel {
     // 支付方式点击事件
     public void onPaymentMethodSelected(int methodIndex) {
         selectedPaymentMethod.setValue(methodIndex);
-        // 根据选择的支付方式执行相应操作
-        switch (methodIndex) {
-            case 0: // Card
-                processCardPayment();
-                break;
-            case 1: // Scan Code
-                processScanCodePayment();
-                break;
-            case 2: // Generate
-                processGeneratePayment();
-                break;
-            case 3: // Cash
-                processCashPayment();
-                break;
-        }
-    }
-
-    private void processCardPayment() {
-        // 处理银行卡支付逻辑
-        Log.d("Payment", "Card payment selected");
-    }
-
-    private void processScanCodePayment() {
-        // 处理扫码支付逻辑
-        Log.d("Payment", "Scan code payment selected");
-    }
-
-    private void processGeneratePayment() {
-        // 处理生成支付码逻辑
-        Log.d("Payment", "Generate payment code selected");
-    }
-
-    private void processCashPayment() {
-        // 处理现金支付逻辑
-        Log.d("Payment", "Cash payment selected");
     }
 
     // 获取选中的支付方式

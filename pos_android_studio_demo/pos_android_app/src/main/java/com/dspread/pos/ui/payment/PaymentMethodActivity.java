@@ -32,8 +32,9 @@ public class PaymentMethodActivity extends BaseActivity<ActivityPaymentMetholdBi
     private String cls;
     private boolean canshow = true;
     private ActivityResultLauncher<Intent> scanLauncher;
-    private int currentMethodIndex = 0; // 当前选中的支付方式索引
+    private int currentMethodIndex = 0; //
     private com.dspread.pos.view.PaymentMethodsLayout paymentMethodsLayout;
+    private boolean isProcessingPayment = false; // Prevent duplicate clicks flag
 
     @Override
     public int initContentView(Bundle bundle) {
@@ -75,6 +76,7 @@ public class PaymentMethodActivity extends BaseActivity<ActivityPaymentMetholdBi
         scanLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
+                    isProcessingPayment = false;
                     if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
                         String scanData = result.getData().getStringExtra("data");
                         scanData = amount;
@@ -90,12 +92,19 @@ public class PaymentMethodActivity extends BaseActivity<ActivityPaymentMetholdBi
 
 
     private void handlePaymentMethodSelection(int methodIndex) {
+        // Prevent duplicate clicks flag
+        if (isProcessingPayment) {
+            return;
+        }
+        isProcessingPayment = true;
+
         switch (methodIndex) {
             case 0:
                 navigateToCardPayment();
                 break;
             case 1:
                 startScanCodePayment();
+
                 break;
             case 2:
                 startGeneratePayment();
