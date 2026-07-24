@@ -227,7 +227,7 @@ public class PrinterHelper {
         mPrinter.addPrintLintStyle(new PrintLineStyle(PrintStyle.FontStyle.NORMAL, PrintLine.LEFT, baseFontSize, true, false));
         mPrinter.addText(" TYPE Of Transaction(TXN TYPE)");
         mPrinter.feedLines(10);
-        mPrinter.addPrintLintStyle(new PrintLineStyle(PrintStyle.FontStyle.NORMAL, PrintLine.CENTER, baseFontSize, false, false));
+        mPrinter.addPrintLintStyle(new PrintLineStyle(PrintStyle.FontStyle.NORMAL, PrintLine.CENTER, baseFontSize, false, false,PrinterDevice.FontType.MONOSPACE));
         mPrinter.addText(" SALE");
         mPrinter.addPrintLintStyle(new PrintLineStyle(PrintStyle.FontStyle.NORMAL, PrintLine.CENTER, baseFontSize));
         mPrinter.addText("- - - - - - - - - - - - - - - - - - - - - - - - - - ");
