@@ -23,6 +23,7 @@ import com.dspread.pos_android_app.R;
 import com.dspread.xpos.CQPOSService;
 import com.dspread.xpos.QPOSService;
 import com.dspread.xpos.SyncUtil;
+import com.posthog.PostHog;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -218,8 +219,8 @@ public class POSManager {
         }
 
         int currencyCode = SPUtils.getInstance().getInt("currencyCode", 156);
-        pos.setCardTradeMode(getCardTradeMode());
         pos.setPinPadType(QPOSService.PinPadType.INTERNAL,4,6,false);
+        pos.setCardTradeMode(getCardTradeMode());
         pos.setAmount(amount, "", String.valueOf(currencyCode), getTransType());
         pos.doTrade(60);
     }
@@ -233,7 +234,7 @@ public class POSManager {
             } else {
                 SPUtils.getInstance().put("posID", "");
             }
-
+            PostHog.Companion.register("custom_device_id", SPUtils.getInstance().getString("posID"));
             TRACE.i("posid :" + SPUtils.getInstance().getString("posID"));
         }
     }

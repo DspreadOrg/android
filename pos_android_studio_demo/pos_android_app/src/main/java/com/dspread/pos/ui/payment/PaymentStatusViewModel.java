@@ -1,25 +1,17 @@
 package com.dspread.pos.ui.payment;
 
 import android.app.Application;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.util.TypedValue;
-import android.view.View;
-import android.widget.TextView;
 
 import com.dspread.pos.common.base.BaseAppViewModel;
 import com.dspread.pos.ui.printer.activities.PrintTicketActivity;
 import com.dspread.pos.utils.TRACE;
 
+import java.util.Map;
+
 import androidx.annotation.NonNull;
 import androidx.databinding.ObservableBoolean;
 import androidx.databinding.ObservableField;
-
-import java.util.Map;
-
 import me.goldze.mvvmhabit.binding.command.BindingAction;
 import me.goldze.mvvmhabit.binding.command.BindingCommand;
 
@@ -28,10 +20,9 @@ public class PaymentStatusViewModel extends BaseAppViewModel {
     private String maskedPAN;
     private String terminalTime;
 
-    // Anti-shake protection for rapid clicks
-    private static final long CLICK_INTERVAL = 500; // Minimum interval between clicks (milliseconds)
-    private long lastClickTime = 0;
-    private boolean isNavigating = false;
+    private static final long CLICK_INTERVAL = 500;
+    private volatile long lastClickTime = 0;
+    private volatile boolean isNavigating = false;
 
     public ObservableBoolean isSuccess = new ObservableBoolean(false);
     public ObservableField<String> amount = new ObservableField<>("");
@@ -73,34 +64,37 @@ public class PaymentStatusViewModel extends BaseAppViewModel {
     private static final String EXTRA_TERMINAL_TIME = "terminalTime";
 
     public BindingCommand continueTxnsCommand = new BindingCommand(() -> {
-        // Anti-shake for continue button
-        if (isClickValid()) {
-            finish();
+        if (isClickValid() && !isNavigating) {
+            isNavigating = true;
+            try {
+                finish();
+            } catch (Exception e) {
+                isNavigating = false;
+            }
         }
     });
-
     public BindingCommand sendReceiptCommand = new BindingCommand(new BindingAction() {
         @Override
         public void call() {
-            if (!isClickValid()) {
-                TRACE.d("Ignored rapid click on send receipt button");
+            if (!isClickValid() || isNavigating) {
                 return;
             }
+            isNavigating = true;
             try {
                 Intent intent = new Intent(context, PrintTicketActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                // Use default empty string if value is null to prevent NullPointerException
                 intent.putExtra(EXTRA_TER_AMOUNT, terAmount != null ? terAmount : "");
                 intent.putExtra(EXTRA_MASKED_PAN, maskedPAN != null ? maskedPAN : "");
                 intent.putExtra(EXTRA_TERMINAL_TIME, terminalTime != null ? terminalTime : "");
                 context.startActivity(intent);
                 finish();
             } catch (Exception e) {
-                TRACE.e("Failed to start PrintTicketActivity: " + e.getMessage());
                 try {
                     finish();
                 } catch (Exception ex) {
                     TRACE.e("Failed to finish activity: " + ex.getMessage());
+                } finally {
+                    isNavigating = false;
                 }
             }
         }
