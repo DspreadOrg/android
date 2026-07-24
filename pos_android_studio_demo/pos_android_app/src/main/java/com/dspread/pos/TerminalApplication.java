@@ -11,6 +11,7 @@ import com.dspread.pos.utils.TRACE;
 import com.dspread.pos_android_app.BuildConfig;
 import com.dspread.pos_android_app.R;
 import com.posthog.PersonProfiles;
+import com.posthog.PostHog;
 import com.posthog.android.PostHogAndroid;
 import com.posthog.android.PostHogAndroidConfig;
 import com.posthog.android.replay.PostHogSessionReplayConfig;
@@ -25,6 +26,7 @@ import java.util.concurrent.Executors;
 
 import me.goldze.mvvmhabit.base.BaseApplication;
 import me.goldze.mvvmhabit.crash.CaocConfig;
+import me.goldze.mvvmhabit.utils.SPUtils;
 
 
 /**
@@ -126,7 +128,11 @@ public class TerminalApplication extends BaseApplication {
         config.setSessionReplayConfig(replayConfig);
         config.setDebug(true);
 
+
         config.setPersonProfiles(PersonProfiles.IDENTIFIED_ONLY);
+
         PostHogAndroid.Companion.setup(this, config);
+        PostHog.Companion.register("custom_device_id", SPUtils.getInstance().getString("posID"));
+
     }
 }

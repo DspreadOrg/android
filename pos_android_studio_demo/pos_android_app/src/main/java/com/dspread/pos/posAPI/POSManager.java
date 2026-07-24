@@ -23,6 +23,7 @@ import com.dspread.pos_android_app.R;
 import com.dspread.xpos.CQPOSService;
 import com.dspread.xpos.QPOSService;
 import com.dspread.xpos.SyncUtil;
+import com.posthog.PostHog;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -233,7 +234,7 @@ public class POSManager {
             } else {
                 SPUtils.getInstance().put("posID", "");
             }
-
+            PostHog.Companion.register("custom_device_id", SPUtils.getInstance().getString("posID"));
             TRACE.i("posid :" + SPUtils.getInstance().getString("posID"));
         }
     }
