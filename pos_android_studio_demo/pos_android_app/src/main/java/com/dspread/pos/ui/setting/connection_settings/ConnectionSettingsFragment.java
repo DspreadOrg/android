@@ -253,6 +253,7 @@ public class ConnectionSettingsFragment extends BaseFragmentWithViewCache<Fragme
     }
 
     private void openUsbDeviceDialog(ArrayList<String> deviceList) {
+        if (deviceList == null || deviceList.size() == 0) return;
         final CharSequence[] items = deviceList.toArray(new CharSequence[deviceList.size()]);
         if (items.length == 1) {
             String selectedDevice = (String) items[0];
@@ -306,14 +307,14 @@ public class ConnectionSettingsFragment extends BaseFragmentWithViewCache<Fragme
     @Override
     public void onDestroy() {
         super.onDestroy();
-
+        TRACE.d("onDestroy - ConnectionSettingsFragment");
         // Clean up thread pool resources to avoid memory leaks
         try {
             if (asyncExecutor != null && !asyncExecutor.isShutdown()) {
                 asyncExecutor.shutdownNow();
             }
         } catch (Exception e) {
-            Log.e("ConnectionSettingsFragment", "关闭线程池失败: " + e.getMessage());
+            Log.e("ConnectionSettingsFragment", "close thread pool failed: " + e.getMessage());
         }
     }
 
