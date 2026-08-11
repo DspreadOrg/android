@@ -18,47 +18,48 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 public class USBClass {
-
     private static UsbManager mManager = null;
-
     private static HashMap<String, UsbDevice> mdevices;
-
     public static HashMap<String, UsbDevice> getMdevices() {
         return mdevices;
     }
-
     private static PendingIntent mPermissionIntent;
     private static final String ACTION_USB_PERMISSION = "com.android.example.USB_PERMISSION";
     private UsbPermissionListener usbPermissionListener;
-
-
     private final BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
 
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if (ACTION_USB_PERMISSION.equals(action)) {
                 synchronized (this) {
-                    UsbDevice device = (UsbDevice) intent
-                            .getParcelableExtra(UsbManager.EXTRA_DEVICE);
-                    if (intent.getBooleanExtra(
-                            UsbManager.EXTRA_PERMISSION_GRANTED, false)) {
-                        if (device != null) {
-                            // call method to set up device communication
-                            TRACE.i("usb" + "permission granted for device "
-                                    + device);
-                            Toast.makeText(context.getApplicationContext(), "Usb permission granted for device", Toast.LENGTH_SHORT).show();
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                        UsbDevice device = (UsbDevice) intent
+                                .getParcelableExtra(UsbManager.EXTRA_DEVICE);
+                        if (intent.getBooleanExtra(
+                                UsbManager.EXTRA_PERMISSION_GRANTED, false)) {
+                            if (device != null) {
+                                // call method to set up device communication
+                                TRACE.i("usb" + "permission granted for device "
+                                        + device);
+                                Toast.makeText(context.getApplicationContext(), "Usb permission granted for device", Toast.LENGTH_SHORT).show();
+                                if (usbPermissionListener != null) {
+                                    usbPermissionListener.onPermissionGranted(device);
+                                }
+                            }
+                        } else {
+                            TRACE.i("usb" + "permission denied for device " + device);
+                            Toast.makeText(context.getApplicationContext(), "Usb permission denied", Toast.LENGTH_SHORT).show();
                             if (usbPermissionListener != null) {
-                                usbPermissionListener.onPermissionGranted(device);
+                                usbPermissionListener.onPermissionDenied(device);
                             }
                         }
-                    } else {
-//						mMyClickListener.onCencel();
-                        TRACE.i("usb" + "permission denied for device " + device);
-                        Toast.makeText(context.getApplicationContext(), "Usb permission denied", Toast.LENGTH_SHORT).show();
+                    }else {
                         if (usbPermissionListener != null) {
-                            usbPermissionListener.onPermissionDenied(device);
+                            TRACE.i("usb permission granted for device");
+                            usbPermissionListener.onPermissionGranted(null);
                         }
                     }
+
                 }
             }
         }
