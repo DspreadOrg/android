@@ -203,9 +203,9 @@ public class PrinterHelper {
 
     public Bitmap getTicketBitmap(Context context, Map<String, String> map) throws RemoteException {
         // Determine font size based on screen resolution
-        int baseFontSize = 10;
-        int amountFontSize = 12;
-
+        int baseFontSize = 14;
+        int amountFontSize = 16;
+        mPrinter.setCustomFontType(PrinterDevice.FontType.STANDARD);
         Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.pdspread25);
         mPrinter.addBitmap(bitmap, PrintLine.CENTER);
         mPrinter.feedLines(5);
@@ -215,20 +215,20 @@ public class PrinterHelper {
         mPrinter.addPrintLintStyle(new PrintLineStyle(PrintStyle.FontStyle.NORMAL, PrintLine.CENTER, baseFontSize));
         mPrinter.addText("- - - - - - - - - - - - - - - - - - - - - - - - - - ");
         mPrinter.addPrintLintStyle(new PrintLineStyle(PrintStyle.FontStyle.NORMAL, PrintLine.LEFT, baseFontSize));
-        mPrinter.addText(" ISSUER Agricultural Bank of China");
-        mPrinter.addText(" ACQ 48873110");
-        mPrinter.addText(" CARD number.");
+        mPrinter.addText("ISSUER Agricultural Bank of China");
+        mPrinter.addText("ACQ 48873110");
+        mPrinter.addText("CARD number.");
         mPrinter.addPrintLintStyle(new PrintLineStyle(PrintStyle.FontStyle.NORMAL, PrintLine.LEFT, baseFontSize));
         String maskedPan = !map.get("maskedPAN").equals("") ? map.get("maskedPAN").replaceAll("[fFxX]", "*") : "622848******8116";
         if (maskedPan.endsWith("*")) {
             maskedPan = maskedPan.replaceAll("\\*+$", "");
         }
-        mPrinter.addText(" " + maskedPan);
+        mPrinter.addText(maskedPan);
         mPrinter.addPrintLintStyle(new PrintLineStyle(PrintStyle.FontStyle.NORMAL, PrintLine.LEFT, baseFontSize, true, false));
-        mPrinter.addText(" TYPE Of Transaction(TXN TYPE)");
+        mPrinter.addText("TYPE Of Transaction(TXN TYPE)");
         mPrinter.feedLines(10);
-        mPrinter.addPrintLintStyle(new PrintLineStyle(PrintStyle.FontStyle.NORMAL, PrintLine.CENTER, baseFontSize, false, false,PrinterDevice.FontType.MONOSPACE));
-        mPrinter.addText(" SALE");
+        mPrinter.addPrintLintStyle(new PrintLineStyle(PrintStyle.FontStyle.NORMAL, PrintLine.CENTER, baseFontSize, false, false, PrinterDevice.FontType.MONOSPACE));
+        mPrinter.addText("SALE");
         mPrinter.addPrintLintStyle(new PrintLineStyle(PrintStyle.FontStyle.NORMAL, PrintLine.CENTER, baseFontSize));
         mPrinter.addText("- - - - - - - - - - - - - - - - - - - - - - - - - - ");
         mPrinter.addTexts(new String[]{"BATCH NO", "000043"}, new int[]{5, 5}, new int[]{PrintStyle.Alignment.NORMAL, PrintStyle.Alignment.CENTER}, new int[]{PrintStyle.FontStyle.NORMAL, PrintStyle.FontStyle.NORMAL}, baseFontSize);
