@@ -492,6 +492,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
             viewModel.startLoading(getString(R.string.online_process_requested));
 
             Hashtable<String, String> decodeData = POSManager.getInstance().anlysEmvIccData(tlv);
+            TRACE.i("decodeData" + decodeData);
             PaymentModel paymentModel = new PaymentModel();
             paymentModel.setAmount(amount);
 
@@ -559,7 +560,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
     }
 
     private String extractCardNo(Hashtable<String, String> decodeData, String tlv) {
-        if ("32".equals(decodeData.get("formatID"))) {
+        if ("32".equals(decodeData.get("formatID")) || "70".equals(decodeData.get("formatID"))) {
             return decodeData.get("maskedPAN") != null ? decodeData.get("maskedPAN") : "";
         } else {
             List<TLV> tlvList = TLVParser.parse(tlv);
