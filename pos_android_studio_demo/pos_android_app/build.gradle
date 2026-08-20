@@ -31,8 +31,8 @@ android {
         applicationId "com.dspread.pos_android_app"
         minSdk 24
         targetSdk 34
-        versionCode 145
-        versionName "8.5.3-2608131115"
+        versionCode 146
+        versionName "8.5.4-2608201515"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         ndk {
             // Set up supported SO library architecture
