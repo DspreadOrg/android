@@ -32,7 +32,7 @@ android {
         minSdk 24
         targetSdk 34
         versionCode 145
-        versionName "8.5.3-2608131115"
+        versionName "8.5.3-2609143125"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         ndk {
             // Set up supported SO library architecture
@@ -41,6 +41,9 @@ android {
     }
 
     buildTypes {
+        debug {
+            debuggable false  //
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
