@@ -212,8 +212,26 @@ public class ConnectionSettingsFragment extends BaseFragmentWithViewCache<Fragme
     }
 
 
-    // Thread pool for executing asynchronous operations
-    private static final java.util.concurrent.ExecutorService asyncExecutor = java.util.concurrent.Executors.newSingleThreadExecutor();
+    // Thread pool for executing asynchronous operations.
+    // Instance-level (not static): a static pool would be permanently terminated by the first
+    // fragment's onDestroy, causing RejectedExecutionException for later instances.
+    private final java.util.concurrent.ExecutorService asyncExecutor = java.util.concurrent.Executors.newSingleThreadExecutor();
+
+    /**
+     * Safely submit a task to the executor, guarding against a terminated pool
+     * (e.g. USB permission callback fired after the fragment was destroyed).
+     */
+    private void executeAsync(Runnable task) {
+        if (asyncExecutor.isShutdown() || asyncExecutor.isTerminated()) {
+            TRACE.d("asyncExecutor already terminated, skip task submission");
+            return;
+        }
+        try {
+            asyncExecutor.execute(task);
+        } catch (java.util.concurrent.RejectedExecutionException e) {
+            Log.e("ConnectionSettingsFragment", "submit task to executor failed: " + e.getMessage());
+        }
+    }
 
     private void showUsbDeviceDialog() {
         USBClass usb = new USBClass();
@@ -221,7 +239,7 @@ public class ConnectionSettingsFragment extends BaseFragmentWithViewCache<Fragme
             @Override
             public void onPermissionGranted(UsbDevice device) {
                 // Get USB device list in sub-thread
-                asyncExecutor.execute(() -> {
+                executeAsync(() -> {
                     ArrayList<String> deviceList = usb.GetUSBDevices(getActivity());
                     // Update UI in main thread, using main thread's Looper
                     new Handler(Looper.getMainLooper()).post(() -> {
@@ -239,7 +257,7 @@ public class ConnectionSettingsFragment extends BaseFragmentWithViewCache<Fragme
         });
 
         // Get USB device list in sub-thread
-        asyncExecutor.execute(() -> {
+        executeAsync(() -> {
             ArrayList<String> deviceList = usb.GetUSBDevices(getActivity());
             // Update UI in main thread, using main thread's Looper
             new Handler(Looper.getMainLooper()).post(() -> {
