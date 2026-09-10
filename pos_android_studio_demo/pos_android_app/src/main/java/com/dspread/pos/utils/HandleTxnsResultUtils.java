@@ -117,6 +117,12 @@ public class HandleTxnsResultUtils {
                 return "transaction terminated";
             case PlEASE_TAP_CARD_AGAIN:
                 return context.getString(R.string.please_tap_card_again);
+            case CONFIRM_NEW_PIN:
+                return "confirm new pin";
+            case INPUT_NEW_PIN:
+                return "input new pin";
+            case INPUT_NEW_PIN_CHECK_ERROR:
+                return "input new pin check error";
             default:
                 return "";
         }
