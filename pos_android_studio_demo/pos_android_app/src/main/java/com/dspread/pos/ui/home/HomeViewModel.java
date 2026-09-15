@@ -7,6 +7,8 @@ import androidx.annotation.NonNull;
 import androidx.databinding.ObservableField;
 
 import com.dspread.pos.common.base.BaseAppViewModel;
+import com.dspread.pos.dualScreen.manager.ViceScreenManager;
+import com.dspread.pos.dualScreen.view.AmountDisplayView;
 import com.dspread.pos.utils.TRACE;
 import com.dspread.pos_android_app.R;
 

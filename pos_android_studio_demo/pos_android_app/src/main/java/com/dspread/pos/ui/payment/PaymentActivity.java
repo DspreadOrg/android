@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.Html;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
@@ -14,6 +15,7 @@ import android.widget.ListView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.databinding.DataBindingUtil;
 
+import com.dspread.pos.dualScreen.manager.ViceScreenManager;
 import com.dspread.pos.posAPI.ConnectionServiceCallback;
 import com.dspread.pos.posAPI.POSManager;
 import com.dspread.pos.posAPI.PaymentServiceCallback;
@@ -69,6 +71,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
     private ActivityPaymentDefaultBinding defaultBinding;
     private ActivityPaymentSmallScreenBinding smallScreenBinding;
     private ActivityPaymentFrontNfcBinding frontNfcBinding;
+    private ViceScreenManager vsManager;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -105,6 +108,8 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
         initConnectionCallback();
         TRACE.i("start Transaction -===");
         startTransaction();
+
+
     }
 
     @Override
