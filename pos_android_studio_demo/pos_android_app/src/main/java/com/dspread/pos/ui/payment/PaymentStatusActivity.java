@@ -6,11 +6,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import com.dspread.pos.dualScreen.manager.ViceScreenManager;
+import com.dspread.pos.utils.DeviceModelUtils;
 import com.dspread.pos.utils.DeviceUtils;
 import com.dspread.pos_android_app.BR;
 import com.dspread.pos_android_app.R;
 import com.dspread.pos_android_app.databinding.ActivityPaymentstatusBinding;
-
 
 import java.util.HashMap;
 import java.util.Map;
@@ -57,6 +58,19 @@ public class PaymentStatusActivity extends BaseActivity<ActivityPaymentstatusBin
         }
 
 
+        if(DeviceModelUtils.isD80()){
+            ViceScreenManager viceScreenManager = ViceScreenManager.getInstance(PaymentStatusActivity.this);
+            if(viceScreenManager.getPowerOnStatus() == 1){
+                // 显示副屏:左侧结果图标 + 右侧交易金额
+                PaymentResultView view = new PaymentResultView(PaymentStatusActivity.this);
+                boolean isSuccess = isValidAmount(amount);
+                view.setResult(isSuccess);
+                if (isSuccess) {
+                    view.setAmount("$ " + DeviceUtils.convertAmountToCents(amount));
+                }
+                viceScreenManager.show(view);
+            }
+        }
         viewModel.isShouwPrinting.set(DeviceUtils.isPrinterDevices());
     }
 

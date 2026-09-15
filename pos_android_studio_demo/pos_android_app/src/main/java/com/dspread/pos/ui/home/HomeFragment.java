@@ -54,7 +54,6 @@ public class HomeFragment extends BaseFragmentWithViewCache<FragmentHomeBinding,
         }
     }
 
-
     private void initTimer() {
         showTimer = new CountDownTimer(500, 500) {
             @Override
@@ -84,9 +83,11 @@ public class HomeFragment extends BaseFragmentWithViewCache<FragmentHomeBinding,
             showTimer.start();
             if(DeviceModelUtils.isD80()){
                 viceScreenManager = ViceScreenManager.getInstance(getContext());
-                AmountDisplayView view = new AmountDisplayView(getContext());
-                view.setAmount(inputMoney);
-                viceScreenManager.show(view);
+                if(viceScreenManager.getPowerOnStatus() == 1){
+                    AmountDisplayView view = new AmountDisplayView(getContext());
+                    view.setAmount(inputMoney);
+                    viceScreenManager.show(view);
+                }
             }
 
             navigateToPaymentMethod(inputMoney);
