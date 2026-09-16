@@ -128,7 +128,7 @@ public class PaymentMethodActivity extends BaseActivity<ActivityPaymentMetholdBi
                 TextView tvViceAmount = new TextView(this);
                 tvViceAmount.setText(viewModel.totalAmount.get());
                 tvViceAmount.setTextColor(Color.parseColor("#ff030303"));
-                tvViceAmount.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
+                tvViceAmount.setTextSize(TypedValue.COMPLEX_UNIT_SP, 28);
                 tvViceAmount.setTypeface(Typeface.DEFAULT_BOLD);
                 tvViceAmount.setGravity(Gravity.CENTER);
                 LinearLayout.LayoutParams viceAmountLp = new LinearLayout.LayoutParams(
@@ -148,7 +148,7 @@ public class PaymentMethodActivity extends BaseActivity<ActivityPaymentMetholdBi
                 viceRoot.addView(methodRow, methodRowLp);
 
                 // Card 点击事件
-                methodRow.addView(createMethodItem(R.mipmap.ic_salemethod_card, "Card", v -> {
+                methodRow.addView(createMethodItem(R.mipmap.ic_salemethod_card, "   Card   ", v -> {
                     currentMethodIndex = 0;
                     paymentMethodsLayout.setSelectedPaymentMethod(currentMethodIndex);
                     handlePaymentMethodSelection(0);
@@ -179,17 +179,17 @@ public class PaymentMethodActivity extends BaseActivity<ActivityPaymentMetholdBi
         item.setGravity(Gravity.CENTER);
         item.setClickable(true);
         item.setFocusable(true);
-        item.setPadding(dp(16), dp(16), dp(16), dp(16));
+        item.setPadding(dp(5), dp(5), dp(5), dp(5));
         item.setBackground(createMethodItemBackground());
         LinearLayout.LayoutParams itemLp = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT, dp(100));
-        itemLp.setMargins(dp(12), 0, dp(12), 0);
+                LinearLayout.LayoutParams.WRAP_CONTENT, dp(50));
+        itemLp.setMargins(dp(5), 0, dp(15), 0);
         item.setLayoutParams(itemLp);
 
         ImageView icon = new ImageView(this);
         icon.setImageResource(iconRes);
         icon.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-        item.addView(icon, new LinearLayout.LayoutParams(dp(30), dp(30)));
+        item.addView(icon, new LinearLayout.LayoutParams(dp(20), dp(20)));
 
         TextView labelTv = new TextView(this);
         labelTv.setText(label);
@@ -200,7 +200,7 @@ public class PaymentMethodActivity extends BaseActivity<ActivityPaymentMetholdBi
         LinearLayout.LayoutParams labelLp = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT);
-        labelLp.topMargin = dp(8);
+        labelLp.topMargin = dp(2);
         item.addView(labelTv, labelLp);
 
         item.setOnClickListener(listener);
@@ -213,13 +213,13 @@ public class PaymentMethodActivity extends BaseActivity<ActivityPaymentMetholdBi
     private StateListDrawable createMethodItemBackground() {
         GradientDrawable normalDrawable = new GradientDrawable();
         normalDrawable.setShape(GradientDrawable.RECTANGLE);
-        normalDrawable.setCornerRadius(dp(20));
+        normalDrawable.setCornerRadius(dp(2));
         normalDrawable.setStroke(dp(1), Color.parseColor("#BCBCBC"));
         normalDrawable.setColor(Color.WHITE);
 
         GradientDrawable pressedDrawable = new GradientDrawable();
         pressedDrawable.setShape(GradientDrawable.RECTANGLE);
-        pressedDrawable.setCornerRadius(dp(20));
+        pressedDrawable.setCornerRadius(dp(2));
         pressedDrawable.setStroke(dp(1), Color.parseColor("#ffe47579"));
         pressedDrawable.setColor(Color.parseColor("#ffffe9e9"));
 

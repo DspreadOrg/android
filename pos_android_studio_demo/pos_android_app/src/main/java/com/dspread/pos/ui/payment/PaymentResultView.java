@@ -35,7 +35,7 @@ public class PaymentResultView extends FrameLayout {
 
         // 内容容器:水平排列,整体居中
         LinearLayout contentLayout = new LinearLayout(context);
-        contentLayout.setOrientation(LinearLayout.VERTICAL);
+        contentLayout.setOrientation(LinearLayout.HORIZONTAL);
         contentLayout.setGravity(Gravity.CENTER);
         addView(contentLayout, new LayoutParams(
                 LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, Gravity.CENTER));
@@ -43,12 +43,12 @@ public class PaymentResultView extends FrameLayout {
         // 左侧结果图标
         ivResult = new ImageView(context);
         ivResult.setImageResource(R.mipmap.icon_success);
-        contentLayout.addView(ivResult, new LinearLayout.LayoutParams(dp(72), dp(72)));
+        contentLayout.addView(ivResult, new LinearLayout.LayoutParams(dp(40), dp(40)));
 
         // 右侧交易金额
         tvAmount = new TextView(context);
         tvAmount.setTextColor(Color.BLACK);
-        tvAmount.setTextSize(TypedValue.COMPLEX_UNIT_SP, 32);
+        tvAmount.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
         tvAmount.setTypeface(Typeface.DEFAULT_BOLD);
         tvAmount.setGravity(Gravity.CENTER_VERTICAL);
         LinearLayout.LayoutParams amountLp = new LinearLayout.LayoutParams(

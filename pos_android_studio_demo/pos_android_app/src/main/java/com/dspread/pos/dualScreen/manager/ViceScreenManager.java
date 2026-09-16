@@ -1,10 +1,12 @@
 package com.dspread.pos.dualScreen.manager;
 
 import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
 
 
 import com.dspread.pos.dualScreen.original.ViceScreenOriginal;
+import com.dspread.pos_android_app.R;
 
 import java.util.ArrayList;
 
@@ -61,6 +63,18 @@ public class ViceScreenManager {
 
     public void show(View view, IResultCallback callback) {
         original.show(view, callback);
+    }
+
+    /**
+     * 在副屏上显示默认欢迎页(副屏已开启时)
+     * 供任意页面复用,内部自动判断副屏电源状态
+     */
+    public void showDefaultView() {
+        if (getPowerOnStatus() == 1) {
+            LayoutInflater inflater = LayoutInflater.from(context);
+            View view = inflater.inflate(R.layout.vice_default, null);
+            show(view, null);
+        }
     }
 
     public void show(View view, ArrayList<PictureData> picDataList, IResultCallback callback) {

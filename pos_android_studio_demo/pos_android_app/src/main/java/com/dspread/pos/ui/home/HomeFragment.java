@@ -47,11 +47,7 @@ public class HomeFragment extends BaseFragmentWithViewCache<FragmentHomeBinding,
         }
     }
     private void viceShowDefault() {
-        if (viceScreenManager.getPowerOnStatus() == 1) {
-            LayoutInflater inflater = LayoutInflater.from(getContext());
-            View view = inflater.inflate(R.layout.vice_default, null);
-            viceScreenManager.show(view, null);
-        }
+        viceScreenManager.showDefaultView();
     }
 
     private void initTimer() {

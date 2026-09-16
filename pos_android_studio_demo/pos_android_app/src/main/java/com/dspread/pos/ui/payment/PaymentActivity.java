@@ -433,8 +433,9 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
                 ViceScreenManager viceScreenManager = ViceScreenManager.getInstance(PaymentActivity.this);
                 if(viceScreenManager.getPowerOnStatus() == 1){
                     String displayMsgStr = HandleTxnsResultUtils.getDisplayMessage(displayMsg, PaymentActivity.this);
-                    // 创建副屏"执行中"视图:加载动画 + 提示文本
+                    // 创建副屏"执行中"视图:加载动画 + 金额 + 提示文本
                     ProcessingDisplayView view = new ProcessingDisplayView(PaymentActivity.this);
+                    view.setAmount("$" + DeviceUtils.convertAmountToCents(amount));
                     view.setMessage(displayMsgStr);
                     viceScreenManager.show(view);
                 }

@@ -2,6 +2,7 @@ package com.dspread.pos.ui.payment;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -19,6 +20,7 @@ import android.widget.TextView;
  */
 public class ProcessingDisplayView extends FrameLayout {
 
+    private final TextView tvAmount;
     private final TextView tvMessage;
 
     public ProcessingDisplayView(Context context) {
@@ -37,11 +39,24 @@ public class ProcessingDisplayView extends FrameLayout {
                 LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, Gravity.CENTER));
 
         // 顶部加载动画:无限循环的圆形进度动画
-        ProgressBar progressBar = new ProgressBar(context);
+     /*   ProgressBar progressBar = new ProgressBar(context);
         progressBar.setIndeterminate(true);
-        LinearLayout.LayoutParams pbLp = new LinearLayout.LayoutParams(dp(40), dp(40));
+        LinearLayout.LayoutParams pbLp = new LinearLayout.LayoutParams(dp(24), dp(24));
         pbLp.gravity = Gravity.CENTER_HORIZONTAL;
-        contentLayout.addView(progressBar, pbLp);
+        contentLayout.addView(progressBar, pbLp);*/
+
+        // 金额文本:位于提示文本上方,大号加粗显示
+        tvAmount = new TextView(context);
+        tvAmount.setTextColor(Color.BLACK);
+        tvAmount.setTextSize(TypedValue.COMPLEX_UNIT_SP, 36);
+        tvAmount.setTypeface(Typeface.DEFAULT_BOLD);
+        tvAmount.setGravity(Gravity.CENTER);
+        tvAmount.setVisibility(View.GONE);
+        LinearLayout.LayoutParams amountLp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        amountLp.topMargin = dp(12);
+        contentLayout.addView(tvAmount, amountLp);
 
         // 底部处理提示文本
         tvMessage = new TextView(context);
@@ -61,6 +76,18 @@ public class ProcessingDisplayView extends FrameLayout {
     public void setMessage(String msg) {
         if (msg != null) {
             tvMessage.setText(msg);
+        }
+    }
+
+    /**
+     * 更新副屏显示的金额文本,金额为空时隐藏
+     */
+    public void setAmount(String amount) {
+        if (amount == null || amount.isEmpty()) {
+            tvAmount.setVisibility(View.GONE);
+        } else {
+            tvAmount.setText(amount);
+            tvAmount.setVisibility(View.VISIBLE);
         }
     }
 

@@ -4,7 +4,9 @@ import android.app.Application;
 import android.content.Intent;
 
 import com.dspread.pos.common.base.BaseAppViewModel;
+import com.dspread.pos.dualScreen.manager.ViceScreenManager;
 import com.dspread.pos.ui.printer.activities.PrintTicketActivity;
+import com.dspread.pos.utils.DeviceModelUtils;
 import com.dspread.pos.utils.TRACE;
 
 import java.util.Map;
@@ -68,6 +70,9 @@ public class PaymentStatusViewModel extends BaseAppViewModel {
             isNavigating = true;
             try {
                 finish();
+                if (DeviceModelUtils.isD80()) {
+                    ViceScreenManager.getInstance(context).showDefaultView();
+                }
             } catch (Exception e) {
                 isNavigating = false;
             }

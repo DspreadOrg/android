@@ -57,7 +57,6 @@ public class PaymentStatusActivity extends BaseActivity<ActivityPaymentstatusBin
             handleTransactionFailure();
         }
 
-
         if(DeviceModelUtils.isD80()){
             ViceScreenManager viceScreenManager = ViceScreenManager.getInstance(PaymentStatusActivity.this);
             if(viceScreenManager.getPowerOnStatus() == 1){
