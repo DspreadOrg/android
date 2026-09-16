@@ -97,10 +97,12 @@ public class DesfireFragment extends BaseCardFragment {
     protected void activateCard() {
         TRACE.i("Desfire: Power On NFC clicked");
         new Thread(() -> {
+            // Re-read address in case fragments were preloaded before device selection
+            refreshDeviceAddress();
             // Check if device is ready before powering on NFC
             if (!POSManager.getInstance().isDeviceConnected()) {
                 TRACE.i("Desfire: Device not ready, connecting first...");
-                POSManager.getInstance().connect("", connectionCallback);
+                POSManager.getInstance().connect(deviceAddress, connectionCallback);
             } else {
                 TRACE.i("Desfire: Device already ready");
                 POSManager.getInstance().registerConnectionCallback(connectionCallback);

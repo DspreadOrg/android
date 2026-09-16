@@ -9,13 +9,27 @@ import androidx.fragment.app.Fragment;
 
 import com.dspread.pos.posAPI.MifareServiceCallback;
 import com.dspread.pos.posAPI.POSManager;
+import com.dspread.pos.utils.TRACE;
 
 import java.util.Hashtable;
+
+import me.goldze.mvvmhabit.utils.SPUtils;
 
 public abstract class BaseCardFragment extends Fragment implements MifareServiceCallback {
 
     protected boolean isPowerOn = false;
     protected String lastBlockAddress = "";
+    protected String deviceAddress = "";
+
+    /**
+     * Re-read the latest deviceAddress from SharedPreferences before connecting.
+     * Fragments may be preloaded at app startup (main ViewPager2 offscreenPageLimit=3),
+     * before the user selects a Bluetooth device, so always fetch the current value on demand.
+     */
+    protected void refreshDeviceAddress() {
+        deviceAddress = SPUtils.getInstance().getString("deviceAddress", "");
+        TRACE.i("refresh deviceAddress: " + deviceAddress);
+    }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {

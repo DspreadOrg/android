@@ -164,10 +164,12 @@ public class ClassicFragment extends BaseCardFragment {
     protected void activateCard() {
         TRACE.i("Classic: Activate Card clicked");
         new Thread(() -> {
+            // Re-read address in case fragments were preloaded before device selection
+            refreshDeviceAddress();
             // Check if device is ready before activating card
             if (!POSManager.getInstance().isDeviceConnected()) {
                 TRACE.i("Classic: Device not ready, connecting first...");
-                POSManager.getInstance().connect("", connectionCallback);
+                POSManager.getInstance().connect(deviceAddress, connectionCallback);
             } else {
                 TRACE.i("Classic: Device already ready");
                 POSManager.getInstance().registerConnectionCallback(connectionCallback);
