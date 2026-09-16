@@ -148,7 +148,7 @@ public class PaymentMethodActivity extends BaseActivity<ActivityPaymentMetholdBi
                 viceRoot.addView(methodRow, methodRowLp);
 
                 // Card 点击事件
-                methodRow.addView(createMethodItem(R.mipmap.ic_salemethod_card, "   Card   ", v -> {
+                methodRow.addView(createMethodItem(R.mipmap.ic_salemethod_card, "      Card     ", v -> {
                     currentMethodIndex = 0;
                     paymentMethodsLayout.setSelectedPaymentMethod(currentMethodIndex);
                     handlePaymentMethodSelection(0);

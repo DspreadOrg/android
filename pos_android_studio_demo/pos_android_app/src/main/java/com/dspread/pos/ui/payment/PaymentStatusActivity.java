@@ -47,7 +47,6 @@ public class PaymentStatusActivity extends BaseActivity<ActivityPaymentstatusBin
         terminalTime = getStringExtraSafely(intent, KEY_TERMINAL_TIME);
         errorMsg = getStringExtraSafely(intent, KEY_ERROR_MSG);
 
-
         viewModel.isD70DisplayScreen.set(MODEL_D70.equals(Build.MODEL));
 
 
@@ -64,8 +63,11 @@ public class PaymentStatusActivity extends BaseActivity<ActivityPaymentstatusBin
                 PaymentResultView view = new PaymentResultView(PaymentStatusActivity.this);
                 boolean isSuccess = isValidAmount(amount);
                 view.setResult(isSuccess);
+                view.setErrorMsg("payment success");
                 if (isSuccess) {
                     view.setAmount("$ " + DeviceUtils.convertAmountToCents(amount));
+                } else {
+                    view.setErrorMsg(errorMsg);
                 }
                 viceScreenManager.show(view);
             }
@@ -95,14 +97,11 @@ public class PaymentStatusActivity extends BaseActivity<ActivityPaymentstatusBin
      */
     private void handleTransactionSuccess() {
         String amountInCents = DeviceUtils.convertAmountToCents(amount);
-
         viewModel.displayAmount(amountInCents);
         viewModel.setTransactionSuccess();
-
         Map<String, String> receiptData = createReceiptData(amountInCents, maskedPAN, terminalTime);
         viewModel.sendTranReceipt(receiptData);
     }
-
     /**
      * 创建收据数据
      */

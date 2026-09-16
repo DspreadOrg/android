@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.dspread.pos.common.manager.FragmentCacheManager;
+import com.dspread.pos.dualScreen.manager.ViceScreenManager;
 import com.dspread.pos.posAPI.POSManager;
 import com.dspread.pos.ui.home.HomeFragment;
 import com.dspread.pos.ui.transaction.SerachKeyboardUtils;
@@ -223,9 +224,12 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         if (viewPager != null) {
             viewPager = null;
         }
-
         // Shutdown background executor
         backgroundExecutor.shutdown();
+        ViceScreenManager viceScreenManager = ViceScreenManager.getInstance(getApplication());
+        if(viceScreenManager.getPowerOnStatus() == 1){
+            viceScreenManager.power(false);
+        }
     }
 
     @Override

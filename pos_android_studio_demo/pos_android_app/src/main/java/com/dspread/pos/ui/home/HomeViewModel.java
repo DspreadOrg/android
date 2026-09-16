@@ -41,6 +41,14 @@ public class HomeViewModel extends BaseAppViewModel {
         if (amountBuilder.length() == 0) {
             amount.set("$0.00");
             amountValid.set(false);
+            if(DeviceModelUtils.isD80()) {
+                ViceScreenManager viceScreenManager = ViceScreenManager.getInstance(getApplication());
+                if(viceScreenManager.getPowerOnStatus() == 1){
+                    AmountDisplayView view = new AmountDisplayView(getApplication());
+                    view.setAmount(amount.get());
+                    viceScreenManager.show(view);
+                }
+            }
             return;
         }
         amountValid.set(true);
@@ -63,7 +71,6 @@ public class HomeViewModel extends BaseAppViewModel {
                 view.setAmount(amount.get());
                 viceScreenManager.show(view);
             }
-
         }
 
     }
