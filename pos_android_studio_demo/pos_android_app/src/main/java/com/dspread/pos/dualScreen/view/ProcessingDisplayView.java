@@ -1,4 +1,4 @@
-package com.dspread.pos.ui.payment;
+package com.dspread.pos.dualScreen.view;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -8,7 +8,6 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 /**
@@ -48,7 +47,7 @@ public class ProcessingDisplayView extends FrameLayout {
         // 金额文本:位于提示文本上方,大号加粗显示
         tvAmount = new TextView(context);
         tvAmount.setTextColor(Color.BLACK);
-        tvAmount.setTextSize(TypedValue.COMPLEX_UNIT_SP, 36);
+        tvAmount.setTextSize(TypedValue.COMPLEX_UNIT_SP, 26);
         tvAmount.setTypeface(Typeface.DEFAULT_BOLD);
         tvAmount.setGravity(Gravity.CENTER);
         tvAmount.setVisibility(View.GONE);

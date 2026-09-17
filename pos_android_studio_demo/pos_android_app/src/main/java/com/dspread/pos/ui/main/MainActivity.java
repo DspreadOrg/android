@@ -1,6 +1,7 @@
 package com.dspread.pos.ui.main;
 
 import android.content.pm.ActivityInfo;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -13,6 +14,7 @@ import com.dspread.pos.posAPI.POSManager;
 import com.dspread.pos.ui.home.HomeFragment;
 import com.dspread.pos.ui.transaction.SerachKeyboardUtils;
 import com.dspread.pos.upgrade.CustomUpgradeCallback;
+import com.dspread.pos.utils.DeviceModelUtils;
 import com.dspread.pos.utils.Mydialog;
 import com.dspread.pos.utils.TRACE;
 import com.dspread.pos_android_app.BR;
@@ -80,10 +82,32 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     }
 
     @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        // 切回 HomeFragment
+        if (viewModel != null) {
+            TRACE.d("App started, 1");
+            viewModel.handleNavigationItemClick(R.id.nav_home);
+        } else if (viewPager != null) {
+            TRACE.d("App started, 2");
+            viewPager.setCurrentItem(MainFragmentAdapter.FRAGMENT_HOME, false);
+            updateNavigationMenuSelection(MainFragmentAdapter.FRAGMENT_HOME);
+        }
+        // 重新执行 HomeFragment.initData 中的副屏初始化(D80)
+        if (DeviceModelUtils.isD80()) {
+            TRACE.d("App started, 3");
+            ViceScreenManager viceScreenManager = ViceScreenManager.getInstance(getApplication());
+            viceScreenManager.showDefaultView();
+        }
+    }
+
+    @Override
     public void initData() {
         super.initData();
         // Reset update dialog shown flag on app start
         SPUtils.getInstance().put("update_dialog_shown", false);
+        TRACE.d("App started, update dialog shown flag reset");
         
         drawerLayout = binding.drawerLayout;
         navigationView = binding.navView;

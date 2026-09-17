@@ -20,10 +20,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.dspread.pos.common.manager.FragmentCacheManager;
 import com.dspread.pos.dualScreen.manager.ViceScreenManager;
-import com.dspread.pos.dualScreen.view.AmountDisplayView;
-import com.dspread.pos.ui.home.HomeFragment;
+import com.dspread.pos.dualScreen.view.PaymentQRPromptView;
 import com.dspread.pos.utils.DeviceModelUtils;
 import com.dspread.pos.utils.DeviceUtils;
 import com.dspread.pos.utils.TRACE;
@@ -33,7 +31,6 @@ import com.dspread.pos_android_app.databinding.ActivityPaymentMetholdBinding;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.fragment.app.Fragment;
 import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.utils.ToastUtils;
 
@@ -95,13 +92,18 @@ public class PaymentMethodActivity extends BaseActivity<ActivityPaymentMetholdBi
                         scanData = amount;
                         gotoPaymentstatusActivity(scanData);
                         finish();
-                    } /*else {
-                       gotoPaymentstatusActivity("");
-                       finish();
-                    }*/
+                    } else {
+                        showVicPaymentMothed();
+                    }
                 }
         );
 
+        showVicPaymentMothed();
+
+
+    }
+
+    private void showVicPaymentMothed() {
         if(DeviceModelUtils.isD80()){
             ViceScreenManager viceScreenManager = ViceScreenManager.getInstance(this);
             if(viceScreenManager.getPowerOnStatus() == 1){
@@ -114,41 +116,47 @@ public class PaymentMethodActivity extends BaseActivity<ActivityPaymentMetholdBi
                         LinearLayout.LayoutParams.MATCH_PARENT,
                         LinearLayout.LayoutParams.MATCH_PARENT));
 
-                // 第一行:总金额标题
-                TextView tvTotalTitle = new TextView(this);
-                tvTotalTitle.setText("Total");
-                tvTotalTitle.setTextColor(Color.parseColor("#ff030303"));
-                tvTotalTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10);
-                tvTotalTitle.setGravity(Gravity.CENTER);
-                viceRoot.addView(tvTotalTitle, new LinearLayout.LayoutParams(
+                // 第一行:amount 标题 + 总金额(同一行显示)
+                LinearLayout amountRow = new LinearLayout(this);
+                amountRow.setOrientation(LinearLayout.HORIZONTAL);
+                amountRow.setGravity(Gravity.CENTER_VERTICAL);
+                LinearLayout.LayoutParams amountRowLp = new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.WRAP_CONTENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT));
+                        LinearLayout.LayoutParams.WRAP_CONTENT);
+                amountRowLp.bottomMargin = dp(2);
+                viceRoot.addView(amountRow, amountRowLp);
 
-                // 第一行:总金额
+                TextView tvTotalTitle = new TextView(this);
+                tvTotalTitle.setText("Total: ");
+                tvTotalTitle.setTextColor(Color.parseColor("#ff030303"));
+                tvTotalTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+                tvTotalTitle.setTypeface(Typeface.DEFAULT_BOLD);
+                amountRow.addView(tvTotalTitle);
+
                 TextView tvViceAmount = new TextView(this);
                 tvViceAmount.setText(viewModel.totalAmount.get());
                 tvViceAmount.setTextColor(Color.parseColor("#ff030303"));
-                tvViceAmount.setTextSize(TypedValue.COMPLEX_UNIT_SP, 28);
+                tvViceAmount.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
                 tvViceAmount.setTypeface(Typeface.DEFAULT_BOLD);
-                tvViceAmount.setGravity(Gravity.CENTER);
                 LinearLayout.LayoutParams viceAmountLp = new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.WRAP_CONTENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT);
-                viceAmountLp.topMargin = dp(4);
-                viceRoot.addView(tvViceAmount, viceAmountLp);
+                viceAmountLp.leftMargin = dp(2);
+                amountRow.addView(tvViceAmount, viceAmountLp);
 
-                // 第二行:Card / Scan Code
+                // 第二行:Card / Scan Code(宽度均分,保证按钮文字不被裁剪)
                 LinearLayout methodRow = new LinearLayout(this);
                 methodRow.setOrientation(LinearLayout.HORIZONTAL);
                 methodRow.setGravity(Gravity.CENTER);
+                methodRow.setPadding(dp(6), 0, dp(6), 0);
                 LinearLayout.LayoutParams methodRowLp = new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.MATCH_PARENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT);
-                methodRowLp.topMargin = dp(5);
+                methodRowLp.topMargin = dp(2);
                 viceRoot.addView(methodRow, methodRowLp);
 
                 // Card 点击事件
-                methodRow.addView(createMethodItem(R.mipmap.ic_salemethod_card, "      Card     ", v -> {
+                methodRow.addView(createMethodItem(R.mipmap.ic_salemethod_card, "Card", v -> {
                     currentMethodIndex = 0;
                     paymentMethodsLayout.setSelectedPaymentMethod(currentMethodIndex);
                     handlePaymentMethodSelection(0);
@@ -165,8 +173,6 @@ public class PaymentMethodActivity extends BaseActivity<ActivityPaymentMetholdBi
                 viceScreenManager.show(viceRoot);
             }
         }
-
-
     }
 
 
@@ -179,17 +185,18 @@ public class PaymentMethodActivity extends BaseActivity<ActivityPaymentMetholdBi
         item.setGravity(Gravity.CENTER);
         item.setClickable(true);
         item.setFocusable(true);
-        item.setPadding(dp(5), dp(5), dp(5), dp(5));
+        item.setPadding(dp(6), dp(6), dp(6), dp(6));
         item.setBackground(createMethodItemBackground());
+        // 宽度采用 0dp + weight=1 均分副屏可用宽度,避免固定宽度超屏导致下方文字被裁切
         LinearLayout.LayoutParams itemLp = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT, dp(50));
-        itemLp.setMargins(dp(5), 0, dp(15), 0);
+                0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
+        itemLp.setMargins(dp(6), 0, dp(6), 0);
         item.setLayoutParams(itemLp);
 
         ImageView icon = new ImageView(this);
         icon.setImageResource(iconRes);
         icon.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-        item.addView(icon, new LinearLayout.LayoutParams(dp(20), dp(20)));
+        item.addView(icon, new LinearLayout.LayoutParams(dp(32), dp(32)));
 
         TextView labelTv = new TextView(this);
         labelTv.setText(label);
@@ -200,7 +207,7 @@ public class PaymentMethodActivity extends BaseActivity<ActivityPaymentMetholdBi
         LinearLayout.LayoutParams labelLp = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT);
-        labelLp.topMargin = dp(2);
+        labelLp.topMargin = dp(4);
         item.addView(labelTv, labelLp);
 
         item.setOnClickListener(listener);
@@ -271,6 +278,17 @@ public class PaymentMethodActivity extends BaseActivity<ActivityPaymentMetholdBi
         intent.putExtra("amount", amount);
         startActivity(intent);*/
         TRACE.d("PayMethodActivity startScanCodePayment");
+
+        if(DeviceModelUtils.isD80()){
+            ViceScreenManager viceScreenManager = ViceScreenManager.getInstance(this);
+            if(viceScreenManager.getPowerOnStatus() == 1){
+                // 副屏显示扫码支付提示:左侧金额卡片,右侧扫码图标与提示文字
+                PaymentQRPromptView promptView = new PaymentQRPromptView(this);
+                promptView.setAmount(viewModel.totalAmount.get());
+                viceScreenManager.show(promptView);
+            }
+        }
+
         initScanCode();
     }
 

@@ -1,4 +1,4 @@
-package com.dspread.pos.ui.payment;
+package com.dspread.pos.dualScreen.view;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -40,14 +40,14 @@ public class PaymentResultView extends FrameLayout {
         contentLayout.setOrientation(LinearLayout.VERTICAL);
         contentLayout.setGravity(Gravity.CENTER);
         addView(contentLayout, new LayoutParams(
-                LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, Gravity.CENTER));
+                LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT, Gravity.CENTER));
 
         // 上半部分:水平排列图标与金额
         LinearLayout rowLayout = new LinearLayout(context);
-        rowLayout.setOrientation(LinearLayout.HORIZONTAL);
+        rowLayout.setOrientation(LinearLayout.VERTICAL);
         rowLayout.setGravity(Gravity.CENTER);
         contentLayout.addView(rowLayout, new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT));
 
         // 左侧结果图标
@@ -64,18 +64,18 @@ public class PaymentResultView extends FrameLayout {
         LinearLayout.LayoutParams amountLp = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT);
-        amountLp.leftMargin = dp(16);
+        //amountLp.leftMargin = dp(16);
         rowLayout.addView(tvAmount, amountLp);
 
         // 下方错误信息
         tvErrorMsg = new TextView(context);
         tvErrorMsg.setTextColor(Color.BLACK);
-        tvErrorMsg.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+        tvErrorMsg.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
         tvErrorMsg.setGravity(Gravity.CENTER);
         LinearLayout.LayoutParams errorLp = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT);
-        errorLp.topMargin = dp(8);
+        errorLp.topMargin = dp(2);
         contentLayout.addView(tvErrorMsg, errorLp);
     }
 

@@ -39,6 +39,7 @@ public class HomeFragment extends BaseFragmentWithViewCache<FragmentHomeBinding,
 
     @Override
     public void initData() {
+        TRACE.d("HomeFragment initData");
         initTimer();
         if(DeviceModelUtils.isD80()){
             viceScreenManager = ViceScreenManager.getInstance(getContext());
