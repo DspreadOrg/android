@@ -6,11 +6,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import com.dspread.pos.dualScreen.manager.ViceScreenManager;
+import com.dspread.pos.dualScreen.view.PaymentResultView;
+import com.dspread.pos.utils.DeviceModelUtils;
 import com.dspread.pos.utils.DeviceUtils;
 import com.dspread.pos_android_app.BR;
 import com.dspread.pos_android_app.R;
 import com.dspread.pos_android_app.databinding.ActivityPaymentstatusBinding;
-
 
 import java.util.HashMap;
 import java.util.Map;
@@ -45,10 +47,7 @@ public class PaymentStatusActivity extends BaseActivity<ActivityPaymentstatusBin
         maskedPAN = getStringExtraSafely(intent, KEY_MASKED_PAN);
         terminalTime = getStringExtraSafely(intent, KEY_TERMINAL_TIME);
         errorMsg = getStringExtraSafely(intent, KEY_ERROR_MSG);
-
-
         viewModel.isD70DisplayScreen.set(MODEL_D70.equals(Build.MODEL));
-
 
         if (isValidAmount(amount)) {
             handleTransactionSuccess();
@@ -56,7 +55,22 @@ public class PaymentStatusActivity extends BaseActivity<ActivityPaymentstatusBin
             handleTransactionFailure();
         }
 
-
+        if(DeviceModelUtils.isD80()){
+            ViceScreenManager viceScreenManager = ViceScreenManager.getInstance(PaymentStatusActivity.this);
+            if(viceScreenManager.getPowerOnStatus() == 1){
+                // 显示副屏:左侧结果图标 + 右侧交易金额 + 下面是交易成功或交易失败
+                PaymentResultView view = new PaymentResultView(PaymentStatusActivity.this);
+                boolean isSuccess = isValidAmount(amount);
+                view.setResult(isSuccess);
+                view.setErrorMsg("payment success");
+                if (isSuccess) {
+                    view.setAmount("$ " + DeviceUtils.convertAmountToCents(amount));
+                } else {
+                    view.setErrorMsg(errorMsg);
+                }
+                viceScreenManager.show(view);
+            }
+        }
         viewModel.isShouwPrinting.set(DeviceUtils.isPrinterDevices());
     }
 
@@ -82,14 +96,11 @@ public class PaymentStatusActivity extends BaseActivity<ActivityPaymentstatusBin
      */
     private void handleTransactionSuccess() {
         String amountInCents = DeviceUtils.convertAmountToCents(amount);
-
         viewModel.displayAmount(amountInCents);
         viewModel.setTransactionSuccess();
-
         Map<String, String> receiptData = createReceiptData(amountInCents, maskedPAN, terminalTime);
         viewModel.sendTranReceipt(receiptData);
     }
-
     /**
      * 创建收据数据
      */

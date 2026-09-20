@@ -49,7 +49,7 @@ jobs:
           distribution: 'zulu'  # 指定 Java 发行版
 
       - name: Set up Android SDK
-        uses: android-actions/setup-android@v2
+        uses: android-actions/setup-android@v4
         with:
           api-level: 30
           build-tools: 30.0.3

@@ -4,14 +4,25 @@ import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Typeface;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.StateListDrawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
-import com.dspread.pos.common.manager.FragmentCacheManager;
-import com.dspread.pos.ui.home.HomeFragment;
+import com.dspread.pos.dualScreen.manager.ViceScreenManager;
+import com.dspread.pos.dualScreen.view.PaymentQRPromptView;
+import com.dspread.pos.utils.DeviceModelUtils;
 import com.dspread.pos.utils.DeviceUtils;
 import com.dspread.pos.utils.TRACE;
 import com.dspread.pos_android_app.BR;
@@ -20,7 +31,6 @@ import com.dspread.pos_android_app.databinding.ActivityPaymentMetholdBinding;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.fragment.app.Fragment;
 import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.utils.ToastUtils;
 
@@ -82,14 +92,153 @@ public class PaymentMethodActivity extends BaseActivity<ActivityPaymentMetholdBi
                         scanData = amount;
                         gotoPaymentstatusActivity(scanData);
                         finish();
-                    } /*else {
-                       gotoPaymentstatusActivity("");
-                       finish();
-                    }*/
+                    } else {
+                        showVicPaymentMothed();
+                    }
                 }
         );
+
+        showVicPaymentMothed();
+
+
     }
 
+    private void showVicPaymentMothed() {
+        if(DeviceModelUtils.isD80()){
+            ViceScreenManager viceScreenManager = ViceScreenManager.getInstance(this);
+            if(viceScreenManager.getPowerOnStatus() == 1){
+                // 创建副屏显示视图:第一行金额,第二行 Card / Scan Code
+                LinearLayout viceRoot = new LinearLayout(this);
+                viceRoot.setOrientation(LinearLayout.VERTICAL);
+                viceRoot.setGravity(Gravity.CENTER);
+                viceRoot.setBackgroundColor(Color.WHITE);
+                viceRoot.setLayoutParams(new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.MATCH_PARENT));
+
+                // 第一行:amount 标题 + 总金额(同一行显示)
+                LinearLayout amountRow = new LinearLayout(this);
+                amountRow.setOrientation(LinearLayout.HORIZONTAL);
+                amountRow.setGravity(Gravity.CENTER_VERTICAL);
+                LinearLayout.LayoutParams amountRowLp = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT);
+                amountRowLp.bottomMargin = dp(2);
+                viceRoot.addView(amountRow, amountRowLp);
+
+                TextView tvTotalTitle = new TextView(this);
+                tvTotalTitle.setText("Total: ");
+                tvTotalTitle.setTextColor(Color.parseColor("#ff030303"));
+                tvTotalTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+                tvTotalTitle.setTypeface(Typeface.DEFAULT_BOLD);
+                amountRow.addView(tvTotalTitle);
+
+                TextView tvViceAmount = new TextView(this);
+                tvViceAmount.setText(viewModel.totalAmount.get());
+                tvViceAmount.setTextColor(Color.parseColor("#ff030303"));
+                tvViceAmount.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+                tvViceAmount.setTypeface(Typeface.DEFAULT_BOLD);
+                LinearLayout.LayoutParams viceAmountLp = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT);
+                viceAmountLp.leftMargin = dp(2);
+                amountRow.addView(tvViceAmount, viceAmountLp);
+
+                // 第二行:Card / Scan Code(宽度均分,保证按钮文字不被裁剪)
+                LinearLayout methodRow = new LinearLayout(this);
+                methodRow.setOrientation(LinearLayout.HORIZONTAL);
+                methodRow.setGravity(Gravity.CENTER);
+                methodRow.setPadding(dp(6), 0, dp(6), 0);
+                LinearLayout.LayoutParams methodRowLp = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT);
+                methodRowLp.topMargin = dp(2);
+                viceRoot.addView(methodRow, methodRowLp);
+
+                // Card 点击事件
+                methodRow.addView(createMethodItem(R.mipmap.ic_salemethod_card, "Card", v -> {
+                    currentMethodIndex = 0;
+                    paymentMethodsLayout.setSelectedPaymentMethod(currentMethodIndex);
+                    handlePaymentMethodSelection(0);
+                }));
+
+                // Scan Code 点击事件
+                methodRow.addView(createMethodItem(R.mipmap.ic_salemethod_scan, "Scan Code", v -> {
+                    currentMethodIndex = 1;
+                    paymentMethodsLayout.setSelectedPaymentMethod(currentMethodIndex);
+                    handlePaymentMethodSelection(1);
+                }));
+
+                // show
+                viceScreenManager.show(viceRoot);
+            }
+        }
+    }
+
+
+    /**
+     * 创建副屏支付方式选项(图标 + 文字,带点击事件)
+     */
+    private LinearLayout createMethodItem(int iconRes, String label, View.OnClickListener listener) {
+        LinearLayout item = new LinearLayout(this);
+        item.setOrientation(LinearLayout.VERTICAL);
+        item.setGravity(Gravity.CENTER);
+        item.setClickable(true);
+        item.setFocusable(true);
+        item.setPadding(dp(6), dp(6), dp(6), dp(6));
+        item.setBackground(createMethodItemBackground());
+        // 宽度采用 0dp + weight=1 均分副屏可用宽度,避免固定宽度超屏导致下方文字被裁切
+        LinearLayout.LayoutParams itemLp = new LinearLayout.LayoutParams(
+                0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
+        itemLp.setMargins(dp(6), 0, dp(6), 0);
+        item.setLayoutParams(itemLp);
+
+        ImageView icon = new ImageView(this);
+        icon.setImageResource(iconRes);
+        icon.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+        item.addView(icon, new LinearLayout.LayoutParams(dp(32), dp(32)));
+
+        TextView labelTv = new TextView(this);
+        labelTv.setText(label);
+        labelTv.setTextColor(Color.parseColor("#ff030303"));
+        labelTv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
+        labelTv.setGravity(Gravity.CENTER);
+        labelTv.setSingleLine(true);
+        LinearLayout.LayoutParams labelLp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        labelLp.topMargin = dp(4);
+        item.addView(labelTv, labelLp);
+
+        item.setOnClickListener(listener);
+        return item;
+    }
+
+    /**
+     * 创建副屏支付方式选项的圆角边框背景(按压态变色)
+     */
+    private StateListDrawable createMethodItemBackground() {
+        GradientDrawable normalDrawable = new GradientDrawable();
+        normalDrawable.setShape(GradientDrawable.RECTANGLE);
+        normalDrawable.setCornerRadius(dp(2));
+        normalDrawable.setStroke(dp(1), Color.parseColor("#BCBCBC"));
+        normalDrawable.setColor(Color.WHITE);
+
+        GradientDrawable pressedDrawable = new GradientDrawable();
+        pressedDrawable.setShape(GradientDrawable.RECTANGLE);
+        pressedDrawable.setCornerRadius(dp(2));
+        pressedDrawable.setStroke(dp(1), Color.parseColor("#ffe47579"));
+        pressedDrawable.setColor(Color.parseColor("#ffffe9e9"));
+
+        StateListDrawable states = new StateListDrawable();
+        states.addState(new int[]{android.R.attr.state_pressed}, pressedDrawable);
+        states.addState(new int[]{}, normalDrawable);
+        return states;
+    }
+
+    private int dp(int value) {
+        return (int) (getResources().getDisplayMetrics().density * value + 0.5f);
+    }
 
     private void handlePaymentMethodSelection(int methodIndex) {
         // Prevent duplicate clicks flag
@@ -129,6 +278,17 @@ public class PaymentMethodActivity extends BaseActivity<ActivityPaymentMetholdBi
         intent.putExtra("amount", amount);
         startActivity(intent);*/
         TRACE.d("PayMethodActivity startScanCodePayment");
+
+        if(DeviceModelUtils.isD80()){
+            ViceScreenManager viceScreenManager = ViceScreenManager.getInstance(this);
+            if(viceScreenManager.getPowerOnStatus() == 1){
+                // 副屏显示扫码支付提示:左侧金额卡片,右侧扫码图标与提示文字
+                PaymentQRPromptView promptView = new PaymentQRPromptView(this);
+                promptView.setAmount(viewModel.totalAmount.get());
+                viceScreenManager.show(promptView);
+            }
+        }
+
         initScanCode();
     }
 

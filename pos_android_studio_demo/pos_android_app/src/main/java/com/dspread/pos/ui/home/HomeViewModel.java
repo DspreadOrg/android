@@ -7,6 +7,9 @@ import androidx.annotation.NonNull;
 import androidx.databinding.ObservableField;
 
 import com.dspread.pos.common.base.BaseAppViewModel;
+import com.dspread.pos.dualScreen.manager.ViceScreenManager;
+import com.dspread.pos.dualScreen.view.AmountDisplayView;
+import com.dspread.pos.utils.DeviceModelUtils;
 import com.dspread.pos.utils.TRACE;
 import com.dspread.pos_android_app.R;
 
@@ -38,6 +41,14 @@ public class HomeViewModel extends BaseAppViewModel {
         if (amountBuilder.length() == 0) {
             amount.set("$0.00");
             amountValid.set(false);
+            if(DeviceModelUtils.isD80()) {
+                ViceScreenManager viceScreenManager = ViceScreenManager.getInstance(getApplication());
+                if(viceScreenManager.getPowerOnStatus() == 1){
+                    AmountDisplayView view = new AmountDisplayView(getApplication());
+                    view.setAmount(amount.get());
+                    viceScreenManager.show(view);
+                }
+            }
             return;
         }
         amountValid.set(true);
@@ -52,6 +63,16 @@ public class HomeViewModel extends BaseAppViewModel {
             String decimalPart = amountStr.substring(amountStr.length() - 2);
             amount.set(String.format("$%s.%s", intPart, decimalPart));
         }
+        TRACE.i("HomeviewModel amount:" + amountBuilder.toString());
+        if(DeviceModelUtils.isD80()) {
+            ViceScreenManager viceScreenManager = ViceScreenManager.getInstance(getApplication());
+            if(viceScreenManager.getPowerOnStatus() == 1){
+                AmountDisplayView view = new AmountDisplayView(getApplication());
+                view.setAmount(amount.get());
+                viceScreenManager.show(view);
+            }
+        }
+
     }
 
     public void clearAmount() {

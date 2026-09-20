@@ -5,11 +5,15 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import com.dspread.pos.common.base.BaseFragmentWithViewCache;
 import com.dspread.pos.TitleProviderListener;
+import com.dspread.pos.dualScreen.manager.ViceScreenManager;
+import com.dspread.pos.dualScreen.view.AmountDisplayView;
 import com.dspread.pos.ui.payment.PaymentMethodActivity;
+import com.dspread.pos.utils.DeviceModelUtils;
 import com.dspread.pos.utils.TRACE;
 import com.dspread.pos_android_app.BR;
 import com.dspread.pos_android_app.R;
@@ -21,6 +25,7 @@ import me.goldze.mvvmhabit.utils.SPUtils;
 public class HomeFragment extends BaseFragmentWithViewCache<FragmentHomeBinding, HomeViewModel> implements TitleProviderListener {
     private boolean canshow = true;
     private CountDownTimer showTimer;
+    private ViceScreenManager viceScreenManager;
 
     @Override
     public int initContentView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -34,7 +39,16 @@ public class HomeFragment extends BaseFragmentWithViewCache<FragmentHomeBinding,
 
     @Override
     public void initData() {
+        TRACE.d("HomeFragment initData");
         initTimer();
+        if(DeviceModelUtils.isD80()){
+            viceScreenManager = ViceScreenManager.getInstance(getContext());
+            viceScreenManager.power(true);
+            viceShowDefault();
+        }
+    }
+    private void viceShowDefault() {
+        viceScreenManager.showDefaultView();
     }
 
     private void initTimer() {
@@ -64,6 +78,14 @@ public class HomeFragment extends BaseFragmentWithViewCache<FragmentHomeBinding,
             if (!canshow) return;
             canshow = false;
             showTimer.start();
+            if(DeviceModelUtils.isD80()){
+                viceScreenManager = ViceScreenManager.getInstance(getContext());
+                if(viceScreenManager.getPowerOnStatus() == 1){
+                    AmountDisplayView view = new AmountDisplayView(getContext());
+                    view.setAmount(inputMoney);
+                    viceScreenManager.show(view);
+                }
+            }
 
             navigateToPaymentMethod(inputMoney);
             // Obtain the system standard jump animation time

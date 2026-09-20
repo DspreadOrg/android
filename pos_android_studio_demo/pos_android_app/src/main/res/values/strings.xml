@@ -194,6 +194,7 @@
     <string name="card_error">Card error</string>
     <string name="declined">Declined</string>
     <string name="enter_amount">Please enter amount</string>
+    <string name="vice_screen_enter_amount">Enter amount</string>
     <string name="incorrect_pin">Incorrect PIN</string>
     <string name="insert_card">Please insert card</string>
     <string name="not_accepted">Not accepted</string>
@@ -459,7 +460,22 @@
     <string name="content_maxHeight">content MaxHeight</string>
 
     <!--print content-->
-    <string name="text_print">欢迎光临(Simplified Chinese)\n歡迎光臨（traditional chinese）\nWelcome(English)\n어서 오세요.(Korean)\nいらっしゃいませ(Japanese)\nWillkommen in der(Germany)\nSouhaits de bienvenue(France)\nยินดีต้อนรับสู่(Thai)\nДобро пожаловать(Russian)\nBenvenuti a(Italian)\nvítejte v(Czech)\nBEM - vindo Ao(Portutuese)\nمرحبا بكم في(Arabic)\nBienvenido,transacción(Spanish)\nخوش اومدی(Farsi)\n</string>
+    <string name="text_print">欢迎光临(Simplified Chinese)
+歡迎光臨（traditional chinese）
+Welcome(English)
+어서 오세요.(Korean)
+いらっしゃいませ(Japanese)
+Willkommen in der(Germany)
+Souhaits de bienvenue(France)
+ยินดีต้อนรับสู่(Thai)
+Добро пожаловать(Russian)
+Benvenuti a(Italian)
+vítejte v(Czech)
+BEM - vindo Ao(Portutuese)
+مرحبا بكم في(Arabic)
+Bienvenido,transacción(Spanish)
+خوش اومدی(Farsi)
+</string>
     <string name="at_the_left">LEFT</string>
     <string name="at_the_right">RIGHT</string>
     <string name="at_the_center">CENTER</string>
@@ -556,4 +572,38 @@
     <string name="pls_see_phone">PLS SEE PHONE, and pls wait for cardholder to confirm, then to try again</string>
 
     <string name="network_error_msg">Transaction failed because of the network!</string>
+
+
+
+
+    <string name="display_connected">Connected</string>
+    <string name="display_disconnected">Disconnected</string>
+    <string name="display_none_info">No secondary display detected, please connect a secondary display device</string>
+
+    <string name="result_success">%1$s succeeded</string>
+    <string name="result_fail_no_display">%1$s failed: secondary display not connected</string>
+    <string name="result_fail_invalid_param">%1$s failed: invalid parameter</string>
+    <string name="result_fail_file_not_found">%1$s failed: file not found</string>
+    <string name="result_fail_not_supported">%1$s failed: hardware not supported</string>
+    <string name="result_fail_show_failed">%1$s failed: display error</string>
+    <string name="result_fail_code">%1$s failed: code=%2$d</string>
+
+    <string name="secondary_display_not_connected">Secondary display not connected</string>
+    <string name="display_desc_title">Secondary #%1$d · %2$d × %3$d</string>
+    <string name="display_refresh_rate">Refresh rate: %1$.0f Hz</string>
+    <string name="orientation_landscape">Landscape</string>
+    <string name="orientation_portrait">Portrait</string>
+    <string name="display_type">Type: %1$s</string>
+    <string name="display_touch">Touch: %1$s</string>
+    <string name="touch_supported">Supported</string>
+    <string name="touch_not_reported">Not reported</string>
+    <string name="display_supported_modes">Supported modes: %1$d · current: %2$dx%3$d@%4$.0fHz</string>
+    <string name="display_name">Name: %1$s</string>
+    <string name="flag_secure">Secure</string>
+    <string name="flag_presentation">Presentation</string>
+    <string name="flag_round">Round</string>
+    <string name="flag_touch">Touch</string>
+    <string name="flag_not_focusable">Not focusable</string>
+    <string name="flag_default">Standard display</string>
+
 </resources>

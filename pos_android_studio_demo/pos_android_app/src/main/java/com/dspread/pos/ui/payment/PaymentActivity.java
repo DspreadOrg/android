@@ -2,18 +2,23 @@ package com.dspread.pos.ui.payment;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.Html;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.databinding.DataBindingUtil;
 
+import com.dspread.pos.dualScreen.manager.ViceScreenManager;
+import com.dspread.pos.dualScreen.view.ProcessingDisplayView;
 import com.dspread.pos.posAPI.ConnectionServiceCallback;
 import com.dspread.pos.posAPI.POSManager;
 import com.dspread.pos.posAPI.PaymentServiceCallback;
@@ -69,6 +74,7 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
     private ActivityPaymentDefaultBinding defaultBinding;
     private ActivityPaymentSmallScreenBinding smallScreenBinding;
     private ActivityPaymentFrontNfcBinding frontNfcBinding;
+    private ViceScreenManager vsManager;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -95,7 +101,27 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
     public void initData() {
         TRACE.i("SN: " + SPUtils.getInstance().getString("posID") + " POSINFO: " + SPUtils.getInstance().getString("firmwareVersion"));
         updateDeviceInfoUI();
+        if(DeviceModelUtils.isD80()){
+            ViceScreenManager viceScreenManager = ViceScreenManager.getInstance(this);
+            if(viceScreenManager.getPowerOnStatus() == 1){
+                // 创建副屏视图:加载 D80_checkCard.json 动画
+                FrameLayout viceRoot = new FrameLayout(this);
+                viceRoot.setBackgroundColor(Color.WHITE);
+                viceRoot.setLayoutParams(new ViewGroup.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT));
 
+                com.airbnb.lottie.LottieAnimationView animationView = new com.airbnb.lottie.LottieAnimationView(this);
+                animationView.setAnimation("D80_checkCard.json");
+                animationView.setImageAssetsFolder("D80_images/");
+                animationView.loop(true);
+                animationView.playAnimation();
+                viceRoot.addView(animationView, new ViewGroup.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT));
+                viceScreenManager.show(viceRoot);
+            }
+        }
         viewModel.titleText.set("Paymenting");
         paymentServiceCallback = new PaymentCallback();
         amount = getIntent().getStringExtra("amount");
@@ -105,6 +131,8 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
         initConnectionCallback();
         TRACE.i("start Transaction -===");
         startTransaction();
+
+
     }
 
     @Override
@@ -400,6 +428,17 @@ public class PaymentActivity extends BaseActivity<ActivityPaymentDefaultBinding,
 
         @Override
         public void onRequestDisplay(QPOSService.Display displayMsg) {
+            if(DeviceModelUtils.isD80()){
+                ViceScreenManager viceScreenManager = ViceScreenManager.getInstance(PaymentActivity.this);
+                if(viceScreenManager.getPowerOnStatus() == 1){
+                    String displayMsgStr = HandleTxnsResultUtils.getDisplayMessage(displayMsg, PaymentActivity.this);
+                    // 创建副屏"执行中"视图:加载动画 + 金额 + 提示文本
+                    ProcessingDisplayView view = new ProcessingDisplayView(PaymentActivity.this);
+                    view.setAmount("$" + DeviceUtils.convertAmountToCents(amount));
+                    view.setMessage(displayMsgStr);
+                    viceScreenManager.show(view);
+                }
+            }
             TRACE.d("onRequestDisplay(Display displayMsg):" + displayMsg.toString());
             String msg = "";
             if (displayMsg == QPOSService.Display.MSR_DATA_READY) {
